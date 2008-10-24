@@ -1,0 +1,4 @@
+[[VCVarDecl: x :: int]] [[/\[[True/\(x@120$0 < 0)], (y$q$1@243$0 == x@120$0), True]]-->(block [[VCVarDecl: return$q$1 :: int], [VCVarDecl: y$q$1 :: int]] : True)]
+[[/\[[True/\(x@120$0 < 0)]]]-->(! (x@120$0 == 0))]
+[[/\[[True/\(x@120$0 < 0)], (y$q$1@243$0 == x@120$0), True]]-->(! (block [[VCVarDecl: return$q$1 :: int], [VCVarDecl: y$q$1 :: int]] : False))]
+[[/\[[True/\(x@120$0 < 0)], (y$q$1@243$0 == x@120$0)]]-->(! (y$q$1@243$0 > 0))]

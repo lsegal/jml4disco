@@ -1,0 +1,2 @@
+[[VCVarDecl: i :: int], [VCVarDecl: return :: int]] [[/\[[True/\(i@121$0 > 10)], (return@0$0 == (0 - i@121$0))]]-->(return@0$0 < (0 - 10))]
+[[/\[[True/\(i@230$0 < 10)], (return@0$0 == (0 - i@230$0))]]-->(! (return@0$0 < (0 - 10)))]

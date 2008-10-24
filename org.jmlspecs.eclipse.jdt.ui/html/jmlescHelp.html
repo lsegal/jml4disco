@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<HTML>
+<HEAD>
+<TITLE>JML-ESC Eclipse plug-in</TITLE>
+</HEAD>
+<BODY>
+
+<!-- CAUTION:  Although most browsers are quite tolerant, the HTML parser built
+into Eclipse seems to be VERY picky.  Every tag must be closed by and end tag,
+including <P> with </P>; also use <BR/> instead of <BR>. Test that it views 
+as you expect in the Help browser frequently, as the error messages are 
+not always clear.  -->
+
+
+<CENTER><H1>JML-ESC Eclipse Plugin</H1></CENTER>
+<CENTER>Author: David Cok, ??? TBD</CENTER>
+<CENTER>Software contributors: Lots of people - Patrice Chalin, David Cok, Perry James, George Karabotsos, ...</CENTER>
+<CENTER> Version not even alpha, DATE???</CENTER>
+<CENTER><A href="mailto:xcok@frontiernet.net">Feedback</A> (temporarily)</CENTER>
+<P>
+Contents:
+<!-- start toc.  do not edit; run html-update-toc instead -->
+    <ul>
+      <li><a href="#Overview">Overview</a></li>
+      <li><a href="#Installation">Installation</a></li>
+      <li><a href="#JML">Java Modeling Language</a></li>
+      <li><a href="#Status">Features and Status</a></li>
+      <li><a href="#Design">Architecture and Design issues</a></li>
+    </ul>
+<!-- end toc -->
+</P>
+
+
+
+<H2><A NAME="Overview">Overview</A></H2>
+<P>
+This document describes an implementation of JML and related tools in an 
+Eclipse plug-in.
+The plug-in is based on the JML4 work of extending Eclipse's JDT compiler and 
+UI infrastructure.
+The ideal goal is to have this plug-in be a pure Eclipse plug-in; 
+however, this has not been possible - the JDT does not export all of the 
+functionality needed to extend it, and so some internal modification has been 
+necessary.  Nevertheless, the plug-in can be installed and used as a 
+conventional Eclipse plug-in.
+</P><P>
+The JML-ESC plug-in provides the following capabilities, described in more
+detail later in this document:
+<UL>
+<LI>syntax checking of JML comments</LI>
+<LI>execution of JML specifications as runtime checks</LI>
+<LI>static comparison of code and JML specifications using embedded provers</LI>
+<LI>integration of these capabilities as familiar UI elements within the Java
+development environment of Eclipse</LI>
+<LI>a .jar file, separate from the plug-in, that provides a standalone
+compiler incorporating both the run-time and static checking, similar to the
+command-line version of the Eclipse JDT compiler.</LI>
+</UL>
+</P>
+
+
+
+<H2><A NAME="Installation">Installation</A></H2>
+The JML-ESC plug-in feature) is installed via a conventional 
+Eclipse update site, located at TBD.  The feature consists of two plugins,
+one is a replacement for org.eclipse.jdt.core and the other is a new plugin
+containing JML and ESC capability.  Installation is accomplished with the
+following steps:
+<UL>
+<LI>Select Help->Software Updates->Find and install from the Eclipse menu</LI>
+<LI>Select "Search for new features to install", and "Next"</LI>
+<LI> ... add new remote site</LI>
+<LI> ... TBD</LI>
+</UL>
+
+JML and ESC functionality is not on be default.  You need to enable options
+on the JML preference page (under Java) and you may need to enable JML and
+ESC in the filter settings of the Problems View.
+<P/>
+Since the JML-ESC plug-in includes a modified version of an Eclipse plug-in, a
+particular version of the JML-ESC plug-in will only work with a particular
+version of Eclipse. 
+<P/>
+The standalone compiler can be downloaded from TBD.
+
+
+<H2><A NAME="JML">The Java Modeling Language</A></H2>
+<P>
+The Java Modeling Language 
+[see <A href="http://www.jmlspecs.org">www.jmlspecs.org</A> and the
+references listed there]
+is a language for annotating Java programs with specifications describing
+the behavior of classes and methods.  The annotations are contained in 
+specially formatted comments; thus they are ignored by conventional Java compilers.
+Various tools are available for checking, either statically or at run-time,
+ that the specifications and the code agree (that is, that the specifications
+ describe what the code does or the code implements what the specifications 
+ require, depending on your point of view).
+ </P><P>
+ The syntax and semantics of JML are described in the JML reference manual [link or reference needed TBD].
+ </P><P>
+ JML is a collaborative research endeavor (and therefore subject to ongoing 
+ improvement and experimentation), started by 
+ <A href="http://www.eecs.ucf.edu/~leavens/homepage.html">Gary Leavens</A>,
+ but now involving many groups.
+ </P>
+ 
+ 
+ 
+ 
+<H2><A NAME="Status">Features and Status</A></H2>
+The JML-ESC plugin implements (or intends to implement) the following features.
+<H3>Core functionality</H3>
+<UL>
+
+<LI>JML syntax checking integrated into the JDT parser.
+<BR/><B>Status: </B>A small amount of JML is implemented, enough to show that
+the infrastructure works.  The JML checking happens whenever a file is recompiled,
+so it can be performed automatically or manually, just as compilation can be.
+Note that the intention is that as much as possible of the JDT parser be reused,
+if that can be done in an extensible and modular fashion.
+<BR/><B>Needed: </B>Complete implementation of the JML language.
+</LI><P/>
+
+<LI>JML syntax and typechecking errors shown while editing
+<BR/><B>Status: </B>Java syntax and typechecking errors are shown while editing,
+without needing to save a file.  JML should be treated the same way.
+<BR/><B>Needed: </B>Check or implement this.
+</LI><P/>
+
+
+<LI>ESC static checking integrated into the parser.
+<BR/><B>Status: </B>ESC/Java2 is wrapped into the plug-in.  It is executed on
+a compilation unit when the compilation unit is compiled, whether manually or
+automatically.
+<BR/><B>Needed: </B>An integration of ESC into the JDT.  Currently all the parsing
+and checking for ESC is done by Escjava (that is the work of parsing and
+typechecking is duplicated), rather than
+using the JDT's compiler. 
+</LI><P/>
+
+<LI>Incremental checking integrated into Eclipse
+<BR/><B>Status: </B>Not yet started
+<BR/><B>Needed: </B>This requires being able to run just the minimum number of
+rechecks after a series of editing changes.  It requires knowing which other compilation
+units depend on a given source file, so that when that source file is edited,
+just the right other files are checked.  (Imagine what needs to happen if a
+specification file is changed).
+</LI><P/>
+
+<LI>Run-time assertion checking integrated into the plug-in. 
+<BR/><B>Status: </B>Some RAC has been incorporated into the JDT compiler; violated
+checks appear as exceptions.
+<BR/><B>Needed: </B>Fuller implementation of RAC as the implementation of JML is
+expanded.  Integration of RAC with the debugger.  Integration of RAC with the
+incremental compiler (appropriate recompilation needs to happen if a spec file
+changes).  We also want to be able to log and continue after an assertion violation.
+</LI><P/>
+
+<LI>Command-line compilation and checking
+<BR/><B>Status: </B>It has been demonstrated that a command-line tool can be
+created and run, analogous to the ecj.jar file containing the JDT batch
+compiler.  The tool has an acceptable startup time.
+<BR/><B>Needed: </B>To build the requisite jar file as part of the build process,
+provide appropriate JUnit tests, a place to download it, and directions for its
+use.  There are lots of command-line options to be implemented.
+</LI><P/>
+
+<LI>Generation of Javadocs with JML content (jmldoc).
+<BR/><B>Status/Needed: </B>Not started.  Might not be achievable since I think that 
+Eclipse simply uses an external tool for generating jmldoc.  We might be able to
+generate jmldoc ourselves from the ASTs, but that would be counter to the
+philosophy of not duplicating existing infrastructure.
+</LI><P/>
+
+<LI>Auto-generation of empty spec files.
+<BR/><B>Status: </B>Not started.
+<BR/><B>Needed: </B>This can likely be accomplished with current Eclipse capabilities.
+</LI><P/>
+
+<LI>Auto-generation of specifications.
+<BR/><B>Status: </B>Not started.
+<BR/><B>Needed: </B>Some of this can be done (e.g. getters and setters) 
+straightforwardly.  More generally, this might require integrating Houdini or
+an equivalent tool (which is not within any planning horizon).
+</LI><P/>
+
+<LI>Calvin multi-thread checking integrated into the tool
+<BR/><B>Needed: </B>Completely in the future.
+</LI><P/>
+
+<LI>Daikon specification mining integrated into the tool.
+<BR/><B>Needed: </B>Completely in the future, and likely to be wrapped rather than
+explicitly integrated.
+</LI><P/>
+
+
+</UL>
+<H3>Administration</H3>
+<UL>
+
+
+<LI>Testing
+<BR/><B>Status: </B>Started but needs lots of work
+<BR/><B>Needed: </B>A much more comprehensive set of tests on the JML and RAC and
+ESC functionality, integrated as JUnit tests within the Eclipse IDE.  
+One difficulty is creating a means of testing the UI functionality.
+</LI><P/>
+
+<LI>Developer tips
+<BR/><B>Status: </B>Some stuff on the 
+<A href="http://jmlspecs.wiki.sourceforge.net/JML4+Repository">JML-reloaded wiki</A>
+<BR/><B>Needed: </B>Instructions to setup and use a development environment; instructions
+to add to and run tests; instructions to make a release; instruction to report and
+resolve bugs.
+</LI><P/>
+
+<LI>Issues/Bugs reporting and resolving
+<BR/><B>Status: </B>Non-existent
+<BR/><B>Needed: </B>Need a structure for reporting and resolving bugs and issues.
+</LI><P/>
+
+
+
+<LI>A plug-in update site and location for the batch compiler.
+<BR/><B>Status: </B>The procedure for building an update site is implemented.
+The batch compiler has been created and executed manually.
+<BR/><B>Needed: </B>Deciding on the location of the update site; deciding
+procedures for handling version numbers; creating an automatic procedure for
+building the batch compiler.
+</LI><P/>
+
+<LI>PR
+<BR/><B>Status: </B>Not yet
+<BR/><B>Needed: </B>Advertising of the new update site and tools on the JML
+and other relevant web sites.
+</LI><P/>
+
+</UL>
+<H3>UI features</H3>
+<UL>
+
+<LI>Console
+<BR/><B>Status: </B>Complete. The UI plug-in creates a new Console that captures any 
+textual output that goes to System.out or System.err.  Without this console,
+such text goes variously to the invoking shell, the invoking Eclipse application,
+or into thin air.  This is normally to be used for logging and debugging 
+information, rather than information important to the user.
+</LI><P/>
+
+<LI>Integration of RAC with the debugger
+<BR/><B>Status: </B>No integration yet.
+<BR/><B>Needed: </B>Being able to stop on various kinds of assertion errors;
+being able to evaluate specifications at various points; be able to see the
+values of ghost or model variables 
+</LI><P/>
+
+
+<LI>JML syntax errors are reported 
+through the problems view and problem markers and squiggly underlining in the editor.
+<BR/><B>Status: </B>
+Problems are reported via the problems view, problem markers in the editor, and
+red squiggly underlining in the text.
+<BR/><B>Needed: </B>Integration of
+a marker type that distinguishes JML errors from Java errors (currently the markers
+are the same); the underlining
+is not always in the correct position. Errors found in a different file than the
+one being compiled (e.g. specification files) need to be reported in 
+the correct editor.
+</LI><P/>
+
+
+<LI>ESC syntax errors are reported 
+through the problems view and problem markers and squiggly underlining in the editor.
+<BR/><B>Status: </B>
+Problems are reported via the problems view, ESC-specific problem markers in 
+the editor, and red squiggly underlining in the text.  The ESC problem markers 
+are orange with a superimposed E.  Furthermore the markers are appropriately
+deleted, whether during an explicit clean of a project or prior to a build of
+a project or a specific file within a project.
+<BR/><B>Needed: </B>The underlining
+is not always in the correct position. Errors found in a different file than the
+one being compiled (e.g. specification files) need to be reported in 
+the correct editor.  Some policy or UI choice needs to be put in place to control
+which marker (the red or the orange) one is used for ESC warnings.  The problems
+view does not yet use the special markers.  ESC markers are not on by default in
+the Problems view (must be enabled through the filters view).
+</LI><P/>
+
+<LI>Navigation to associated declarations 
+<BR/><B>Status: </B>
+Not begun
+<BR/><B>Needed: </B>ESC warnings often have an associated declaration (e.g. the
+line in the specification that a particular statement in the code violates).
+There needs to be a way within the UI to easily open an editor for the file
+containing the associated declaration at the appropriate line.
+</LI><P/>
+
+<LI>Editing of specification files 
+<BR/><B>Status: </B> Specification files (denoted by a jml or spec suffix) open
+into a Java editor and are identified by a JML icon in the Package Explorer View
+and the Navigator View.
+Not begun
+<BR/><B>Needed: </B>The icon on the editor for specification files changes.
+Sometimes it is a JML icon, but when when a file is opened again it has a different
+icon.
+</LI><P/>
+
+<LI>Menubar items
+<BR/><B>Status: </B>There is a menubar item named 'JML' from which one can 
+select various menu items.  So far it has these menu items:
+<UL>
+<LI><B>Clear ESC markers</B>: this manually clears all ESC markers from the currently selected
+editor or Java element</LI>
+<LI><B>Run static checks</B>: manually runs ESC on the currently 
+selected editor window or Java element(s)</LI>
+<LI><B>Go to associated specification</B>: opens an editor at the specification referred to 
+by the marker on the line containing the selection</LI>
+</UL>
+<B>Needed: </B>More menu items?  Note - currently you have to have a selection in
+the editor window for the 'Go to' command to work.
+</LI><P/>
+
+<LI>Toolbar items
+<BR/><B>Status: </B>There are two toolbar contributions.  One is identified by the yellow
+JML coffee cup as its icon; the effect of activating this item is the same
+as the "Run static checks" menu item.  The other is the yellow coffee cup with 
+a red circle and diagonal slash (meaning NO); the effect of this item is the 
+same as the "Clear ESC markers" menu item.
+<BR/><B>Needed: </B>Anything else? 
+</LI><P/>
+
+<LI>Context menu items (Package Explorer)
+<BR/><B>Status: </B>These are menu items that are available when you right-click
+on an element of a view (works in Package Explorer, Project Explorer, Outline views). 
+There are context menu items corresponding to the Clear
+and Run menubar items.  Their effects are the same, except that they apply to
+the item right-clicked upon rather than whatever editor is selected.
+<BR/><B>Needed: </B>Any others? Run not yet implemented.  Items are not visible in Navigator view.
+Some other options: Enable/Disable RAC; Enable/Disable ESC.
+</LI><P/>
+
+<LI>Context menu items (Problem View)
+<BR/><B>Status: </B>These are menu items that are available when you right-click
+on an element of a view.  The problem view has a 'Go to associated specification'
+menu item that performs that operation for the marker right-clicked upon.
+<BR/><B>Needed: </B>The context menu item ought to appear only when it is on an
+ESC problem.
+</LI><P/>
+
+<LI>Context menu items (Marker ruler on editor window)
+<BR/><B>Status: </B>These are menu items that are available when you right-click
+on an element of a view.  The 'Go to associated specification' menu item performs
+that operation for the marker on the line of the currently selected text.
+<BR/><B>Needed: </B>Any others? This ought to apply to the marker right-clicked 
+upon, but have not been able to get that to work.
+</LI><P/>
+
+<LI>New Specification File Wizard
+<BR/><B>Status: </B>There is a menu entry under 'New' for a new specification file.
+It pops up a wizard, but the implementation is very much in progress.
+<BR/><B>Needed: </B>COMplete this, both for the case of matching a spec to an
+existing type and for creating a whole new file (do we need the latter?).
+</LI><P/>
+
+<LI>Commands and Key bindings
+<BR/><B>Status: </B>Complete. There are Eclipse commands defined for various JML-ESC actions.
+This allows key bindings to be attached to the commands using the 
+Window->Preferences->General->Keys preferences page.  The command category is
+named 'JML-ESC'; there are two commands currently defined, corresponding to
+Clear Markers and Run ESC.  These have the same effect as the corresponding 
+menubar and toolbar items.  No key bindings are defined by default.
+<BR/><B>Needed: </B>New commands for any new menu items, e.g. Enable/Disable RAC or ESC
+</LI><P/>
+
+<LI>Syntax coloring of JML comments
+<BR/><B>Status: </B>Not begun.
+<BR/><B>Needed: </B>To enable JML comments to have syntax coloring like Java
+code does.  This will need extensions to Eclipse's internals (at least it did 
+when the KSU group tried it); those extensions need to be done in a way that 
+makes possible other such enhancements in the future.
+</LI><P/>
+
+<LI>Decorators on project or file names to indicate whether they are enabled for
+RAC or ESC checking.
+<BR/><B>Status: </B>Not yet started
+<BR/><B>Needed: </B>All of these.  Note there is a UI design decision to be made.
+Currently all the preferences, including whether JML and ESC are enabled, apply
+to either every project in the workspace, or one can have a complete set of 
+project specific preferences.  It may be better to separate the JML/ESC enablement
+from the rest of the preferences, so that we can allow JML or ESC to be enabled
+on a per project and per file basis, without needing to make all other preferences
+be project-specific.
+</LI><P/>
+
+
+<LI>Viewing of the intermediate Boogie representation, verification conditions,
+counterexamples
+<BR/><B>Status: </B>Not yet started
+<BR/><B>Needed: </B>All of these
+</LI><P/>
+
+<LI>Preference pages
+<BR/><B>Status: </B>There is a standard JML-ESC preferences page 
+(under Window->Preferences->Java->JML), with a rudimentary set of 
+preferences.
+<BR/><B>Needed: </B>Fill out the preferences with the needed options for JML checking, RAC and ESC
+</LI><P/>
+
+
+<LI>Help pages through the Eclipse help menu
+<BR/><B>Status: </B>The Eclipse plug-in extension to create a Help document is complete.
+<BR/><B>Needed: </B>The content
+of the help page (this document) is incomplete.  Among other things it needs
+installation instructions and quick start instructions.
+Also, clicking on the JML-ESC topic in the main help menu produces a page
+with a table of contents; it would be better if it showed the documentation page.
+</LI><P/>
+
+<LI>Integration of semantic information: having the search for references, 
+declarations, implementors, read and write access work for syntactic entities
+(e.g. type names) that are in JML specifications, like they do in Java code.
+<BR/><B>Status: </B>Not yet started
+<BR/><B>Needed: </B>All of these
+</LI><P/>
+
+<LI>Various other things not yet started: quick fixes, tips and tricks, cheat
+sheets, formatting and indentation of JML comments, F1 help, hover help, 
+tooltips, templates for adding JML specs to classes and methods
+<BR/><B>Status: </B>Not yet started
+<BR/><B>Needed: </B>All of these
+</LI><P/>
+
+
+</UL>
+<H2>Architecture and Design issues</H2>
+
+Most of the features above are straightforward applications of the Eclipse
+extension mechanisms to provide new features for the user.  This section 
+describes some of the design decisions that caused modifications to the Eclipse
+code itself. 
+
+Remember that wherever there are changes needed to Eclipse itself, it is the
+goal of this project to make those changes in a way that provides a generic
+extension mechanism.  That has not been achieved in all of these cases.  Comments
+on this point are made for each design category below.  [We would also like the
+generic extension mechanisms, or something like them, to be adopted into Eclipse.]
+
+<H3>Non-null type system</H3>
+
+<H3>JML parsing and typechecking</H3>
+
+<H3>Integrating static checks</H3>
+
+comment on builders vs. CompilerParticipant vs. inline edits
+
+<H3>Batch compiler options and warnings</H3>
+
+<H3>UI options</H3>
+
+<H3>Incremental static checking and RAC compiling</H3>
+
+<H3>Syntax coloring (possibly templates, quick fixes, formatting, other UI items not yet attempted)</H3>
+
+
+<H2>TODO</H2>
+Need comment on the non-null typechecking implemented in Eclipse.
+<BR/>Should we use a console factory
+<BR/>Is there a better way to unite menu items, toolbar items, context items, and commands
+<BR/>When running ESC on an unsaved file, silently no markers appear.
+<BR/>How to handle out of date ESC warnings?  After a file is edited, or
+after a file is saved without rerunning ESC?
+<BR/>Icon in the problems view should depend on the marker type
+<BR/>Would like a means to show the composite spec
+
+
+<!--
+
+<LI>TBD
+<BR/><B>Status: </B>Not yet started
+<BR/><B>Needed: </B>All of these
+</LI><P/>
+
+
+-->
+</BODY>
+</HTML>

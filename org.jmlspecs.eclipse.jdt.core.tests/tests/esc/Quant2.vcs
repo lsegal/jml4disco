@@ -1,0 +1,1 @@
+[[/\[[True/\True]]]-->(! (\exists[[VCVarDecl: i :: int], [VCVarDecl: j :: int]] ; ( (j@156$0 <= 5) ? (i@154$0 > 10) : False) ; (i@154$0 < j@156$0)))]

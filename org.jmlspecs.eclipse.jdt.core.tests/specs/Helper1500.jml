@@ -1,0 +1,3 @@
+public class Helper1500 {
+	public static /*@non_null*/String non;
+}

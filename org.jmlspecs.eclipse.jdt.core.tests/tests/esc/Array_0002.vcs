@@ -1,0 +1,1 @@
+[[VCVarDecl: n :: int[]], [VCVarDecl: return :: int]] [[/\[[True/\True], (result@125$0 == ({n@110$0[|n@110$0|]} + 1)), ({n@110$0[|n@110$0|]} == 42), (return@0$0 == result@125$0)]]-->(return@0$0 == ({n@110$0[|n@110$0|]} + 1))]

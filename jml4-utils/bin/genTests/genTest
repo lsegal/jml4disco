@@ -1,0 +1,16 @@
+#!/bin/bash
+
+for f
+do
+   if test -f $f
+   then
+      if test -f "$f-expected"
+      then
+         gawk -f "bin/genJml4TestsExpected.awk" $f "$f-expected"
+      else
+         gawk -f "bin/genJml4Tests.awk" $f
+      fi
+   else
+      echo "$f does not exist!" >&2
+   fi
+done

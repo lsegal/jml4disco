@@ -1,2 +1,0 @@
-[[/\[([n$m1$1@132$0.length(0)] >= 0), [True/\True]]]-->(block [[VCVarDecl: n$m1$1 :: int[]], [VCVarDecl: return$m1$1 :: int]] : [(n$m1$1@132$0 == m@184$0)-->[(return$m1$1@0$0 == {n$m1$1@132$0[|n$m1$1@132$0|]})-->[(return@0$0 == return$m1$1@0$0)-->True]]])]
-[[/\[([n@132$0.length(0)] >= 0), [True/\([n@132$0.length(0)] >= 4)], (return@0$0 == {n@132$0[|n@132$0|]})]]-->(return@0$0 == {n@132$0[|n@132$0|]})]

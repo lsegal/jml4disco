@@ -1,1 +1,0 @@
-[[VCVarDecl: n :: int[]], [VCVarDecl: return :: int]] [[/\[[True/\True], ({n@98$0[|n@98$0|]} == 42), (return@0$0 == {n@98$0[|n@98$0|]})]]-->(return@0$0 == 42)]

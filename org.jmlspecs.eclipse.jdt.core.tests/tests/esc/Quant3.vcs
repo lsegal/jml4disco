@@ -1,1 +1,0 @@
-[[VCVarDecl: i :: int], [VCVarDecl: j :: int]] [[/\[[True/\True]]]-->( (i@63$0 > j@70$0) ? (\forall[[VCVarDecl: k :: int]] ; [[VCVarDecl: k :: int]] True ; ((i@63$0 + k@123$0) > (j@70$0 + k@123$0))) : (\forall[[VCVarDecl: k :: int]] ; [[VCVarDecl: k :: int]] True ; ((i@63$0 + k@171$0) <= (j@70$0 + k@171$0))))]

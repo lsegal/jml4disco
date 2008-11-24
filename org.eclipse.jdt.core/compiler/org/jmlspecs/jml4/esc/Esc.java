@@ -1,6 +1,9 @@
 package org.jmlspecs.jml4.esc;
 
 import java.io.IOException;
+import java.util.Vector;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.eclipse.jdt.internal.compiler.Compiler;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
@@ -25,7 +28,11 @@ import org.jmlspecs.jml4.util.Logger;
 public class Esc extends DefaultCompilerExtension {
 
 	private static boolean DEBUG = false;
+	public static boolean GEN_STATS = true; 
 
+	public static final int NUMBER_OF_THREADS = 32;
+    private final Executor executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    
 	public String name() { return "JMLESC4";} //$NON-NLS-1$
 
 	public void preCodeGeneration(Compiler compiler, CompilationUnitDeclaration unit) {
@@ -43,35 +50,52 @@ public class Esc extends DefaultCompilerExtension {
 	// processing a types means processing its methods (including constructors)
 	// the JDT AST stores static initialization blocks as a subsclass of fields,
 	// so these will need to be handled slightly differently.
-	private void process(Compiler compiler, CompilationUnitDeclaration unit) {
+	private void process(final Compiler compiler, final CompilationUnitDeclaration unit) {
 		if (unit.compilationResult.hasSyntaxError
 				|| unit.compilationResult.hasErrors()
 				|| unit.hasErrors()) 
 			return;
 
+		final int[] done = new int[1];
+		   
+		String debugName = (new String(unit.compilationResult.fileName)).substring(0, unit.compilationResult.fileName.length-(".java".length()));  //$NON-NLS-1$
+		if (GEN_STATS)
+			System.out.println("ESC4\tCU\tstart\t"+debugName+"\t"+timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 		if (DEBUG)
 			Logger.println(this + " - CompilationUnit: "+new String(unit.getFileName())); //$NON-NLS-1$
-
-		CachedVcs cachedVcs = new CachedVcs(unit);
-		Counter postProcessorCounter = new Counter();
-		for (int i=0; i < unit.types.length ; i++) {
+		// DISCO threading 
+		final CachedVcs cachedVcs = new CachedVcs(unit);
+		final Counter postProcessorCounter = new Counter();
+		int numberLaunched = 0;
+		for (int i = 0; i < unit.types.length ; i++) {
 			TypeDeclaration typeDeclaration = unit.types[i];
 			Utils.assertTrue(typeDeclaration instanceof JmlTypeDeclaration, "'"+new String(typeDeclaration.name)+"' expected to be a JmlTypeDeclaration, but instead it is a '"+typeDeclaration.getClass().getName()+"'"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-			JmlTypeDeclaration type = (JmlTypeDeclaration)typeDeclaration;
-			for(int j=0; j < type.methods.length; j++) {
-				AbstractMethodDeclaration method = type.methods[j];
+			final JmlTypeDeclaration type = (JmlTypeDeclaration)typeDeclaration;
+			for (int j = 0; j < type.methods.length; j++) {
+				final AbstractMethodDeclaration method = type.methods[j];
 				/*@ assert (method instanceof JmlMethodDeclaration)
 				  @     || (method instanceof JmlConstructorDeclaration);
 				  @*/
 				if (method instanceof JmlMethodDeclaration
-				 || method instanceof JmlConstructorDeclaration)
-					process((JmlAbstractMethodDeclaration) method, cachedVcs, postProcessorCounter, type, unit.scope, compiler.options, compiler.problemReporter);
-				else {
+				 || method instanceof JmlConstructorDeclaration) {
+					Runnable work = new Runnable() {
+					   public void run() {
+						   process((JmlAbstractMethodDeclaration) method, cachedVcs, postProcessorCounter, type, unit.scope, compiler.options, compiler.problemReporter);
+						   synchronized (done) {
+							   done[0]++;
+							   done.notify();
+						   }
+					   }
+					};
+					executor.execute(work);			
+					numberLaunched++;
+				} else {
 					if (DEBUG)
 						Logger.println("Esc4 doesn't yet support '"+method.getClass().getName()+"'"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		}
+		waitForItToFinish(done, numberLaunched);
 		try {
 			cachedVcs.writeToDisk();
 		} catch (IOException e) {
@@ -84,8 +108,28 @@ public class Esc extends DefaultCompilerExtension {
 			int sourceEnd = 0;
 			compiler.problemReporter.jmlEsc2Error(message, sourceStart, sourceEnd);
 		}
+		if (GEN_STATS)
+			System.out.println("ESC4\tCU\tend\t"+debugName+"\t"+timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
-	private void process(JmlAbstractMethodDeclaration method, CachedVcs cachedVcs, Counter postProcessorCounter, JmlTypeDeclaration typeDecl, CompilationUnitScope scope, CompilerOptions options, ProblemReporter problemReporter) {
+	// DISCO waiting for threads to come back
+	public static void waitForItToFinish(int[] done, int howMany) {
+		System.out.println("waiting to finish"); //$NON-NLS-1$
+		while (done[0] != howMany) {
+		    synchronized(done) {
+		        try{
+		           done.wait();
+		        } catch(InterruptedException e) {
+		        	e.printStackTrace();
+		        }
+	        }
+		}
+		System.out.println("done waiting to finish!");		 //$NON-NLS-1$
+	}
+	// DISCO some vars became final to allow serialization
+	/*package*/ void process(JmlAbstractMethodDeclaration method, CachedVcs cachedVcs, Counter postProcessorCounter, JmlTypeDeclaration typeDecl, CompilationUnitScope scope, CompilerOptions options, ProblemReporter problemReporter) {
+		String debugName = getDebugNameForMethod((AbstractMethodDeclaration)method); 
+		if (GEN_STATS)
+			System.out.println("ESC4\tmethod\tstart\t"+debugName+"\t"+timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 		final GcTranslator gcTranslator = new GcTranslator(options, problemReporter);
 		final VcGenerator vcGenerator = new VcGenerator (options, problemReporter);
 		final ProverCoordinator prover = new ProverCoordinator(options, problemReporter, cachedVcs);
@@ -98,9 +142,24 @@ public class Esc extends DefaultCompilerExtension {
 		
 		// store the results in the method declaration so later stages can take advantage of the information
 		method.setEscResults(results);
+		// DISCO timing printout
+		if (GEN_STATS)
+			System.out.println("ESC4\tmethod\tend\t"+debugName+"\t"+timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public void optionsToBuffer(CompilerOptions options, StringBuffer buf) {
 		buf.append("\n\t\t- ESC: ").append(options.jmlEscEnabled ? CompilerOptions.ENABLED : CompilerOptions.DISABLED); //$NON-NLS-1$	
+	}
+	// DISCO timing 
+	private static final long startTime = System.currentTimeMillis();
+	public static long timeDelta() {
+		return System.currentTimeMillis() - startTime;
+	}
+	// DISCO timing printout
+	private static String getDebugNameForMethod(AbstractMethodDeclaration asJdtMethod) {
+		String filename = new String(asJdtMethod.compilationResult().getCompilationUnit().getFileName());
+		filename = filename.substring(0, filename.length()-(".java".length())); //$NON-NLS-1$
+		String methodIdicator =  filename+"\t"+new String(asJdtMethod.selector); //$NON-NLS-1$
+		return methodIdicator;
 	}
 }

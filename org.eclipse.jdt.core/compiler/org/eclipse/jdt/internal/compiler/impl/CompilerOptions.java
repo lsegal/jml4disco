@@ -368,7 +368,11 @@ public class CompilerOptions {
 	// <jml-end id="esc4support" />
 
 	// <jml-start id="esc4proofstrategy" />
-	public String jmlEscProverStrategy = ""; //$NON-NLS-1$
+	// DISCO set prover strategy here, local (blank)/distributed
+	public String jmlEscProverStrategy = "";
+	//DISCO compiler option for properties file
+	public String jmlEscDistributedPropertiesFile = "";
+
 	// <jml-end id="esc4proofstrategy" />
 
 	//<jml-start id="fspvsupport" />

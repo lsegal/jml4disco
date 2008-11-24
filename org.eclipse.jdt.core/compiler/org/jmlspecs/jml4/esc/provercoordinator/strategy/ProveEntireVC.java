@@ -2,6 +2,7 @@ package org.jmlspecs.jml4.esc.provercoordinator.strategy;
 
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
+import org.jmlspecs.jml4.esc.Esc;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.CachedVcs;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapter;
 import org.jmlspecs.jml4.esc.result.lang.Result;
@@ -27,6 +28,10 @@ public class ProveEntireVC implements IProverStrategy {
 	}
 
 	public Result[] prove(VcProgram vcProg) {
+		// DISCO 
+		if (Esc.GEN_STATS)
+			System.out.println("ESC4\tproveEntire\tstart\t"+vcProg.methodIndicator+"\t"+Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
+
 		if (this.cachedVcs.contains(vcProg))
 			return Result.VALID;
 		this.active  = true;
@@ -38,6 +43,8 @@ public class ProveEntireVC implements IProverStrategy {
 			this.cachedVcs.add(vcProg);
 		}
 		this.active = false;
+		if (Esc.GEN_STATS)
+			System.out.println("ESC4\tproveEntire\tend\t"+vcProg.methodIndicator+"\t"+Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 		return results;
 	}
 	

@@ -1,5 +1,7 @@
 package org.jmlspecs.jml4.esc.vc.lang;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Map;
 
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
@@ -8,7 +10,8 @@ import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverVisitor;
 
 public class VcArithExpression extends VcBinaryExpression {
 
-	public final VcOperator operator;
+	// DISCO VcOperator no longer final to allow serialization
+	public VcOperator operator;
 
 	public VcArithExpression(VcOperator operator, VC left, VC right, TypeBinding type,
 			KindOfAssertion kindOfAssertion, int kindOfLabel, int sourceStart, int sourceEnd, int labelStart) {
@@ -44,5 +47,14 @@ public class VcArithExpression extends VcBinaryExpression {
 		result = prime * result + right.hashCode();
 		result = prime * result + operator.hashCode();
 		return result;
+	}
+//	private void writeObject(ObjectOutputStream out) throws IOException{
+//		out.defaultWriteObject();
+//	}
+	// DISCO Custom Serialization overriding
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		this.operator = VcOperator.getCanonical(this.operator);
+		
 	}
 }

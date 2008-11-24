@@ -71,7 +71,11 @@ public class IsabelleAdapter extends ProverAdapter {
 	private Result[] prove(String theoryFilePathWithoutExt, boolean isOuaEsc) {
 		Process process = getProverProcess();
 		if (process == null) {
-			this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
+			// FIXME: recover use of problemReporter
+			// DISCO distributed strategy reporter = null
+			if (this.problemReporter != null)
+				this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
+		
 			return new Result[0];
 		}
 
@@ -148,6 +152,7 @@ public class IsabelleAdapter extends ProverAdapter {
 		try {
 			return Runtime.getRuntime().exec(isabelleCmd());
 		} catch (IOException e) {
+			System.err.println(e);
 			if (DEBUG) {
 				Logger.print(failedToLaunch());
 				Logger.print(e.toString());

@@ -129,6 +129,8 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlDbc, options.jmlDbcEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlEsc, options.jmlEscEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	    optionsMap.put(JmlCompilerOptions.OPTION_SimplifyPath, options.jmlSimplifyPath);
+	    optionsMap.put(JmlCompilerOptions.OPTION_EscProverStrategy, options.jmlEscProverStrategy);
+	    optionsMap.put(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile, options.jmlEscDistributedPropertiesFile);
 		optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlNewLoopSemantics, options.jmlNewLoopSemanticsEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	}
 
@@ -160,6 +162,12 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EnableJmlEsc)) != null) {
 	    	options.jmlEscEnabled = CompilerOptions.ENABLED.equals(optionValue);
 	    }
+	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EscProverStrategy)) != null) {
+	    	options.jmlEscProverStrategy = (String)optionValue;
+	    }
+	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile)) != null) {
+	    	options.jmlEscDistributedPropertiesFile = (String)optionValue;
+	    }
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_SimplifyPath)) instanceof String) {
 	    	options.jmlSimplifyPath=(String) optionValue;
 	    }
@@ -171,6 +179,8 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	public void optionsToBuffer(CompilerOptions options, StringBuffer buf) {
 	    buf.append("\n\t+ JML4: ").append(options.jmlEnabled ? CompilerOptions.ENABLED : CompilerOptions.DISABLED); //$NON-NLS-1$
 	    buf.append("\n\t\t- DBC: ").append(options.jmlDbcEnabled ? CompilerOptions.ENABLED : CompilerOptions.DISABLED); //$NON-NLS-1$
+	    buf.append("\n\t\t- prover strategy: ").append(options.jmlEscProverStrategy); //$NON-NLS-1$
+	    buf.append("\n\t\t- distributed properties: ").append(options.jmlEscDistributedPropertiesFile); //$NON-NLS-1$
 	    buf.append("\n\t\t- new loop semantics: ").append(options.jmlNewLoopSemanticsEnabled ? CompilerOptions.ENABLED : CompilerOptions.DISABLED); //$NON-NLS-1$
 	    buf.append("\n\t\t- spec path: ").append(options.jmlSpecPath); //$NON-NLS-1$
 	    buf.append("\n\t\t- report inadvertent annotation disabling: ").append(options.getSeverityString(JmlCompilerOptions.ReportJmlCommentDisabled)); //$NON-NLS-1$

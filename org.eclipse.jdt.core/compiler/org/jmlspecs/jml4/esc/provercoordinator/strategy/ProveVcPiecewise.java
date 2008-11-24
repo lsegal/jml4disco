@@ -1,3 +1,4 @@
+//DISCO Caching removed in this class
 package org.jmlspecs.jml4.esc.provercoordinator.strategy;
 
 import java.util.ArrayList;
@@ -6,6 +7,7 @@ import java.util.Map;
 
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
+import org.jmlspecs.jml4.esc.Esc;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.CachedVcs;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.cvc3.Cvc3Adapter;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter;
@@ -17,10 +19,10 @@ import org.jmlspecs.jml4.esc.vc.lang.VcProgram;
 
 public class ProveVcPiecewise implements IProverStrategy {
 
-	private static final boolean DEBUG = false;
+	protected static final boolean DEBUG = false;
 	protected final CompilerOptions options;
 	protected final ProblemReporter problemReporter;
-	private CachedVcs cachedVcs;
+	protected CachedVcs cachedVcs;
 	public static boolean doingTheNegation;
 
 	public ProveVcPiecewise(CompilerOptions options, ProblemReporter problemReporter, CachedVcs cachedVcs) {
@@ -32,29 +34,39 @@ public class ProveVcPiecewise implements IProverStrategy {
 	public static String getName() {
 		return "ProveVcPiecewise"; //$NON-NLS-1$
 	}
-
+    // DISCO printing
 	public Result[] prove(VcProgram vcProg) {
+		if (Esc.GEN_STATS)
+			System.out.println("ESC4\tprovepiecewise\tstart\t"+vcProg.methodIndicator+"\t"+Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
+
 		   VC[] vcs = vcProg.getAsImplications();
 		   List/*<Result>*/ problems = new ArrayList(/*<Result>*/);
 		   for (int i = 0; i < vcs.length; i++) {
 			   VC vc = vcs[i];
 			   vc.setName(vcProg.methodIndicator+"_"+(i+1)); //$NON-NLS-1$
+			   if (Esc.GEN_STATS)
+					  System.out.println("ESC4\tpiece\tstart\t"+vc.getName()+"\t"+i+"\tof\t"+vcs.length+"\tstart\t"+Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			   Result[] results = proveVc(vc, vcProg.incarnations);
 			   if (! Result.isValid(results)) {
 				   for (int j = 0; j < results.length; j++) {
 					   problems.add(results[j]);
 				   }
 			   }
+			   if (Esc.GEN_STATS)
+					  System.out.println("ESC4\tpiece\tend\t"+vc.getName()+"\t"+i+"\tof\t"+vcs.length+"\tend\t"+Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		   }
 		   if (problems.size() == 0)
 			   problems.add(Result.VALID[0]);
+			if (Esc.GEN_STATS)
+				System.out.println("ESC4\tprovepiecewise\tend\t"+vcProg.methodIndicator+"\t"+Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 		   return (Result[])problems.toArray(Result.EMPTY);
 	}
 
-	private Result[] proveVc(VC vc, Map map) {
+	public Result[] proveVc(VC vc, Map map) {
 		if (this.cachedVcs.contains(vc))
 			return Result.VALID;
 
+		// DISCO 
 		// try to prove vc with Simplify, if successful, return valid result
 		SimplifyAdapter simplify = new SimplifyAdapter(this.options, this.problemReporter);
 		Result[] simplifyResults = simplify.prove(vc, map);
@@ -66,8 +78,10 @@ public class ProveVcPiecewise implements IProverStrategy {
 
 		Result[] results = null;
 		try {
+			// DISCO null parameters for serialization
 			// try to prove vc with CVC, if successful, return valid result
 			Cvc3Adapter cvc = new Cvc3Adapter(this.options, this.problemReporter);
+			
 			results = cvc.prove(vc, map);
 			if (Result.isValid(results)) {
 				this.cachedVcs.add(vc);
@@ -93,8 +107,10 @@ public class ProveVcPiecewise implements IProverStrategy {
 		}
 
 		try {
+			// DISCO null parameters for serialization
 			// try to prove vc with Isabelle, if successful, return valid result
 			IsabelleAdapter isabelle = new IsabelleAdapter(this.options, this.problemReporter);
+			
 			results = isabelle.prove(vc, map);
 			if (Result.isValid(results)) {
 				this.cachedVcs.add(vc);
@@ -107,7 +123,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 		return simplifyResults;
 	}
 
-	private void setVcName(Result[] results, String name) {
+	protected void setVcName(Result[] results, String name) {
 //		Utils.assertTrue(results.length < 2, "there's more than a single result from simplify"); //$NON-NLS-1$
 		for (int i = 0; i < results.length; i++) {
 			results[i].setVcName(name);

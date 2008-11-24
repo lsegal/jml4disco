@@ -9,9 +9,10 @@ import org.jmlspecs.jml4.esc.vc.lang.VC;
 
 public abstract class ProverAdapter {
 
+	// DISCO CompierlerOptions and ProblemReporter set to null to allow serialization 
 	public static final String VALID = "Valid."; //$NON-NLS-1$
-	protected final CompilerOptions options;
-	protected final ProblemReporter problemReporter;
+	protected transient final CompilerOptions options;
+	protected transient final ProblemReporter problemReporter;
 
 	public ProverAdapter(CompilerOptions options, ProblemReporter problemReporter) {
 		this.options = options;

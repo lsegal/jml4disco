@@ -1,5 +1,6 @@
 package org.jmlspecs.jml4.esc.vc.lang;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Set;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.jmlspecs.jml4.esc.util.Utils;
 
-public class VcProgram {
+public class VcProgram implements Serializable{
 	public final VC[] vcs;
 	public final String startId;
 	public final Map/*<String var, Integer>*/ incarnations;

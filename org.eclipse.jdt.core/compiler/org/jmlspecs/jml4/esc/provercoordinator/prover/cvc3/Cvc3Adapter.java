@@ -35,9 +35,10 @@ public class Cvc3Adapter extends ProverAdapter {
 		Process process = getProverProcess();
 		if (process == null) {
 			// FIXME: find a better solution. I.e. don't
-			// report a problem every time a failed attempt
-			// to invoke cvc3 is made.
-			// this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
+			// report a problem every time a failed attempt to invoke cvc3 is made.
+			// DISCO distributed strategy reporter = null
+			if (this.problemReporter != null)
+				this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
 			return new Result[0];
 		}
 		

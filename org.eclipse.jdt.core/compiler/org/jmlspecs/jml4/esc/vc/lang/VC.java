@@ -1,22 +1,33 @@
 package org.jmlspecs.jml4.esc.vc.lang;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.core.compiler.CharOperation;
+import org.eclipse.jdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.jdt.internal.compiler.lookup.BinaryTypeBinding;
+import org.eclipse.jdt.internal.compiler.lookup.LookupEnvironmentEmptyForSerialization;
+import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.jdt.internal.compiler.lookup.TypeIds;
+import org.jmlspecs.jml4.ast.JmlAstUtils;
 import org.jmlspecs.jml4.esc.gc.lang.KindOfAssertion;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverVisitor;
 import org.jmlspecs.jml4.esc.util.Utils;
-
-public abstract class VC implements Comparable {
+// DISCO Serializable
+public abstract class VC implements Comparable, Serializable {
 
 	public static final VC[] EMPTY = new VC[0];
 	private /*@nullable*/ String name;
-	
-	public final TypeBinding type;
+	//DISCO transient for custom serialization
+	transient public  TypeBinding type;
 	public final int sourceStart;
 	public final int sourceEnd;
 
@@ -172,6 +183,94 @@ public abstract class VC implements Comparable {
 
 	public boolean isImplication() {
 		return isImplication;
+	}
+	// DISCO Custom Serialization overriding
+	private void writeObject(ObjectOutputStream out) throws IOException{
+		//default serialization
+		out.defaultWriteObject();
+		//additional field transient TypeBinding
+		String str = serializeTypeBinding(type);
+		out.writeObject(str);
+	}
+	// DISCO Custom Serialization overriding
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		//default deserialization
+		in.defaultReadObject();
+		//reconstruct transient TypeBinding
+		String str = (String) in.readObject();
+		TypeBinding tb = deserializeTypeBinding(str);
+		this.type = tb;
+	}
+	// DISCO Custom Serialization 
+	//takes a TypeBinding and returns a string according to its type
+	//the string will be added to the ObjectOutputStream for serialization
+	private String serializeTypeBinding(TypeBinding tb) {
+		if (tb.isBaseType()){
+			return Integer.toString(tb.id);
+		} else if(tb.isArrayType()) {
+			return serializeTypeBinding(tb.leafComponentType()) + "["+tb.dimensions()+"]"; //$NON-NLS-1$ //$NON-NLS-2$
+		} else if ( tb instanceof SourceTypeBinding){
+			SourceTypeBinding src = (SourceTypeBinding) tb;
+			String ret = JmlAstUtils.concatWith(src.compoundName, '.'); 
+			return ret + ".";	 //$NON-NLS-1$
+		} else if ( tb instanceof BinaryTypeBinding){
+			BinaryTypeBinding bin = (BinaryTypeBinding) tb;
+			String ret = JmlAstUtils.concatWith(bin.compoundName, '.');
+			return ret+ "."; //$NON-NLS-1$
+		} else if ( tb instanceof VcTypeBinding) {
+			VcTypeBinding vcTB = (VcTypeBinding) tb;
+			String ret = JmlAstUtils.concatWith(vcTB.compoundName, '.');
+			return ret+ "."; //$NON-NLS-1$
+		}
+		Utils.assertTrue(false, "TypeBinding cannot be serialized '" + tb.debugName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+		return null;
+	}
+	
+	// DISCO Custom Serialization 
+	//takes a string that has been deserialized from an ObjectInputStream
+	//and returns a reconstructed TypeBinding
+	private TypeBinding deserializeTypeBinding(String str) {
+		if (str.endsWith("]")) {		 //$NON-NLS-1$
+			int dims = Integer.parseInt(str.substring(str.indexOf('[') + 1, str.indexOf(']')));
+			String strType = str.substring(0, str.indexOf('['));
+			return new ArrayBinding(deserializeTypeBinding(strType), dims, new LookupEnvironmentEmptyForSerialization());
+		} else if  (str.endsWith(".")) {	 //$NON-NLS-1$
+			str = str.substring(0, str.length()-1);			 
+			return new VcTypeBinding(CharOperation.splitOn('.', str.toCharArray()));			
+		} else {
+			return deserializeBaseType(str);
+		}		
+	}
+
+	// DISCO Custom Serialization 
+	private TypeBinding deserializeBaseType(String str) {
+		int intValue = -1;
+		try {
+			intValue = Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			Utils.assertTrue(false, "BaseType not an int '" + str + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+			e.printStackTrace();
+		}
+		switch (intValue) {
+			case TypeIds.T_boolean:
+				return TypeBinding.BOOLEAN;
+			case TypeIds.T_byte:
+				return TypeBinding.BYTE;
+			case TypeIds.T_char:
+				return TypeBinding.CHAR;
+			case TypeIds.T_short:
+				return TypeBinding.SHORT;
+			case TypeIds.T_double:
+				return TypeBinding.DOUBLE;
+			case TypeIds.T_float:
+				return TypeBinding.FLOAT;
+			case TypeIds.T_int:
+				return TypeBinding.INT;
+			case TypeIds.T_long:
+				return TypeBinding.LONG;
+		}
+		Utils.assertTrue(false, "Unknown BaseType '" + str + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+		return null;
 	}
 
 }

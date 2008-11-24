@@ -24,6 +24,7 @@ import org.jmlspecs.jml4.util.Logger;
 public class SimplifyAdapter extends ProverAdapter {
 
 	private static final boolean DEBUG = false;
+	// private static final String  SIMPLIFY = "C:\\bin\\ssh.exe -p 4022 chalin@localhost simplify"; //$NON-NLS-1$
 	private static final String  SIMPLIFY = "simplify"; //$NON-NLS-1$
 
 	public SimplifyAdapter(CompilerOptions options, ProblemReporter problemReporter) {
@@ -41,7 +42,10 @@ public class SimplifyAdapter extends ProverAdapter {
 	private String proveWithSimplify(String simplifyString) {
 		Process process = getProverProcess();
 		if (process == null) {
-			this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
+			// FIXME: NO more problem reported :(
+			// DISCO distributed strategy reporter = null
+			if (this.problemReporter != null)
+				this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
 			return ""; //$NON-NLS-1$
 		}
 		

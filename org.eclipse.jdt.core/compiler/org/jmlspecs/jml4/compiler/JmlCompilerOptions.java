@@ -34,6 +34,9 @@ public class JmlCompilerOptions extends CompilerOptions {
   	public static final String OPTION_EnableJml2Checker = "org.eclipse.jdt.core.compiler.problem.enableJml2Checker"; //$NON-NLS-1$
   	public static final Object OPTION_EnableJml2Compiler = "org.eclipse.jdt.core.compiler.problem.enableJml2Compiler"; //$NON-NLS-1$
 
+  	// Distributed options
+  	public static final String OPTION_EscProverStrategy = "org.eclipse.jdt.core.compiler.problem.jmlEscProverStrategy"; //$NON-NLS-1$
+  	public static final String OPTION_EscDistributedPropertiesFile = "org.eclipse.jdt.core.compiler.problem.jmlEscDistributedPropertiesFile"; //$NON-NLS-1$
     
 	/**
 	 * Possible values for configurable options

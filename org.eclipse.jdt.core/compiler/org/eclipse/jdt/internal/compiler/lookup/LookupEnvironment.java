@@ -69,7 +69,11 @@ public class LookupEnvironment implements ProblemReasons, TypeConstants {
 
 	static final ProblemPackageBinding TheNotFoundPackage = new ProblemPackageBinding(CharOperation.NO_CHAR, NotFound);
 	static final ProblemReferenceBinding TheNotFoundType = new ProblemReferenceBinding(CharOperation.NO_CHAR_CHAR, null, NotFound);
-
+	// <jml-start id="distributed verification"/>
+	// DISCO empty constructor to allow child class
+	public LookupEnvironment(){	}
+	// <jml-end id="distributed verification"/>
+	
 public LookupEnvironment(ITypeRequestor typeRequestor, CompilerOptions globalOptions, ProblemReporter problemReporter, INameEnvironment nameEnvironment) {
 	this.typeRequestor = typeRequestor;
 	this.globalOptions = globalOptions;

@@ -1,5 +1,7 @@
 package org.jmlspecs.jml4.esc.vc.lang;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Map;
 
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
@@ -8,8 +10,9 @@ import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverVisitor;
 
 public class VcRelativeExpression extends VcBinaryExpression {
 
-	public final VcOperator operator;
-
+	//DISCO removed private to allow serialization
+	public VcOperator operator;
+	
 	public VcRelativeExpression(VcOperator operator, VC left, VC right, KindOfAssertion kindOfAssertion, int kindOfLabel, int sourceStart, int sourceEnd, int labelStart) {
 		super(left, right, TypeBinding.BOOLEAN, kindOfAssertion, kindOfLabel, sourceStart, sourceEnd, labelStart);
 		this.operator = operator;
@@ -46,5 +49,12 @@ public class VcRelativeExpression extends VcBinaryExpression {
 		result = prime * result + ((right == null) ? 0 : right.hashCode());
 		result = prime * result + ((operator == null) ? 0 : operator.hashCode());
 		return result;
+	}
+	
+	// DISCO Custom Serialization overriding
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		this.operator = VcOperator.getCanonical(this.operator);
+		
 	}
 }

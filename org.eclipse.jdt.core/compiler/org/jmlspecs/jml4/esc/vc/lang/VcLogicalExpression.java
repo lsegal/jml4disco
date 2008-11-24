@@ -1,5 +1,7 @@
 package org.jmlspecs.jml4.esc.vc.lang;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,9 +13,10 @@ import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverVisitor;
 import org.jmlspecs.jml4.esc.util.Utils;
 
 public class VcLogicalExpression extends VcBinaryExpression {
-
-	public final VcOperator operator;
-
+	
+	// DISCO VcOperator no longer final to allow serialization
+	public VcOperator operator;
+	
 	public VcLogicalExpression(VcOperator operator, VC left, VC right, KindOfAssertion kindOfAssertion, int kindOfLabel, int sourceStart, int sourceEnd, int labelStart) {
 		super(left, right, TypeBinding.BOOLEAN, kindOfAssertion, kindOfLabel, sourceStart, sourceEnd, labelStart);
 		Utils.assertTrue(left.type == TypeBinding.BOOLEAN, "left is not a boolean but a '"+left.type+"'"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -82,5 +85,10 @@ public class VcLogicalExpression extends VcBinaryExpression {
 		result = prime * result + ((operator == null) ? 0 : operator.hashCode());
 		return result;
 	}
-
+	// DISCO Custom Serialization overriding
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		this.operator = VcOperator.getCanonical(this.operator);
+		
+	}
 }

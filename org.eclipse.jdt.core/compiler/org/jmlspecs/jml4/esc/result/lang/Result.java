@@ -1,12 +1,13 @@
 package org.jmlspecs.jml4.esc.result.lang;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jmlspecs.jml4.esc.gc.lang.KindOfAssertion;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter;
-
-public class Result {
+// DISCO Serializable
+public class Result implements Serializable{
 
 	public static final Result[] EMPTY = new Result[0];
 	public static final Result[] VALID = new Result[] {new Result()};

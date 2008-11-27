@@ -57,7 +57,6 @@ public class ProveVcProgram extends HttpServlet {
 		ObjectInputStream in = null;
 		VcProgram vcProg;
 		try {
-			response.getWriter().println("<h1>VC Prover</h1>");
 			if (request.getContentLength() != -1) {
 				in = new ObjectInputStream(request.getInputStream());
 				vcProg = (VcProgram) in.readObject();

@@ -47,7 +47,8 @@ public class IsabelleAdapter extends ProverAdapter {
 				if (isabelleTheoryAsString == null)
 					continue;
 				if (isabelleTheoryAsString.indexOf(OOPS) != -1)
-					return Result.EMPTY; // we've trying proving this before and failed.
+					return Result.EMPTY;
+				// we've trying proving this before and failed.
 				// else fall through an try OUA theory ...
 			} else {
 				Utils.writeToFile(theoryFilePath, isabelleTheoryAsString);
@@ -56,6 +57,7 @@ public class IsabelleAdapter extends ProverAdapter {
 			// Return either if the VC was proven, or
 			// a user supplied proof was given (even if the user
 			// supplied proof did not succeed.
+			
 			if (Result.isValid(results) || i == 0)
 				return results;
 		}
@@ -65,6 +67,7 @@ public class IsabelleAdapter extends ProverAdapter {
 		visitor.setProofMethodTo(OOPS);
 		String isabelleTheoryAsString = visitor.getTheory(vc, incarnations);
 		Utils.writeToFile(theoryFilePath, isabelleTheoryAsString);
+		
 		return results;
 	}
 	
@@ -123,7 +126,7 @@ public class IsabelleAdapter extends ProverAdapter {
 	 */
 	private /*@nullable*/String matchingTheoryFileExists(String theoryFilePath, String isabelleTheoryAsString) {
 		File file = new File(theoryFilePath);
-		if (!file.exists()) {
+		if (!file.exists() || !file.canRead()) {
 			return null;
 		}
 		String contents = Utils.readFromFile(theoryFilePath);

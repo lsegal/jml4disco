@@ -1,19 +1,24 @@
+#!/usr/bin/ruby
 require 'rubygems'
 require 'net/https'
+require 'open-uri'
 require 'hpricot'
 require 'fileutils'
 
 # wiki documents to process
-wikidocs = { 
-				'VisionDocument' => 'mgmt'
-           }
-username = 'USERNAME'
-password = 'PASSWORD'
-base_url = "https://group0j.stu01.encs.concordia.ca:9443/trac/wiki/"
-             
+$wikidocs = 
+    { 
+				'VisionDocument' => 'req',
+                'ActivityPlan' => 'mgmt'
+    }
+$username = 'r_leguen'
+$password = 'Loki!!64'
+$base_url = "https://group0j.stu01.encs.concordia.ca:9443/trac/wiki/"
+$open_opt = { :http_basic_authentication => [$username, $password] }
+
 def process(document_name, category)
 
-  filename = category + '/' + document_name.gsub(/([a-z])([A-Z])/,'\1-\2').downcase + '.html'
+  filename = category + '/' + document_name.gsub(/([a-z])([A-Z])/,'\1-\2').split(/\?/).first.downcase + '.html'
 
   # common HTML elements to remove (expressed with css selectors)
   elements_to_remove = ["html > head > link",
@@ -35,22 +40,14 @@ def process(document_name, category)
   # process html and write file
   begin
     # load the wiki page
-    uri = URI.parse(base_url + document_name)
-	req = Net::HTTP::Get.new(uri.path)
-	req.basic_auth(username, password)
-	http = Net::HTTP.new(uri.host, uri.port)
-	http.use_ssl = true
-	http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-	http.enable_post_connection_check = false
-	response = http.request(req)
-
-	doc = Hpricot(response.body)
+    response = open($base_url + document_name, $open_opt).read
+	doc = Hpricot(response)
   
     # search for each element and remove it from the doc
     elements_to_remove.each { |e| doc.search(e).remove }
 
     # set title
-    doc.search("html > head").at("title").inner_html = "markr - " + document_name.gsub(/([a-z])([A-Z])/,'\1 \2')
+    doc.search("html > head").at("title").inner_html = "Disco - " + document_name.gsub(/([a-z])([A-Z])/,'\1 \2')
   
     # add link to css
 	updir = "../" * category.split(/\//).size
@@ -59,14 +56,35 @@ def process(document_name, category)
 
     # give toc's parent ol a class
     ol = doc.search("html > body > div.wiki-toc > ol").first
-    ol.attributes['class'] = 'top-most' unless ol.nil?
+    ol.raw_attributes = ol.attributes.merge('class' => 'top-most') unless ol.nil?
     
     # change the toc's li's class names
     doc.search("html > body > div.wiki-toc > ol").search("li.active").set(:class => 'toc') rescue nil
-        
-    # create category directory if it does not exist, and write HTML to file
+
+    # create category directory if it does not exist
     FileUtils.mkdir_p(category) rescue nil
-    File.open(filename, "w") { |f| f.write(doc.to_html); f.close }
+
+    # find all images
+    doc.search("//img").each do |img|
+        imgfile = img.attributes['src']
+        short_imgfile = File.basename(imgfile).split(/\?/).first
+
+        # change image attribute in source
+        img.raw_attributes = img.attributes.merge("src" => File.join('images', short_imgfile))
+
+        # make image directory
+        outdir = File.join(category, 'images')
+        FileUtils.mkdir_p(outdir)
+
+        # write image to file
+        contents = open($base_url + '../../' + imgfile, $open_opt).read
+        File.open(File.join(outdir, short_imgfile), "wb") do |f|
+            f.write(contents)
+        end
+    end
+
+    # write HTML to file
+    File.open(filename, "w") { |f| f.write(doc.to_html) }
     print "wrote #{filename}... "
   rescue StandardError => bang
     print "(Oops! " + bang + ") "
@@ -74,7 +92,13 @@ def process(document_name, category)
   
 end
 
-wikidocs.each do |name, category|
+class Net::HTTP
+    alias :old_verify_mode :verify_mode=
+    def verify_mode=(x) old_verify_mode(OpenSSL::SSL::VERIFY_NONE) end
+end
+
+
+$wikidocs.each do |name, category|
   print "Exporting \"" + name + "\"... "
   process(name, category)
   puts "done."

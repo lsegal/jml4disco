@@ -11,8 +11,8 @@ $wikidocs =
 				'VisionDocument' => 'req',
                 'ActivityPlan' => 'mgmt'
     }
-$username = 'r_leguen'
-$password = 'Loki!!64'
+$username = 'USERNAME'
+$password = 'PASSWORD'
 $base_url = "https://group0j.stu01.encs.concordia.ca:9443/trac/wiki/"
 $open_opt = { :http_basic_authentication => [$username, $password] }
 

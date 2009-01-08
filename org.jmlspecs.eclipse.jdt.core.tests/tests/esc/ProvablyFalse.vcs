@@ -1,0 +1,2 @@
+[[/\[[True/\True], (return@0$0 == 42), (return@0$0 > 0)]]-->(! ((return@0$0 % 2) == 1))]
+[[/\[[True/\True], (return@0$0 == 42)]]-->(return@0$0 > 0)]

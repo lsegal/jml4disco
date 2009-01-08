@@ -1,0 +1,2 @@
+[[/\[[True/\True]]]-->(\forall[[VCVarDecl: i :: int]] ; [[VCVarDecl: i :: int]] (0 < i@213$0) ; (0 <= i@213$0))]
+[[/\[[True/\True]]]-->(! (\exists[[VCVarDecl: i :: int], [VCVarDecl: j :: int]] ; [[VCVarDecl: i :: int], [VCVarDecl: j :: int]] [(j@155$0 <= 5)/\(i@153$0 > 10)] ; (i@153$0 < j@155$0)))]

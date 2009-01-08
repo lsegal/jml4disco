@@ -9,7 +9,6 @@ import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.jmlspecs.eclipse.jdt.internal.esc2.EscJava2Wrapper;
 import org.jmlspecs.jml2.checker.JML2CheckerWrapper;
 import org.jmlspecs.jml2.compiler.JML2CompilerWrapper;
-import org.jmlspecs.jml4.boogie.Boogie;
 import org.jmlspecs.jml4.esc.Esc;
 import org.jmlspecs.jml4.fspv.Fspv;
 
@@ -22,7 +21,6 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
     	// JmlCompilerExtension initCompilerOptions?
     	CompilerExtensionManager.addExtension(new Esc());
     	CompilerExtensionManager.addExtension(new Fspv());
-    	CompilerExtensionManager.addExtension(new Boogie());
     	CompilerExtensionManager.addExtension(new JML2CheckerWrapper());
     	CompilerExtensionManager.addExtension(new JML2CompilerWrapper());
     	// CompilerExtensionManager.addExtension(new Esc2CompilerExtension());
@@ -130,7 +128,6 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    optionsMap.put(JmlCompilerOptions.OPTION_EnableJml, options.jmlEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlDbc, options.jmlDbcEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlEsc, options.jmlEscEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
-	    optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlBoogie, options.jmlBoogieEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	    optionsMap.put(JmlCompilerOptions.OPTION_SimplifyPath, options.jmlSimplifyPath);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EscProverStrategy, options.jmlEscProverStrategy);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile, options.jmlEscDistributedPropertiesFile);
@@ -170,9 +167,6 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    }
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile)) != null) {
 	    	options.jmlEscDistributedPropertiesFile = (String)optionValue;
-	    }
-	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EnableJmlBoogie)) != null) {
-	    	options.jmlBoogieEnabled = CompilerOptions.ENABLED.equals(optionValue);
 	    }
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_SimplifyPath)) instanceof String) {
 	    	options.jmlSimplifyPath=(String) optionValue;

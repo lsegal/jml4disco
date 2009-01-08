@@ -34,6 +34,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 	public static String getName() {
 		return "ProveVcPiecewise"; //$NON-NLS-1$
 	}
+	
     // DISCO printing
 	public Result[] prove(VcProgram vcProg) {
 		if (Esc.GEN_STATS)
@@ -63,7 +64,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 	}
 
 	public Result[] proveVc(VC vc, Map map) {
-		if (this.cachedVcs.contains(vc))
+		if (this.cachedVcs != null && this.cachedVcs.contains(vc))
 			return Result.VALID;
 
 		// DISCO 
@@ -72,7 +73,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 		Result[] simplifyResults = simplify.prove(vc, map);
 		Utils.assertTrue(simplifyResults.length > 0, "length of result array was zero"); //$NON-NLS-1$
 		if (Result.isValid(simplifyResults)) {
-			this.cachedVcs.add(vc);
+			if (this.cachedVcs != null) this.cachedVcs.add(vc);
 			return simplifyResults;
 		}
 
@@ -84,7 +85,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 			
 			results = cvc.prove(vc, map);
 			if (Result.isValid(results)) {
-				this.cachedVcs.add(vc);
+				if (this.cachedVcs != null) this.cachedVcs.add(vc);
 				return results;
 			}
 		} catch (RuntimeException e) {
@@ -96,7 +97,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 			VC negated = vc.negateLastImplication();
 			Result[] negatedResults = simplify.prove(negated, map);
 			if (Result.isValid(negatedResults)) {
-				this.cachedVcs.add(negated);
+				if (this.cachedVcs != null) this.cachedVcs.add(negated);
 				setVcName(simplifyResults, "proved false"); //$NON-NLS-1$
 				return simplifyResults;
 			}
@@ -113,7 +114,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 			
 			results = isabelle.prove(vc, map);
 			if (Result.isValid(results)) {
-				this.cachedVcs.add(vc);
+				if (this.cachedVcs != null) this.cachedVcs.add(vc);
 				return results;
 			}
 		} catch (RuntimeException e) {

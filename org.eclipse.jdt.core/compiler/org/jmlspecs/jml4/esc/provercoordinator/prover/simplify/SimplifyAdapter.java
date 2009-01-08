@@ -1,8 +1,8 @@
 package org.jmlspecs.jml4.esc.provercoordinator.prover.simplify;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -25,14 +25,7 @@ public class SimplifyAdapter extends ProverAdapter {
 
 	private static final boolean DEBUG = false;
 	// private static final String  SIMPLIFY = "C:\\bin\\ssh.exe -p 4022 chalin@localhost simplify"; //$NON-NLS-1$
-	private static final String  SIMPLIFY = "simplify";//"gnome-terminal --command simplify"; //$NON-NLS-1$
-	private static final String INVALID_REPONSE = "Invalid."; //$NON-NLS-1$
-	private static final String LABELS_MARKER = "labels: ("; //$NON-NLS-1$
-	private static final String VALID_RESPONSE = "Valid."; //$NON-NLS-1$
-	
-	private static Process process;
-	
-	private static Boolean lock = new Boolean(false);
+	private static final String  SIMPLIFY = "simplify"; //$NON-NLS-1$
 
 	public SimplifyAdapter(CompilerOptions options, ProblemReporter problemReporter) {
 		super(options, problemReporter);
@@ -45,74 +38,56 @@ public class SimplifyAdapter extends ProverAdapter {
 		Result[] result = formatResponse(response, vc, simplifyString);
 		return result;
 	}
-
-	private synchronized String proveWithSimplify(String simplifyString) {
-		/*Process process = */ 
+	
+	private String proveWithSimplify(String simplifyString) {
+		Process process = getProverProcess();
+		if (process == null) {
+			// FIXME: NO more problem reported :(
+			// DISCO distributed strategy reporter = null
+			if (this.problemReporter != null)
+				this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
+			return ""; //$NON-NLS-1$
+		}
+		
 		StringBuffer result = new StringBuffer();
-
-		synchronized(lock){
-			getProverProcess();
-			//System.out.println("Simplify String: " + simplifyString);
-			if (process == null) {
-				// FIXME: NO more problem reported :(
-				// DISCO distributed strategy reporter = null
-				if (this.problemReporter != null)
-					this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
-				lock.notify();
-				return ""; //$NON-NLS-1$
-			}
-			try {
-				OutputStream out = process.getOutputStream();
-				out.write(simplifyString.getBytes());
-				out.flush();
-				BufferedInputStream in = (BufferedInputStream) process.getInputStream();
-				BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
-				String line = bIn.readLine();
-				while ( ! (line.endsWith(INVALID_REPONSE) || line.endsWith(VALID_RESPONSE)) ) {	
-					result.append(line + "\n"); //$NON-NLS-1$
-					line = bIn.readLine();
-				}
+		try {
+			OutputStream out = process.getOutputStream();
+			String ubp = SimplifyBackgroundPredicate.get();
+			out.write(ubp.getBytes());
+			out.write(simplifyString.getBytes());
+			out.close();
+			InputStream in = process.getInputStream();
+			BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
+			String line;
+			while (null != (line = bIn.readLine()))
 				result.append(line + "\n"); //$NON-NLS-1$
-				line =  bIn.readLine();
-				result.append(line + "\n"); //$NON-NLS-1$
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				lock.notify();
-			}
+			bIn.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-				return result.toString();
+		return result.toString();
 	}
-
+	
 	public static /*@nullable*/Process getProverProcess() {
-		if(process == null ) {	
-			try {
-				long t = System.currentTimeMillis();
-				process =  Runtime.getRuntime().exec(SIMPLIFY);
-				String ubp = SimplifyBackgroundPredicate.get();
-				//System.out.println("ubp: " + ubp);
-				OutputStream out = process.getOutputStream();
-				out.write(ubp.getBytes());
-				out.flush();
-				long t2 = System.currentTimeMillis();
-				System.out.println("" + ( t2 - t ));
-				//return p;
-			} catch (IOException e) {
-				if (DEBUG) {
-					Logger.print(failedToLaunch());
-					Logger.print(e.toString());
-				}
-			} catch (SecurityException e) {
-				if (DEBUG) {
-					Logger.print(failedToLaunch());
-					Logger.print(e.toString());
-				}
+		try {
+			return Runtime.getRuntime().exec(SIMPLIFY);
+		} catch (IOException e) {
+			if (DEBUG) {
+				Logger.print(failedToLaunch());
+				Logger.print(e.toString());
+			}
+		} catch (SecurityException e) {
+			if (DEBUG) {
+				Logger.print(failedToLaunch());
+				Logger.print(e.toString());
 			}
 		}
-		return process;
+		return null;
 	}
 
+	private static final String INVALID_REPONSE = "1: Invalid."; //$NON-NLS-1$
+	private static final String LABELS_MARKER = "labels: ("; //$NON-NLS-1$
+	private static final String VALID_RESPONSE = "1: Valid."; //$NON-NLS-1$
 	public Result[] formatResponse(String fromProver, VC vc, String simplifyString) {
 		List/*<Result>*/ result = new ArrayList/*<Result>*/();
 		if (fromProver.indexOf(VALID_RESPONSE) > 0) {
@@ -140,8 +115,8 @@ public class SimplifyAdapter extends ProverAdapter {
 					getProblems(simplifyString, labels, result);
 				}
 			} else {
-				Result unknownError = getResultForUnknownError(vc);
-				result.add(unknownError);
+					Result unknownError = getResultForUnknownError(vc);
+					result.add(unknownError);
 			}
 		} else {
 			Logger.print(fromProver);
@@ -163,17 +138,17 @@ public class SimplifyAdapter extends ProverAdapter {
 		int n = whats.length;
 		boolean swapped;
 		do {
-			swapped = false;
-			for (int i=0; i<n-1; i++) {
-				int i0_pos = simplifyString.indexOf(labels[whats[i]]); 
-				int i1_pos = simplifyString.indexOf(labels[whats[i+1]]); 
-				if (i0_pos > i1_pos) {
-					int temp = whats[i];
-					whats[i] = whats[i+1];
-					whats[i+1] = temp;
-					swapped = true;
-				}
-			}
+		   swapped = false;
+		   for (int i=0; i<n-1; i++) {
+			   int i0_pos = simplifyString.indexOf(labels[whats[i]]); 
+			   int i1_pos = simplifyString.indexOf(labels[whats[i+1]]); 
+			   if (i0_pos > i1_pos) {
+				   int temp = whats[i];
+				   whats[i] = whats[i+1];
+				   whats[i+1] = temp;
+				   swapped = true;
+			   }
+		   }
 		} while (swapped);
 	}
 
@@ -191,11 +166,11 @@ public class SimplifyAdapter extends ProverAdapter {
 			Utils.assertTrue(string.length() == region.length() 
 					+ string.substring(0, regionStart).length() 
 					+ string.substring(regionEnd+1).length(), 
-			"lengths not correct"); //$NON-NLS-1$
+					"lengths not correct"); //$NON-NLS-1$
 			string = string.substring(0, regionStart) + string.substring(regionEnd+1);
 			Result result = findResult(labels, whats[i], region);
 			if (result != null)
-				results.add(result);
+			   results.add(result);
 		}
 	}
 
@@ -259,7 +234,7 @@ public class SimplifyAdapter extends ProverAdapter {
 			WHATS.add(all[i].description);
 		}
 	}
-
+	
 	// returns the index in the array of labels for the type of problem
 	private int getWhat(String[] labels, int startingPoint) {
 		for (int i = startingPoint; i < labels.length; i++) {
@@ -270,24 +245,24 @@ public class SimplifyAdapter extends ProverAdapter {
 		}
 		return labels.length + 1;
 	}
-
+	
 	private static final Set IGNORED_LABEL_NAMES = new HashSet();
 	static {
 		IGNORED_LABEL_NAMES.addAll(WHATS);
 		IGNORED_LABEL_NAMES.add("Assume"); //$NON-NLS-1$
-		//		IGNORED_LABEL_NAMES.add("eq"); //$NON-NLS-1$
-		//		IGNORED_LABEL_NAMES.add("var"); //$NON-NLS-1$
+//		IGNORED_LABEL_NAMES.add("eq"); //$NON-NLS-1$
+//		IGNORED_LABEL_NAMES.add("var"); //$NON-NLS-1$
 		IGNORED_LABEL_NAMES.add("and"); //$NON-NLS-1$
 		IGNORED_LABEL_NAMES.add("implies"); //$NON-NLS-1$
 	}
-
+	
 	private int[] getWhere(String s) {
 		String[] pos = s.split("_"); //$NON-NLS-1$
 		Utils.assertTrue(pos.length==2, "malformed label: '"+s+"'");  //$NON-NLS-1$//$NON-NLS-2$
 		int labelStart = Utils.parseInt(pos[0], 0);
 		int labelEnd   = Utils.parseInt(pos[1], labelStart);
 		return new int[]{labelStart, labelEnd};
-		/*
+/*
 		Utils.assertTrue(pos.length==1 || pos.length==2, "malformed label: '"+s+"'");  //$NON-NLS-1$//$NON-NLS-2$
 		int labelStart;
 		int labelEnd;
@@ -298,17 +273,17 @@ public class SimplifyAdapter extends ProverAdapter {
 			labelStart = Utils.parseInt(pos[0], 0);
 			labelEnd   = labelStart;
 		}
-		 */
+*/
 	}
 
 	// returns the position of the error as an underscore-separated pair of integers
 	private /*@nullable*/ int[] getWhere(String[] labels, String region) {
-
+		
 		int sourceStart = Integer.MAX_VALUE;
 		int sourceEnd = 0;
 		for (int i = 0; i < labels.length; i++) {
 			if (region.indexOf(labels[i])<0)
-				continue;
+			   continue;
 			String[] label = labels[i].substring(1, labels[i].length()-1).split("@"); //$NON-NLS-1$
 			String name  = label[0];
 			if (IGNORED_LABEL_NAMES.contains(name))
@@ -330,7 +305,7 @@ public class SimplifyAdapter extends ProverAdapter {
 		}
 		return new int[] {sourceStart, sourceEnd};
 	}
-
+	
 	private static String failedToLaunch() {
 		return "failed to launch " + SIMPLIFY; //$NON-NLS-1$
 	}

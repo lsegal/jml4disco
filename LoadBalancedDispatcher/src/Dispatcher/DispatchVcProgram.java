@@ -30,6 +30,7 @@ public class DispatchVcProgram {
 			populateQueues(vcProg);
 			while(getDone(vcProg)[0] != vcProg.getAsImplications().length){
 				//DO NOTHING
+				Thread.sleep(10);
 			}
 	
 			Esc.waitForItToFinish(getDone(vcProg), vcProg.getAsImplications().length);

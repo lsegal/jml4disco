@@ -102,12 +102,14 @@ public class IsabelleAdapter extends ProverAdapter {
 				InputStream in = process.getInputStream();
 				BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
 				String line = bIn.readLine();
-				while (! (line.contains(EOF_1) || line.endsWith(OOPS) || line.startsWith(EOF_2)) ) {
+				while (! (line.equals(EOF_1) || line.endsWith(OOPS) || line.startsWith(EOF_2)) ) {
 					buffer.append(line + "\n"); //$NON-NLS-1$
 					line = bIn.readLine();
 				}
 				buffer.append(line + "\n");
-
+				//read all data unread in the inputstream buffer
+				byte [] response = new byte[in.available()];
+				int i = in.read(response);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

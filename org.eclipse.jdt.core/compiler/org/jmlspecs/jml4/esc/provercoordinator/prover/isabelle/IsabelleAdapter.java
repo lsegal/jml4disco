@@ -77,7 +77,6 @@ public class IsabelleAdapter extends ProverAdapter {
 	}
 
 	private Result[] prove(String theoryFilePathWithoutExt, boolean isOuaEsc) {
-		//Process process = getProverProcess();
 		synchronized(lock) {
 			getProverProcess();
 			if (process == null) {
@@ -110,19 +109,22 @@ public class IsabelleAdapter extends ProverAdapter {
 				//read all data unread in the inputstream buffer
 				byte [] response = new byte[in.available()];
 				int i = in.read(response);
+				
+				if (DEBUG)
+					Logger.print(buffer.toString());
+				Result[] result = formatResult(buffer.toString());
+				if (!isOuaEsc && Result.isValid(result))
+					Utils.deleteFile(theoryFilePath);
+				
+				return result;
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
 				lock.notify();
 			}
-			if (DEBUG)
-				Logger.print(buffer.toString());
-			Result[] result = formatResult(buffer.toString());
-			if (!isOuaEsc && Result.isValid(result))
-				Utils.deleteFile(theoryFilePath);
-			
-			lock.notify();
-			return result;
+			return new Result[0];
 		}
 	}
 
@@ -170,10 +172,7 @@ public class IsabelleAdapter extends ProverAdapter {
 	public static /*@nullable*/Process getProverProcess() {
 		if(process == null) {
 			try {
-				long t = System.currentTimeMillis();
 				process =  Runtime.getRuntime().exec(isabelleCmd());
-				long t2 = System.currentTimeMillis();
-				System.out.println("" + (t2 - t));
 				return process;
 			} catch (IOException e) {
 				System.err.println(e);

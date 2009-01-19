@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 
-path = "../compiler/org/jmlspecs/jml4/boogie/"
+$boogie_path = "org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/boogie/"
+$tests_path  = "org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/"
 
 class Group
     GROUPS = { 
@@ -70,8 +71,34 @@ class Priority
     end
 end
 
+class TestTraceability
+    attr_accessor :file, :line, :pass, :name
+
+    def initialize(file, line, name, pass = false) 
+        self.file = file
+        self.line = line
+        self.name = name
+        self.pass = pass 
+    end
+
+    def html
+        <<-eof
+            <a href="/trac/browser/JML4/dev/branches/boogie/#{$tests_path}#{file}#L#{line}"
+                style="color:#{color}" title="#{file}: #{name}">#{value}</a>
+        eof
+    end
+
+    def color
+        pass ? '#006' : '#f00;font-weight:bold;'
+    end
+
+    def value
+        pass ? 'P' : 'F'
+    end
+end
+
 class NodeType
-    attr_reader :method, :scope, :priority, :group, :done
+    attr_reader :method, :scope, :priority, :group, :done, :tests
 
     def initialize(method, scope, priority, group = "misc", done = false)
         self.method = method
@@ -79,6 +106,10 @@ class NodeType
         self.priority = Priority.new(priority)
         self.group = Group.new(group)
         self.done = done
+    end
+
+    def tests
+        $traceability.has_key?(method) ? $traceability[method] : []
     end
 
 private
@@ -95,6 +126,7 @@ class TableEmitter
                     <th style='font-weight:bold' align='left'>Scope</th>
                     <th style='font-weight:bold' align='left'>Completed</th>
                     <th style='font-weight:bold' align='left'>Priority</th>
+                    <th style='font-weight:bold' align='left'>Test Traceability</th>
                 </tr>
 
                 #{emit_groups(o)}
@@ -117,7 +149,7 @@ class TableGroupEmitter
         items = o.find_all {|x| x.group.key == grp }
         s = <<-eof
             <tr>
-                <th style='font-weight:bold' align='left' colspan='5'>
+                <th style='font-weight:bold' align='left' colspan='6'>
                     #{::Group::GROUPS[grp]}
                 </th>
             </tr>
@@ -145,14 +177,21 @@ class TableRowEmitter
                      <td align='left'><em>#{o.scope}</em></td>
                      <td></td>
                      <td align='left'><em>IGNORED</em></td>
+                     <td></td>
                  </tr>
             eof
         else
             style = ''
+            tests_pass = o.tests.all? {|t| t.pass }
+            tests_pass_color = tests_pass ? '#bea' : '#ffa'
             if o.done
-                style = 'background-color:#bea'
+                style = 'background-color:' + tests_pass_color
             elsif o.priority.colour
                 style = 'color:'+o.priority.colour
+            end
+
+            if !tests_pass
+                style += ';background-color:' + tests_pass_color
             end
 
             <<-eof
@@ -162,13 +201,34 @@ class TableRowEmitter
                     <td align='left'>#{o.scope}</td>
                     <td align='center'><strong>#{o.done ? 'X':''}</strong></td>
                     <td align='left'>#{o.priority.html}</td>
+                    <td align='left'>#{o.tests.map {|t| t.html }.join(", ")}</td>
                 </tr>
             eof
         end
     end
 end
 
-def parse(str)
+def parse_tests(file)
+    lines = File.read("../" + $tests_path + file).split(/\r?\n/)
+    out = {}
+    lines.each_with_index do |line, index|
+	    if line =~ /public void (test\S+)/
+            name = $1
+		    if lines[index - 1] =~ /^\s*\/\//
+                prevline = lines[index - 1]
+                pass = !(prevline =~ /\bTODO\b/)
+                terms = prevline[/term=(\S+)/, 1] 
+                terms.split(',').each do |term|
+                    out[term] ||= []
+                    out[term] << TestTraceability.new(file, index+1, name, pass)
+                end
+            end
+        end
+    end
+    out
+end
+
+def parse_boogie(str)
     lines = str.split(/\r?\n/)
     out = []
     lines.each_with_index do |line, index|
@@ -187,7 +247,12 @@ def parse(str)
     out
 end
 
-out = parse(File.read(path + "BoogieVisitor.java"))
+$traceability = {}
+["InitialTests.java", "AdapterTests.java"].each do |file|
+    $traceability.update parse_tests(file)
+end
+
+out = parse_boogie(File.read("../" + $boogie_path + "BoogieVisitor.java"))
 
 puts "{{{"
 puts "#!html"

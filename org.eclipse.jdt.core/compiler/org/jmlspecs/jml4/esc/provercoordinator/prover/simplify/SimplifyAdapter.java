@@ -31,6 +31,7 @@ public class SimplifyAdapter extends ProverAdapter {
 	private static final String VALID_RESPONSE = "Valid."; //$NON-NLS-1$
 	
 	private static Process process;
+	
 	private static Boolean lock = new Boolean(false);
 
 	public SimplifyAdapter(CompilerOptions options, ProblemReporter problemReporter) {
@@ -46,9 +47,12 @@ public class SimplifyAdapter extends ProverAdapter {
 	}
 
 	private synchronized String proveWithSimplify(String simplifyString) {
+		/*Process process = */ 
 		StringBuffer result = new StringBuffer();
+
 		synchronized(lock){
 			getProverProcess();
+			//System.out.println("Simplify String: " + simplifyString);
 			if (process == null) {
 				// FIXME: NO more problem reported :(
 				// DISCO distributed strategy reporter = null
@@ -84,12 +88,16 @@ public class SimplifyAdapter extends ProverAdapter {
 	public static /*@nullable*/Process getProverProcess() {
 		if(process == null ) {	
 			try {
+				long t = System.currentTimeMillis();
 				process =  Runtime.getRuntime().exec(SIMPLIFY);
 				String ubp = SimplifyBackgroundPredicate.get();
+				//System.out.println("ubp: " + ubp);
 				OutputStream out = process.getOutputStream();
 				out.write(ubp.getBytes());
 				out.flush();
-				return process;
+				long t2 = System.currentTimeMillis();
+				System.out.println("" + ( t2 - t ));
+				//return p;
 			} catch (IOException e) {
 				if (DEBUG) {
 					Logger.print(failedToLaunch());

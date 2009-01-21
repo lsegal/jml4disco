@@ -1,6 +1,5 @@
 package org.jmlspecs.jml4.boogie;
 
-import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
@@ -9,36 +8,35 @@ import org.eclipse.jdt.internal.compiler.lookup.*;
 import org.jmlspecs.jml4.ast.*;
 
 public class BoogieVisitor extends ASTVisitor {
-	public class SourcePoint {
-		public int sourceStart; 
-		public int sourceEnd;
-		public SourcePoint(int start, int end) { 
-			sourceStart = start; sourceEnd = end;
-		}
-	}
-	
-	public class LinePoint {
-		public int row; 
-		public int col;
-		public LinePoint(int row_, int col_) { 
-			row = row_; col = col_;
-		}
-		public boolean equals(Object other) {
-			LinePoint lp = (LinePoint)other;
-			return row == lp.row && col == lp.col;
-		}	
-		public int hashCode() {
-			return new Integer(row + col).hashCode();
-		}
-	}
-	
 	private static final boolean DEBUG = true;
-	private int indent = 0;
-	private LinePoint linePoint = new LinePoint(1, 1);
-	private boolean newLine = true;
 	private BlockScope methodScope;
-	private StringBuffer implBody = new StringBuffer();
-	private Hashtable/*<LinePoint,SourcePoint>*/ sourcePoints = new Hashtable();
+	private BoogieSource output;
+	
+	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
+	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
+	private static final String STMT_END = ";"; //$NON-NLS-1$
+	
+	public BoogieVisitor(BoogieSource output) {
+		this.output = output;
+	}
+	
+	public static BoogieSource visit(CompilationUnitDeclaration unit) {
+		return visit(unit, new BoogieSource());
+	}
+
+	public static BoogieSource visit(CompilationUnitDeclaration unit, BoogieSource output) {
+		BoogieVisitor visitor = new BoogieVisitor(output);
+		unit.traverse(visitor, unit.scope);
+		return output;
+	}
+
+	public void appendLine(Object o) { output.appendLine(o); }
+	
+	public void append(Object o) { output.append(o); }
+
+	public void append(Object o, ASTNode linePointTerm) {
+		output.append(o, linePointTerm);
+	}
 
 	private void debug(ASTNode term, Object scope) {
 		if (!DEBUG)
@@ -48,47 +46,6 @@ public class BoogieVisitor extends ASTVisitor {
 				+ term.sourceStart + (scope != null ? (" from scope " //$NON-NLS-1$
 				+ scope.getClass().getSimpleName())
 						: " from class scope")); //$NON-NLS-1$
-	}
-
-	public String getResults() {
-		return implBody.toString();
-	}
-	
-	public SourcePoint getPoint(LinePoint start) {
-		return (SourcePoint)sourcePoints.get(start);
-	}
-	
-	private void addPoint(ASTNode term) {
-		sourcePoints.put(new LinePoint(linePoint.row, linePoint.col), 
-				new SourcePoint(term.sourceStart, term.sourceEnd));
-	}
-
-	private void append(Object o) {
-		append(o, null);
-	}
-	
-	private void append(Object o, ASTNode linePointTerm) {
-		if (newLine && indent > 0) {
-			for (int i = 0; i < indent; i++) {
-				implBody.append("\t"); //$NON-NLS-1$
-			}
-			linePoint.col += indent;
-		}
-		if (linePointTerm != null) {
-			addPoint(linePointTerm);
-		}
-		
-		implBody.append(o);
-		newLine = false;
-		linePoint.col += o.toString().length();
-	}
-
-	private void appendLine(Object o) {
-		append(o, null);
-		implBody.append("\n"); //$NON-NLS-1$
-		newLine = true;
-		linePoint.row++;
-		linePoint.col = 1;
 	}
 
 	// TODO priority=2 group=expr
@@ -106,7 +63,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 
-	// TODO priority=1 group=decl
+	// priority=0 group=decl
 	public boolean visit(AnnotationMethodDeclaration term, ClassScope classScope) {
 		debug(term, classScope);
 		return true;
@@ -170,10 +127,13 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=? group=misc
+	// TODO priority=3 group=misc
 	public boolean visit(AssertStatement term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		JmlAssertStatement stmt = 
+			new JmlAssertStatement("assert", term.assertExpression, term.sourceStart); //$NON-NLS-1$
+		stmt.traverse(this, scope);
+		return false;
 	}
 
 	// priority=3 group=expr
@@ -194,30 +154,34 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=stmt
 	public boolean visit(Block term, BlockScope scope) {
 		debug(term, scope);
-		appendLine("{"); //$NON-NLS-1$
-		indent++;
+		appendLine(BLOCK_OPEN);
+		output.increaseIndent();
 		return true;
 	}
 
 	public void endVisit(Block term, BlockScope scope) {
-		indent--;
-		appendLine("}"); //$NON-NLS-1$
+		output.decreaseIndent();
+		appendLine(BLOCK_CLOSE);
 	}
 
 	// priority=3 group=stmt
 	public boolean visit(BreakStatement term, BlockScope scope) {
 		debug(term, scope);
-		appendLine("break;"); //$NON-NLS-1$
+		if (term.label == null)  
+			appendLine("break" + STMT_END); //$NON-NLS-1$
+		else
+			appendLine("break " + new String(term.label) + STMT_END);  //$NON-NLS-1$
+			
 		return true;
 	}
 
-	// TODO priority=2 group=stmt
+	// TODO priority=3 group=stmt
 	public boolean visit(CaseStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=? group=expr
+	// TODO priority=1 group=expr
 	public boolean visit(CastExpression term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -241,7 +205,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=decl
+	// priority=3 group=decl
 	public boolean visit(CompilationUnitDeclaration term, CompilationUnitScope scope) {
 		debug(term, scope);
 		// implemented
@@ -272,10 +236,20 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=stmt
+	// TODO priority=3 group=stmt
 	public boolean visit(DoStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
+		debug(term, scope);		
+		if (term.action instanceof Block) {
+			Block block = (Block) term.action;
+			for (int i = 0; i < block.statements.length; i++) {
+				block.statements[i].traverse(this, scope);
+			}
+		} else {
+			appendLine(term.action);
+		}
+		WhileStatement whl = new WhileStatement(term.condition, term.action, term.sourceStart, term.sourceEnd);  
+		whl.traverse(this, scope); 
+		return false;
 	}
 
 	// priority=3 group=lit
@@ -293,9 +267,7 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// priority=3 group=expr
 	public boolean visit(EqualExpression term, BlockScope scope) {
-		if (DEBUG) {
-			debug(term, scope);
-		}
+		debug(term, scope);
 
 		term.left.traverse(this, scope);
 		append(" == "); //$NON-NLS-1$
@@ -366,14 +338,32 @@ public class BoogieVisitor extends ASTVisitor {
 		append("if ("); //$NON-NLS-1$
 		term.condition.traverse(this, scope);
 		append(") "); //$NON-NLS-1$
-		term.thenStatement.traverse(this, scope);
-		append("else "); //$NON-NLS-1$
-		term.elseStatement.traverse(this, scope);
-
+		if (term.thenStatement!= null)
+			if (!(term.thenStatement instanceof Block )) {
+				output.increaseIndent();
+				appendLine(BLOCK_OPEN); 
+			}							
+			term.thenStatement.traverse(this, scope);
+			if (!(term.thenStatement instanceof Block )) {				
+				output.decreaseIndent();
+				appendLine(BLOCK_CLOSE);
+			}			
+		if (term.elseStatement != null) {
+			append("else "); //$NON-NLS-1$
+			if (!(term.elseStatement instanceof Block )) {				
+				appendLine(BLOCK_OPEN);
+				output.increaseIndent();
+			}			
+			term.elseStatement.traverse(this, scope);
+			if (!(term.elseStatement instanceof Block )) {
+				output.decreaseIndent();
+				appendLine(BLOCK_CLOSE);
+			}		
+		}
 		return false;
 	}
 
-	// TODO priority=0 group=misc
+	// priority=0 group=misc
 	public boolean visit(ImportReference term, CompilationUnitScope scope) {
 		debug(term, scope);
 		return true;
@@ -385,7 +375,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=? group=expr
+	// TODO priority=1 group=expr
 	public boolean visit(InstanceOfExpression term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -398,185 +388,13 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=0 group=javadoc
-	public boolean visit(Javadoc term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(Javadoc term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocAllocationExpression term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocAllocationExpression term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocArgumentExpression term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocArgumentExpression term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocArrayQualifiedTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocArrayQualifiedTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocArraySingleTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocArraySingleTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocFieldReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocFieldReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocImplicitTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocImplicitTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocMessageSend term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocMessageSend term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocQualifiedTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocQualifiedTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocReturnStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocReturnStatement term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocSingleNameReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocSingleNameReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocSingleTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=javadoc
-	public boolean visit(JavadocSingleTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlArrayQualifiedTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlArrayQualifiedTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlArrayReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlArrayTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlArrayTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
 	// priority=3 group=jml
 	public boolean visit(JmlAssertStatement term, BlockScope scope) {
 		debug(term, scope);
 		append("assert ", term.assertExpression); //$NON-NLS-1$
-		return true;
+		term.assertExpression.traverse(this, scope);
+		appendLine(STMT_END);
+		return false;
 	}
 
 	// TODO priority=? group=jml
@@ -585,19 +403,15 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	
+	// priority=3 group=jml
 	public boolean visit(JmlAssumeStatement term, BlockScope scope) {
 		debug(term, scope);
-		append("assume "); //$NON-NLS-1$
-		return true;
+		append("assume ", term.assertExpression); //$NON-NLS-1$
+		term.assertExpression.traverse(this, scope);
+		appendLine(STMT_END);
+		return false;
 	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlCastExpression term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
+	
 	// TODO priority=? group=jml
 	public boolean visit(JmlCastExpressionWithoutType term, BlockScope scope) {
 		debug(term, scope);
@@ -610,24 +424,9 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=? group=jml
-	public boolean visit(JmlCompilationUnitDeclaration term, CompilationUnitScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlConstructorDeclaration term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
 	// TODO priority=3 group=jml
 	public boolean visit(JmlEnsuresClause term, BlockScope scope) {
 		debug(term, scope);
-		append(" ensures "); //$NON-NLS-1$
-		term.pred.traverse(this, scope);
-		append(";"); //$NON-NLS-1$
 		return true;
 	}
 
@@ -637,25 +436,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=? group=jml
-	public boolean visit(JmlFieldReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlFieldReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlLocalDeclaration term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
+	// priority=0 group=jml
 	public boolean visit(JmlLoopAnnotations term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -673,31 +454,20 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=? group=jml
-	public boolean visit(JmlMessageSend term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlMethodDeclaration term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=1 group=jml
+	// TODO priority=3 group=jml
 	public boolean visit(JmlMethodSpecification term, ClassScope scope) {
 		debug(term, scope);
 
 		// TODO ensures
 		for (int i = 0; i < term.specCases.length; i++) {
-			append(" ensures "); //$NON-NLS-1$
+			append(" "); //$NON-NLS-1$
+			append("ensures ", term); //$NON-NLS-1$
 			List exprs = term.specCases[i].getEnsuresExpressions();
 			for (int j = 0; j < exprs.size(); j++) {
 				Expression expr = (Expression)exprs.get(j);
 				expr.traverse(this, methodScope);
 			}
-			append(";"); //$NON-NLS-1$
+			append(STMT_END);
 		}
 
 		return true;
@@ -709,126 +479,23 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=? group=jml
-	public boolean visit(JmlParameterizedQualifiedTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlParameterizedQualifiedTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlParameterizedSingleTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlParameterizedSingleTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlQualifiedNameReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlQualifiedNameReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlQualifiedTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlQualifiedTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlQuantifiedExpression term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
 	// TODO priority=3 group=jml
 	public boolean visit(JmlRequiresClause term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=? group=jml
+	// priority=1 group=jml
 	public boolean visit(JmlResultReference term, BlockScope scope) {
 		debug(term, scope);
 		append("__result__"); //$NON-NLS-1$
 		return true;
 	}
 
-	// TODO priority=? group=jml
-	public boolean visit(JmlReturnStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlSingleNameReference term, BlockScope scope) {
-		append(new String(term.toString()));
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlSingleNameReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=? group=jml
-	public boolean visit(JmlSingleTypeReference term, BlockScope scope) {
-		append(new String(term.token));
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlSingleTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlWhileStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=jml
-	public boolean visit(JmlWildcard term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=jml
-	public boolean visit(JmlWildcard term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=1 group=stmt
+	// priority=1 group=stmt
 	public boolean visit(LabeledStatement term, BlockScope scope) {
 		debug(term, scope);
+		appendLine(new String (term.label) + ":"); //$NON-NLS-1$
 		return true;
 	}
 
@@ -838,14 +505,14 @@ public class BoogieVisitor extends ASTVisitor {
 		String name = new String(term.name);
 		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
 		term.type.traverse(this, scope);
-		appendLine(";"); //$NON-NLS-1$
+		appendLine(STMT_END);
 		
 		if (term.initialization != null) {
 			Assignment a = 
 				new Assignment(new SingleNameReference(term.name, term.sourceStart), 
 					term.initialization, term.sourceEnd);
 			a.traverse(this, scope);
-			appendLine(";"); //$NON-NLS-1$
+			appendLine(STMT_END);
 		}
 		return false;
 	}
@@ -857,19 +524,19 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=? group=decl
+	// priority=0 group=decl
 	public boolean visit(MarkerAnnotation term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=? group=expr
+	// TODO priority=1 group=expr
 	public boolean visit(MemberValuePair term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=? group=expr
+	// TODO priority=2 group=expr
 	public boolean visit(MessageSend term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -907,20 +574,22 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 		
 		appendLine(" {"); //$NON-NLS-1$
-		indent++;
+		output.increaseIndent();
 
-		for (int i = 0; i < term.statements.length; i++) {
-			term.statements[i].traverse(this, term.scope);
-			appendLine(";"); //$NON-NLS-1$
+		if (term.statements != null) {
+			for (int i = 0; i < term.statements.length; i++) {
+				term.statements[i].traverse(this, term.scope);
+				//appendLine(";"); //$NON-NLS-1$
+			}
 		}
 
-		indent--;
+		output.decreaseIndent();
 		appendLine("}"); //$NON-NLS-1$
 
 		return false;
 	}
 
-	// TODO priority=? group=decl
+	// priority=0 group=decl
 	public boolean visit(NormalAnnotation term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -1044,12 +713,13 @@ public class BoogieVisitor extends ASTVisitor {
 						term.expression, term.sourceEnd);
 			m.traverse(this, scope);
 		}
-		appendLine(";"); //$NON-NLS-1$
-		append("return"); //$NON-NLS-1$
+		appendLine(STMT_END);
+		append("return", term.expression); //$NON-NLS-1$
+		appendLine(STMT_END); 
 		return false;
 	}
 
-	// TODO priority=? group=expr
+	// priority=0 group=expr
 	public boolean visit(SingleMemberAnnotation term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -1058,7 +728,6 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=expr
 	public boolean visit(SingleNameReference term, BlockScope scope) {
 		append(new String(term.token));
-		debug(term, scope);
 		return true;
 	}
 
@@ -1112,13 +781,13 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=2 group=expr
 	public boolean visit(SuperReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=stmt
+	// TODO priority=3 group=stmt
 	public boolean visit(SwitchStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -1130,19 +799,19 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=3 group=expr
 	public boolean visit(ThisReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=3 group=expr
 	public boolean visit(ThisReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=stmt
+	// priority=0 group=stmt
 	public boolean visit(ThrowStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -1155,7 +824,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=1 group=stmt
+	// priority=0 group=stmt
 	public boolean visit(TryStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -1197,19 +866,33 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=stmt
+	// priority=3 group=stmt
 	public boolean visit(WhileStatement term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		append("while ("); //$NON-NLS-1$
+		term.condition.traverse(this, scope);
+		append(") "); //$NON-NLS-1$
+		if (!(term.action instanceof Block)){
+			appendLine(BLOCK_OPEN);
+			output.increaseIndent();			
+		}
+		
+		term.action.traverse(this, scope);
+		
+		if (!(term.action instanceof Block)){
+			output.decreaseIndent();				
+			appendLine(BLOCK_CLOSE);
+		}		
+		return false;
 	}
 
-	// TODO priority=0 group=misc
+	// priority=0 group=misc
 	public boolean visit(Wildcard term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=0 group=misc
+	// priority=0 group=misc
 	public boolean visit(Wildcard term, ClassScope scope) {
 		debug(term, scope);
 		return true;

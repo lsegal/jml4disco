@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Jml4Disco-Physical View</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="PhysicalViewDeploymentView">Physical View (Deployment View)</h1>
+<p>
+This section will describe the physical (deployment) view of the JML4Disco distributed subsystem. Each Node represents a type of physical computer / terminal and each square inside it represents an important element that originates from the entity that surrounds it. The entities are connected by a network protocols (e.g. HTTP).  The diagram below shows what type of software run on what type of hardware and the expected network topology to be used to communication between client and servers.
+</p>
+<h2 id="Milestone3">Milestone 3</h2>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-PhysicalView/physical_view.png" style="padding:0; border:none"><img src="images/physical_view.png" /></a>
+</p>
+<h2 id="Milestone4">Milestone 4</h2>
+<p>
+The deployment view has slightly changes to reflect the design changes to improve system performance.  The overall communication network did not change.  All client/server communications are still done through HTTP.  Nevertheless, the VC dispatcher is now running in client machine directly rather than having a dedicated server to receive all clients' request (VcProgram) then further dispatch VCs to servers for proving.  This change decision was made to avoid creating another performance bottleneck on the dispatcher server.  For instance, if there's 1000 clients requesting for proving their programs, there will be congestion on the dispatcher server which will be overloaded on processing requests as well as dispatching VCs to other servers for proving.  In addition, each VC proving servers are now spawning only one single process for Simplify and Isabelle theorem provers.  This changes improve significantly the system performance.  The deployment view below shows the updated system environment and the corresponding communication network used in the JML4Disco.<br />
+</p>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-PhysicalView/physical_view2.png" style="padding:0; border:none"><img title="Physical (Deployment) View updated" src="images/physical_view2.png" alt="Physical (Deployment) View updated" /></a>
+</p>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

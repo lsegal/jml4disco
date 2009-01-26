@@ -175,7 +175,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=stmt
+	// TODO priority=2 group=stmt
 	public boolean visit(CaseStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -787,7 +787,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=stmt
+	// TODO priority=2 group=stmt
 	public boolean visit(SwitchStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;

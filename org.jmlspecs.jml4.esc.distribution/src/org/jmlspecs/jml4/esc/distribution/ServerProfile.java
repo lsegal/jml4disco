@@ -1,3 +1,13 @@
+/*
+ * ServerProfile
+ * 
+ * Version 2.0 
+ *
+ * January 28th, 2009
+ * 
+ * Contributors:
+ * CJ Sheu, R Le Guen
+ */
 package org.jmlspecs.jml4.esc.distribution;
 
 import java.lang.management.ManagementFactory;

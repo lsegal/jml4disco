@@ -13,6 +13,7 @@ public abstract class ProverAdapter {
 	public static final String VALID = "Valid."; //$NON-NLS-1$
 	protected transient final CompilerOptions options;
 	protected transient final ProblemReporter problemReporter;
+	protected ProcessPool processPool;
 
 	public ProverAdapter(CompilerOptions options, ProblemReporter problemReporter) {
 		this.options = options;

@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.tests.compiler.regression.AbstractRegressionTest;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapter;
+import org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyProcessPool;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 
 public class SimplifyTests extends AbstractRegressionTest {
@@ -45,7 +46,7 @@ public class SimplifyTests extends AbstractRegressionTest {
 		String actual = "";
 		String expected = "1: Valid.";
 		try {
-			Process p = SimplifyAdapter.getProverProcess();
+			Process p = SimplifyProcessPool.getInstance().getFreeProcess();
 			assertNotNull(p);
 			OutputStream out = p.getOutputStream();
 			out.write("(EQ |@true| |@true|)\n".getBytes());

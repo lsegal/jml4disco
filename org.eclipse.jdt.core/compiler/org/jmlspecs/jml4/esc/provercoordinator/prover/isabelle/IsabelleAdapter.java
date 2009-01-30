@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter;
+import org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyProcessPool;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 import org.jmlspecs.jml4.esc.util.Utils;
 import org.jmlspecs.jml4.esc.vc.lang.VC;
@@ -24,21 +25,21 @@ public class IsabelleAdapter extends ProverAdapter {
 	private static final boolean DEBUG = false;
 	private static final String ISABELLE_VALID_1 = "\nlemma\n  main:"; //$NON-NLS-1$
 	private static final String ISABELLE_VALID_2 = "\nlemma main: "; //$NON-NLS-1$
-	private static final String ISABELLE_CMD = "isabelle ESC4"; //$NON-NLS-1$
 	private static final String OOPS = "  oops"; //$NON-NLS-1$
 	private static final String EOF_1 = "val it = () : unit"; //$NON-NLS-1$
 	private static final String EOF_2 = "Exception"; //$NON-NLS-1$
 
-	private static Process process;
-	private static Boolean lock = new Boolean(false);
-
-	public IsabelleAdapter(CompilerOptions options, ProblemReporter problemReporter) {
+	public IsabelleAdapter(CompilerOptions options,
+			ProblemReporter problemReporter) {
 		super(options, problemReporter);
+		processPool = IsabelleProcessPool.getInstance();
 	}
 
 	public Result[] prove(VC vc, Map incarnations) {
-		// First bogus entry is used up by user supplied theory file (if it exists). 
-		String[] proofMethods = new String[] {"OUA-ESC", "by ((simp add: nat_number | auto | algebra)+)"};  //$NON-NLS-1$//$NON-NLS-2$
+		// First bogus entry is used up by user supplied theory file (if it
+		// exists).
+		String[] proofMethods = new String[] {
+				"OUA-ESC", "by ((simp add: nat_number | auto | algebra)+)" }; //$NON-NLS-1$//$NON-NLS-2$
 		String theoryFilePathWithoutExt = vc.getName();
 		IsabelleVisitor visitor = new IsabelleVisitor(theoryFilePathWithoutExt);
 		String theoryFilePath = theoryFilePathWithoutExt + THEORY_EXTENSION;
@@ -48,7 +49,8 @@ public class IsabelleAdapter extends ProverAdapter {
 			visitor.setProofMethodTo(proofMethods[i]);
 			String isabelleTheoryAsString = visitor.getTheory(vc, incarnations);
 			if (i == 0) {
-				isabelleTheoryAsString = matchingTheoryFileExists(theoryFilePath, isabelleTheoryAsString);
+				isabelleTheoryAsString = matchingTheoryFileExists(
+						theoryFilePath, isabelleTheoryAsString);
 				if (isabelleTheoryAsString == null)
 					continue;
 				if (isabelleTheoryAsString.indexOf(OOPS) != -1)
@@ -77,72 +79,70 @@ public class IsabelleAdapter extends ProverAdapter {
 	}
 
 	private Result[] prove(String theoryFilePathWithoutExt, boolean isOuaEsc) {
-		synchronized(lock) {
-			getProverProcess();
-			if (process == null) {
-				// FIXME: recover use of problemReporter
-				// DISCO distributed strategy reporter = null
-				if (this.problemReporter != null)
-					this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
-
-				lock.notify();
-				return new Result[0];
-			}
-
-			String theoryFilePath = theoryFilePathWithoutExt + THEORY_EXTENSION;
-			StringBuffer buffer = new StringBuffer();
-			try {
-				// Isabelle argument to uss_thy command needs to be in Unix format.
-				String unixFilename = Utils.win2unixFileName(theoryFilePathWithoutExt);
-				String command = MessageFormat.format(USE_THY_CMD, new String[]{unixFilename});
-				OutputStream out = process.getOutputStream();
-				out.write(command.getBytes());
-				out.flush();
-				InputStream in = process.getInputStream();
-				BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
-				String line = bIn.readLine();
-				while (! (line.equals(EOF_1) || line.endsWith(OOPS) || line.startsWith(EOF_2)) ) {
-					buffer.append(line + "\n"); //$NON-NLS-1$
-					line = bIn.readLine();
-				}
-				buffer.append(line + "\n");
-				//read all data unread in the inputstream buffer
-				byte [] response = new byte[in.available()];
-				int i = in.read(response);
-				
-				if (DEBUG)
-					Logger.print(buffer.toString());
-				Result[] result = formatResult(buffer.toString());
-				if (!isOuaEsc && Result.isValid(result))
-					Utils.deleteFile(theoryFilePath);
-				
-				return result;
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				lock.notify();
-			}
+		Process process = processPool.getFreeProcess();
+		if (process == null) {
+			// FIXME: recover use of problemReporter
+			// DISCO distributed strategy reporter = null
+			if (this.problemReporter != null)
+				this.problemReporter.jmlEsc2Error(processPool.failedToLaunch(), 0, 0);
 			return new Result[0];
 		}
+
+		String theoryFilePath = theoryFilePathWithoutExt + THEORY_EXTENSION;
+		StringBuffer buffer = new StringBuffer();
+		try {
+			// Isabelle argument to uss_thy command needs to be in Unix format.
+			String unixFilename = Utils
+					.win2unixFileName(theoryFilePathWithoutExt);
+			String command = MessageFormat.format(USE_THY_CMD,
+					new String[] { unixFilename });
+			OutputStream out = process.getOutputStream();
+			out.write(command.getBytes());
+			out.flush();
+			InputStream in = process.getInputStream();
+			BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
+			String line = bIn.readLine();
+			while (!(line.equals(EOF_1) || line.endsWith(OOPS) || line
+					.startsWith(EOF_2))) {
+				buffer.append(line + "\n"); //$NON-NLS-1$
+				line = bIn.readLine();
+			}
+			buffer.append(line + "\n");
+			// read all data unread in the inputstream buffer
+			byte[] response = new byte[in.available()];
+			int i = in.read(response);
+
+			processPool.releaseProcess(process);
+
+			if (DEBUG)
+				Logger.print(buffer.toString());
+			Result[] result = formatResult(buffer.toString());
+			if (!isOuaEsc && Result.isValid(result))
+				Utils.deleteFile(theoryFilePath);
+
+			return result;
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new Result[0];
 	}
 
 	private Result[] formatResult(String string) {
 
 		boolean valid1 = string.indexOf(ISABELLE_VALID_1) > 0;
 		boolean valid2 = string.indexOf(ISABELLE_VALID_2) > 0;
-		return (valid1 ||  valid2)
-		? Result.VALID
-				: Result.EMPTY;
+		return (valid1 || valid2) ? Result.VALID : Result.EMPTY;
 	}
 
 	/**
 	 * @return The content of the theory file iff there exists a file with the
-	 * given name and it contains a lemma identical to that in 
-	 * isabelleTheoryAsString.
+	 *         given name and it contains a lemma identical to that in
+	 *         isabelleTheoryAsString.
 	 */
-	private /*@nullable*/String matchingTheoryFileExists(String theoryFilePath, String isabelleTheoryAsString) {
+	private/* @nullable */String matchingTheoryFileExists(
+			String theoryFilePath, String isabelleTheoryAsString) {
 		File file = new File(theoryFilePath);
 		if (!file.exists() || !file.canRead()) {
 			return null;
@@ -162,42 +162,10 @@ public class IsabelleAdapter extends ProverAdapter {
 		start = theory.indexOf('"', start);
 		if (start < 0)
 			return NOT_FOUND;
-		int end = theory.indexOf('"', start+1);
+		int end = theory.indexOf('"', start + 1);
 		if (end < 0)
 			return NOT_FOUND;
 		String lemma = theory.substring(start, end);
 		return lemma;
-	}
-
-	public static /*@nullable*/Process getProverProcess() {
-		if(process == null) {
-			try {
-				process =  Runtime.getRuntime().exec(isabelleCmd());
-				return process;
-			} catch (IOException e) {
-				System.err.println(e);
-				if (DEBUG) {
-					Logger.print(failedToLaunch());
-					Logger.print(e.toString());
-				}
-			} catch (SecurityException e) {
-				if (DEBUG) {
-					Logger.print(failedToLaunch());
-					Logger.print(e.toString());
-				}
-			}
-		}
-		return process;
-	}
-
-	private static String failedToLaunch() {
-		return "failed to launch " + isabelleCmd(); //$NON-NLS-1$
-	}
-
-	private static String isabelleCmd() {
-		// FIXME: check for the actual OS type ...
-		return File.separatorChar == '/' 
-			? ISABELLE_CMD
-					: "bash /usr/local/bin/" + ISABELLE_CMD; //$NON-NLS-1$
 	}
 }

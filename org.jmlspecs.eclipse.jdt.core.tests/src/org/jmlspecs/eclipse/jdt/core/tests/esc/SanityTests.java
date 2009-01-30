@@ -13,6 +13,7 @@ import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.cvc3.Cvc3Adapter;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter;
+import org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleProcessPool;
 import org.jmlspecs.jml4.esc.util.Utils;
 
 public class SanityTests extends AbstractRegressionTest {
@@ -99,7 +100,7 @@ public class SanityTests extends AbstractRegressionTest {
 		String expected = "lemma main:";
 		Process p = null;
 		try {
-			p = IsabelleAdapter.getProverProcess();
+			p = IsabelleProcessPool.getInstance().getFreeProcess();
 			assertNotNull(p);
 			OutputStream out = p.getOutputStream();
 			String isabelleString = "theory test \nimports Main \nbegin \n" +

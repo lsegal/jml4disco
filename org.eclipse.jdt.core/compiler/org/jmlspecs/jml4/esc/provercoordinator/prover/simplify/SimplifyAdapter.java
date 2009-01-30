@@ -23,18 +23,16 @@ import org.jmlspecs.jml4.util.Logger;
 
 public class SimplifyAdapter extends ProverAdapter {
 
-	private static final boolean DEBUG = false;
 	// private static final String  SIMPLIFY = "C:\\bin\\ssh.exe -p 4022 chalin@localhost simplify"; //$NON-NLS-1$
-	private static final String  SIMPLIFY = "simplify";//"gnome-terminal --command simplify"; //$NON-NLS-1$
+	//private static final String  SIMPLIFY = "simplify";//"gnome-terminal --command simplify"; //$NON-NLS-1$
 	private static final String INVALID_REPONSE = "Invalid."; //$NON-NLS-1$
 	private static final String LABELS_MARKER = "labels: ("; //$NON-NLS-1$
 	private static final String VALID_RESPONSE = "Valid."; //$NON-NLS-1$
-	
-	private static Process process;
-	private static Boolean lock = new Boolean(false);
 
-	public SimplifyAdapter(CompilerOptions options, ProblemReporter problemReporter) {
+	public SimplifyAdapter(CompilerOptions options,
+			ProblemReporter problemReporter) {
 		super(options, problemReporter);
+		processPool = SimplifyProcessPool.getInstance();
 	}
 
 	public Result[] prove(VC vc, Map incarnations) {
@@ -47,82 +45,61 @@ public class SimplifyAdapter extends ProverAdapter {
 
 	private synchronized String proveWithSimplify(String simplifyString) {
 		StringBuffer result = new StringBuffer();
-		synchronized(lock){
-			getProverProcess();
-			if (process == null) {
-				// FIXME: NO more problem reported :(
-				// DISCO distributed strategy reporter = null
-				if (this.problemReporter != null)
-					this.problemReporter.jmlEsc2Error(failedToLaunch(), 0, 0);
-				lock.notify();
-				return ""; //$NON-NLS-1$
-			}
-			try {
-				OutputStream out = process.getOutputStream();
-				out.write(simplifyString.getBytes());
-				out.flush();
-				BufferedInputStream in = (BufferedInputStream) process.getInputStream();
-				BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
-				String line = bIn.readLine();
-				while ( ! (line.endsWith(INVALID_REPONSE) || line.endsWith(VALID_RESPONSE)) ) {	
-					result.append(line + "\n"); //$NON-NLS-1$
-					line = bIn.readLine();
-				}
-				result.append(line + "\n"); //$NON-NLS-1$
-				line =  bIn.readLine();
-				result.append(line + "\n"); //$NON-NLS-1$
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				lock.notify();
-			}
+		Process process = processPool.getFreeProcess();
+		if (process == null) {
+			// FIXME: NO more problem reported :(
+			// DISCO distributed strategy reporter = null
+			if (this.problemReporter != null)
+				this.problemReporter.jmlEsc2Error(processPool.failedToLaunch(), 0, 0);
+			return ""; //$NON-NLS-1$
 		}
-				return result.toString();
+		try {
+			OutputStream out = process.getOutputStream();
+			out.write(simplifyString.getBytes());
+			out.flush();
+			BufferedInputStream in = (BufferedInputStream) process
+					.getInputStream();
+			BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
+			String line = bIn.readLine();
+			while (!(line.endsWith(INVALID_REPONSE) || line
+					.endsWith(VALID_RESPONSE))) {
+				result.append(line + "\n"); //$NON-NLS-1$
+				line = bIn.readLine();
+			}
+			result.append(line + "\n"); //$NON-NLS-1$
+//			line = bIn.readLine();
+//			result.append(line + "\n"); //$NON-NLS-1$
+			byte[] response = new byte[in.available()];
+			int i = in.read(response);
+			processPool.releaseProcess(process);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return result.toString();
 	}
 
-	public static /*@nullable*/Process getProverProcess() {
-		if(process == null ) {	
-			try {
-				process =  Runtime.getRuntime().exec(SIMPLIFY);
-				String ubp = SimplifyBackgroundPredicate.get();
-				OutputStream out = process.getOutputStream();
-				out.write(ubp.getBytes());
-				out.flush();
-				return process;
-			} catch (IOException e) {
-				if (DEBUG) {
-					Logger.print(failedToLaunch());
-					Logger.print(e.toString());
-				}
-			} catch (SecurityException e) {
-				if (DEBUG) {
-					Logger.print(failedToLaunch());
-					Logger.print(e.toString());
-				}
-			}
-		}
-		return process;
-	}
-
-	public Result[] formatResponse(String fromProver, VC vc, String simplifyString) {
-		List/*<Result>*/ result = new ArrayList/*<Result>*/();
+	public Result[] formatResponse(String fromProver, VC vc,
+			String simplifyString) {
+		List/* <Result> */result = new ArrayList/* <Result> */();
 		if (fromProver.indexOf(VALID_RESPONSE) > 0) {
 			result.add(Result.VALID[0]);
 		} else if (fromProver.indexOf(INVALID_REPONSE) > 0) {
 			if (fromProver.indexOf(LABELS_MARKER) > 0) {
-				int labelsStart = fromProver.indexOf(LABELS_MARKER) + LABELS_MARKER.length();
+				int labelsStart = fromProver.indexOf(LABELS_MARKER)
+						+ LABELS_MARKER.length();
 				int labelsEnd = fromProver.indexOf(")", labelsStart); //$NON-NLS-1$
 				String line = fromProver.substring(labelsStart, labelsEnd);
 				String[] labels = line.split(" "); //$NON-NLS-1$
-				List/*<Integer>*/ whatList = new ArrayList/*<Integer>*/();
+				List/* <Integer> */whatList = new ArrayList/* <Integer> */();
 				int what = -1;
-				while ((what = getWhat(labels, what+1)) < labels.length) {
+				while ((what = getWhat(labels, what + 1)) < labels.length) {
 					whatList.add(new Integer(what));
 				}
 				int[] whats = new int[whatList.size()];
 				int i = 0;
-				for (Iterator iterator = whatList.iterator(); iterator.hasNext();) {
+				for (Iterator iterator = whatList.iterator(); iterator
+						.hasNext();) {
 					what = ((Integer) iterator.next()).intValue();
 					whats[i++] = what;
 				}
@@ -140,13 +117,14 @@ public class SimplifyAdapter extends ProverAdapter {
 			Result unknownError = getResultForUnknownError(vc);
 			result.add(unknownError);
 		}
-		return (Result[])result.toArray(Result.EMPTY);
+		return (Result[]) result.toArray(Result.EMPTY);
 	}
 
 	private Result getResultForUnknownError(VC vc) {
 		int start = vc.sourceStart;
 		int end = vc.sourceEnd;
-		Result unknownError = new Result(KindOfAssertion.UNKNOWN, start, start, end);
+		Result unknownError = new Result(KindOfAssertion.UNKNOWN, start, start,
+				end);
 		return unknownError;
 	}
 
@@ -156,22 +134,23 @@ public class SimplifyAdapter extends ProverAdapter {
 		boolean swapped;
 		do {
 			swapped = false;
-			for (int i=0; i<n-1; i++) {
-				int i0_pos = simplifyString.indexOf(labels[whats[i]]); 
-				int i1_pos = simplifyString.indexOf(labels[whats[i+1]]); 
+			for (int i = 0; i < n - 1; i++) {
+				int i0_pos = simplifyString.indexOf(labels[whats[i]]);
+				int i1_pos = simplifyString.indexOf(labels[whats[i + 1]]);
 				if (i0_pos > i1_pos) {
 					int temp = whats[i];
-					whats[i] = whats[i+1];
-					whats[i+1] = temp;
+					whats[i] = whats[i + 1];
+					whats[i + 1] = temp;
 					swapped = true;
 				}
 			}
 		} while (swapped);
 	}
 
-	private void getProblems(String simplifyString, String[] labels, int[] whats, List results) {
+	private void getProblems(String simplifyString, String[] labels,
+			int[] whats, List results) {
 		String string = simplifyString;
-		for (int i = whats.length-1; i >= 0; i--) {
+		for (int i = whats.length - 1; i >= 0; i--) {
 			String label = labels[whats[i]];
 			int posLabel = string.indexOf(label);
 			Utils.assertTrue(posLabel >= 0, "problem not found"); //$NON-NLS-1$
@@ -179,20 +158,23 @@ public class SimplifyAdapter extends ProverAdapter {
 			Utils.assertTrue(regionStart >= 0, "region start not found"); //$NON-NLS-1$
 			int regionEnd = findRegionEnd(string, posLabel);
 			Utils.assertTrue(regionEnd >= 0, "region end not found"); //$NON-NLS-1$
-			String region = string.substring(regionStart, regionEnd+1);
-			Utils.assertTrue(string.length() == region.length() 
-					+ string.substring(0, regionStart).length() 
-					+ string.substring(regionEnd+1).length(), 
-			"lengths not correct"); //$NON-NLS-1$
-			string = string.substring(0, regionStart) + string.substring(regionEnd+1);
+			String region = string.substring(regionStart, regionEnd + 1);
+			Utils.assertTrue(string.length() == region.length()
+					+ string.substring(0, regionStart).length()
+					+ string.substring(regionEnd + 1).length(),
+					"lengths not correct"); //$NON-NLS-1$
+			string = string.substring(0, regionStart)
+					+ string.substring(regionEnd + 1);
 			Result result = findResult(labels, whats[i], region);
 			if (result != null)
 				results.add(result);
 		}
 	}
 
-	// we didn't find a "what", so we hope there's something in the lables that matches...
-	private void getProblems(String simplifyString, String[] labels, List results) {
+	// we didn't find a "what", so we hope there's something in the lables that
+	// matches...
+	private void getProblems(String simplifyString, String[] labels,
+			List results) {
 		for (int i = 0; i < labels.length; i++) {
 			Result result = labelToResult(simplifyString, labels[i]);
 			if (result != null)
@@ -204,8 +186,10 @@ public class SimplifyAdapter extends ProverAdapter {
 	private Result labelToResult(String simplifyString, String label) {
 		if (label.startsWith("|Assert") || label.startsWith("|Postcondition")) //$NON-NLS-1$ //$NON-NLS-2$
 			return null;
-		int[] where = getWhere(label.substring(label.indexOf('@')+1, label.length()-1));
-		Result result = new Result(KindOfAssertion.ASSERT, -1, where[0], where[1]);
+		int[] where = getWhere(label.substring(label.indexOf('@') + 1, label
+				.length() - 1));
+		Result result = new Result(KindOfAssertion.ASSERT, -1, where[0],
+				where[1]);
 		return result;
 	}
 
@@ -223,9 +207,11 @@ public class SimplifyAdapter extends ProverAdapter {
 		return result;
 	}
 
-	private /*@nullable*/ Result findResult(String[] labels, int what, String region) {
-		KindOfAssertion kind = KindOfAssertion.fromString(getLabelName(labels[what]));
-		int   aWhere = getLabelPosition(labels[what]);
+	private/* @nullable */Result findResult(String[] labels, int what,
+			String region) {
+		KindOfAssertion kind = KindOfAssertion
+				.fromString(getLabelName(labels[what]));
+		int aWhere = getLabelPosition(labels[what]);
 		int[] eWhere = getWhere(labels, region);
 		if (eWhere == null)
 			return null;
@@ -239,12 +225,12 @@ public class SimplifyAdapter extends ProverAdapter {
 
 	private int getLabelPosition(String label) {
 		String sWhere = label.split("@")[1]; //$NON-NLS-1$
-		sWhere = sWhere.substring(0, sWhere.length()-1);
+		sWhere = sWhere.substring(0, sWhere.length() - 1);
 		int result = Utils.parseInt(sWhere, 0);
 		return result;
 	}
 
-	private static final Set/*<String>*/ WHATS = new HashSet/*<String>*/();
+	private static final Set/* <String> */WHATS = new HashSet/* <String> */();
 	static {
 		KindOfAssertion[] all = KindOfAssertion.all();
 		for (int i = 0; i < all.length; i++) {
@@ -275,56 +261,53 @@ public class SimplifyAdapter extends ProverAdapter {
 
 	private int[] getWhere(String s) {
 		String[] pos = s.split("_"); //$NON-NLS-1$
-		Utils.assertTrue(pos.length==2, "malformed label: '"+s+"'");  //$NON-NLS-1$//$NON-NLS-2$
+		Utils.assertTrue(pos.length == 2, "malformed label: '" + s + "'"); //$NON-NLS-1$//$NON-NLS-2$
 		int labelStart = Utils.parseInt(pos[0], 0);
-		int labelEnd   = Utils.parseInt(pos[1], labelStart);
-		return new int[]{labelStart, labelEnd};
+		int labelEnd = Utils.parseInt(pos[1], labelStart);
+		return new int[] { labelStart, labelEnd };
 		/*
-		Utils.assertTrue(pos.length==1 || pos.length==2, "malformed label: '"+s+"'");  //$NON-NLS-1$//$NON-NLS-2$
-		int labelStart;
-		int labelEnd;
-		if (pos.length == 2) {
-			labelStart = Utils.parseInt(pos[0], 0);
-			labelEnd   = Utils.parseInt(pos[1], labelStart);
-		} else {
-			labelStart = Utils.parseInt(pos[0], 0);
-			labelEnd   = labelStart;
-		}
+		 * Utils.assertTrue(pos.length==1 || pos.length==2,
+		 * "malformed label: '"+s+"'"); //$NON-NLS-1$//$NON-NLS-2$ int
+		 * labelStart; int labelEnd; if (pos.length == 2) { labelStart =
+		 * Utils.parseInt(pos[0], 0); labelEnd = Utils.parseInt(pos[1],
+		 * labelStart); } else { labelStart = Utils.parseInt(pos[0], 0);
+		 * labelEnd = labelStart; }
 		 */
 	}
 
-	// returns the position of the error as an underscore-separated pair of integers
-	private /*@nullable*/ int[] getWhere(String[] labels, String region) {
+	// returns the position of the error as an underscore-separated pair of
+	// integers
+	private/* @nullable */int[] getWhere(String[] labels, String region) {
 
 		int sourceStart = Integer.MAX_VALUE;
 		int sourceEnd = 0;
 		for (int i = 0; i < labels.length; i++) {
-			if (region.indexOf(labels[i])<0)
+			if (region.indexOf(labels[i]) < 0)
 				continue;
-			String[] label = labels[i].substring(1, labels[i].length()-1).split("@"); //$NON-NLS-1$
-			String name  = label[0];
+			String[] label = labels[i].substring(1, labels[i].length() - 1)
+					.split("@"); //$NON-NLS-1$
+			String name = label[0];
 			if (IGNORED_LABEL_NAMES.contains(name))
 				continue;
 			String second = label[1];
 			String[] pos = second.split("_"); //$NON-NLS-1$
-			Utils.assertTrue(pos.length==2, "malformed label: '"+labels[i]+"'");  //$NON-NLS-1$//$NON-NLS-2$
+			Utils.assertTrue(pos.length == 2,
+					"malformed label: '" + labels[i] + "'"); //$NON-NLS-1$//$NON-NLS-2$
 			int labelStart = Utils.parseInt(pos[0], 0);
-			int labelEnd   = Utils.parseInt(pos[1], labelStart);
+			int labelEnd = Utils.parseInt(pos[1], labelStart);
 			if (labelStart == 0 && labelEnd == 0)
 				continue;
-			Utils.assertTrue(labelStart != 0 && labelEnd != 0, "only 1 is 0: '"+region+"'"); //$NON-NLS-1$ //$NON-NLS-2$
-			if (labelStart < sourceStart) sourceStart = labelStart;
-			if (sourceEnd  < labelEnd)   sourceEnd   = labelEnd;
+			Utils.assertTrue(labelStart != 0 && labelEnd != 0,
+					"only 1 is 0: '" + region + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+			if (labelStart < sourceStart)
+				sourceStart = labelStart;
+			if (sourceEnd < labelEnd)
+				sourceEnd = labelEnd;
 		}
 		if (sourceStart == Integer.MAX_VALUE && sourceEnd == 0) {
 			// nothing set
 			return null;
 		}
-		return new int[] {sourceStart, sourceEnd};
+		return new int[] { sourceStart, sourceEnd };
 	}
-
-	private static String failedToLaunch() {
-		return "failed to launch " + SIMPLIFY; //$NON-NLS-1$
-	}
-
 }

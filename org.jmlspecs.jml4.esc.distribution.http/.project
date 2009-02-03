@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>DickieEsc4Web</name>
+	<name>org.jmlspecs.jml4.esc.distribution.http</name>
 	<comment></comment>
 	<projects>
 		<project>org.eclipse.jdt.core</project>

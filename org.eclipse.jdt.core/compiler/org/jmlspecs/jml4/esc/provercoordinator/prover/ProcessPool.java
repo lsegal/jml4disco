@@ -11,6 +11,7 @@ public abstract class ProcessPool {
 	protected int num_of_process_avaiable = 0;
 	protected int MAX_PROCESS = NUM_OF_PROCESSOR * 2;
 
+	
 	abstract protected Process createNewProcess();
 	abstract public String launcherCommand();
 	abstract public void getProcessConfiguration();
@@ -47,5 +48,12 @@ public abstract class ProcessPool {
 			}
 		}
 		return p;
+	}
+	
+	public int getMAX_PROCESS() {
+		return MAX_PROCESS;
+	}
+	public void setMAX_PROCESS(int max_process) {
+		MAX_PROCESS = max_process;
 	}
 }

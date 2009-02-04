@@ -33,6 +33,8 @@ $wikidocs = {
   'DevelopmentView' => 'design',
   'TestPlan' => 'test',
   'BoogieTraceability' => 'test'
+  'BoogieTraceability' => 'test'
+  'PerformanceReport' => 'test'
 }
 $categories = [
   ['mgmt', 'Management, Planning &amp; Risk Analysis Docs'],

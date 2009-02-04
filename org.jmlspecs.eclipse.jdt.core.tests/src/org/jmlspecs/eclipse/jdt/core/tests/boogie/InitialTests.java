@@ -784,8 +784,115 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
+	// term=ForStatement,Block
+	public void test_500_for() {		
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class U {\n" + 
+				"   public void m1() {\n" +
+				"		for (int x = 0; x<10 ; x++) {\n" +
+				"			//@assert (true);\n" +			
+				" 		}\n" +	
+				"	}\n" +	
+				"   public void m2() {\n" +
+				"		for (int x = 10; x>0 ; x--) \n" +
+				"			//@assert (true);\n" +			
+				" 		\n" +	
+				"	}\n" +					
+				"}\n" 
+				,
+				//expected boogie
+				"procedure tests.esc.U.m1() {\n" +
+				"	var x : int;\n" +
+				"	x := 0;\n" +
+				"	while (x < 10) {\n" +
+				"		assert true;\n" +
+				"		x := x + 1;\n" +
+				"	}\n" +
+				"}\n" +
+				"procedure tests.esc.U.m2() {\n" +
+				"	var x : int;\n" +
+				"	x := 10;\n" +
+				"	while (x > 0) {\n" +
+				"		assert true;\n" +
+				"		x := x - 1;\n" +
+				"	}\n" +
+				"}\n"
+				);
+	}
+	
+	// term=ForStatement,Block
+	public void test_500_for_multi_initialization() {
+
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class U {\n" + 
+				"   public void m1() {\n" +
+				"		for (int i=1,j=10; i<j; i++,j=j-i+1) {\n" +
+				"		//@assert (true);\n" +			
+				" 		}\n" +	
+				"	}\n" +					
+				"}\n" 
+				,
+				//expected boogie
+				"procedure tests.esc.U.m1() {\n" +
+				"	var x : int;\n" +
+				"	x := 0;\n" +
+				"	while (x < 10) {\n" +
+				"		assert true;\n" +
+				"		x := x + 1;\n" +
+				"	}\n" +
+				"}\n"			
+				);
+	}	
+	
+	// term=PostfixExpression
+	public void test_600_postFixExpression() {
+		
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class U {\n" + 
+				"   public void m1() {\n" +
+				"		int i;\n" +
+				"		i++;\n" +
+				"		i ++;\n" +
+				"		int y;\n" +
+				"		y--;\n" +
+				"		y --;\n" +
+				"	}\n" +					
+				"}\n" 
+				,
+				//expected boogie
+				""			
+				);
+	}
+	
+	// term=PrefixExpression
+	public void test_601_preFixExpression() {
+		
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class U {\n" + 
+				"   public void m1() {\n" +
+				"		int i;\n" +
+				"		++ i;\n" +
+				"		++i;\n" +				
+				"		int y;\n" +
+				"		-- y;\n" +
+				"		--y;\n" +				
+				"	}\n" +					
+				"}\n" 
+				,
+				//expected boogie
+				""			
+				);
+	}	
 	// term=LocalDeclaration,SingleTypeReference,Assignment,IntLiteral
-	public void test_500_int_localdeclaration() {
+	public void test_1000_int_localdeclaration() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +	

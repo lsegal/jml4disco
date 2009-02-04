@@ -3,9 +3,107 @@ package org.jmlspecs.jml4.boogie;
 import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
-import org.eclipse.jdt.internal.compiler.ast.*;
-import org.eclipse.jdt.internal.compiler.lookup.*;
-import org.jmlspecs.jml4.ast.*;
+import org.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;
+import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+import org.eclipse.jdt.internal.compiler.ast.AllocationExpression;
+import org.eclipse.jdt.internal.compiler.ast.AnnotationMethodDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.Argument;
+import org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
+import org.eclipse.jdt.internal.compiler.ast.ArrayInitializer;
+import org.eclipse.jdt.internal.compiler.ast.ArrayQualifiedTypeReference;
+import org.eclipse.jdt.internal.compiler.ast.ArrayReference;
+import org.eclipse.jdt.internal.compiler.ast.ArrayTypeReference;
+import org.eclipse.jdt.internal.compiler.ast.AssertStatement;
+import org.eclipse.jdt.internal.compiler.ast.Assignment;
+import org.eclipse.jdt.internal.compiler.ast.BinaryExpression;
+import org.eclipse.jdt.internal.compiler.ast.Block;
+import org.eclipse.jdt.internal.compiler.ast.BreakStatement;
+import org.eclipse.jdt.internal.compiler.ast.CaseStatement;
+import org.eclipse.jdt.internal.compiler.ast.CastExpression;
+import org.eclipse.jdt.internal.compiler.ast.CharLiteral;
+import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
+import org.eclipse.jdt.internal.compiler.ast.Clinit;
+import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.CompoundAssignment;
+import org.eclipse.jdt.internal.compiler.ast.ConditionalExpression;
+import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.ContinueStatement;
+import org.eclipse.jdt.internal.compiler.ast.DoStatement;
+import org.eclipse.jdt.internal.compiler.ast.DoubleLiteral;
+import org.eclipse.jdt.internal.compiler.ast.EmptyStatement;
+import org.eclipse.jdt.internal.compiler.ast.EqualExpression;
+import org.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;
+import org.eclipse.jdt.internal.compiler.ast.Expression;
+import org.eclipse.jdt.internal.compiler.ast.ExtendedStringLiteral;
+import org.eclipse.jdt.internal.compiler.ast.FalseLiteral;
+import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.FieldReference;
+import org.eclipse.jdt.internal.compiler.ast.FloatLiteral;
+import org.eclipse.jdt.internal.compiler.ast.ForStatement;
+import org.eclipse.jdt.internal.compiler.ast.ForeachStatement;
+import org.eclipse.jdt.internal.compiler.ast.IfStatement;
+import org.eclipse.jdt.internal.compiler.ast.ImportReference;
+import org.eclipse.jdt.internal.compiler.ast.Initializer;
+import org.eclipse.jdt.internal.compiler.ast.InstanceOfExpression;
+import org.eclipse.jdt.internal.compiler.ast.IntLiteral;
+import org.eclipse.jdt.internal.compiler.ast.LabeledStatement;
+import org.eclipse.jdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.LongLiteral;
+import org.eclipse.jdt.internal.compiler.ast.MarkerAnnotation;
+import org.eclipse.jdt.internal.compiler.ast.MemberValuePair;
+import org.eclipse.jdt.internal.compiler.ast.MessageSend;
+import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.NormalAnnotation;
+import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
+import org.eclipse.jdt.internal.compiler.ast.OR_OR_Expression;
+import org.eclipse.jdt.internal.compiler.ast.OperatorIds;
+import org.eclipse.jdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
+import org.eclipse.jdt.internal.compiler.ast.ParameterizedSingleTypeReference;
+import org.eclipse.jdt.internal.compiler.ast.PostfixExpression;
+import org.eclipse.jdt.internal.compiler.ast.PrefixExpression;
+import org.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;
+import org.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.jdt.internal.compiler.ast.QualifiedSuperReference;
+import org.eclipse.jdt.internal.compiler.ast.QualifiedThisReference;
+import org.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;
+import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
+import org.eclipse.jdt.internal.compiler.ast.SingleMemberAnnotation;
+import org.eclipse.jdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.jdt.internal.compiler.ast.StringLiteral;
+import org.eclipse.jdt.internal.compiler.ast.StringLiteralConcatenation;
+import org.eclipse.jdt.internal.compiler.ast.SuperReference;
+import org.eclipse.jdt.internal.compiler.ast.SwitchStatement;
+import org.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;
+import org.eclipse.jdt.internal.compiler.ast.ThisReference;
+import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
+import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
+import org.eclipse.jdt.internal.compiler.ast.TryStatement;
+import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.jdt.internal.compiler.ast.UnaryExpression;
+import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
+import org.eclipse.jdt.internal.compiler.ast.Wildcard;
+import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
+import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
+import org.jmlspecs.jml4.ast.JmlAssertStatement;
+import org.jmlspecs.jml4.ast.JmlAssignment;
+import org.jmlspecs.jml4.ast.JmlAssumeStatement;
+import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
+import org.jmlspecs.jml4.ast.JmlClause;
+import org.jmlspecs.jml4.ast.JmlEnsuresClause;
+import org.jmlspecs.jml4.ast.JmlFieldDeclaration;
+import org.jmlspecs.jml4.ast.JmlLoopAnnotations;
+import org.jmlspecs.jml4.ast.JmlLoopInvariant;
+import org.jmlspecs.jml4.ast.JmlLoopVariant;
+import org.jmlspecs.jml4.ast.JmlMethodDeclaration;
+import org.jmlspecs.jml4.ast.JmlMethodSpecification;
+import org.jmlspecs.jml4.ast.JmlOldExpression;
+import org.jmlspecs.jml4.ast.JmlRequiresClause;
+import org.jmlspecs.jml4.ast.JmlResultReference;
 
 public class BoogieVisitor extends ASTVisitor {
 	private static final boolean DEBUG = true;
@@ -328,7 +426,31 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=3 group=stmt
 	public boolean visit(ForStatement term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		
+		for (int i = 0; i< term.initializations.length ; i++) {
+			term.initializations[i].traverse(this, scope);
+		}
+		append("while "); //$NON-NLS-1
+		append(term.condition);
+		appendLine (" " + BLOCK_OPEN); 
+		output.increaseIndent();
+		if (term.action instanceof Block) {
+			Block block = (Block) term.action;
+			for (int i = 0; i < block.statements.length; i++) {
+				block.statements[i].traverse(this, scope);
+			}
+		} else { 
+			term.action.traverse(this, scope);
+		}
+		for (int i = 0; i< term.increments.length ; i++) {
+			term.increments[i].traverse(this, scope);
+		}
+		
+		output.decreaseIndent();
+		appendLine(BLOCK_CLOSE);
+		
+		
+		return false;
 	}
 
 	// priority=3 group=stmt
@@ -637,18 +759,43 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// priority=2 group=expr
 	public boolean visit(PostfixExpression term, BlockScope scope) {
-		debug(term, scope);
+		debug(term, scope);	
 		return true;
 	}
-
-	// TODO priority=1 group=expr
+	
+	// priority=2 group=expr
+	public void endVisit(PostfixExpression term, BlockScope scope) {
+		endVistiPrePostFixExpression(term, scope);
+	}
+	
+	// priority=2 group=expr
+	public void endVistiPrePostFixExpression(CompoundAssignment term, BlockScope scope) {
+		debug(term, scope);		
+		append (" := "); //$NON-NLS-1$
+		switch (term.operator) {
+		case OperatorIds.PLUS :
+			term.lhs.traverse(this, scope);
+			appendLine (" + 1;"); //$NON-NLS-1$
+			break;
+		case OperatorIds.MINUS :
+			term.lhs.traverse(this, scope);
+			appendLine (" - 1;"); //$NON-NLS-1$
+		} 
+	}
+	
+	// TODO priority=2 group=expr
 	public boolean visit(PrefixExpression term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
-
+	
+	// priority=2 group=expr
+	public void endVisit(PrefixExpression term, BlockScope scope) {
+		endVistiPrePostFixExpression(term, scope);
+	}
+	
 	// TODO priority=? group=expr
 	public boolean visit(QualifiedAllocationExpression term, BlockScope scope) {
 		debug(term, scope);

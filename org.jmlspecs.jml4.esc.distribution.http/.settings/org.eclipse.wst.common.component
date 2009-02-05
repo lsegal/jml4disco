@@ -6,9 +6,6 @@
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.eclipse.jdt.core/org.eclipse.jdt.core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.jmlspecs.jml4.esc.distribution/org.jmlspecs.jml4.esc.distribution">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.jmlspecs.jml4.esc.distribution.configuration/org.jmlspecs.jml4.esc.distribution.configuration">
             <dependency-type>uses</dependency-type>
         </dependent-module>

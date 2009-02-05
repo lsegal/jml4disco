@@ -14,14 +14,14 @@ import org.jmlspecs.jml4.esc.distribution.configuration.FrontControllerException
  */
 public class ConfigWorkbench extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ConfigWorkbench() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public ConfigWorkbench() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -38,9 +38,9 @@ public class ConfigWorkbench extends HttpServlet {
 		// TODO Auto-generated method stub
 		processRequest(request, response);
 	}
-	
+
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 		String webroot = request.getContextPath()+request.getServletPath();
 		String out = "";
 		try {
@@ -49,18 +49,29 @@ public class ConfigWorkbench extends HttpServlet {
 				if(in.length()>0 && in.charAt(0)=='/') {
 					in = in.substring(1);
 				}
-				
+
 				String[] split = in.split("\\/");
 				if(split.length==1) {
 					String command  = split[0];
-					
+
 					HttpRequestCommandInput commandInput = new HttpRequestCommandInput(request, command);
 					FrontController.main(commandInput);
-					out = "Executed command successfully"; 
-	
+					out = "Executed command successfully";
+					/*
+					try {
+						getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/"+command+".jsp").forward(request,response);
+					} catch (ServletException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					 */
 				}
 				else {
 					response.setStatus(404);
+					return;
 				}
 			}
 			else {
@@ -69,7 +80,6 @@ public class ConfigWorkbench extends HttpServlet {
 		} catch (FrontControllerException e) {
 			out = "Unable to fullfill the request: "+e.getMessage();
 		}
-		response.getWriter().println("<html>Here is the response: "+out+"</html>");
 	}
 
 }

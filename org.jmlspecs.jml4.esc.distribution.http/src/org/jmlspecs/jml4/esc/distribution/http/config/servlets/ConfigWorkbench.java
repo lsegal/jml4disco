@@ -43,6 +43,7 @@ public class ConfigWorkbench extends HttpServlet {
 
 		String webroot = request.getContextPath()+request.getServletPath();
 		String out = "";
+		String command = "";
 		try {
 			if(request.getRequestURI().substring(0, webroot.length()).equals(webroot)) {
 				String in = request.getRequestURI().substring(webroot.length());
@@ -52,22 +53,14 @@ public class ConfigWorkbench extends HttpServlet {
 
 				String[] split = in.split("\\/");
 				if(split.length==1) {
-					String command  = split[0];
+					command  = split[0];
 
+					System.out.println("Command is "+command);
+					
 					HttpRequestCommandInput commandInput = new HttpRequestCommandInput(request, command);
 					FrontController.main(commandInput);
 					out = "Executed command successfully";
-					/*
-					try {
-						getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/"+command+".jsp").forward(request,response);
-					} catch (ServletException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					 */
+					 
 				}
 				else {
 					response.setStatus(404);
@@ -80,6 +73,15 @@ public class ConfigWorkbench extends HttpServlet {
 		} catch (FrontControllerException e) {
 			out = "Unable to fullfill the request: "+e.getMessage();
 		}
+		
+		request.setAttribute("out", out);
+		
+		try {
+			getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/ConfigWorkbench/"+command+".jsp").include(request,response);
+		} catch (IOException e) {
+			throw new ServletException(e);
+		}
+		
 	}
 
 }

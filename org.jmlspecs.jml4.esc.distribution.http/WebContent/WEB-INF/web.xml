@@ -19,13 +19,26 @@
 		<servlet-class>
 		org.jmlspecs.jml4.esc.distribution.http.servlets.ProveVc</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>
+		Workbench</display-name>
+		<servlet-name>ConfigWorkbench</servlet-name>
+		<servlet-class>
+		org.jmlspecs.jml4.esc.distribution.http.config.servlets.ConfigWorkbench</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>ProveVcProgram</servlet-name>
-		<url-pattern>/ProveVcProgram</url-pattern>
+		<url-pattern>/dispatcher</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ProveVc</servlet-name>
-		<url-pattern>/ProveVc</url-pattern>
+		<url-pattern>/prover</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ConfigWorkbench</servlet-name>
+		<url-pattern>/config-workbench/*</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

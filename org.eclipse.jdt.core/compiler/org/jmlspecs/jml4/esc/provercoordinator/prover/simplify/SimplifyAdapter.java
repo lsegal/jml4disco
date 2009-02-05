@@ -28,7 +28,7 @@ public class SimplifyAdapter extends ProverAdapter {
 	private static final String INVALID_REPONSE = "Invalid."; //$NON-NLS-1$
 	private static final String LABELS_MARKER = "labels: ("; //$NON-NLS-1$
 	private static final String VALID_RESPONSE = "Valid."; //$NON-NLS-1$
-	private static final String ERROR_RESPONSE = "Bad input:";
+	private static final String ERROR_RESPONSE = "Bad input:"; //$NON-NLS-1$
 
 	public SimplifyAdapter(CompilerOptions options,
 			ProblemReporter problemReporter) {
@@ -65,7 +65,6 @@ public class SimplifyAdapter extends ProverAdapter {
 			while (!(line.endsWith(INVALID_REPONSE) || line
 					.endsWith(VALID_RESPONSE) || line.contains(ERROR_RESPONSE))) {
 				result.append(line + "\n"); //$NON-NLS-1$
-				System.out.println("line " + line );
 				line = bIn.readLine();
 			}
 			result.append(line + "\n"); //$NON-NLS-1$

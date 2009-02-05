@@ -30,13 +30,8 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 	
 	private int pendingRequests;
 	
-	public RemoteTomCatServer(String _url) {
-		try {
-			url = new URL (_url);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public RemoteTomCatServer(String _url) throws MalformedURLException{
+		url = new URL (_url);
 		profileInfo = new IServerProfile() {
 
 			@Override

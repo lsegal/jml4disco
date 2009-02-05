@@ -1,15 +1,6 @@
-/*
- * ServerQueueFactory
- * 
- * Version 2.0 
- *
- * January 28th, 2009
- * 
- * Contributors:
- * R Le Guen, N Grigoropoulos
- */
 package org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues;
 
+import java.net.MalformedURLException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -19,13 +10,13 @@ import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.implementa
  * This factory class will return an instance of SeverQueue. If no instance yet
  * has been created, it will create one and initialize it.
  */
-public final class ServerQueueFactory {
+public final class ServerQueueRegistry {
 
-	private static final String PROPERTIES_FILE = "dispatch"; // To initialize
+	private static final String PROPERTIES_FILE = "jml4-disco-dispatcher"; // To initialize
 																// the servers
-	private static ServerQueue serverRegistry = null;
+	private static ServerQueue serverqueue = null;
 
-	private ServerQueueFactory() {
+	private ServerQueueRegistry() {
 
 	}
 
@@ -34,9 +25,9 @@ public final class ServerQueueFactory {
 	 */
 	public static final ServerQueue getRemoteProveVcServerQueueInstance() {
 
-		if (serverRegistry == null)
-			serverRegistry = initServers();
-		return serverRegistry;
+		if (serverqueue == null)
+			serverqueue = initServers();
+		return serverqueue;
 	}
 
 	/**
@@ -52,16 +43,30 @@ public final class ServerQueueFactory {
 			// TODO check that numberOfServers key exists
 			int numberOfServers = Integer.parseInt(bundle
 					.getString("numberOfServers"));
-			ServerQueue newRegistry = new ServerQueue(numberOfServers);
+			ServerQueue newqueue = new ServerQueue(numberOfServers);
 
 			for (int i = 1; i <= numberOfServers; i++) {
-				newRegistry.add(new RemoteTomCatServer(bundle
-						.getString("vcServer." + i)));
+				String serverInfo = bundle.getString("proverServer." + i);
+				try {
+					newqueue.add(new RemoteTomCatServer(serverInfo));
+				}
+				catch(MalformedURLException e) {
+					System.out.println("Unable to add server '"+serverInfo+"'");
+					e.printStackTrace();
+				}
 			}
-			return newRegistry;
+			return newqueue;
 		} catch (MissingResourceException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static void addServer(String serverInfo) throws ServerQueueRegistryException {
+		try {
+			getRemoteProveVcServerQueueInstance().add(new RemoteTomCatServer(serverInfo));
+		} catch (MalformedURLException e) {
+			throw new ServerQueueRegistryException("Unable to add server '"+serverInfo+"'", e);
+		}
 	}
 }

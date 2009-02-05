@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import org.jmlspecs.jml4.esc.Esc;
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.AbstractRemoteServer;
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerQueue;
-import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerQueueFactory;
+import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerQueueRegistry;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 import org.jmlspecs.jml4.esc.vc.lang.VC;
 import org.jmlspecs.jml4.esc.vc.lang.VcProgram;
@@ -44,7 +44,7 @@ public class VcProgramDispatchingServer {
 	public static Result[] proveVcProgram(final VcProgram vcProg) {
 
 		// Get the server queue
-		ServerQueue _servers = ServerQueueFactory
+		ServerQueue _servers = ServerQueueRegistry
 				.getRemoteProveVcServerQueueInstance();
 
 		// Break up the VCProgram

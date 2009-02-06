@@ -54,7 +54,7 @@ public class BigWhileTests extends AbstractRegressionTest {
 
 //	private final String testsPath = "tests" + File.separatorChar + "esc" + File.separatorChar;
 	// the line above fails under linux.  the following works under both linux & cygwin.
-	private final String testsPath = "tests" + '\\' + "esc" + '\\';
+	protected final String testsPath = "tests" + '\\' + "esc" + '\\';
 
 	public void test_000_assertFalse() {
 		this.runNegativeTest(new String[] {
@@ -127,7 +127,7 @@ public class BigWhileTests extends AbstractRegressionTest {
 				"            }\n" +
 				"      }\n" +
 				"   }\n" +
-				"  //@ requires i;" +
+				"  //@ requires i;\n" +
 				"  public void m_break_2d(boolean b, boolean i) {\n" +
 				"      if (b) {\n" +
 				"          //@ loop_invariant i;\n" +
@@ -138,7 +138,7 @@ public class BigWhileTests extends AbstractRegressionTest {
 				"      }\n" +
 				"  }\n" +
 				"  //@ requires i & j;" +
-				"  //@ ensures  b & i & j;" +
+				"  //@ ensures  b & i & j;\n" +
 				"  public void m_break_3d(boolean b, boolean i, boolean j) {\n" +
 				"      if (b) {\n" +
 				"          //@ loop_invariant i;\n" +
@@ -150,7 +150,7 @@ public class BigWhileTests extends AbstractRegressionTest {
 				"      }\n" +
 				"      //@ assert b & i & j; // we don't know b\n" +
 				"  }\n" +
-				"  //@ requires i & j;" +
+				"  //@ requires i & j;\n" +
 				"  public void m_break_4d(boolean b, boolean i, boolean j) {\n" +
 				"      if (b) {\n" +
 				"          //@ loop_invariant i;\n" +

@@ -1,5 +1,6 @@
 package org.jmlspecs.jml4.esc.distribution.http.config.servlets;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -31,19 +32,46 @@ public class ConfigWorkbench extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		processRequest(request, response);
+		String webroot = request.getContextPath()+request.getServletPath();
+		try {
+			
+			if(request.getRequestURI().substring(0, webroot.length()).equals(webroot)) {
+				String in = request.getRequestURI().substring(webroot.length());
+				if(in.length()>0 && in.charAt(0)=='/') {
+					in = in.substring(1);
+				}
+
+				if(new File(getServletConfig().getServletContext().getRealPath("/WEB-INF/config-workbench/"+in+".get.jsp")).exists()) {
+					PrintWriter response_out = response.getWriter();
+					response_out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+					response_out.println("<html>");
+					response_out.println("<head>");
+					response_out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+					response_out.println("<title>JML4 Disco Configuration Interface | "+in+"</title>");
+					response_out.println("<title>JML4 Disco Configuration Interface | "+in+"</title>");
+					response_out.println("</head>");
+					response_out.println("<body>");
+					getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/config-workbench/"+in+".get.jsp").include(request,response);
+					response.getWriter().println("<!--added from the servlet-->");
+					response_out.println("</body>");
+					response_out.println("</html>");
+				}
+				else {
+					response.setStatus(404);
+				}
+			}
+			else {
+				throw new ServletException("Unable to determine requested resource.");
+			}
+		} catch (IOException e) {
+			throw new ServletException(e);
+		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		processRequest(request, response);
-	}
-
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		String webroot = request.getContextPath()+request.getServletPath();
 		String out = "";
 		String command = "";
@@ -87,9 +115,10 @@ public class ConfigWorkbench extends HttpServlet {
 			response_out.println("<head>");
 			response_out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 			response_out.println("<title>JML4 Disco Configuration Interface | "+command+"</title>");
+			response_out.println("<title>JML4 Disco Configuration Interface | "+command+"</title>");
 			response_out.println("</head>");
 			response_out.println("<body>");
-			getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/ConfigWorkbench/"+command+".jsp").include(request,response);
+			getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/config-workbench/"+command+".post.jsp").include(request,response);
 			response.getWriter().println("<!--added from the servlet-->");
 			response_out.println("</body>");
 			response_out.println("</html>");

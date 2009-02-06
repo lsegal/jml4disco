@@ -31,76 +31,33 @@ public class ConfigWorkbench extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String webroot = request.getContextPath()+request.getServletPath();
-		try {
-			
-			if(request.getRequestURI().substring(0, webroot.length()).equals(webroot)) {
-				String in = request.getRequestURI().substring(webroot.length());
-				if(in.length()>0 && in.charAt(0)=='/') {
-					in = in.substring(1);
-				}
-
-				String path = "/WEB-INF/config-workbench/"+in+".get.jsp";
-				String filename = getServletConfig().getServletContext().getRealPath(path);
-				File f = new File(filename); 
-				if(f.exists()) {
-					PrintWriter response_out = response.getWriter();
-					response_out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
-					response_out.println("<html>");
-					response_out.println("<head>");
-					response_out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-					response_out.println("<title>JML4 Disco Configuration Interface | "+in+"</title>");
-					response_out.println("<meta name='keywords' content='' />");
-					response_out.println("<meta name='description' content='' />");
-					response_out.println("<link href='default.css' rel='stylesheet' type='text/css' />");
-					response_out.println("</head>");
-					response_out.println("<body>");
-					response_out.println("<div id='header'>");
-					response_out.println("<div id='menu'>");
-					response_out.println("	<ul>");
-					response_out.println("		<li><a href='index' title=''>JML4 Disco - Server Config</a></li>");
-					response_out.println("		<li><a href='AddServers' title=''>Add Servers</a></li>");
-					response_out.println("	</ul>");
-					response_out.println("</div>");
-					response_out.println("</div>");
-					response_out.println("<div>");
-					getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/config-workbench/"+in+".get.jsp").include(request,response);
-					response_out.println("</div>");
-					response.getWriter().println("<!--added from the servlet-->");
-					response_out.println("</body>");
-					response_out.println("</html>");
-				}
-				else {
-					path = "/WEB-INF/config-workbench/"+in;
-					filename = getServletConfig().getServletContext().getRealPath(path);
-					f = new File(filename); 
-					if(f.exists()) {
-						getServletConfig().getServletContext().getRequestDispatcher(path).include(request,response);
-					}
-					else {
-						response.setStatus(404);
-					}
-				}
-			}
-			else {
-				throw new ServletException("Unable to determine requested resource.");
-			}
-		} catch (IOException e) {
-			throw new ServletException(e);
-		}
+		processRequest(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
+	
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String webroot = request.getContextPath()+request.getServletPath();
-		String out = "";
+		String out = ""; // out will be a temporary variable being used to cheaply produce output... should be removed after a while.
 		String command = "";
+		String in = "";
+		if(request.getRequestURI().substring(0, webroot.length()).equals(webroot)) {	// This servlet assumes that the Request URI starts with the context path followed by the Servlet Path.
+																						// If that assumption does not hold, this servlet will not work.
+			in = request.getRequestURI().substring(webroot.length());
+		}
+		else {
+			throw new ServletException("Unable to determine command name.");
+		}
+		
 		try {
-			if(request.getRequestURI().substring(0, webroot.length()).equals(webroot)) {
-				String in = request.getRequestURI().substring(webroot.length());
+			/*
+			 * Here we are processing the requested URI...
+			 */
 				if(in.length()>0 && in.charAt(0)=='/') {
 					in = in.substring(1);
 				}
@@ -118,10 +75,7 @@ public class ConfigWorkbench extends HttpServlet {
 					response.setStatus(404);
 					return;
 				}
-			}
-			else {
-				throw new ServletException("Unable to determine command name.");
-			}
+
 		} catch(CommandNotFoundException e) {
 			response.setStatus(404);
 			return;
@@ -132,23 +86,52 @@ public class ConfigWorkbench extends HttpServlet {
 		request.setAttribute("out", out);
 		
 		try {
-			PrintWriter response_out = response.getWriter();
-			response_out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
-			response_out.println("<html>");
-			response_out.println("<head>");
-			response_out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-			response_out.println("<title>JML4 Disco Configuration Interface | "+command+"</title>");
-			response_out.println("<title>JML4 Disco Configuration Interface | "+command+"</title>");
-			response_out.println("</head>");
-			response_out.println("<body>");
-			getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/config-workbench/"+command+".post.jsp").include(request,response);
-			response.getWriter().println("<!--added from the servlet-->");
-			response_out.println("</body>");
-			response_out.println("</html>");
+			String path = "/WEB-INF/config-workbench/"+in+"."+request.getMethod().toLowerCase()+".jsp";
+			String filename = getServletConfig().getServletContext().getRealPath(path);
+			File f = new File(filename); 
+			if(f.exists()) {
+				PrintWriter response_out = response.getWriter();
+				/*
+				 * This method currently contains some basic layout code... this will eventually be moved out of this class into another.
+				 */
+				response_out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+				response_out.println("<html>");
+				response_out.println("<head>");
+				response_out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+				response_out.println("<title>JML4 Disco Configuration Interface | "+in+"</title>");
+				response_out.println("<meta name='keywords' content='' />");
+				response_out.println("<meta name='description' content='' />");
+				response_out.println("<link href='default.css' rel='stylesheet' type='text/css' />");
+				response_out.println("</head>");
+				response_out.println("<body>");
+				response_out.println("<div id='header'>");
+				response_out.println("<div id='menu'>");
+				response_out.println("	<ul>");
+				response_out.println("		<li><a href='index' title=''>JML4 Disco - Server Config</a></li>");
+				response_out.println("		<li><a href='AddServers' title=''>Add Servers</a></li>");
+				response_out.println("	</ul>");
+				response_out.println("</div>");
+				response_out.println("</div>");
+				response_out.println("<div>");
+				getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/config-workbench/"+in+".get.jsp").include(request,response);
+				response_out.println("</div>");
+				response_out.println("</body>");
+				response_out.println("</html>");
+			}
+			else {
+				path = "/WEB-INF/config-workbench/"+in;
+				filename = getServletConfig().getServletContext().getRealPath(path);
+				f = new File(filename); 
+				if(f.exists()) {
+					getServletConfig().getServletContext().getRequestDispatcher(path).include(request,response);
+				}
+				else {
+					response.setStatus(404);
+				}
+			}
 		} catch (IOException e) {
 			throw new ServletException(e);
 		}
-		
 	}
 
 }

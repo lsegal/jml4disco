@@ -7,9 +7,6 @@ import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.jmlspecs.jml4.compiler.DefaultCompilerExtension;
 import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
-import org.jmlspecs.jml4.fspv.phases.SimplTranslation;
-import org.jmlspecs.jml4.fspv.phases.SimplTranslationOld;
-import org.jmlspecs.jml4.fspv.phases.TheoryTranslation;
 import org.jmlspecs.jml4.fspv.theory.Theory;
 import org.jmlspecs.jml4.util.Logger;
 
@@ -37,31 +34,19 @@ public class Fspv extends DefaultCompilerExtension {
 				|| unit.hasErrors()) 
 			return;
 
-		if(false){
-			// Phase 1: JML + Java AST ==> Theory AST
-			TheoryTranslation ttv = new TheoryTranslation();
-			unit.traverse(ttv, unit.scope);
-			// Phase ?: Translation to Simpl
-			SimplTranslation simplTranslation = new SimplTranslation();
-			ttv.theory.traverse(simplTranslation);
-//			SimplTranslationOld stv = new SimplTranslationOld();
-//			ttv.theory.traverse(stv);
-//			Logger.println(stv.thy);
-		} else {
-			// STEP 1: JML + Java AST into Theory AST
-			TheoryTranslator v = new TheoryTranslator();
-			unit.traverse(v, unit.scope);
-			// STEP 2: Decorate Theory AST with pre-state information.
-			PrestateDecorator pv = new PrestateDecorator();
-			Theory theoryWithSideEffects = (Theory) v.theory.visit(pv);
-			// STEP 3: Eliminate expressions with Side-Effects
-			SideEffectHandler sev = new SideEffectHandler();
-			Theory theoryWoutSideEffects = (Theory) theoryWithSideEffects.visit(sev);
-			// STEP 4: Translate theory into Isabelle/Simpl
-			SimplTranslator iv = new SimplTranslator();
-			String theory = (String) theoryWoutSideEffects.visit(iv); // TODO: change this to theoryWout... once the visitor is implemented.
-			System.out.println(theory);
-		}
+		// STEP 1: JML + Java AST into Theory AST
+		TheoryTranslator v = new TheoryTranslator();
+		unit.traverse(v, unit.scope);
+		// STEP 2: Decorate Theory AST with pre-state information.
+		PrestateDecorator pv = new PrestateDecorator();
+		Theory theoryWithSideEffects = (Theory) v.theory.visit(pv);
+		// STEP 3: Eliminate expressions with Side-Effects
+		SideEffectHandler sev = new SideEffectHandler();
+		Theory theoryWoutSideEffects = (Theory) theoryWithSideEffects.visit(sev);
+		// STEP 4: Translate theory into Isabelle/Simpl
+		SimplTranslator iv = new SimplTranslator();
+		String theory = (String) theoryWoutSideEffects.visit(iv); // TODO: change this to theoryWout... once the visitor is implemented.
+		System.out.println(theory);
 	}
 
 	public void optionsToBuffer(CompilerOptions options, StringBuffer buf) {

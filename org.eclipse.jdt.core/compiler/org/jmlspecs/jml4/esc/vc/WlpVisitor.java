@@ -287,7 +287,7 @@ public class WlpVisitor {
 
 	public VC visit(CfgArrayReference arrayRef) {
 		VC receiver = arrayRef.receiver.accept(this);
-		VC position = arrayRef.position.accept(this);
+		VC position = arrayRef.receiver.accept(this);
 		return new VcArrayReference(receiver, position, arrayRef.incarnation(), arrayRef.type, arrayRef.sourceStart, arrayRef.sourceEnd);
 	}
 

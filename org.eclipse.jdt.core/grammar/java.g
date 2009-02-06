@@ -57,12 +57,11 @@ $Terminals
 	StringLiteral
 
 	-- <jml-start id="level.0-1-a" />
-	-- In this section ($Terminals) we name grammar terminal symbols. It is important
-	-- to note that symbol names do not necessarily match their corresponding lexemes.
+	-- NOTE: that the following are the names of grammar terminal symbols
+	-- and that their names do not necessarily match their corresponding lexemes.
 	-- E.g. jml_assert's lexeme is "assert" (which in this particular case
 	-- has the prefix "jml_" so that we can distinguish between it and a
 	-- java "assert".
-	
 	-- NOTE: if you add the definition of a terminal symbol that is a keyword
 	-- then you also need to add it to:
 	-- org.eclipse.jdt.internal.compiler.problem.ProblemReporter.isKeyword()
@@ -73,16 +72,13 @@ $Terminals
 
     -- modifiers
     code_bigint_math code_java_math code_safe_math
-    forall
     ghost 
     helper 
     instance 
     model
-	mono_non_null
-	non_null non_null_by_default
-	nowarn -- nowarn is currently processed directly in the Scanner.
+	non_null non_null_by_default 
 	nullable nullable_by_default
-	old
+	mono_non_null
     pure 
     spec_public 
     spec_protected 
@@ -99,7 +95,7 @@ $Terminals
     axiom 
     BehaviorOrSynonym -- behaviour normal_behavior normal_behaviour exceptional_behavior exceptional_behaviour
     constraint
-    diverges diverges_redundantly
+    diverges
     EnsuresOrSynonym -- ensures post
     EnsuresRedundantlyOrSynonym
     implies_that
@@ -124,8 +120,6 @@ $Terminals
 	slash_exists
 	slash_max
 	slash_min
-	slash_not_assigned
-	slash_not_modified
 	slash_num_of
 	slash_product
 	slash_sum
@@ -245,7 +239,7 @@ $Alias
 	'='    ::= EQUAL
 	'@'	   ::= AT
 	'...'  ::= ELLIPSIS
--- <jml-start id="syntax" />
+-- <jml-start id="assignableClause" />
 	'..'   ::= DOTDOT
 	'<==>' ::= EQUIV
 	'==>'  ::= IMPLIES
@@ -253,8 +247,10 @@ $Alias
 	'<=!=>' ::= NOT_EQUIV
 	'|}'   ::= OR_RBRACE
 	'<=='  ::= REV_IMPLIES
+-- <jml-end id="assignableClause" />
+-- <jml-start id="subtype-expression" />
 	'<:'   ::= SUBTYPE
--- <jml-end id="syntax" />
+-- <jml-end id="subtype-expression" />
 $Start
 	Goal
 
@@ -316,11 +312,11 @@ Type ::= NullityModifier PrimitiveType
 -- <jml-end id="nnts" />
 -- <jml-start id="ownershipModifiers" />
 Type ::= OwnershipModifiers PrimitiveType
-/.$putCase /*jml*/consumeTypeWithOwnershipModifiers(); $break ./
+/.$putCase consumeTypeWithOwnershipModifiers(); $break ./
 Type ::= ReferenceType
-/.$putCase /*jml*/consumeReferenceTypeWithoutOwnershipModifiers(); $break ./
+/.$putCase consumeReferenceTypeWithoutOwnershipModifiers(); $break ./
 Type ::= OwnershipModifiers ReferenceType
-/.$putCase /*jml*/consumeTypeWithOwnershipModifiers(); $break ./
+/.$putCase consumeTypeWithOwnershipModifiers(); $break ./
 -- <jml-end id="ownershipModifiers" />
 /:$readableName Type:/
 
@@ -344,11 +340,11 @@ FloatingPointType -> 'double'
 
 ReferenceType ::= ClassOrInterfaceType
 /.$putCase consumeReferenceType();  $break ./
--- <jml-start id="nullity" />
+-- <jml-start id="4" />
 -- TODO: make use of the opt
 ReferenceType ::= NullityModifier ClassOrInterfaceType
 /.$putCase consumeReferenceType();  $break ./
--- <jml-end id="nullity" />
+-- <jml-end id="4" />
 ReferenceType -> ArrayType
 /:$readableName ReferenceType:/
 
@@ -566,7 +562,7 @@ Modifier -> 'volatile'
 Modifier -> 'strictfp'
 -- <jml-begin id="level.0-1-a" />
 Modifier ::= JmlModifier
-/.$putCase /*jml*/consumeJmlModifierAsModifier(); $break ./
+/.$putCase consumeJmlModifierAsModifier(); $break ./
 -- <jml-end id="level.0-1-a" />
 Modifier ::= Annotation
 /.$putCase consumeAnnotationAsModifier(); $break ./
@@ -603,18 +599,18 @@ NullityModifier -> 'nullable'
 NullityModifier -> 'non_null'
 NullityModifier -> 'mono_non_null'
 NullityByDefaultModifier ::= 'non_null_by_default'
-/.$putCase /*jml*/consumeDefaultNullity(); $break ./
+/.$putCase consumeDefaultNullity(); $break ./
 NullityByDefaultModifier ::= 'nullable_by_default'
-/.$putCase /*jml*/consumeDefaultNullity(); $break ./
+/.$putCase consumeDefaultNullity(); $break ./
 /:$readableName NullityByDefaultModifier:/
 -- <jml-end id="level.0-1-a" />
 	
 -- <jml-start id="ownershipModifiers" />
 --ownership-modifiers ::= ownership-modifier [ ownership-modifier ]
 OwnershipModifiers ::= OwnershipModifier
-/.$putCase /*jml*/consumeOwnershipModifiers(1); $break ./
+/.$putCase consumeOwnershipModifiers(1); $break ./
 OwnershipModifiers ::= OwnershipModifier OwnershipModifier
-/.$putCase /*jml*/consumeOwnershipModifiers(2); $break ./
+/.$putCase consumeOwnershipModifiers(2); $break ./
 /:$readableName NullityByDefaultModifier:/
 
 --ownership-modifier ::= \rep | \peer | \readonly | reserved-ownership-modifier // with --universesx parse or --universesx full
@@ -747,7 +743,7 @@ FieldDeclaration ::= Modifiersopt Type VariableDeclarators ';'
 /.$putCase consumeFieldDeclaration(); $break ./
 -- <jml-start id="level.0.data-groups" />
 FieldDeclaration ::= Modifiersopt Type VariableDeclarators ';' JmlDataGroupClauseSeq
-/.$putCase /*jml*/consumeFieldDeclarationWithDataGroupClause(); $break ./
+/.$putCase consumeFieldDeclarationWithDataGroupClause(); $break ./
 -- <jml-end id="level.0.data-groups" />
 /:$readableName FieldDeclaration:/
 
@@ -809,7 +805,7 @@ MethodDeclaration ::= MethodHeader MethodBody
 -- <jml-start id="level.0-1-a" />
 MethodDeclaration ::= MethodSpecification MethodHeader MethodBody 
 /.$putCase // set to true to consume a method with a body
-  /*jml*/consumeSpecedMethodDeclaration(true);  $break ./
+  consumeSpecedMethodDeclaration(true);  $break ./
 /:$readableName SpecedMethodDeclaration:/
 -- <jml-end id="level.0-1-a" />
 
@@ -820,7 +816,7 @@ AbstractMethodDeclaration ::= MethodHeader ';'
 -- <jml-start id="level.0-1-a">
 AbstractMethodDeclaration ::= MethodSpecification MethodHeader ';'
 /.$putCase // set to false to consume a method without body
-   /*jml*/consumeSpecedMethodDeclaration(false); $break ./
+   consumeSpecedMethodDeclaration(false); $break ./
 /:$readableName MethodDeclaration:/
 -- <jml-end id="level.0-1-a">
 
@@ -914,10 +910,10 @@ ConstructorDeclaration ::= ConstructorHeader ';'
 /:$readableName ConstructorDeclaration:/
 -- <jml-start id="level.0-1-a"> 
 ConstructorDeclaration ::= MethodSpecification ConstructorHeader MethodBody
-/.$putCase /*jml*/consumeSpecedConstructorDeclaration() ; $break ./ 
+/.$putCase consumeSpecedConstructorDeclaration() ; $break ./ 
 -- These rules are added to be able to parse constructors with no body
 ConstructorDeclaration ::= MethodSpecification ConstructorHeader ';'
-/.$putCase /*jml*/consumeInvalidSpecedConstructorDeclaration(false) ; $break ./ 
+/.$putCase consumeInvalidSpecedConstructorDeclaration(false) ; $break ./ 
 /:$readableName SpecedConstructorDeclaration:/
 -- <jml-end id="level.0-1-a">
 
@@ -1021,7 +1017,7 @@ InterfaceMemberDeclaration ::= MethodHeader MethodBody
 -- <jml-start id="level.0-1-a" />
 InterfaceMemberDeclaration -> JmlTypeBodyDeclaration
 InterfaceMemberDeclaration ::= MethodSpecification MethodHeader MethodBody
-/.$putCase /*jml*/consumeInvalidSpecedMethodDeclaration(); $break ./
+/.$putCase consumeInvalidSpecedMethodDeclaration(); $break ./
 /:$readableName InterfaceMemberDeclaration:/
 -- <jml-end id="level.0-1-a" />
 
@@ -1033,9 +1029,9 @@ InvalidConstructorDeclaration ::= ConstructorHeader ';'
 /:$readableName InvalidConstructorDeclaration:/
 -- <jml-start id="level.0-1-a" />
 InvalidConstructorDeclaration ::= MethodSpecification ConstructorHeader MethodBody
-/.$putCase /*jml*/consumeInvalidSpecedConstructorDeclaration(true);  $break ./
+/.$putCase consumeInvalidSpecedConstructorDeclaration(true);  $break ./
 InvalidConstructorDeclaration ::= MethodSpecification ConstructorHeader ';'
-/.$putCase /*jml*/consumeInvalidSpecedConstructorDeclaration(false);  $break ./
+/.$putCase consumeInvalidSpecedConstructorDeclaration(false);  $break ./
 /:$readableName InvalidConstructorDeclaration:/
 -- <jml-end id="level.0-1-a" />
 
@@ -1192,7 +1188,7 @@ JmlStatementWithoutTrailingSubstatement -> JmlSetStatement
 -- Considering semantics, (and taking advantage of LR grammar), set-statement ::= set assignment ;
 -- <jml-start id="level.0.statements" />
 JmlSetStatement ::= 'set' Assignment ExitJmlClause ';'
-/.$putCase /*jml*/consumeJmlSetStatement() ; $break ./
+/.$putCase consumeJmlSetStatement() ; $break ./
 
 --set-statement ::= set assignment-expr ;
 -- <jml-start id="level.0.statements" />
@@ -1282,7 +1278,7 @@ WhileStatement ::= 'while' '(' Expression ')' Statement
 -- <jml-start id="jml.loop-annotations" />
 --annotated-loop ::= loop-annotations while ( expression ) statement
 WhileStatement ::= JmlLoopAnnotations 'while' '(' Expression ')' Statement
-/.$putCase /*jml*/consumeStatementWhileWithAnnotations() ; $break ./
+/.$putCase consumeStatementWhileWithAnnotations() ; $break ./
 /:$readableName WhileStatement:/
 -- <jml-end id="jml.loop-annotations" />
 
@@ -1291,44 +1287,52 @@ WhileStatementNoShortIf ::= 'while' '(' Expression ')' StatementNoShortIf
 /:$readableName WhileStatement:/
 
 -- <jml-start id="jml.loop-annotations" />
--- annotated-loop ::= loop-annotations while ( expression ) statement
+--annotated-loop ::= loop-annotations while ( expression ) statement
 WhileStatementNoShortIf ::= JmlLoopAnnotations 'while' '(' Expression ')' StatementNoShortIf
-	/.$putCase /*jml*/consumeStatementWhileWithAnnotations() ; $break ./
-	/:$readableName WhileStatement:/
+/.$putCase consumeStatementWhileWithAnnotations() ; $break ./
+/:$readableName WhileStatement:/
 
 -- loop-annotation ::= loop-invariant | loop-invariant loop-variant | loop-variant
-JmlLoopAnnotations ::= 
-	JmlLoopInvariantSeq JmlLabelopt 
-		/.$putCase /*jml*/consumeLoopAnnotations(/*hasInvariantSeq*/true, /*hasVariantSeq*/false); $break ./
-	| JmlLoopVariantSeq JmlLabelopt
-		/.$putCase /*jml*/consumeLoopAnnotations(/*hasInvariantSeq*/false, /*hasVariantSeq*/true); $break ./
-	| JmlLoopInvariantSeq JmlLoopVariantSeq JmlLabelopt 
-		/.$putCase /*jml*/consumeLoopAnnotations(/*hasInvariantSeq*/true, /*hasVariantSeq*/true); $break ./
-	/:$readableName JmlLoopAnnotation:/
+JmlLoopAnnotations ::= JmlLoopInvariantSeq JmlLabelopt 
+/.$putCase consumeLoopAnnotationsWithJustInvariants() ; $break ./
+JmlLoopAnnotations ::= JmlLoopVariantSeq JmlLabelopt
+/.$putCase consumeLoopAnnotationsWithJustVariants() ; $break ./
+JmlLoopAnnotations ::= JmlLoopInvariantSeq JmlLoopVariantSeq JmlLabelopt 
+/.$putCase consumeLoopAnnotations() ; $break ./
+/:$readableName JmlLoopAnnotation:/
 
-JmlLabelopt ::= $empty /.$putCase /*jml*/consumeEmptyJmlLabel() ; $break ./
-	| Label ':'
-	/:$readableName JmlLabel:/
+JmlLabelopt ::= $empty
+/.$putCase consumeEmptyJmlLabel() ; $break ./
+JmlLabelopt -> Label ':'
+/:$readableName JmlLabel:/
 
-JmlLoopInvariantSeq ::= JmlLoopInvariant
-	| JmlLoopInvariantSeq JmlLoopInvariant
-		/.$putCase /*jml*/consumeJmlLoopInvariantSeq(); $break ./
+JmlLoopInvariantSeq -> JmlLoopInvariant
+JmlLoopInvariantSeq ::= JmlLoopInvariantSeq JmlLoopInvariant
+/.$putCase consumeJmlLoopInvariantSeq(); $break ./
+/:$readableName JmlLoopInvariantSeq:/
 
-JmlLoopVariantSeq ::= JmlLoopVariant
-	| JmlLoopVariantSeq JmlLoopVariant
-		/.$putCase /*jml*/consumeJmlLoopVariantSeq(); $break ./
+JmlLoopVariantSeq -> JmlLoopVariant
+JmlLoopVariantSeq ::= JmlLoopVariantSeq JmlLoopVariant
+/.$putCase consumeJmlLoopVariantSeq(); $break ./
+/:$readableName JmlLoopVariantSeq:/
 
--- loop-invariant ::= maintaining-keyword predicate ';'
+--loop-invariant ::= maintaining-keyword predicate ;
 JmlLoopInvariant ::= MaintainingKeyword Predicate ExitJmlClause ';'
-	/.$putCase /*jml*/consumeJmlClause() ; $break ./
+/.$putCase consumeLoopInvariant() ; $break ./
+/:$readableName LoopInvariant:/
+--maintaining-keyword ::= loop_invariant
+MaintainingKeyword -> 'loop_invariant'
+MaintainingKeyword -> 'loop_invariant_redundantly'
+/:$readableName MaintainingKeyword:/
 
-MaintainingKeyword -> 'loop_invariant' | 'loop_invariant_redundantly'
-	/:$readableName LoopInvariantOrMaintainingKeyword:/
-
+--loop-variant ::= decreasing-keyword predicate ;
 JmlLoopVariant ::= DecreasingKeyword Predicate ExitJmlClause ';'
-	/.$putCase /*jml*/consumeJmlClause() ; $break ./
-
-DecreasingKeyword -> 'decreases' | 'decreases_redundantly'
+/.$putCase consumeLoopVariant() ; $break ./
+/:$readableName LoopVariant:/
+--decreasing-keyword ::= decreasing | decreasing_redundantly
+DecreasingKeyword -> 'decreases'
+DecreasingKeyword -> 'decreases_redundantly'
+/:$readableName DecreasingKeyword:/
 -- <jml-end id="jml.loop-annotations" />
 
 DoStatement ::= 'do' Statement 'while' '(' Expression ')' ';'
@@ -1337,7 +1341,7 @@ DoStatement ::= 'do' Statement 'while' '(' Expression ')' ';'
 -- <jml-start id="jml.loop-annotations" />
 --annotated-loop ::= loop-annotations do statement while ( expression ) 
 DoStatement ::= JmlLoopAnnotations 'do' Statement 'while' '(' Expression ')' ';'
-/.$putCase /*jml*/consumeStatementDoWithAnnotations() ; $break ./
+/.$putCase consumeStatementDoWithAnnotations() ; $break ./
 /:$readableName DoStatement:/
 -- <jml-end id="jml.loop-annotations" />
 
@@ -1348,7 +1352,7 @@ ForStatement ::= 'for' '(' ForInitopt ';' Expressionopt ';' ForUpdateopt ')' Sta
 -- <jml-start id="jml.loop-annotations" />
 --annotated-loop ::= loop-annotations do statement while ( expression ) 
 ForStatement ::= JmlLoopAnnotations 'for' '(' ForInitopt ';' Expressionopt ';' ForUpdateopt ')' Statement
-/.$putCase /*jml*/consumeStatementForWithAnnotations() ; $break ./
+/.$putCase consumeStatementForWithAnnotations() ; $break ./
 /:$readableName ForStatement:/
 -- <jml-end id="jml.loop-annotations" />
 
@@ -1359,7 +1363,7 @@ ForStatementNoShortIf ::= 'for' '(' ForInitopt ';' Expressionopt ';' ForUpdateop
 -- <jml-start id="jml.loop-annotations" />
 --annotated-loop ::= loop-annotations do statement while ( expression ) 
 ForStatementNoShortIf ::= JmlLoopAnnotations 'for' '(' ForInitopt ';' Expressionopt ';' ForUpdateopt ')' StatementNoShortIf
-/.$putCase /*jml*/consumeStatementForWithAnnotations() ; $break ./
+/.$putCase consumeStatementForWithAnnotations() ; $break ./
 /:$readableName ForStatement:/
 -- <jml-end id="jml.loop-annotations" />
 
@@ -1396,9 +1400,9 @@ AssertStatement ::= 'assert' Expression ':' Expression ';'
 --WARNING: we propose dropping the assert_redundantly clause.
 --assert-redundantly-statement ::= assert_redundantly predicate [ : expression ] ;
 JmlAssertStatement ::= 'jml_assert' Predicate ExitJmlClause ';'
-/.$putCase /*jml*/consumeJmlSimpleAssertStatement() ; $break ./
+/.$putCase consumeJmlSimpleAssertStatement() ; $break ./
 JmlAssertStatement ::= 'jml_assert' Predicate ':' Expression ExitJmlClause ';'
-/.$putCase /*jml*/consumeJmlAssertStatement() ; $break ./
+/.$putCase consumeJmlAssertStatement() ; $break ./
 /:$readableName JmlAssertStatement:/
 
 --assume-statement ::= assume-keyword predicate [ : expression ] ;
@@ -1406,9 +1410,9 @@ JmlAssertStatement ::= 'jml_assert' Predicate ':' Expression ExitJmlClause ';'
 --should be -> assume-keyword ::= assume | assume_redundantly
 --for now is-> assume-keyword ::= assume
 JmlAssumeStatement ::= 'assume' Predicate ExitJmlClause ';'
-/.$putCase /*jml*/consumeJmlSimpleAssumeStatement() ; $break ./
+/.$putCase consumeJmlSimpleAssumeStatement() ; $break ./
 JmlAssumeStatement ::= 'assume' Predicate ':' Expression ExitJmlClause ';'
-/.$putCase /*jml*/consumeJmlAssumeStatement() ; $break ./
+/.$putCase consumeJmlAssumeStatement() ; $break ./
 /:$readableName JmlAssumeStatement:/
 -- <jml-end id="jmlstatements.level.0" />
 
@@ -1483,8 +1487,100 @@ PushRPAREN ::= ')'
 Primary -> PrimaryNoNewArray
 Primary -> ArrayCreationWithArrayInitializer
 Primary -> ArrayCreationWithoutArrayInitializer
+-- <jml-start id="level.0.expression" />
+--(should be) level 0
+Primary -> JmlPrimary 
+-- <jml-end id="level.0.expression" />
 /:$readableName Expression:/
 
+-- <jml-start id="level.0.expression" />
+-- (should be) level 0
+-- jml-primary ::= '\result'
+--   | fresh-expression | informal-description  | old-expression
+--   | quantified-expr | type-expression | jml-unary-expression
+
+JmlPrimary ::= 'slash_result'
+/.$putCase consumeJmlPrimaryResult(); $break ./
+JmlPrimary -> JmlFreshExpression
+	| 'InformalDescription'
+	| JmlQuantifiedExpression
+--should be -> old-expression ::= '\old' '(' spec-expression [ ',' ident ] ')'
+--for now is-> old-expression ::= '\old' '(' spec-expression ')'
+JmlPrimary ::= slash_old '(' SpecExpression ')'
+/.$putCase consumeJmlPrimaryOldExpression(OperatorIds.JML_OLD); $break ./
+JmlPrimary ::= slash_old '(' SpecExpression ',' Identifier ')'
+/.$putCase consumeJmlPrimaryLabeledOldExpression(OperatorIds.JML_OLD); $break ./
+JmlPrimary -> JmlUnaryExpression
+/:$readableName JmlPrimary:/
+
+-- fresh-expression ::= \fresh '(' spec-expression-list ')'
+JmlFreshExpression ::= slash_fresh '(' ArgumentList ')'
+/.$putCase consumeJmlFreshExpression(); $break ./
+/:$readableName JmlFreshExpression:/
+
+-- jml-unary-expression ::= jml-unary-expr-operator '(' spec-expression ')'
+-- jml-unary-operator ::= '\elemtype' | '\nonnullelements' | '\pre' | '\typeof' | '\type'
+JmlUnaryExpression ::= slash_pre '(' SpecExpression ')'
+/.$putCase consumeJmlUnaryExpression(OperatorIds.JML_PRE); $break ./
+JmlUnaryExpression ::= slash_nonnullelements '(' SpecExpression ')'
+/.$putCase consumeJmlUnaryExpression(OperatorIds.JML_NONNULLELEMENTS); $break ./
+JmlUnaryExpression ::= slash_typeof '(' SpecExpression ')'
+/.$putCase consumeJmlTypeofExpression(OperatorIds.JML_TYPEOF); $break ./
+JmlUnaryExpression ::= 'slash_type' '(' Type ')'
+/.$putCase consumeJmlTypeExpression(OperatorIds.JML_TYPE); $break ./
+JmlUnaryExpression ::= slash_elemtype '(' SpecExpression ')'
+/.$putCase consumeJmlElemtypeExpression(OperatorIds.JML_ELEMTYPE); $break ./
+/:$readableName JmlUnaryExpression:/
+
+--quantified-expr ::= '(' quantifier quantified-var-decls ';'
+--                            [ [ predicate ] ';' ]
+--                            spec-expression ')'
+JmlQuantifiedExpression ::= '(' JmlQuantifier JmlTypeSpec JmlQuantifiedVarDeclarators ';' SpecExpression ')'
+/.$putCase consumeJmlQuantifiedExpression(false); $break ./
+JmlQuantifiedExpression ::= '(' JmlQuantifier JmlTypeSpec JmlQuantifiedVarDeclarators ';' ';' SpecExpression ')'
+/.$putCase consumeJmlQuantifiedExpression(false); $break ./
+JmlQuantifiedExpression ::= '(' JmlQuantifier JmlTypeSpec JmlQuantifiedVarDeclarators ';' Predicate ';' SpecExpression ')'
+/.$putCase consumeJmlQuantifiedExpression(true); $break ./
+/:$readableName JmlQuantifiedExpression:/
+
+-- bound variable type-spec is restricted to primitive types and reference types, possibly with nullity modifiers
+-- (but not with ownership modifiers, which is why we don't just use "Type" in the above productions)
+
+JmlTypeSpec ::= PrimitiveType
+/.$putCase consumePrimitiveType(); $break ./
+JmlTypeSpec ::= NullityModifier PrimitiveType
+/.$putCase consumePrimitiveType(); $break ./
+JmlTypeSpec ::= ReferenceType
+/.$putCase consumeReferenceTypeWithoutOwnershipModifiers(); $break ./
+
+--quantified-var-decls ::= [ bound-var-modifiers ] type-spec quantified-var-declarator
+--                         [ , quantified-var-declarator ] ...
+--quantified-var-declarator ::= ident [ dims ]
+
+JmlQuantifiedVarDeclarators ::= Identifier Dimsopt
+/.$putCase consumeJmlQuantifiedVarDeclarators(true); $break ./
+JmlQuantifiedVarDeclarators ::= JmlQuantifiedVarDeclarators ',' Identifier Dimsopt
+/.$putCase consumeJmlQuantifiedVarDeclarators(false); $break ./
+/:$readableName JmlQuantifiedVarDeclarators:/
+
+--spec-variable-declarators ::= spec-variable-declarator [ , spec-variable-declarator ] ...
+--bound-var-modifiers ::= non_null | nullable
+
+--quantifier ::= \forall | \exists
+--        | \max | \min
+--        | \num_of | \product | \sum
+JmlQuantifier -> 'slash_forall' | 'slash_exists'
+	| 'slash_max' | 'slash_min' 
+	| 'slash_num_of' | 'slash_product' | 'slash_sum'
+/:$readableName JmlQuantifier:/
+
+--set-comprehension ::= { [ bound-var-modifiers ] type-spec quantified-var-declarator `|' set-comprehension-pred }
+--set-comprehension-pred ::= postfix-expr . has ( ident ) && predicate                                    
+JmlSetComprehension ::= '{' JmlTypeSpec Identifier Dimsopt '|' PostfixExpression && Predicate '}'
+/.$putCase consumeJmlSetComprehension(); $break ./
+/:$readableName JmlSetComprehension:/
+-- <jml-end id="level.0.expression" />
+        
 PrimaryNoNewArray -> Literal
 PrimaryNoNewArray ::= 'this'
 /.$putCase consumePrimaryNoNewArrayThis(); $break ./
@@ -1522,9 +1618,6 @@ PrimaryNoNewArray ::= PrimitiveType '.' 'class'
 
 PrimaryNoNewArray -> MethodInvocation
 PrimaryNoNewArray -> ArrayAccess
--- <jml-start id="level.0.expression" />
-PrimaryNoNewArray -> JmlPrimary 
--- <jml-end id="level.0.expression" />
 /:$readableName Expression:/
 --1.1 feature
 --
@@ -1539,7 +1632,7 @@ PrimaryNoNewArray -> JmlPrimary
 --        | array-decl [ array-initializer ]
 --        | set-comprehension
 ClassInstanceCreationExpression ::= 'new' ClassType JmlSetComprehension
-/.$putCase /*jml*/consumeClassInstanceCreationExpressionWithSetComprehension(); $break ./
+/.$putCase consumeClassInstanceCreationExpressionWithSetComprehension(); $break ./
 -- <jml-end id="level.0.set comprehensions" />
 AllocationHeader ::= 'new' ClassType '(' ArgumentListopt ')'
 /.$putCase consumeAllocationHeader(); $break ./
@@ -1629,13 +1722,13 @@ Dims ::= DimsLoop
 DimsLoop -> OneDimLoop
 DimsLoop ::= DimsLoop OneDimLoop
 -- <jml-start id="nntsElements" />
-/. $putCase /*jml*/consumeDimLoop(); $break ./
+/. $putCase consumeDimLoop(); $break ./
 -- <jml-end id="nntsElements" />
 /:$readableName Dimensions:/
 OneDimLoop ::= '[' ']'
 /. $putCase consumeOneDimLoop(); $break ./
 OneDimLoop ::= '[' NullityModifier ']'
-/. $putCase /*jml*/consumeOneDimLoopWithNullity(); $break ./
+/. $putCase consumeOneDimLoopWithNullity(); $break ./
 /:$readableName Dimension:/
 
 FieldAccess ::= Primary '.' 'Identifier'
@@ -1746,7 +1839,7 @@ CastExpression ::= PushLPAREN 'non_null' Name Dims PushRPAREN InsideCastExpressi
 -- <jml-end id="5" />
 -- <jml-start id="castNullityWithoutType" />
 CastExpression ::= PushLPAREN 'non_null' PushRPAREN InsideCastExpression UnaryExpression
-/.$putCase /*jml*/consumeCastExpressionWithoutType(); $break ./
+/.$putCase consumeCastExpressionWithoutType(); $break ./
 /:$readableName CastExpressionWithoutType:/
 -- <jml-end id="castNullityWithoutType" />
 
@@ -1802,7 +1895,7 @@ RelationalExpression ::= RelationalExpression '>=' ShiftExpression
 -- <jml-start id="subtype-expression" />
 --relational-expr ::= shift-expr '<:' shift-expr
 RelationalExpression ::= ShiftExpression '<:' ShiftExpression
-/.$putCase /*jml*/consumeJmlSubtypeExpression(); $break ./
+/.$putCase consumeJmlSubtypeExpression(); $break ./
 -- <jml-end id="subtype-expression" />
 
 InstanceofExpression -> RelationalExpression
@@ -2464,9 +2557,9 @@ RelationalExpression_NotName ::= Name '>=' ShiftExpression
 -- <jml-start id="subtype-expression" />
 --relational-expr ::= shift-expr '<:' shift-expr
 RelationalExpression_NotName ::= Name '<:' ShiftExpression
-/.$putCase /*jml*/consumeJmlSubtypeExpression(); $break ./
+/.$putCase consumeJmlSubtypeExpression(); $break ./
 RelationalExpression_NotName ::= RelationalExpression_NotName '<:' ShiftExpression
-/.$putCase /*jml*/consumeJmlSubtypeExpression(); $break ./
+/.$putCase consumeJmlSubtypeExpression(); $break ./
 -- <jml-end id="subtype-expression" />
 /:$readableName Expression:/
 
@@ -2729,161 +2822,32 @@ SingleMemberAnnotation ::= AnnotationName '(' SingleMemberAnnotationMemberValue 
 -----------------------------------
 -- JML level 0-1-a : START       --
 -----------------------------------
-UnusedMarkerOfStartOfJmlSection ::= '*'
 
+--checked(jmlSpecExpression)
 SpecExpression -> Expression
+/:$readableName SpecExpression:/
 
--- (should be) level 0
--- jml-primary // alternatives are presented in alphabetical order
---  ::=  '\elemtype' '(' spec-expression ')'
---   | '\fresh' '(' spec-expression-list ')'
---   | informal-description  
---   | '\nonnullelements' '(' spec-expression ')'
---   | old-expression
---   | quantified-expr
---   | '\result' 
---   | '\type' '(' spec-expression ')'
---   | '\typeof' '(' spec-expression ')'
---   | jml-store-ref-range
-
-JmlPrimary
-  ::= slash_elemtype '(' SpecExpression ')'
-		/.$putCase /*jml*/consumeJmlElemtypeExpression(OperatorIds.JML_ELEMTYPE); $break ./
-	| slash_fresh '(' ArgumentList ')'
-		/.$putCase /*jml*/consumeJmlFreshExpression(); $break ./
-	| 'InformalDescription'
-	| slash_nonnullelements '(' SpecExpression ')'
-		/.$putCase /*jml*/consumeJmlUnaryExpression(OperatorIds.JML_NONNULLELEMENTS); $break ./
-	| JmlOldExpression
-	| JmlQuantifiedExpression
-	| 'slash_result'
-		/.$putCase /*jml*/consumeJmlPrimaryResult(); $break ./
-	| 'slash_type' '(' Type ')'
-		/.$putCase /*jml*/consumeJmlTypeExpression(OperatorIds.JML_TYPE); $break ./
-	| slash_typeof '(' SpecExpression ')'
-		/.$putCase /*jml*/consumeJmlTypeofExpression(OperatorIds.JML_TYPEOF); $break ./
-	| JmlOperationOverStoreRefs
-	| JmlMultiReferenceExpression
-	/:$readableName JmlPrimary:/
-
-JmlOperationOverStoreRefs 
-  ::= 'slash_not_assigned' JmlStoreRefListAsUnaryArgument
-		/.$putCase /*jml*/consumeJmlUnaryExpression(OperatorIds.JML_NOT_ASSIGNED); $break ./
-	| 'slash_not_modified' JmlStoreRefListAsUnaryArgument
-		/.$putCase /*jml*/consumeJmlUnaryExpression(OperatorIds.JML_NOT_MODIFIED); $break ./
---	| other operators like \only_assigned() ... can easily be addeded here.
-
-JmlStoreRefListAsUnaryArgument ::= '(' StoreRefSeq ')'
-	/.$putCase /*jml*/consumeJmlStoreRefSeqAsStoreRefListExpression(); $break ./
-
-JmlStoreRefExpression -> JmlReferenceExpression
-
-JmlReferenceExpression 
-  ::= Name -- consumePostfixExpression() pops a Name and pushes an Expression.
-		/.$putCase consumePostfixExpression(); $break ./
-	| Primary
-
-JmlMultiReferenceExpression ::= Name '.' '*'
-		/.$putCase /*jml*/consumeJmlMultiReferenceExpressionAsNameDotStar(); $break ./
-	| JmlMultiFieldAccess
-	| JmlArrayRangeAccess
-
-JmlMultiFieldAccess ::= Primary '.' '*'
-		/.$putCase /*jml*/consumeJmlMultiFieldAccess(false); $break ./
-	| 'super' '.' '*'
-		/.$putCase /*jml*/consumeJmlMultiFieldAccess(true); $break ./
-
-JmlArrayRangeAccess ::= Name '[' JmlArrayIndexRange ']'
-		/.$putCase /*jml*/consumeJmlArrayRangeAccess(true); $break ./
-	| PrimaryNoNewArray '[' JmlArrayIndexRange ']' -- PrimaryNoNewArray
-		/.$putCase /*jml*/consumeJmlArrayRangeAccess(false); $break ./
-
-JmlArrayIndexRange ::= '*'
-		/.$putCase /*jml*/consumeJmlArrayIndexRange(0); $break ./
-	| '..' Expression
-		/.$putCase /*jml*/consumeJmlArrayIndexRange(1); $break ./
-	| Expression '..'
-		/.$putCase /*jml*/consumeJmlArrayIndexRange(-1); $break ./
-	| Expression '..' Expression
-		/.$putCase /*jml*/consumeJmlArrayIndexRange(2); $break ./
-
--- store-ref-seq ::= store-ref [ ',' store-ref ]...
-StoreRefSeq ::= ArgumentList
-
-StoreRefKeyword -> 'slash_nothing' | 'slash_everything' | 'slash_not_specified'
-
-StoreRefSeqOrKeyword ::= StoreRefKeyword | StoreRefSeq
-	/.$putCase /*jml*/consumeJmlStoreRefSeqAsStoreRefListExpression(); $break ./
-
--- old-expression ::= '\old' '(' spec-expression [ ',' ident ] ')'
---                 |  '\pre' '(' spec-expression ')'
-JmlOldExpression ::= slash_old '(' SpecExpression ')'
-		/.$putCase /*jml*/consumeJmlPrimaryOldExpression(OperatorIds.JML_OLD); $break ./
-	| slash_old '(' SpecExpression ',' Identifier ')'
-		/.$putCase /*jml*/consumeJmlPrimaryLabeledOldExpression(OperatorIds.JML_OLD); $break ./
-	| slash_pre '(' SpecExpression ')'
-		/.$putCase /*jml*/consumeJmlUnaryExpression(OperatorIds.JML_PRE); $break ./
-
---quantified-expr ::= '(' quantifier quantified-var-decls ';'
---                            [ [ predicate ] ';' ]
---                            spec-expression ')'
-JmlQuantifiedExpression ::= '(' JmlQuantifier JmlTypeSpec JmlQuantifiedVarDeclarators ';' SpecExpression ')'
-		/.$putCase /*jml*/consumeJmlQuantifiedExpression(false); $break ./
-	| '(' JmlQuantifier JmlTypeSpec JmlQuantifiedVarDeclarators ';' ';' SpecExpression ')'
-		/.$putCase /*jml*/consumeJmlQuantifiedExpression(false); $break ./
-	| '(' JmlQuantifier JmlTypeSpec JmlQuantifiedVarDeclarators ';' Predicate ';' SpecExpression ')'
-		/.$putCase /*jml*/consumeJmlQuantifiedExpression(true); $break ./
-
--- bound variable type-spec is restricted to primitive types and reference types, possibly with nullity modifiers
--- (but not with ownership modifiers, which is why we don't just use "Type" in the above productions)
-
-JmlTypeSpec ::= PrimitiveType
-		/.$putCase consumePrimitiveType(); $break ./
-	| NullityModifier PrimitiveType
-		/.$putCase consumePrimitiveType(); $break ./
-	| ReferenceType
-		/.$putCase /*jml*/consumeReferenceTypeWithoutOwnershipModifiers(); $break ./
-
---quantified-var-decls ::= [ bound-var-modifiers ] type-spec quantified-var-declarator
---                         [ , quantified-var-declarator ] ...
---quantified-var-declarator ::= ident [ dims ]
-
-JmlQuantifiedVarDeclarators ::= Identifier Dimsopt
-		/.$putCase /*jml*/consumeJmlQuantifiedVarDeclarators(true); $break ./
-	| JmlQuantifiedVarDeclarators ',' Identifier Dimsopt
-		/.$putCase /*jml*/consumeJmlQuantifiedVarDeclarators(false); $break ./
-
---spec-variable-declarators ::= spec-variable-declarator [ , spec-variable-declarator ] ...
---bound-var-modifiers ::= non_null | nullable
-
-JmlQuantifier -> 'slash_forall' | 'slash_exists'
-	| 'slash_max' | 'slash_min' 
-	| 'slash_num_of' | 'slash_product' | 'slash_sum'
-
--- set-comprehension ::= { [ bound-var-modifiers ] type-spec quantified-var-declarator `|' set-comprehension-pred }
--- set-comprehension-pred ::= postfix-expr . has ( ident ) && predicate                                    
-JmlSetComprehension ::= '{' JmlTypeSpec Identifier Dimsopt '|' PostfixExpression && Predicate '}'
-	/.$putCase /*jml*/consumeJmlSetComprehension(); $break ./
-
--- ----------------------------------------------------------------------------
--- JML Type Body Declarations
---
 --checked(jmlMember ::= mods (... jmlDeclaration... | axiom)(jmlDeclaration = "invariant" predicate)
 --should be -> jml-declaration ::= modifiers invariant | modifiers history-constraint | modifiers represents-clause | modifiers initially-clause | modifiers monitors-for-clause | modifiers readable-if-clause | modifiers writable-if-clause | axiom-clause
 --for level0-> jml-declaration ::= modifiers invariant |                                modifiers represents-clause | modifiers initially-clause
 --for level1-> jml-declaration ::= modifiers invariant | modifiers history-constraint | modifiers represents-clause | modifiers initially-clause| axiom-clause
 --for now is-> jml-declaration ::= modifiers invariant | modifiers history-constraint | modifiers represents-clause | modifiers initially-clause
 JmlTypeBodyDeclaration ::= Modifiersopt JmlInvariantDeclaration
-		/.$putCase /*jml*/consumeJmlTypeBodyDeclaration(); $break ./
-	| Modifiersopt JmlConstraintDeclaration
-		/.$putCase /*jml*/consumeJmlTypeBodyDeclaration(); $break ./
-	| Modifiersopt JmlRepresentsClause
-		/.$putCase /*jml*/consumeJmlTypeBodyDeclaration(); $break ./
-	| Modifiersopt JmlInitiallyClause
-		/.$putCase /*jml*/consumeJmlTypeBodyDeclaration(); $break ./
+/.$putCase consumeJmlTypeBodyDeclaration(); $break ./
+JmlTypeBodyDeclaration ::= Modifiersopt JmlConstraintDeclaration
+/.$putCase consumeJmlTypeBodyDeclaration(); $break ./
+/:$readableName JmlTypeBodyDeclaration:/
+JmlTypeBodyDeclaration ::= Modifiersopt JmlRepresentsClause
+/.$putCase consumeJmlTypeBodyDeclaration(); $break ./
+JmlTypeBodyDeclaration ::= Modifiersopt JmlInitiallyClause
+/.$putCase consumeJmlTypeBodyDeclaration(); $break ./
+/:$readableName JmlTypeBodyDeclaration:/
 
+--checked(jmlDeclaration = "invariant" predicate)
+--JmlInvariantDeclaration -> 'invariant' Predicate ';'
 JmlInvariantDeclaration ::=  'invariant' Predicate ExitJmlClause ';'
-	/.$putCase /*jml*/consumeJmlClause(); $break ./
+/.$putCase consumeInvariantDeclaration(); $break ./
+/:$readableName JmlInvariantDeclaration:/
 
 --should be -> history-constraint ::= constraint-keyword predicate [ for constrained-list ] ;
 --for now is-> history-constraint ::= 'constraint' predicate                          ;
@@ -2899,87 +2863,97 @@ JmlInvariantDeclaration ::=  'invariant' Predicate ExitJmlClause ';'
 --should be -> param-disambig-list ::= param-disambig [ , param-disambig ] ...
 --should be -> param-disambig ::= type-spec [ ident [ dims ] ]
 JmlConstraintDeclaration ::= 'constraint' Predicate ExitJmlClause ';'
-	/.$putCase /*jml*/consumeConstraintDeclaration(); $break ./
+/.$putCase consumeConstraintDeclaration(); $break ./
+/:$readableName JmlConstraintDeclaration:/
 
 --should be -> represents-clause ::= represents-keyword store-ref-expression l-arrow-or-eq spec-expression ';' // level 0
 --                                |  represents-keyword store-ref-expression '\such_that' predicate ';'        // level 1
 --for now is-> represents-clause ::= represents-keyword store-ref-expression l-arrow-or-eq spec-expression ';' // level 0
-JmlRepresentsClause ::= RepresentsOrRepresentsRedundantly JmlStoreRefExpression '=' SpecExpression ExitJmlClause ';'
-	/.$putCase /*jml*/consumeJmlClause(); $break ./
+JmlRepresentsClause ::= RepresentsOrRepresentsRedundantly StoreRefExpression '=' SpecExpression ExitJmlClause ';'
+/.$putCase consumeRepresentsDeclaration(); $break ./
+/:$readableName JmlRepresentsDeclaration:/
 
 --should be -> l-arrow-or-eq ::= '<-' | '='
 --for now is-> l-arrow-or-eq ::= '='
 
+--represents-keyword ::= 'represents' | 'represents_redundantly'
 RepresentsOrRepresentsRedundantly -> 'represents' | 'represents_redundantly' 
+/:$readableName RepresentsOrRepresentsRedundantly:/
 
+
+--initially-clause ::= 'initially' predicate ';'
 JmlInitiallyClause ::=  'initially' Predicate ExitJmlClause ';'
-	/.$putCase /*jml*/consumeJmlClause(); $break ./
+/.$putCase consumeInitiallyClause(); $break ./
+/:$readableName JmlInitiallyClause:/
 
 --class-initializer-decl ::= [ method-specification ] [ static ] compound-statement
 --        | method-specification static_initializer 
 --        | method-specification initializer 
                   
--- method-specification ::= ['also'] ( spec-case-seq [ method-spec-redundant-part ] | method-spec-redundant-part )
+--checked(jmlMethodSpecification, jmlSpecification, jmlExtendingSpecification)
+--should be -> method-specification ::= ['also'] ( spec-case-seq [ method-spec-redundant-part ] | method-spec-redundant-part )
+--for now is-> method-specification ::= ['also'] ( spec-case-seq [ method-spec-redundant-part ] )
 MethodSpecification ::= 'also' SpecCaseSeq
-		/.$putCase /*jml*/consumeMethodSpecification(/*isExtending*/ true, /*hasSpecCaseSeq*/ true, /*hasRedundantPart*/ false); $break ./
-	| SpecCaseSeq
-		/.$putCase /*jml*/consumeMethodSpecification(/*isExtending*/ false, /*hasSpecCaseSeq*/ true, /*hasRedundantPart*/ false); $break ./
-	| 'also' SpecCaseSeq MethodSpecRedundantPart
-		/.$putCase /*jml*/consumeMethodSpecification(/*isExtending*/ true, /*hasSpecCaseSeq*/ true, /*hasRedundantPart*/ true); $break ./
-	| SpecCaseSeq MethodSpecRedundantPart
-		/.$putCase /*jml*/consumeMethodSpecification(/*isExtending*/ false, /*hasSpecCaseSeq*/ true, /*hasRedundantPart*/ true); $break ./
-	| 'also' MethodSpecRedundantPart
-		/.$putCase /*jml*/consumeMethodSpecification(/*isExtending*/ true, /*hasSpecCaseSeq*/ false, /*hasRedundantPart*/ true); $break ./
-	| MethodSpecRedundantPart
-		/.$putCase /*jml*/consumeMethodSpecification(/*isExtending*/ false, /*hasSpecCaseSeq*/ false, /*hasRedundantPart*/ true); $break ./
+/.$putCase consumeMethodSpecification(/*isExtending*/ true, /*hasRedundantPart*/ false); $break ./
+MethodSpecification ::= SpecCaseSeq
+/.$putCase consumeMethodSpecification(/*isExtending*/ false, /*hasRedundantPart*/ false); $break ./
+MethodSpecification ::= 'also' SpecCaseSeq MethodSpecRedundantPart
+/.$putCase consumeMethodSpecification(/*isExtending*/ true, /*hasRedundantPart*/ true); $break ./
+MethodSpecification ::= SpecCaseSeq MethodSpecRedundantPart
+/.$putCase consumeMethodSpecification(/*isExtending*/ false, /*hasRedundantPart*/ true); $break ./
+/:$readableName MethodSpecification:/
 
 --should be -> method-spec-redundant-part ::= 'implies_that' spec-case-seq [ examples ] | examples
+--for now is-> method-spec-redundant-part ::= 'implies_that' spec-case-seq
 MethodSpecRedundantPart ::= 'implies_that' SpecCaseSeq
-	/.$putCase /*jml*/consumeMethodSpecRedundantPart(); $break ./
+/.$putCase consumeMethodSpecRedundantPart(); $break ./
+/:$readableName MethodSpecRedundantPart:/
 
+--checked(jmlSpecCaseSeq)
 --spec-case-seq ::= spec-case [ 'also' spec-case ] ...
-SpecCaseSeq ::= SpecCase | SpecCaseSeq 'also' SpecCase
-	/.$putCase /*jml*/consumeSpecCaseSeq(); $break ./
+SpecCaseSeq -> SpecCase
+SpecCaseSeq ::= SpecCaseSeq 'also' SpecCase
+/.$putCase consumeSpecCaseSeq(); $break ./
+/:$readableName SpecCaseSeq:/
 
+--checked(jmlSpecCase)
 --(for level 2 add) spec-case ::= model-program
-SpecCase -> LightweightSpecCase | HeavyweightSpecCase
+--spec-case ::= lightweight-spec-case | heavyweight-spec-case
+SpecCase -> LightweightSpecCase
+SpecCase -> HeavyweightSpecCase
+/:$readableName SpecCase:/
 
+--not checked
+--lightweight-spec-case ::= spec-case-body
 LightweightSpecCase ::= SpecCaseBody
-	/.$putCase /*jml*/consumeLightweightSpecCase(); $break ./
+/.$putCase consumeLightweightSpecCase(); $break ./
+/:$readableName LightweightSpecCase:/
 
 --not checked
 --should be -> heavyweight-spec-case ::= [ java-visibility-keyword ] [ 'code' ] behavior-keyword spec-case-body
 --for now is-> heavyweight-spec-case ::= modifiers                              behavior-keyword spec-case-body
 HeavyweightSpecCase ::= Modifiersopt 'BehaviorOrSynonym' SpecCaseBody
-	/.$putCase /*jml*/consumeHeavyweightSpecCase(); $break ./
+/.$putCase consumeHeavyweightSpecCase(); $break ./
+/:$readableName HeavyweightSpecCase:/
 
--- spec-case-body ::= spec-var-decls ( spec-case-header [ spec-case-rest ] | spec-case-rest )
-SpecCaseBody ::= JmlSpecVarDecls SpecCaseRest
-		/.$putCase /*jml*/consumeSpecCaseBody(/*hasHeader*/false, /*hasRest*/true); $break ./
-	| JmlSpecVarDecls SpecCaseHeader
-		/.$putCase /*jml*/consumeSpecCaseBody(/*hasHeader*/true, /*hasRest*/false); $break ./
-	| JmlSpecVarDecls SpecCaseHeader SpecCaseRest
-		/.$putCase /*jml*/consumeSpecCaseBody(/*hasHeader*/true, /*hasRest*/true); $break ./
+--not checked
+--should be -> spec-case-body ::= [ forall-var-decls ] ( spec-case-header [ spec-case-rest ] | spec-case-rest )
+--for now is-> spec-case-body ::=                      ( spec-case-header [ spec-case-rest ] | spec-case-rest )
+SpecCaseBody ::= SpecCaseRest
+/.$putCase consumeSpecCaseBodyWithoutHeader(); $break ./
+SpecCaseBody ::= SpecCaseHeader
+/.$putCase consumeSpecCaseBodyWithoutRest(); $break ./
+/:$readableName SpecCaseBody:/
+SpecCaseBody ::= SpecCaseHeader SpecCaseRest
+/.$putCase consumeSpecCaseBody(); $break ./
+/:$readableName SpecCaseBody:/
 
---spec-var-decls ::= forall-var-decls old-var-decls
-JmlSpecVarDecls ->  StartSpecVarDecls JmlForallVarDecls JmlOldVarDecls
-StartSpecVarDecls ::= $empty /.$putCase /*jml*/consumeStartSpecVarDecls(); $break ./
-
---forall-var-decls ::= [ forall-var-declarator ] ...
-JmlForallVarDecls ::= $empty 
-		/.$putCase /*jml*/consumeEmptyJmlSpecVarDecls(); $break ./
-	| JmlForallVarDecls JmlForallVarDecl
-		/.$putCase /*jml*/consumeJmlVarDecls(); $break ./
---forall-var-declarator ::= 'forall' local-var-decl ';'
-JmlForallVarDecl -> 'forall' LocalVariableDeclarationStatement
-
---old-var-decls ::= [ old-var-declarator ] ...
-JmlOldVarDecls ::= $empty 
-		/.$putCase /*jml*/consumeEmptyJmlSpecVarDecls(); $break ./
-	| JmlOldVarDecls JmlOldVarDecl
-		/.$putCase /*jml*/consumeJmlVarDecls(); $break ./
---old-var-declarator ::= 'old' local-var-decl ';'
-JmlOldVarDecl -> 'old' LocalVariableDeclarationStatement
+--(should be) level 1
+--spec-var-decls ::= forall-var-decls [ old-var-decls ] | old-var-decls
+--forall-var-decls ::= forall-var-declarator [ forall-var-declarator ]
+--forall-var-declarator ::= forall [ bound-var-modifiers ] quantified-var-declarator ;
+--old-var-decls ::= old-var-declarator [ old-var-declarator ]
+--old-var-declarator ::= old [ bound-var-modifiers ] type-spec spec-variable-declarators ;
 
 --(should be) level 1 (redundancy & examples)
 --redundant-spec ::= implications [ examples ] | examples
@@ -2997,113 +2971,271 @@ JmlOldVarDecl -> 'old' LocalVariableDeclarationStatement
 --should be -> spec-case-header ::= (old-var-declarator | requires-clause) ...
 --for now is-> spec-case-header ::= requires-clause-seq
 SpecCaseHeader ::= RequiresClauseSeq
-	/.$putCase /*jml*/consumeSpecCaseHeader(); $break ./
+/.$putCase consumeSpecCaseHeader(); $break ./
+/:$readableName SpecCaseHeader:/
 
-RequiresClauseSeq ::= RequiresClause
-	| RequiresClauseSeq RequiresClause
-		/.$putCase /*jml*/consumeRequiresClauseSeq(); $break ./
+--checked
+--requires-clause-seq ::= requires-clause [requires-clause] ...
+RequiresClauseSeq -> RequiresClause
+RequiresClauseSeq ::= RequiresClauseSeq RequiresClause
+/.$putCase consumeRequiresClauseSeq(); $break ./
+/:$readableName RequiresClauseSeq:/
 
--- spec-case-rest ::= spec-case-rest-clause-seq | spec-case-block
-SpecCaseRest ::= SpecCaseBlock
-	| SpecCaseRestClauseSeq
-		/.$putCase /*jml*/consumeSpecCaseRestAsClauseSeq(); $break ./
+--checked
+--spec-case-rest ::= spec-case-rest-clause-seq | spec-case-block
+SpecCaseRest ::= SpecCaseRestClauseSeq
+/.$putCase consumeSpecCaseRestAsClauseSeq(); $break ./
+SpecCaseRest -> SpecCaseBlock
+/:$readableName SpecCaseRest:/
 
--- spec-case-block ::= '{|' spec-case-body [ 'also' spec-case-body ] ... '|}'
+--checked (jmlGenericSpecBody)
+--spec-case-block ::= '{|' spec-case-body [ 'also' spec-case-body ] ... '|}'
 SpecCaseBlock ::= LBRACE_OR SpecCaseBodySeq OR_RBRACE
-	/.$putCase /*jml*/consumeSpecCaseBlock(); $break ./
+/.$putCase consumeSpecCaseBlock(); $break ./
+/:$readableName SpecCaseBlock:/
 
-SpecCaseBodySeq ::= SpecCaseBody
-	| SpecCaseBodySeq 'also' SpecCaseBody
-		/.$putCase /*jml*/consumeSpecCaseBodySeq(); $break ./
+SpecCaseBodySeq -> SpecCaseBody
+SpecCaseBodySeq ::= SpecCaseBodySeq 'also' SpecCaseBody
+/.$putCase consumeSpecCaseBodySeq(); $break ./
+/:$readableName SpecCaseBodySeq:/
 
--- spec-case-rest-clause-seq ::= spec-case-rest-clause [ spec-case-rest-clause ] ...
-SpecCaseRestClauseSeq ::= SpecCaseRestClause
-	| SpecCaseRestClauseSeq SpecCaseRestClause
-		/.$putCase /*jml*/consumeSpecCaseRestClauseSeq(); $break ./
+--checked(jmlSpecBody)
+--spec-case-rest-clause-seq ::= spec-case-rest-clause [ spec-case-rest-clause ] ...
+SpecCaseRestClauseSeq -> SpecCaseRestClause
+SpecCaseRestClauseSeq ::= SpecCaseRestClauseSeq SpecCaseRestClause
+/.$putCase consumeSpecCaseRestClauseSeq(); $break ./
+/:$readableName SpecCaseRestClauseSeq:/
  
---should be -> spec-case-rest-clause ::= 
---               assignable-clause | captures-clause | diverges-clause | duration-clause
---             | ensures-clause | signals-only-clause | signals-clause
---             | when-clause | working-space-clause
---for now is-> spec-case-rest-clause ::= 
---               assignable-clause | diverges-clause | ensures-clause | signals-only-clause | signals-clause
-SpecCaseRestClause -> AssignableClause  | DivergesClause | EnsuresClause 
-	| SignalsClause | SignalsOnlyClause
+--checked(jmlSpecBodyClause)
+--should be -> spec-case-rest-clause ::= diverges-clause
+--             | assignable-clause | captures-clause | when-clause | working-space-clause
+--             | duration-clause | ensures-clause | signals-only-clause | signals-clause
+--for level0-> spec-case-rest-clause ::= ensures-clause | assignable-clause | signals-only-clause | signals-clause
+SpecCaseRestClause -> EnsuresClause 
+SpecCaseRestClause -> AssignableClause
+SpecCaseRestClause -> SignalsOnlyClause
+SpecCaseRestClause -> SignalsClause
+/:$readableName SpecCaseRestClause:/
 
--- assignable-clause ::= assignable-or-assignable-redundantly store-ref-list-or-keyword ';'
-AssignableClause ::= AssignableOrAssignableRedundantly StoreRefSeqOrKeyword ExitJmlClause ';'
-	/.$putCase /*jml*/consumeJmlClause(); $break ./
+--checked(JmlRequiresClause)
+-- requires-clause ::= requires-or-requires-redundantly (predicate | '\not_specified' | '\same') ;
+RequiresClause ::= RequiresOrRequiresRedundantly Predicate ExitJmlClause ';'
+/.$putCase consumeRequiresClause(); $break ./
+RequiresClause ::= RequiresOrRequiresRedundantly 'slash_not_specified' ExitJmlClause ';'
+/.$putCase consumeRequiresClauseNotSpecified(); $break ./
+RequiresClause ::= RequiresOrRequiresRedundantly 'slash_same' ExitJmlClause ';'
+/.$putCase consumeRequiresClauseSame(); $break ./
+/:$readableName RequiresClause:/
 
-AssignableOrAssignableRedundantly -> 'AssignableOrSynonym' | 'AssignableRedundantlyOrSynonym'
+ExitJmlClause ::= $empty 
+/.$putCase consumeExitJmlClause(); $break ./
+/:$readableName ExitJmlClause:/
 
-DivergesClause ::= DivergesOrDivergesRedundantly PredicateOrNotSpecified ExitJmlClause ';'
-	/.$putCase /*jml*/consumeJmlClause(); $break ./
+RequiresOrRequiresRedundantly -> 'RequiresOrSynonym' 
+RequiresOrRequiresRedundantly -> 'RequiresRedundantlyOrSynonym'
+/:$readableName RequiresOrRequiresRedundantly:/
 
-DivergesOrDivergesRedundantly -> 'diverges' | 'diverges_redundantly'
+--checked(jmlPredicate, jmlSpecExpression)
+Predicate -> Expression
+/:$readableName Expression:/
 
-EnsuresClause ::= EnsuresOrEnsuresRedundantly PredicateOrNotSpecified ExitJmlClause ';'
-	/.$putCase /*jml*/consumeJmlClause(); $break ./
+--checked(jmlEnsuresClause)
+--ensures-clause ::= ensures-or-ensures-redundantly (predicate | '\not_specified') ;
+EnsuresClause ::= EnsuresOrEnsuresRedundantly Predicate ExitJmlClause ';'
+/.$putCase consumeEnsuresClause(); $break ./
+EnsuresClause ::= EnsuresOrEnsuresRedundantly 'slash_not_specified' ExitJmlClause  ';'
+/.$putCase consumeEnsuresClauseNotSpecified(); $break ./
+/:$readableName EnsuresClause:/
 
-EnsuresOrEnsuresRedundantly -> 'EnsuresOrSynonym' | 'EnsuresRedundantlyOrSynonym'
+EnsuresOrEnsuresRedundantly -> 'EnsuresOrSynonym'
+EnsuresOrEnsuresRedundantly -> 'EnsuresRedundantlyOrSynonym'
+/:$readableName EnsuresOrEnsuresRedundantly:/
 
--- requires-clause ::= requires-or-requires-redundantly ( predicate-or-not-specified | '\same' ) ';'
-RequiresClause ::= 
-	RequiresOrRequiresRedundantly PredicateOrNotSpecified ExitJmlClause ';'
-		/.$putCase /*jml*/consumeJmlClause(); $break ./
-	| RequiresOrRequiresRedundantly 'slash_same' ExitJmlClause ';'
-		/.$putCase /*jml*/consumeJmlClause(); $break ./
+--checked(jmlAssignableClause)
+-- assignable-clause ::= assignable-or-assignable-redundantly store-ref-list ';'
+AssignableClause ::= AssignableOrAssignableRedundantly StoreRefSeq ExitJmlClause ';'
+/.$putCase consumeAssignableClause(); $break ./
+/:$readableName AssignableClause:/
 
-RequiresOrRequiresRedundantly -> 'RequiresOrSynonym' | 'RequiresRedundantlyOrSynonym'
+AssignableOrAssignableRedundantly -> 'AssignableOrSynonym' 
+AssignableOrAssignableRedundantly -> 'AssignableRedundantlyOrSynonym'
+/:$readableName AssignableOrAssignableRedundantly:/
 
--- signals-clause ::= signals-keyword ( reference-type [ ident ] ) [ predicate-or-not-specified ] ';'
--- If we consider requiring ident, then use FormalParameter instead of ClassType 'Identifier'.
-SignalsClause ::= 
-	SignalsOrSignalsRedundantly '(' ClassType ')' PredicateOrNotSpecifiedopt ExitJmlClause ';'
-		/.$putCase /*jml*/consumeSignalsClause(/*hasIdentifier*/false); $break ./
-	| SignalsOrSignalsRedundantly '(' ClassType 'Identifier' ')' PredicateOrNotSpecifiedopt ExitJmlClause ';'
-		/.$putCase /*jml*/consumeSignalsClause(/*hasIdentifier*/true); $break ./
+--checked(jmlStoreRefList)
+--store-ref-seq ::= store-ref [ ',' store-ref ]...
+StoreRefSeq -> StoreRef
+StoreRefSeq ::= StoreRefSeq ',' StoreRef
+/.$putCase consumeStoreRefSeq(); $break ./
+/:$readableName StoreRefSeq:/
 
-PredicateOrNotSpecifiedopt ::= $empty /.$putCase consumeEmptyExpression(); $break ./
-	| PredicateOrNotSpecified
+--checked(jmlStoreRef)
+--store-ref ::= store-ref-expression | informal-description | store-ref-keyword
+StoreRef -> StoreRefExpression
+StoreRef ::= 'InformalDescription'
+/.$putCase consumeStoreRefAsInformalDescription(); $break ./
+StoreRef -> StoreRefKeyword
+/:$readableName StoreRef:/
+
+--checked(jmlStoreRefExpression)
+--store-ref-expression ::= store-ref-name [ store-ref-name-suffix ] ...
+StoreRefExpression ::= StoreRefName
+/.$putCase consumeStoreRefExpression(); $break ./
+StoreRefExpression ::= StoreRefName StoreRefNameSuffixSeq
+/.$putCase consumeStoreRefExpressionWithSuffixes(); $break ./
+/:$readableName StoreRef:/
+
+--checked(jmlStoreRefExpression)
+--store-ref-name ::= 'ident' | 'super' | 'this'
+StoreRefName ::= 'Identifier'
+/.$putCase consumeStoreRefNameOrSuffixIdentifier(); $break ./
+StoreRefName ::= 'super'
+/.$putCase consumeStoreRefNameOrSuffixAsSuperOrThis(JmlAstNode.SUPER); $break ./
+StoreRefName ::= 'this'
+/.$putCase consumeStoreRefNameOrSuffixAsSuperOrThis(JmlAstNode.THIS); $break ./
+/:$readableName StoreRefName:/
+
+--checked(jmlStoreRefExpression)
+--StoreRefNameSuffixSeq ::= store-ref-name-suffix ...
+StoreRefNameSuffixSeq -> StoreRefNameSuffix
+StoreRefNameSuffixSeq ::= StoreRefNameSuffixSeq StoreRefNameSuffix
+/.$putCase consumeStoreRefNameSuffixSeq(); $break ./
+/:$readableName StoreRefNameSuffixSeq:/
+
+--checked(jmlStoreRefNameSuffix)
+--store-ref-name-suffix ::= '.' ident | '.' this | '[' spec-array-ref-expr ']' | '.' '*' 
+StoreRefNameSuffix ::= '.' 'Identifier'
+/.$putCase consumeStoreRefNameOrSuffixIdentifier(); $break ./
+StoreRefNameSuffix ::= '.' 'this'
+/.$putCase consumeStoreRefNameOrSuffixAsSuperOrThis(JmlAstNode.THIS); $break ./
+StoreRefNameSuffix -> '[' SpecArrayRefExpr ']'
+StoreRefNameSuffix ::= '.' '*'
+/.$putCase consumeStoreRefSuffixWildcardOrAll("*"); //$NON-NLS-1$ $break ./
+/:$readableName StoreRefNameSuffix:/
+
+--checked(jmlSpecArrayRefExpr)
+--spec-array-ref-expr ::= spec-expression | spec-expression '..' spec-expression | '*'
+SpecArrayRefExpr ::= SpecExpression
+/.$putCase consumeSpecArrayRefExpr(); $break ./
+SpecArrayRefExpr ::= SpecExpression 'DOTDOT' SpecExpression
+/.$putCase consumeSpecArrayRefRange(); $break ./
+SpecArrayRefExpr ::= '*'
+/.$putCase consumeStoreRefSuffixWildcardOrAll("[*]"); //$NON-NLS-1$ $break ./
+/:$readableName SpecArrayRefExpr:/
+
+--checked(jmlStoreRefKeyword)
+--store-ref-keyword ::= '\nothing' | '\everything' | '\not_specified'
+StoreRefKeyword ::= 'slash_nothing'
+/.$putCase consumeStoreRefKeyword(); $break ./
+StoreRefKeyword ::= 'slash_everything'
+/.$putCase consumeStoreRefKeyword(); $break ./
+StoreRefKeyword ::= 'slash_not_specified'
+/.$putCase consumeStoreRefKeyword(); $break ./
+/:$readableName StoreRefKeyword:/
+
+--signals-clause ::= signals-keyword ( reference-type [ ident ] ) [predicate | '\not_specified'] ;
+SignalsClause ::= SignalsOrSignalsRedundantly '(' ClassType ')' ExitJmlClause ';'
+/.$putCase consumeSignalsClause(); $break ./
+SignalsClause ::= SignalsOrSignalsRedundantly '(' ClassType 'Identifier' ')' ExitJmlClause ';'
+/.$putCase consumeSignalsClauseWithIdentifier(); $break ./
+SignalsClause ::= SignalsOrSignalsRedundantly '(' ClassType ')' 'slash_not_specified' ExitJmlClause ';'
+/.$putCase consumeSignalsClauseWithNotSpecified(); $break ./
+SignalsClause ::= SignalsOrSignalsRedundantly '(' ClassType 'Identifier' ')' 'slash_not_specified' ExitJmlClause ';'
+/.$putCase consumeSignalsClauseWithIdentifierAndNotSpecified(); $break ./
+SignalsClause ::= SignalsOrSignalsRedundantly '(' ClassType ')' Predicate ExitJmlClause ';'
+/.$putCase consumeSignalsClauseWithPredicate(); $break ./
+SignalsClause ::= SignalsOrSignalsRedundantly '(' ClassType 'Identifier' ')' Predicate ExitJmlClause ';'
+/.$putCase consumeSignalsClauseWithIdentifierAndPredicate(); $break ./
+/:$readableName SignalsClause:/
 
 --signals-keyword ::= signals | signals_redundantly | exsures | exsures_redundantly
 SignalsOrSignalsRedundantly -> 'SignalsOrSynonym' | 'SignalsRedundantlyOrSynonym' 
+/:$readableName SignalsOrSignalsRedundantly:/
 
 --signals-only-clause ::= signals-only-keyword reference-type [ , reference-type ] ... ;
---                     | signals-only-keyword \nothing ;
-SignalsOnlyClause 
-  ::= SignalsOnlyOrSignalsOnlyRedundantly ClassTypeList ExitJmlClause ';'
-		/.$putCase /*jml*/consumeSignalsOnlyClause(); $break ./
-	| SignalsOnlyOrSignalsOnlyRedundantly 'slash_nothing' ExitJmlClause ';'
-		/.$putCase /*jml*/consumeSignalsOnlyClauseNothing(); $break ./
+--                       | signals-only-keyword \nothing ;
+SignalsOnlyClause ::= SignalsOnlyOrSignalsOnlyRedundantly ClassTypeList ExitJmlClause ';'
+/.$putCase consumeSignalsOnlyClause(); $break ./
+SignalsOnlyClause ::= SignalsOnlyOrSignalsOnlyRedundantly 'slash_nothing' ExitJmlClause ';'
+/.$putCase consumeSignalsOnlyClauseNothing(); $break ./
+/:$readableName SignalsOnlyClause:/
 
+--signals-only-keyword ::= signals_only | signals_only_redundantly
 SignalsOnlyOrSignalsOnlyRedundantly -> 'signals_only' | 'signals_only_redundantly' 
+/:$readableName SignalsOnlyOrSignalsOnlyRedundantly:/
 
-Predicate -> Expression
-PredicateOrNotSpecified -> Predicate | 'slash_not_specified'
+-- (should be) level 0 (for data groups)
+JmlDataGroupClauseSeq -> JmlDataGroupClause
+JmlDataGroupClauseSeq ::= JmlDataGroupClauseSeq JmlDataGroupClause
+/.$putCase consumeDataGroupClauseSeq(); $break ./
+/:$readableName JmlDataGroupClauseSeq:/
 
-ExitJmlClause ::= $empty /.$putCase /*jml*/consumeExitJmlClause(); $break ./
+--jml-data-group-clause ::= in-group-clause | maps-into-clause
+JmlDataGroupClause -> InGroupClause
+JmlDataGroupClause -> MapsIntoClause
+/:$readableName JmlDataGroupClause:/
 
-JmlDataGroupClauseSeq ::= JmlDataGroupClause
-	| JmlDataGroupClauseSeq JmlDataGroupClause
-		/.$putCase /*jml*/consumeDataGroupClauseSeq(); $break ./
+--in-group-clause ::= in-keyword group-list ; 
+InGroupClause ::= InKeyword GroupList ';'
+/.$putCase consumeInGroupClause(); $break ./
+/:$readableName InGroupClause:/
 
-JmlDataGroupClause -> InDataGroupClause | MapsIntoClause
-
-InDataGroupClause ::= InKeyword DataGroupNameList ExitJmlClause ';'
-	/.$putCase /*jml*/consumeInDataGroupClause(); $break ./
-
+--in-keyword ::= in | in_redundantly
 InKeyword -> 'in' | 'in_redundantly'
+/:$readableName InKeyword:/
 
---data-group-name-list ::= data-group-name [ , data-group-name ] ...
-DataGroupNameList -> ArgumentList
+--group-list ::= group-name [ , group-name ] ...
+GroupList -> GroupName
+GroupList ::= GroupList ',' GroupName
+/.$putCase consumeGroupList(); $break ./
+/:$readableName GroupList:/
 
-MapsIntoClause ::= MapsKeyword MemberFieldRef 'slash_into' DataGroupNameList ExitJmlClause ';'
-	/.$putCase /*jml*/consumeMapsIntoClause(); $break ./
+--group-name ::= [ group-name-prefix ] ident 
+GroupName ::= 'Identifier'
+/.$putCase consumeGroupName(); $break ./
+/:$readableName GroupList:/
+--group-name-prefix ::= super . | this . 
+GroupName ::= 'super' '.' 'Identifier'
+/.$putCase consumeGroupNameWithPrefixSuper(); $break ./
+GroupName ::= 'this' '.' 'Identifier'
+/.$putCase consumeGroupNameWithPrefixThis(); $break ./
+/:$readableName GroupName:/
 
+--(should be) level 1
+--maps-into-clause ::= maps-keyword member-field-ref \into group-list ; 
+MapsIntoClause ::= MapsKeyword MemberFieldRef 'slash_into' GroupList ';'
+/.$putCase consumeMapsIntoClause(); $break ./
+/:$readableName MapsIntoClause:/
+
+--maps-keyword ::= maps | maps_redundantly
 MapsKeyword -> 'maps' | 'maps_redundantly'
-MemberFieldRef -> JmlReferenceExpression
 
+--member-field-ref ::= ident . maps-member-ref-expr
+--          | maps-array-ref-expr [ . maps-member-ref-expr ]
+MemberFieldRef ::= 'Identifier' '.' MapsMemberRefExpr
+/.$putCase consumeMemberFieldRef(); $break ./
+MemberFieldRef ::= MapsArrayRefExpr '.' MapsMemberRefExpr
+/.$putCase consumeMemberFieldRefWithArrayRef(); $break ./
+/:$readableName MemberFieldRef:/
+
+--maps-member-ref-expr ::= ident | * 
+MapsMemberRefExpr ::= 'Identifier'
+/.$putCase consumeMapsMemberRefExprAsId(); $break ./
+MapsMemberRefExpr ::= '*'
+/.$putCase consumeMapsMemberRefExprAsStar(); $break ./
+/:$readableName MapsMemberRefExpr:/
+
+--maps-array-ref-expr ::= ident maps-spec-array-dim [ maps-spec-array-dim ] ... 
+MapsArrayRefExpr ::= 'Identifier' MapsSpecArrayDimSeq
+/.$putCase consumeMapsArrayRefExpr(); $break ./
+/:$readableName MapsArrayRefExpr:/
+
+MapsSpecArrayDimSeq -> MapsSpecArrayDim
+MapsSpecArrayDimSeq ::= MapsSpecArrayDimSeq MapsSpecArrayDim
+/.$putCase consumeMapsSpecArrayDimSeq(); $break ./
+/:$readableName MapsSpecArrayDimSeq:/
+
+--maps-spec-array-dim ::= `[' spec-array-ref-expr `]'
+MapsSpecArrayDim -> '[' SpecArrayRefExpr ']'
 -----------------------------------
 -- JML level 0-1-a : END         --
 -----------------------------------

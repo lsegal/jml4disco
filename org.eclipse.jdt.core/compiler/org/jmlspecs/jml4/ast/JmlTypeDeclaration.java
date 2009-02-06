@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.jdt.internal.compiler.CompilationResult;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
+import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.jdt.internal.compiler.flow.FlowContext;
@@ -13,7 +14,6 @@ import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.jdt.internal.compiler.problem.AbortType;
-import org.jmlspecs.jml4.compiler.JmlConstants;
 
 public class JmlTypeDeclaration extends TypeDeclaration {
 
@@ -47,9 +47,6 @@ public class JmlTypeDeclaration extends TypeDeclaration {
 	
 	public void resolve() {
 		super.resolve();
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.RESOLVE)
-			return;
-
 		for (int i = 0; i < invariantClauses.length; i++) {
 			invariantClauses[i].resolve(this.staticInitializerScope, this.initializerScope);
 		}
@@ -65,9 +62,6 @@ public class JmlTypeDeclaration extends TypeDeclaration {
 	}
 	public void analyseCode(CompilationUnitScope unitScope) {
 		super.analyseCode(unitScope);
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_ANALYSIS)
-			return;
-
 		if (this.ignoreFurtherInvestigation)
 			return;
 		try {
@@ -107,7 +101,7 @@ public class JmlTypeDeclaration extends TypeDeclaration {
 	public Expression getInvariant() {
 		List pres = new ArrayList(this.invariantClauses.length);
 		for (int i = 0; i < this.invariantClauses.length; i++) {
-			pres.add(this.invariantClauses[i].expr);
+			pres.add(this.invariantClauses[i].pred);
 		}
 		Expression result = JmlAstUtils.conjoin(pres);
 		return result;

@@ -13,7 +13,6 @@ import org.eclipse.jdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
-import org.jmlspecs.jml4.compiler.JmlConstants;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 import org.jmlspecs.jml4.nonnull.Nullity;
 
@@ -21,7 +20,6 @@ public class JmlConstructorDeclaration extends ConstructorDeclaration implements
 
 	public static final boolean DEBUG = false;
 	public JmlMethodSpecification specification;
-	private boolean jmlModifiersHaveBeenInit = false;
 	private long jmlModifiers = 0;
 	private /*@nullable*/Result[] escResults;
 	private boolean previousRacState;
@@ -31,34 +29,15 @@ public class JmlConstructorDeclaration extends ConstructorDeclaration implements
 	}
 
 	public void resolve(ClassScope upperScope) {
-		initJmlModifiersFromAnnotations();
+		jmlModifiers |= JmlModifier.getFromAnnotations(this.annotations);
 		super.resolve(upperScope);
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.RESOLVE)
-			return;
 		if (this.specification != null)
 			this.specification.resolve(this.scope);
-	}
-
-	public void resolveStatements() {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.RESOLVE
-			&& this.isModel())
-			return;
-		super.resolveStatements();
-	}
-
-	public void initJmlModifiersFromAnnotations() {
-		jmlModifiers |= JmlModifier.getFromAnnotations(this.annotations);
-		this.jmlModifiersHaveBeenInit = true;
 	}
 
 	public void analyseCode(ClassScope classScope,
 			InitializationFlowContext initializerFlowContext,
 			FlowInfo flowInfo, int initialReachMode) {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_ANALYSIS) {
-			if (!this.isModel())
-				super.analyseCode(classScope, initializerFlowContext, flowInfo, initialReachMode);
-			return;
-		}
 		// TODO uncomment the following line
 		// checkNullityOfSupers(classScope);
 		// TODO: remove the following test once we fix the parser to only use Jml AST Nodes when EnabledJml.
@@ -90,16 +69,11 @@ public class JmlConstructorDeclaration extends ConstructorDeclaration implements
 	private void checkPurity() {
 		// TODO: implement purity check
 	}
-	
 	public boolean isPure() {
-		if (!this.jmlModifiersHaveBeenInit)
-			initJmlModifiersFromAnnotations();
 		return JmlModifier.isPure(this.jmlModifiers);
 	}
 
 	public boolean isModel() {
-		if (!this.jmlModifiersHaveBeenInit)
-			initJmlModifiersFromAnnotations();
 		return JmlModifier.isModel(this.jmlModifiers);
 	}
 
@@ -119,9 +93,6 @@ public class JmlConstructorDeclaration extends ConstructorDeclaration implements
 	}
 
 	public void generateCode(ClassFile classFile) {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_GENERATION
-				&& this.isModel()) // if this is not a model method we still want to generate code for the method body.
-			return;
 		super.generateCode(classFile);
 		if (this.scope.compilerOptions().jmlEscGovernsRac) {
 			this.scope.compilerOptions().jmlRacEnabled = this.previousRacState;
@@ -129,8 +100,6 @@ public class JmlConstructorDeclaration extends ConstructorDeclaration implements
 	}
 
 	protected void generateChecksForPrecondition(MethodScope initializerScope, CodeStream codeStream) {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_GENERATION)
-			return;
 		if (this.specification != null) {
 			this.specification.generateCheckOfRequires(initializerScope, this, codeStream);
 		}
@@ -144,8 +113,6 @@ public class JmlConstructorDeclaration extends ConstructorDeclaration implements
 	}
 
 	protected void generateChecksForPostcondition(MethodScope methodScope, CodeStream codeStream) {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_GENERATION)
-			return;
 		generateCheckForInitiallys(methodScope, codeStream);
 		if (this.specification != null) {
 			this.specification.generateCheckOfEnsures(methodScope, this, codeStream);
@@ -153,8 +120,6 @@ public class JmlConstructorDeclaration extends ConstructorDeclaration implements
 	}
 	
 	protected void generateCheckForInitiallys(MethodScope mScope, CodeStream codeStream) {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_GENERATION)
-				return;
 		// assert initiallys for non-helper constructors
 		if (!JmlModifier.isHelper(jmlModifiers)) {
 			TypeDeclaration typeDecl = mScope.classScope().referenceContext;

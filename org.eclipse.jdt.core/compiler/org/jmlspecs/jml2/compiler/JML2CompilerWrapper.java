@@ -106,7 +106,7 @@ public class JML2CompilerWrapper extends DefaultCompilerExtension {
 			Logger.println(this + " - Not able to find substring \"" + ERROR + "\" in line : \n" + line); //$NON-NLS-1$ //$NON-NLS-2$
 			return;
 		}
-		String errMsg = "JML2 Checker: " + line.substring(errIdx + 7); //$NON-NLS-1$
+		String errMsg = "JML Checker: " + line.substring(errIdx + 7); //$NON-NLS-1$
 		
 		ProblemReporter pr = compiler.problemReporter;
 		//FIXME: Here we obtain the character position of the start of line of where the problem occurred

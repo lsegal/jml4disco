@@ -173,7 +173,6 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 
 // <jml-start id="nnts"/>
 protected void checkMissingBlankFieldNullity(FieldBinding field, ClassScope classScope, FlowInfo flowInfo) {
-	// empty
 }
 // <jml-end id="nnts"/>
 

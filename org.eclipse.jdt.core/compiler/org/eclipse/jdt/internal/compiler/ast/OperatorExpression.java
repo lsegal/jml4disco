@@ -1581,10 +1581,6 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 				return "\\typeof"; //$NON-NLS-1$
 			case JML_ELEMTYPE :
 				return "\\elemtype"; //$NON-NLS-1$
-			case JML_NOT_ASSIGNED :
-				return "\\not_assigned"; //$NON-NLS-1$
-			case JML_NOT_MODIFIED :
-				return "\\not_modified"; //$NON-NLS-1$
 			// <jml-end id="level.0.expression" />
 		}
 		return "unknown operator"; //$NON-NLS-1$

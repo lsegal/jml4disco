@@ -8,7 +8,6 @@ import org.eclipse.jdt.internal.compiler.ASTVisitor;
 import org.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.Argument;
 import org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.ArrayReference;
@@ -464,7 +463,6 @@ public class Ast2SugaredVisitor extends ASTVisitor {
 			initialization.traverse(this, scope);
 			SugaredExpression init = this.expr;
 			SugaredVariable var = new SugaredVariable(name, pos, type, sourceStart, sourceEnd);
-			Utils.assertNotNull(init);
 			SugaredAssignment assignment = new SugaredAssignment(var, init, sourceStart, sourceEnd);
 			SugaredExprStatement exprStmt = new SugaredExprStatement(assignment);
 			this.stmt = new SugaredSequence(this.getResult(), exprStmt);
@@ -597,7 +595,7 @@ public class Ast2SugaredVisitor extends ASTVisitor {
 	}
 
 	public boolean visit(JmlLoopInvariant jmlLoopInvariant, BlockScope scope) {
-		jmlLoopInvariant.expr.traverse(this, scope);
+		jmlLoopInvariant.pred.traverse(this, scope);
 		this.loopInvariants.add(this.expr);
 		this.expr = null;
 		return false;
@@ -754,12 +752,5 @@ public class Ast2SugaredVisitor extends ASTVisitor {
 		this.expr = null;
 		return result;
 	}
-	public boolean visit(AllocationExpression allocationExpression, BlockScope scope) {
-		String name = allocationExpression.type.toString();
-		TypeBinding type = allocationExpression.resolvedType;
-		int sourceStart  = allocationExpression.sourceStart;
-		int sourceEnd    = allocationExpression.sourceEnd;
-		this.expr = new SugaredVariable(name, 0, type, sourceStart, sourceEnd);
-		return true;
-	}
+
 }

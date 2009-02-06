@@ -179,7 +179,7 @@ public class DbcTestRuntime_2 extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n"
 			   },
-			"java.lang.Error: invariant clause failed ('(32 < 10)')");
+			"java.lang.Error: invariant failed ('(32 < 10)')");
 	}
 	public void test_0008b_badInvariant_post() {
 		this.runConformTest( new String[] {
@@ -189,7 +189,7 @@ public class DbcTestRuntime_2 extends AbstractRegressionTest {
 				"   //@ invariant this.x == 32;\n" +
 				"   //@ requires i < 10;\n" +
 				"   //@ ensures   \\result > 10;\n" +
-				"   public int m(int i) { x = 4; return 100; } \n" +
+				"   public int m(int i) { x = 4; return 0; } \n" +
 				"	public static void main(String[] args) {\n" +
 				"       try {\n" +
 				"          new X().m(2);\n" +
@@ -199,7 +199,7 @@ public class DbcTestRuntime_2 extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n"
 			   },
-				"java.lang.Error: invariant clause failed ('(this.x == 32)')");
+		"java.lang.Error: invariant failed ('(this.x == 32)')");
 	}
     public void test_0009_SpecCaseBlock() {
         this.runConformTest( new String[] {
@@ -330,7 +330,7 @@ public class DbcTestRuntime_2 extends AbstractRegressionTest {
                 "1. ERROR in X.java (at line 2)\n" +
                 "	//@ invariant ;\n" +
                 "	    ^^^^^^^^^\n" +
-                "Syntax error on token \"invariant\", Predicate expected after this token\n" +
+                "Syntax error on token \"invariant\", Expression expected after this token\n" +
                 "----------\n");
     }
 
@@ -443,7 +443,7 @@ public class DbcTestRuntime_2 extends AbstractRegressionTest {
                 "1. ERROR in X.java (at line 2)\n" +
                 "	//@ initially ;\n" +
                 "	    ^^^^^^^^^\n" +
-                "Syntax error on token \"initially\", Predicate expected after this token\n" +
+                "Syntax error on token \"initially\", Expression expected after this token\n" +
                 "----------\n");
     }
     
@@ -563,7 +563,7 @@ public class DbcTestRuntime_2 extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n"
 				},
-				"java.lang.Error: initially clause failed ('(27 < 8)')");
+				"java.lang.Error: initially failed ('(27 < 8)')");
 	}
 	
 	public void test_0025_GoodInitiallyLaterViolated_RAC() {

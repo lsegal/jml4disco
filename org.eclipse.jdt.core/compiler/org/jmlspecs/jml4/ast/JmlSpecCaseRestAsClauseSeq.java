@@ -49,7 +49,7 @@ public class JmlSpecCaseRestAsClauseSeq extends JmlSpecCaseRest {
 		for (int i = 0; i < this.clauses.length; i++) {
 			JmlClause clause = this.clauses[i];
 			if (clause instanceof JmlEnsuresClause) {
-				result.add(((JmlEnsuresClause)clause).expr);
+				result.add(((JmlEnsuresClause)clause).pred);
 			}
 		}
 		return result;

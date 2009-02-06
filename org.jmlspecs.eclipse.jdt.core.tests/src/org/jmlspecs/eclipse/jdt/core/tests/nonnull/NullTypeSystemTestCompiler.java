@@ -3617,31 +3617,31 @@ public class NullTypeSystemTestCompiler extends JmlTestCase {
 			new String[] {
 				"X.java",			
 				"class X {\n" +
-				"	void m1()  { /*@ assert (\\forall Object o;                             o.getClass() != getClass()); */} \n"+ 	//npe
-				"	void m2()  { /*@ assert (\\forall Object o; true;                       o.getClass() != getClass()); */} \n"+	//npe									
-				"	void m3()  { /*@ assert (\\forall Object o; o == null;                  o.getClass() != getClass()); */} \n"+ //npe
-				"	void m4a() { /*@ assert (\\forall Object o; o != null;                  o.getClass() != getClass()); */} \n"+ //
-				"	void m4b() { /*@ assert (\\forall Object o;                o == null || o.getClass() != getClass()); */} \n"+//
-				"	void m5()  { /*@ assert (\\forall Object o; o.getClass() != getClass(); o.getClass() != getClass()); */} \n"+ //npe	
+				"	void m1()  { //@ assert (\\forall Object o;                             o.getClass() != getClass());} \n"+ 	//npe
+				"	void m2()  { //@ assert (\\forall Object o; true;                       o.getClass() != getClass());} \n"+	//npe									
+				"	void m3()  { //@ assert (\\forall Object o; o == null;                  o.getClass() != getClass());} \n"+ //npe
+				"	void m4a() { //@ assert (\\forall Object o; o != null;                  o.getClass() != getClass());} \n"+ //
+				"	void m4b() { //@ assert (\\forall Object o;                o == null || o.getClass() != getClass());} \n"+//
+				"	void m5()  { //@ assert (\\forall Object o; o.getClass() != getClass(); o.getClass() != getClass());} \n"+ //npe	
 				"}\n"},
 				"----------\n" + 
 				"1. ERROR in X.java (at line 2)\n" + 
-				"	void m1()  { /*@ assert (\\forall Object o;                             o.getClass() != getClass()); */} \n" + 
+				"	void m1()  { //@ assert (\\forall Object o;                             o.getClass() != getClass());} \n" + 
 				"	                                                                       ^\n" + 
 				"Potential null pointer access: The variable o may be null at this location\n" + 
 				"----------\n" + 
 				"2. ERROR in X.java (at line 3)\n" + 
-				"	void m2()  { /*@ assert (\\forall Object o; true;                       o.getClass() != getClass()); */} \n" + 
+				"	void m2()  { //@ assert (\\forall Object o; true;                       o.getClass() != getClass());} \n" + 
 				"	                                                                       ^\n" + 
 				"Potential null pointer access: The variable o may be null at this location\n" + 
 				"----------\n" + 
 				"3. ERROR in X.java (at line 4)\n" + 
-				"	void m3()  { /*@ assert (\\forall Object o; o == null;                  o.getClass() != getClass()); */} \n" + 
+				"	void m3()  { //@ assert (\\forall Object o; o == null;                  o.getClass() != getClass());} \n" + 
 				"	                                                                       ^\n" + 
 				"Null pointer access: The variable o can only be null at this location\n" + 
 				"----------\n" + 
 				"4. ERROR in X.java (at line 7)\n" + 
-				"	void m5()  { /*@ assert (\\forall Object o; o.getClass() != getClass(); o.getClass() != getClass()); */} \n" + 
+				"	void m5()  { //@ assert (\\forall Object o; o.getClass() != getClass(); o.getClass() != getClass());} \n" + 
 				"	                                           ^\n" + 
 				"Potential null pointer access: The variable o may be null at this location\n" + 
 				"----------\n", null, true, options);
@@ -3653,26 +3653,26 @@ public class NullTypeSystemTestCompiler extends JmlTestCase {
 			new String[] {
 				"X.java",			
 				"class X {\n" +
-				"	void m1()  { /*@ assert (\\forall non_null Object o;                             o.getClass() != getClass()); */}\n"+
-				"	void m2()  { /*@ assert (\\forall non_null Object o; true;                       o.getClass() != getClass()); */}\n"+										
-				"	void m3()  { /*@ assert (\\forall non_null Object o; o == null;                  o.getClass() != getClass()); */}\n"+
-				"	void m4a() { /*@ assert (\\forall non_null Object o; o != null;                  o.getClass() != getClass()); */}\n"+
-				"	void m4b() { /*@ assert (\\forall non_null Object o;                o == null || o.getClass() != getClass()); */}\n"+
-				"	void m5()  { /*@ assert (\\forall non_null Object o; o.getClass() != getClass(); o.getClass() != getClass()); */}\n"+				
+				"	void m1()  { //@ assert (\\forall non_null Object o;                             o.getClass() != getClass());}\n"+
+				"	void m2()  { //@ assert (\\forall non_null Object o; true;                       o.getClass() != getClass());}\n"+										
+				"	void m3()  { //@ assert (\\forall non_null Object o; o == null;                  o.getClass() != getClass());}\n"+
+				"	void m4a() { //@ assert (\\forall non_null Object o; o != null;                  o.getClass() != getClass());}\n"+
+				"	void m4b() { //@ assert (\\forall non_null Object o;                o == null || o.getClass() != getClass());}\n"+
+				"	void m5()  { //@ assert (\\forall non_null Object o; o.getClass() != getClass(); o.getClass() != getClass());}\n"+				
 				"}\n"},
 				"----------\n" + 
 				"1. ERROR in X.java (at line 4)\n" + 
-				"	void m3()  { /*@ assert (\\forall non_null Object o; o == null;                  o.getClass() != getClass()); */}\n" + 
+				"	void m3()  { //@ assert (\\forall non_null Object o; o == null;                  o.getClass() != getClass());}\n" + 
 				"	                                                    ^\n" + 
 				"Null comparison always yields false: The variable o cannot be null at this location\n" + 
 				"----------\n" + 
 				"2. ERROR in X.java (at line 5)\n" + 
-				"	void m4a() { /*@ assert (\\forall non_null Object o; o != null;                  o.getClass() != getClass()); */}\n" + 
+				"	void m4a() { //@ assert (\\forall non_null Object o; o != null;                  o.getClass() != getClass());}\n" + 
 				"	                                                    ^\n" + 
 				"Redundant null check: The variable o cannot be null at this location\n" + 
 				"----------\n" + 
 				"3. ERROR in X.java (at line 6)\n" + 
-				"	void m4b() { /*@ assert (\\forall non_null Object o;                o == null || o.getClass() != getClass()); */}\n" + 
+				"	void m4b() { //@ assert (\\forall non_null Object o;                o == null || o.getClass() != getClass());}\n" + 
 				"	                                                                   ^\n" + 
 				"Null comparison always yields false: The variable o cannot be null at this location\n" + 
 				"----------\n", null, true, options);
@@ -3684,31 +3684,31 @@ public class NullTypeSystemTestCompiler extends JmlTestCase {
 			new String[] {
 				"X.java",			
 				"class X {\n" +
-				"	void m1()  { /*@ assert (\\forall nullable Object o;                             o.getClass() != getClass()); */}\n"+
-				"	void m2()  { /*@ assert (\\forall nullable Object o; true;                       o.getClass() != getClass()); */}\n"+										
-				"	void m3()  { /*@ assert (\\forall nullable Object o; o == null;                  o.getClass() != getClass()); */}\n"+
-				"	void m4a() { /*@ assert (\\forall nullable Object o; o != null;                  o.getClass() != getClass()); */}\n"+
-				"	void m4b() { /*@ assert (\\forall nullable Object o;                o == null || o.getClass() != getClass()); */}\n"+
-				"	void m5()  { /*@ assert (\\forall nullable Object o; o.getClass() != getClass(); o.getClass() != getClass()); */}\n"+				
+				"	void m1()  { //@ assert (\\forall nullable Object o;                             o.getClass() != getClass());}\n"+
+				"	void m2()  { //@ assert (\\forall nullable Object o; true;                       o.getClass() != getClass());}\n"+										
+				"	void m3()  { //@ assert (\\forall nullable Object o; o == null;                  o.getClass() != getClass());}\n"+
+				"	void m4a() { //@ assert (\\forall nullable Object o; o != null;                  o.getClass() != getClass());}\n"+
+				"	void m4b() { //@ assert (\\forall nullable Object o;                o == null || o.getClass() != getClass());}\n"+
+				"	void m5()  { //@ assert (\\forall nullable Object o; o.getClass() != getClass(); o.getClass() != getClass());}\n"+				
 				"}\n"},
 				"----------\n" + 
 				"1. ERROR in X.java (at line 2)\n" + 
-				"	void m1()  { /*@ assert (\\forall nullable Object o;                             o.getClass() != getClass()); */}\n" + 
+				"	void m1()  { //@ assert (\\forall nullable Object o;                             o.getClass() != getClass());}\n" + 
 				"	                                                                                ^\n" + 
 				"Potential null pointer access: The variable o may be null at this location\n" + 
 				"----------\n" + 
 				"2. ERROR in X.java (at line 3)\n" + 
-				"	void m2()  { /*@ assert (\\forall nullable Object o; true;                       o.getClass() != getClass()); */}\n" + 
+				"	void m2()  { //@ assert (\\forall nullable Object o; true;                       o.getClass() != getClass());}\n" + 
 				"	                                                                                ^\n" + 
 				"Potential null pointer access: The variable o may be null at this location\n" + 
 				"----------\n" + 
 				"3. ERROR in X.java (at line 4)\n" + 
-				"	void m3()  { /*@ assert (\\forall nullable Object o; o == null;                  o.getClass() != getClass()); */}\n" + 
+				"	void m3()  { //@ assert (\\forall nullable Object o; o == null;                  o.getClass() != getClass());}\n" + 
 				"	                                                                                ^\n" + 
 				"Null pointer access: The variable o can only be null at this location\n" + 
 				"----------\n" + 
 				"4. ERROR in X.java (at line 7)\n" + 
-				"	void m5()  { /*@ assert (\\forall nullable Object o; o.getClass() != getClass(); o.getClass() != getClass()); */}\n" + 
+				"	void m5()  { //@ assert (\\forall nullable Object o; o.getClass() != getClass(); o.getClass() != getClass());}\n" + 
 				"	                                                    ^\n" + 
 				"Potential null pointer access: The variable o may be null at this location\n" + 
 				"----------\n", null, true, options);
@@ -3720,30 +3720,30 @@ public class NullTypeSystemTestCompiler extends JmlTestCase {
 			new String[] {
 				"X.java",			
 				"class X {\n" +
-				"	void m1a()  { /*@ assert (\\forall          Object c, d;                         \\typeof(c) == \\typeof(d)); */}\n"+
-				"	void m1b()  { /*@ assert (\\forall non_null Object c, d;                         \\typeof(c) == \\typeof(d)); */}\n"+
-				"	void m2()   { /*@ assert (\\forall          Object c, d; c != null;              \\typeof(c) == \\typeof(d)); */}\n"+										
-				"	void m3a()  { /*@ assert (\\forall          Object c, d; c != null && d != null; \\typeof(c) == \\typeof(d)); */}\n"+
-				" 	void m3b()	{ /*@ assert (\\forall non_null Object c, d; c != null;              \\typeof(c) == \\typeof(d)); */}\n" +
+				"	void m1a()  { //@ assert (\\forall          Object c, d;                         \\typeof(c) == \\typeof(d));}\n"+
+				"	void m1b()  { //@ assert (\\forall non_null Object c, d;                         \\typeof(c) == \\typeof(d));}\n"+
+				"	void m2()   { //@ assert (\\forall          Object c, d; c != null;              \\typeof(c) == \\typeof(d));}\n"+										
+				"	void m3a()  { //@ assert (\\forall          Object c, d; c != null && d != null; \\typeof(c) == \\typeof(d));}\n"+
+				" 	void m3b()	{ //@ assert (\\forall non_null Object c, d; c != null;              \\typeof(c) == \\typeof(d));}\n" +
 				"}\n"},
 				"----------\n" + 
 				"1. ERROR in X.java (at line 2)\n" + 
-				"	void m1a()  { /*@ assert (\\forall          Object c, d;                         \\typeof(c) == \\typeof(d)); */}\n" + 
+				"	void m1a()  { //@ assert (\\forall          Object c, d;                         \\typeof(c) == \\typeof(d));}\n" + 
 				"	                                                                                        ^\n" + 
 				"Potential null pointer access: The variable c may be null at this location\n" + 
 				"----------\n" + 
 				"2. ERROR in X.java (at line 2)\n" + 
-				"	void m1a()  { /*@ assert (\\forall          Object c, d;                         \\typeof(c) == \\typeof(d)); */}\n" + 
+				"	void m1a()  { //@ assert (\\forall          Object c, d;                         \\typeof(c) == \\typeof(d));}\n" + 
 				"	                                                                                                      ^\n" + 
 				"Potential null pointer access: The variable d may be null at this location\n" + 
 				"----------\n" + 
 				"3. ERROR in X.java (at line 4)\n" + 
-				"	void m2()   { /*@ assert (\\forall          Object c, d; c != null;              \\typeof(c) == \\typeof(d)); */}\n" + 
+				"	void m2()   { //@ assert (\\forall          Object c, d; c != null;              \\typeof(c) == \\typeof(d));}\n" + 
 				"	                                                                                                      ^\n" + 
 				"Potential null pointer access: The variable d may be null at this location\n" + 
 				"----------\n" + 
 				"4. ERROR in X.java (at line 6)\n" + 
-				"	void m3b()	{ /*@ assert (\\forall non_null Object c, d; c != null;              \\typeof(c) == \\typeof(d)); */}\n" + 
+				"	void m3b()	{ //@ assert (\\forall non_null Object c, d; c != null;              \\typeof(c) == \\typeof(d));}\n" + 
 				"	          	                                            ^\n" + 
 				"Redundant null check: The variable c cannot be null at this location\n" + 
 				"----------\n", null, true, options);		

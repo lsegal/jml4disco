@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter;
+import org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyProcessPool;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 import org.jmlspecs.jml4.esc.util.Utils;
 import org.jmlspecs.jml4.esc.vc.lang.VC;

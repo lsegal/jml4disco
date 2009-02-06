@@ -8,7 +8,7 @@ import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 public class SetStatementTest extends AbstractRegressionTest {
 
 	public final String workspace = "..";
-	public final String path2jml4annotations = workspace + "/org.jmlspecs.annotation/bin";
+	public final String path2jml4runtime = workspace + "/org.jmlspecs.jml4.runtime/bin";
 
     public SetStatementTest(String name) {
         super(name);
@@ -19,7 +19,7 @@ public class SetStatementTest extends AbstractRegressionTest {
 		final int length = superDefaultClassPaths.length;
 	    String[] defaultClassPaths = new String[length + 1];
         System.arraycopy(superDefaultClassPaths, 0, defaultClassPaths, 0, length);
-        defaultClassPaths[length] = path2jml4annotations;
+        defaultClassPaths[length] = path2jml4runtime;
         return defaultClassPaths;
    }
 
@@ -41,9 +41,6 @@ public class SetStatementTest extends AbstractRegressionTest {
         options.put(CompilerOptions.OPTION_ReportNonStaticAccessToStatic, CompilerOptions.IGNORE);
         options.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.IGNORE);
         options.put(JmlCompilerOptions.OPTION_SpecPath, DbcTestCompiler.getSpecPath());
-		options.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_6);
-		options.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_6);
-		options.put(CompilerOptions.OPTION_Process_Annotations, CompilerOptions.ENABLED);
 
         return options;
     }

@@ -13,7 +13,6 @@ import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverVisitor;
 import org.jmlspecs.jml4.esc.result.lang.Result;
-import org.jmlspecs.jml4.esc.util.Utils;
 import org.jmlspecs.jml4.esc.vc.lang.VC;
 import org.jmlspecs.jml4.util.Logger;
 
@@ -29,10 +28,6 @@ public class Cvc3Adapter extends ProverAdapter {
 	public Result[] prove(VC vc, Map incarnations) {
 		Cvc3Visitor visitor = new Cvc3Visitor();
 		String cvc3String = visitor.getTheory(vc, incarnations);
-//
-//		String outputFilename = vc.getName()+".cvc"; //$NON-NLS-1$
-//		Utils.writeToFile(outputFilename, cvc3String);
-//
 		return proveWithCvc3(cvc3String);
 	}
 	
@@ -81,7 +76,6 @@ public class Cvc3Adapter extends ProverAdapter {
 		if (DEBUG)
 			Logger.print(buffer.toString());
 		String result = buffer.toString();
-//		Utils.assertTrue(result.indexOf("Error") < 0, "invalid CVC3 response '"+result+"'");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		if (result.indexOf("Error") >= 0) { //$NON-NLS-1$
 //			this.problemReporter.jmlEsc2Error("invalid CVC3 response '"+result+"'", 0, 0);  //$NON-NLS-1$//$NON-NLS-2$
 		}

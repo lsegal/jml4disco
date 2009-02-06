@@ -18,6 +18,7 @@ import org.eclipse.jdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.impl.Constant;
 import org.eclipse.jdt.internal.compiler.impl.ReferenceContext;
+import org.jmlspecs.jml4.ast.JmlModifier;
 
 public class LocalVariableBinding extends VariableBinding {
 
@@ -46,6 +47,10 @@ public class LocalVariableBinding extends VariableBinding {
 	public LocalVariableBinding(LocalDeclaration declaration, TypeBinding type, int modifiers, boolean isArgument) {
 
 		this(declaration.name, type, modifiers, isArgument);
+		// <jml-start id="jmlSetStatement" />
+		long jmlModifiers = JmlModifier.getFromAnnotations(declaration.annotations);
+		this.isGhost = JmlModifier.isGhost(jmlModifiers);
+		// <jml-end id="jmlSetStatement" />
 		this.declaration = declaration;
 	}
 

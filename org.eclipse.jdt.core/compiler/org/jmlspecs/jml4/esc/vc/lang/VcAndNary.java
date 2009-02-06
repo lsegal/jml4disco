@@ -1,7 +1,6 @@
 package org.jmlspecs.jml4.esc.vc.lang;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
@@ -14,11 +13,6 @@ public class VcAndNary extends VC {
 	public VcAndNary(VC[] conjuncts, int sourceStart, int sourceEnd) {
 		super(TypeBinding.BOOLEAN, sourceStart, sourceEnd);
 		this.conjuncts = conjuncts;
-		for (int i = 0; i < conjuncts.length; i++) {
-			List decls = this.conjuncts[i].decls();
-			this.addDecls(decls);
-			decls.clear();
-		}
 	}
 
 	public String accept(ProverVisitor visitor) {
@@ -48,7 +42,7 @@ public class VcAndNary extends VC {
 	}
 
 	public String toString() {
-		return declString() + "[/\\" + Arrays.asList(this.conjuncts) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+		return declString() + "[/\\" + Arrays.asList(this.conjuncts) + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 }

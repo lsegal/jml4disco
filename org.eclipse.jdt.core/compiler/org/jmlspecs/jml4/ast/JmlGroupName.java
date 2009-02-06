@@ -2,7 +2,6 @@ package org.jmlspecs.jml4.ast;
 
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
-/** @deprecated */
 public class JmlGroupName extends ASTNode {
 
 	static class Prefix {

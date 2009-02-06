@@ -19,7 +19,6 @@ import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
-import org.jmlspecs.jml4.compiler.JmlConstants;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 import org.jmlspecs.jml4.nonnull.Nullity;
 
@@ -29,7 +28,6 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 	public static final boolean DEBUG_NULLITY_OF_OVERRIDES = false;
 	public JmlMethodSpecification specification;
 	public JmlLocalDeclaration resultValue;
-	private boolean jmlModifiersHaveBeenInit = false;
 	private long jmlModifiers = 0;
 	// escResults only set after esc4 is run on this method.
 	private /*@nullable*/Result[] escResults;
@@ -38,41 +36,24 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 	public JmlMethodDeclaration(CompilationResult compilationResult) {
 		super(compilationResult);
 	}
+
 	public void resolve(ClassScope upperScope) {
-		initJmlModifiersFromAnnotations();
-		super.resolve(upperScope);
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.RESOLVE)
-			return;
-
-		if (this.specification == null)
-			return;
-		if (this.returnType != null && this.returnType.resolvedType != TypeBinding.VOID) {
-			this.createLocalForResult();
-			this.resultValue.resolve(this.scope);
-			this.scope.addLocalVariable(this.resultValue.binding);
-			this.resultValue.binding.recordInitializationStartPC(0);
-		}
-		this.specification.resolve(this.scope);
-	}
-
-	public void initJmlModifiersFromAnnotations() {
 		jmlModifiers |= JmlModifier.getFromAnnotations(this.annotations);
-		this.jmlModifiersHaveBeenInit = true;
-	}
 
-	public void resolveStatements() {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.RESOLVE
-			&& this.isModel())
-			return;
-		super.resolveStatements();
+		super.resolve(upperScope);
+
+		if (this.specification != null) {
+			if (this.returnType != null && this.returnType.resolvedType != TypeBinding.VOID) {
+				this.createLocalForResult();
+				this.resultValue.resolve(this.scope);
+				this.scope.addLocalVariable(this.resultValue.binding);
+				this.resultValue.binding.recordInitializationStartPC(0);
+			}
+			this.specification.resolve(this.scope);
+		}
 	}
 
 	public void analyseCode(ClassScope classScope, InitializationFlowContext initializationContext, FlowInfo flowInfo) {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_ANALYSIS) {
-			if (!this.isModel())
-				super.analyseCode(classScope, initializationContext, flowInfo);
-			return;
-		}
 
 		// TODO uncomment the following line
 		// checkNullityOfSupers(classScope);
@@ -197,7 +178,7 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 		}
 	}
 	private boolean nullityIncompatible(TypeReference actual, TypeReference overridden, boolean isCheckingReturnNullity) {
-		if (actual.resolvedType == null || actual.resolvedType.isBaseType()) {
+		if (actual.resolvedType.isBaseType()) {
 			return false;
 		}
 		if (actual instanceof JmlTypeReference && overridden instanceof JmlTypeReference) {
@@ -284,18 +265,19 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 */
 
 	public void generateCode(ClassFile classFile) {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_GENERATION
-			&& this.isModel()) // if this is not a model method we still want to generate code for the method body.
-			return;
 		super.generateCode(classFile);
 		if (this.scope.compilerOptions().jmlEscGovernsRac) {
 			this.scope.compilerOptions().jmlRacEnabled = this.previousRacState;
 		}
 	}
 
+	protected void generateChecksForPostcondition(MethodScope mScope, CodeStream codeStream) {
+		if (this.specification != null) {
+			this.specification.generateCheckOfEnsures(mScope, this, codeStream);
+		}
+	}
+	
 	protected void generateChecksForPrecondition(MethodScope currentScope, CodeStream codeStream) {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_GENERATION)
-			return;
 		JmlMethodDeclaration.generateChecksForNonNullParametersStatic(this, codeStream);
 		if (this.specification != null) {
 			if (this.resultValue != null)
@@ -310,14 +292,6 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 		}
 	}
 
-	protected void generateChecksForPostcondition(MethodScope mScope, CodeStream codeStream) {
-		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_GENERATION)
-			return;
-		if (this.specification != null) {
-			this.specification.generateCheckOfEnsures(mScope, this, codeStream);
-		}
-	}
-	
 	/*package*/ static boolean escSayNoNeedToCheck(/*@nullable*/Result[] escResults) {
 		if (escResults == null)
 			return false;
@@ -352,14 +326,10 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 	}
 	
 	public boolean isPure() {
-		if (!this.jmlModifiersHaveBeenInit)
-			initJmlModifiersFromAnnotations();
 		return JmlModifier.isPure(this.jmlModifiers);
 	}
 
 	public boolean isModel() {
-		if (!this.jmlModifiersHaveBeenInit)
-			initJmlModifiersFromAnnotations();
 		return JmlModifier.isModel(this.jmlModifiers);
 	}
 

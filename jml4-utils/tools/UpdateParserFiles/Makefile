@@ -39,7 +39,7 @@ default0:
 
 step1: clean weaveParserSource
 
-FILES_TO_REBUILD0=prefix-JmlParserHelper.java prefix-ParserBasicInformation.java prefix-TerminalTokens.java
+FILES_TO_REBUILD0=prefix-Parser.java prefix-ParserBasicInformation.java prefix-TerminalTokens.java
 FILES_TO_REBUILD_IN_LOCAL_DIR=$(subst prefix-, $(LOCAL_BUILD_DIR)/,$(FILES_TO_REBUILD0))
 FILES_TO_REBUILD_AT_SRC=$(subst prefix-, $(PARSER_DIR)/,$(FILES_TO_REBUILD0))
 

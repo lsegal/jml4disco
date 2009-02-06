@@ -5,16 +5,43 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Map;
 
+import org.eclipse.jdt.core.tests.compiler.regression.AbstractRegressionTest;
+import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapter;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyProcessPool;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 
-public class SimplifyTests extends EscTest {
+public class SimplifyTests extends AbstractRegressionTest {
 	public SimplifyTests(String name) {
 		super(name);
 	}
 
+	// Augment problem detection settings
+	@Override
+	@SuppressWarnings("unchecked")
+	protected Map<String, String> getCompilerOptions() {
+		Map<String, String> options = super.getCompilerOptions();
+
+		options.put(JmlCompilerOptions.OPTION_EnableJml, CompilerOptions.ENABLED);
+		options.put(JmlCompilerOptions.OPTION_EnableJmlEsc, CompilerOptions.ENABLED);
+		options.put(JmlCompilerOptions.OPTION_DefaultNullity, JmlCompilerOptions.NON_NULL);
+		options.put(CompilerOptions.OPTION_ReportNullReference, CompilerOptions.ERROR);
+		options.put(CompilerOptions.OPTION_ReportPotentialNullReference, CompilerOptions.ERROR);
+		options.put(CompilerOptions.OPTION_ReportRedundantNullCheck, CompilerOptions.IGNORE);
+		options.put(JmlCompilerOptions.OPTION_ReportNonNullTypeSystem, CompilerOptions.ERROR);
+		options.put(CompilerOptions.OPTION_ReportRawTypeReference, CompilerOptions.IGNORE);
+		options.put(CompilerOptions.OPTION_ReportUnnecessaryElse, CompilerOptions.IGNORE);
+		options.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.IGNORE);
+		// options.put(JmlCompilerOptions.OPTION_SpecPath,
+		// NullTypeSystemTestCompiler.getSpecPath());
+		options.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
+		options.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
+		options.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
+		return options;
+	}
 	public void test_000_simplify_sanity() {
 		String actual = "";
 		String expected = "1: Valid.";

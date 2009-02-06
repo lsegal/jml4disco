@@ -59,17 +59,12 @@ public class VcProgram implements Serializable{
 			String beqName = vc.getName() + okSuffix;
 			VcVarDecl varDecl = new VcVarDecl(beqName, 0, TypeBinding.BOOLEAN, 0, 0);
 			VcVariable var = new VcVariable(beqName, 0, TypeBinding.BOOLEAN, 0, 0, 0);
-			beqs[i] = new VcLogicalExpression(VcOperator.EQUIV, var, vc, 0, 0);
+			beqs[i] = new VcLogicalExpression(VcOperator.EQUALS, var, vc, 0, 0);
 			beqs[i].addDecl(varDecl);
 		}
 		VC assumptions = new VcAndNary(beqs, 0, 0);
 		VcVariable var = new VcVariable(this.startId+okSuffix, 0, TypeBinding.BOOLEAN, 0, 0, 0);
 		VC result = new VcLogicalExpression(VcOperator.IMPLIES, assumptions, var, 0, 0);
-
-		List decls = assumptions.decls();
-		result.addDecls(decls);
-		decls.clear();
-		
 		return new VC[]{result};
 	}
 
@@ -114,20 +109,16 @@ public class VcProgram implements Serializable{
 
 	private VC convertImplicationsToConjunctions(VC vc) {
 		List/*<VC>*/ conjuncts = new ArrayList/*<VC>*/();
-		List/*<VcVarDecls>*/ varDecls = vc.decls();
 		while (vc instanceof VcLogicalExpression && ((VcLogicalExpression)vc).operator == VcOperator.IMPLIES) {
 			VC lhs = ((VcLogicalExpression)vc).left;
 			conjuncts.add(lhs);
 			vc = ((VcLogicalExpression)vc).right;
-			varDecls.addAll(lhs.decls());
-			varDecls.addAll(vc.decls());
 		}
 		if (conjuncts.size() == 0)
 			return vc;
 		VC[] aConjuncts = (VC[]) conjuncts.toArray(VC.EMPTY);
 		VcAndNary assumptions = new VcAndNary(aConjuncts, 0, 0);
 		VcLogicalExpression result = new VcLogicalExpression(VcOperator.IMPLIES, assumptions, vc, 0, 0);
-		result.addDecls(varDecls);
 		return result;
 	}
 

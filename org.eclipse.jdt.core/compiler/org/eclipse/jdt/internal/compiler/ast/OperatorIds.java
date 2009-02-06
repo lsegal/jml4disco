@@ -66,7 +66,5 @@ public interface OperatorIds {
 	public static final int JML_TYPE = JmlOtherOpIdStart + 5;
 	public static final int JML_TYPEOF = JmlOtherOpIdStart + 6;
 	public static final int JML_ELEMTYPE = JmlOtherOpIdStart + 7;
-	public static final int JML_NOT_ASSIGNED = JmlOtherOpIdStart + 8;
-	public static final int JML_NOT_MODIFIED = JmlOtherOpIdStart + 9;
 	// <jml-end id="level.0.expression" />
 }

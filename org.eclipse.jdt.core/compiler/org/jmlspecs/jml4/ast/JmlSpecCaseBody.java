@@ -3,7 +3,6 @@ package org.jmlspecs.jml4.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.jdt.internal.compiler.flow.FlowContext;
@@ -11,26 +10,24 @@ import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 
-public class JmlSpecCaseBody extends ASTNode {
+public class JmlSpecCaseBody extends JmlAstNode {
 	
 	public final /*@nullable*/ JmlSpecCaseHeader header;
 	public final /*@nullable*/ JmlSpecCaseRest rest;
-	private JmlLocalDeclaration[] forallVars;
-	private JmlLocalDeclaration[] oldVars;
 
-	//@ requires header != null ^ rest != null;
-	public JmlSpecCaseBody(JmlLocalDeclaration[] forallVars, JmlLocalDeclaration[] oldVars, JmlSpecCaseHeader header, JmlSpecCaseRest rest) {
-		this.forallVars = forallVars;
-		this.oldVars = oldVars;
+	public JmlSpecCaseBody(JmlSpecCaseHeader header) {
+		this.header = header;
+		this.rest = null;
+	}
+	public JmlSpecCaseBody(JmlSpecCaseRest rest) {
+		this.header = null;
+		this.rest = rest;
+	}
+	public JmlSpecCaseBody(JmlSpecCaseHeader header, JmlSpecCaseRest rest) {
 		this.header = header;
 		this.rest = rest;
-		
-		this.sourceStart = header != null ? header.sourceStart : rest.sourceStart;
-		this.sourceEnd = rest != null ? rest.sourceEnd : header.sourceStart;
 	}
 
-	// FIXME: add resolution, analysis and print support for forallVars and oldVars.
-	
 	public StringBuffer print(int indent, StringBuffer output) {
 		if (this.header != null)
 			output = this.header.print(indent, output);

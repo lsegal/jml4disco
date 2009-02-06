@@ -66,7 +66,7 @@ public class JML2TestCase extends JmlTestCase {
 						"	//@ invariant 3; // error\n"+
 						"  public void m() {}\n"+
 						"	^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"+
-						"JML2 Checker: A boolean valued expression is required in this context [JML]\n"+
+						"JML Checker: A boolean valued expression is required in this context [JML]\n"+
 						"----------\n"+
 						"1 problem (1 error)";
 		System.setProperty("jdt.compiler.useSingleThread", "true");

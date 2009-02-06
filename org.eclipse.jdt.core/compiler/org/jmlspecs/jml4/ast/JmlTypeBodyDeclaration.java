@@ -7,25 +7,21 @@ import org.eclipse.jdt.internal.compiler.flow.FlowContext;
 import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers;
-import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 
 public abstract class JmlTypeBodyDeclaration extends JmlClause {
 	
 	// The following fields are not set at construction time, but a little later:
-	protected int modifiers = 0;
+	protected int     modifiers = 0;
 	protected Annotation[] jmlAnnotations = new Annotation[0];
-	public int modifiersSourceStart = -1;
+	public  int     modifiersSourceStart = -1;
 	//@ private boolean modifiersHasBeenSet = false;
-
-	// FIXME: properly handle static clauses.
-	protected boolean isStatic = false;
 	
-	public JmlTypeBodyDeclaration(JmlIdentifier clauseKeyword) {
-		super(clauseKeyword);
+	public JmlTypeBodyDeclaration(String clauseKeyword, boolean isRedundant) {
+		super(clauseKeyword, isRedundant);
 	}
 	
-	public JmlTypeBodyDeclaration(JmlIdentifier clauseKeyword, Expression pred) {
-		super(clauseKeyword, pred);
+	public JmlTypeBodyDeclaration(String clauseKeyword, boolean isRedundant, Expression pred) {
+		super(clauseKeyword, isRedundant, pred);
 	}
 
 	public abstract void resolve(BlockScope staticInitializerScope, BlockScope initializerScope);
@@ -37,14 +33,14 @@ public abstract class JmlTypeBodyDeclaration extends JmlClause {
 	protected void checkModifiers(BlockScope scope, int validModifiers, String validModifierList) {
 		checkVisibilityModifiers(scope);
 		if ((modifiers & validModifiers) != modifiers) {
-			scope.problemReporter().invalidModifier("member declaration", clauseKeyword(), validModifierList, this); //$NON-NLS-1$
+			scope.problemReporter().invalidModifier("member declaration", clauseKeyword, validModifierList, this); //$NON-NLS-1$
 		}
 	}
 
 	protected void checkVisibilityModifiers(BlockScope scope) {
 		final int visibility = modifiers & ExtraCompilerModifiers.AccVisibilityMASK;
 		if (visibility != 0 && visibility != ClassFileConstants.AccPrivate && visibility != ClassFileConstants.AccProtected && visibility != ClassFileConstants.AccPublic) {
-			scope.problemReporter().duplicateModifier("member declaration", clauseKeyword(), this); //$NON-NLS-1$
+			scope.problemReporter().duplicateModifier("member declaration", clauseKeyword, this); //$NON-NLS-1$
 		}
 	}
 	
@@ -60,10 +56,4 @@ public abstract class JmlTypeBodyDeclaration extends JmlClause {
 	public void setJmlAnnotations(Annotation[] annotations) {
 		this.jmlAnnotations = annotations;
 	}
-
-	public StringBuffer print(int indent, StringBuffer output) {
-		// FIXME: also need to print the modifiers
-		return super.print(indent, output);
-	}
-	
 }

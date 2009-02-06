@@ -113,16 +113,9 @@ public class SimplifyVisitor extends ProverVisitor {
 	}
 
 	private boolean shouldHandleLhsDifferently(VcLogicalExpression vcExpr) {
-		String vcName = vcExpr.getName();
-		boolean hasName = vcExpr.hasName() && Character.isDigit(vcName.charAt(vcName.length()-1));
-		boolean hasAssertion = vcExpr.kindOfAssertion() != null;
-		boolean isImplication = vcExpr.isImplication();
-//		boolean leftIsNaryAnd = vcExpr.left  instanceof VcAndNary;
-//		boolean rightIsStartOk = vcExpr.right instanceof VcVariable && ((VcVariable)vcExpr.right).name.equals("start$ok");//$NON-NLS-1$
-		boolean result = !hasName && !(hasAssertion && isImplication);
-		return result;
-//		    && !leftIsNaryAnd
-//		    && !rightIsStartOk
+		return !vcExpr.hasName() && !(vcExpr.kindOfAssertion() != null && vcExpr.isImplication())
+		    && !(vcExpr.left  instanceof VcAndNary)
+		    && !(vcExpr.right instanceof VcVariable && ((VcVariable)vcExpr.right).name.equals("start$ok")); //$NON-NLS-1$
 	}
 
 	public String visitAsTerm(VcLogicalExpression vcExpr) {
@@ -240,7 +233,7 @@ public class SimplifyVisitor extends ProverVisitor {
 	}
 
 	public String visit(VcArrayAllocationExpression vcArrayAllocationExpression) {
-		return "something_meaningful"; //$NON-NLS-1$
+		return "something_meaningful";
 	}
 
 	public String visit(VcQuantifiedExpression expr) {
@@ -515,6 +508,6 @@ public class SimplifyVisitor extends ProverVisitor {
 				conjuncts.append("\n\t"); //$NON-NLS-1$
 			conjuncts.append(vcAndNary.conjuncts[i].accept(this).trim());
 		}
-		return wrap(vcAndNary, "(AND " + conjuncts.toString() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+		return wrap(vcAndNary, "(AND " + conjuncts.toString() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 }

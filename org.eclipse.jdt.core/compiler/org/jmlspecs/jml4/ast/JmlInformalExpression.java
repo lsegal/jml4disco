@@ -2,14 +2,9 @@ package org.jmlspecs.jml4.ast;
 
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.impl.BooleanConstant;
-import org.eclipse.jdt.internal.compiler.impl.Constant;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
-import org.jmlspecs.jml4.lookup.JmlSpecialTypeBinding;
 
-/** Informal expressions are used in predicates but also in
- * store ref lists.
- */
 public class JmlInformalExpression extends Expression {
 
 	private final String source;
@@ -27,9 +22,7 @@ public class JmlInformalExpression extends Expression {
 	}
 
 	public TypeBinding resolveType(BlockScope scope) {
-		this.constant = Constant.NotAConstant;
-		return JmlSpecialTypeBinding.INFORMAL_COMMENT_UNFIXED_TYPE;
-		// TypeBinding.BOOLEAN;
+		return TypeBinding.BOOLEAN;
 	}
 
 }

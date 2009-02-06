@@ -9,19 +9,26 @@ import org.eclipse.jdt.internal.compiler.flow.FlowContext;
 import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers;
-import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 
 public class JmlConstraintClause extends JmlTypeBodyDeclaration {
-
-	public static final JmlConstraintClause[] EMPTY_CONSTRAINT_ARRAY = new JmlConstraintClause[0];
 
 	private static final int VALID_MODIFIERS = ExtraCompilerModifiers.AccVisibilityMASK | ClassFileConstants.AccStatic;
 	private static final String VALID_MODIFIER_LIST = "public, protected, private & static"; //$NON-NLS-1$
 	    
+	protected boolean isStatic;
 	protected boolean isStaticSet = false;
 
-	public JmlConstraintClause(JmlIdentifier clauseKeyword, Expression pred) {
-		super(clauseKeyword, pred);
+	public JmlConstraintClause(String clauseKeyword, boolean isRedundant, Expression pred) {
+		super(clauseKeyword, isRedundant, pred);
+	}
+
+	public String kind() {
+		return "constraint"; //$NON-NLS-1$
+	}
+	
+	public StringBuffer print(int indent, StringBuffer output) {
+		// FIXME: also need to print the modifiers
+		return super.print(indent, output);
 	}
 	
 	public void resolve(BlockScope staticInitializerScope, BlockScope initializerScope) {
@@ -34,7 +41,7 @@ public class JmlConstraintClause extends JmlTypeBodyDeclaration {
 	public FlowInfo analyseCode(BlockScope staticInitializerScope,
 			BlockScope initializerScope, FlowContext context, FlowInfo flowInfo) {
 		BlockScope scope = isStatic() ? staticInitializerScope : initializerScope;	
-		return this.expr.analyseCode(scope, context, flowInfo);
+		return this.pred.analyseCode(scope, context, flowInfo);
 	}
 
 	public void generateCheck(BlockScope currentScope, AbstractMethodDeclaration methodDecl, 
@@ -66,7 +73,7 @@ public class JmlConstraintClause extends JmlTypeBodyDeclaration {
 
 		if (Flags.isStatic(this.modifiers) && 
 				JmlModifier.isInstance(JmlModifier.getFromAnnotations(this.jmlAnnotations))) {
-			defaultScope.problemReporter().invalidModifier("member declaration", this.clauseKeyword(), "either static or instance and other modifiers", this);  //$NON-NLS-1$//$NON-NLS-2$
+			defaultScope.problemReporter().invalidModifier("member declaration", this.clauseKeyword, "either static or instance and other modifiers", this);  //$NON-NLS-1$//$NON-NLS-2$
 			this.isStatic = false; // default:static
 			this.isStaticSet = true;
 			return;

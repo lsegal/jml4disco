@@ -127,9 +127,9 @@ public class ProveVcPiecewise implements IProverStrategy {
 	protected void setVcName(Result[] results, String name) {
 //		Utils.assertTrue(results.length < 2, "there's more than a single result from simplify"); //$NON-NLS-1$
 		for (int i = 0; i < results.length; i++) {
-			results[i].setVcName(name+".thy"); //$NON-NLS-1$
+			results[i].setVcName(name);
 		}
-//		System.getenv(name);
+		System.getenv(name);
 	}
 
 	public String toString() {

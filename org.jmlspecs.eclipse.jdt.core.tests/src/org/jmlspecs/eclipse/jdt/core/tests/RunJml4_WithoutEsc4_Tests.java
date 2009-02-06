@@ -18,7 +18,7 @@ public class RunJml4_WithoutEsc4_Tests extends TestCase {
 	}
 	public static Test suite() {
 		TestSuite suite = new TestSuite(RunJml4_WithoutEsc4_Tests.class.getName());
-		// suite.addTest(RunJml4Jml2Tests.suite());
+		suite.addTest(RunJml4Jml2Tests.suite());
 		suite.addTest(RunJml4NonNullTests.suite());
 		suite.addTest(RunJml4DbcTests.suite());
 		return suite;

@@ -16,6 +16,7 @@ import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.jdt.internal.compiler.impl.Constant;
+import org.jmlspecs.jml4.ast.JmlModifier;
 
 public class FieldBinding extends VariableBinding {
 	public ReferenceBinding declaringClass;
@@ -45,6 +46,10 @@ public FieldBinding(FieldDeclaration field, TypeBinding type, int modifiers, Ref
 	// <jml-start id="2" />
 	this.fieldDeclaration = field;
 	// <jml-end id="2" />
+	// <jml-start id="jmlSetStatement" />
+	long jmlModifiers = JmlModifier.getFromAnnotations(field.annotations);
+	this.isGhost = JmlModifier.isGhost(jmlModifiers);
+	// <jml-end id="jmlSetStatement" />
 	field.binding = this; // record binding in declaration
 }
 

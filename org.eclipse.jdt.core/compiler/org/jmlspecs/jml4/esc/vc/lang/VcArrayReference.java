@@ -45,7 +45,7 @@ public class VcArrayReference extends VC {
 	}
 
 	public String toString() {
-		return "{"+this.receiver+"[|"+this.position+"|]$"+this.incarnation+"}";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		return "{"+this.receiver+"[|"+this.position+"|]}";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 }

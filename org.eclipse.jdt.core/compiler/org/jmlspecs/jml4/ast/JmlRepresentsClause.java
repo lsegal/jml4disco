@@ -8,23 +8,41 @@ import org.eclipse.jdt.internal.compiler.flow.FlowContext;
 import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers;
-import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 
 public class JmlRepresentsClause extends JmlTypeBodyDeclaration {
-	
-	public static final JmlRepresentsClause[] EMPTY_REPRESENTS_ARRAY = new JmlRepresentsClause[0];
-
-    public static final char[] KEYWORD = "represents".toCharArray(); //$NON-NLS-1$
+    public static final String KEYWORD_AS_STRING = "represents"; //$NON-NLS-1$
 	private static final int VALID_MODIFIERS = ExtraCompilerModifiers.AccVisibilityMASK | ClassFileConstants.AccStatic;
 	// TODO: consider generating the following string from VALID_MODIFIERS instead ...
     private static final String VALID_MODIFIER_LIST = "public, protected, private & static"; //$NON-NLS-1$
 
-	//@ public invariant this.expr != null;
-    public final Expression storeRef;
+    // WARNING: beware that we will eventually support both the functional and
+	// relational forms of this clause. When that happens, it might be worth
+	// storing both the functional and relational form expressions in expr
+	// (even though the relational form expression will be a predicate that
+	// could be stored in super.pred.
+    
+    public final JmlStoreRef storeRef;
+    public final Expression expr;
 
-    public JmlRepresentsClause(JmlIdentifier clauseKeyword, Expression storeRef, Expression expr) {
-		super(clauseKeyword, expr);
+    // TODO: correctly support static instances of this clause.
+	private final boolean isStatic = false;
+	
+	public JmlRepresentsClause(boolean isRedundant, JmlStoreRef storeRef, Expression expr) {
+		super(KEYWORD_AS_STRING, isRedundant);
 		this.storeRef = storeRef;
+		this.expr = expr;
+	}
+
+	public String kind() {
+		return KEYWORD_AS_STRING;
+	}
+	
+	public StringBuffer print(int indent, StringBuffer output) {
+		output.append(this.clauseKeyword + SPACE);
+		storeRef.print(indent, output);
+		output.append(" = "); //$NON-NLS-1$
+		expr.print(indent, output);
+		return output.append(SEMICOLON);
 	}
 
 	public void resolve(BlockScope staticInitializerScope, BlockScope initializerScope) {
@@ -42,10 +60,5 @@ public class JmlRepresentsClause extends JmlTypeBodyDeclaration {
 	public void generateCheck(BlockScope currentScope,
 			AbstractMethodDeclaration methodDecl, CodeStream codeStream) {
 		// FIXME: what to do here?
-	}
-
-	protected StringBuffer printClauseContent(StringBuffer output) {
-		this.storeRef.print(0, output).append(" = "); //$NON-NLS-1$
-		return super.printClauseContent(output);
 	}
 }

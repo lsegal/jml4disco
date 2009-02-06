@@ -19,7 +19,6 @@ import org.eclipse.jdt.internal.compiler.parser.*;
 import org.eclipse.jdt.internal.compiler.problem.*;
 import org.eclipse.jdt.internal.compiler.util.*;
 import org.jmlspecs.jml4.compiler.CompilerExtensionManager;
-import org.jmlspecs.jml4.compiler.JmlConstants;
 import org.jmlspecs.jml4.compiler.ReferenceCounterVisitor;
 import org.jmlspecs.jml4.lookup.JmlBinaryLookup;
 import org.jmlspecs.jml4.lookup.JmlSourceLookup;
@@ -311,7 +310,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		// <jml-end id="6" />
 		lookupEnvironment.createBinaryTypeFrom(binaryType, packageBinding, accessRestriction);
 		// <jml-start id="6" />
-		if (options.jmlEnabled && JmlConstants.ENABLE_SPEC_MERGE)
+		if (options.jmlEnabled)
 			this.jmlBinaryLookup.decorateBindingWithJml(binaryType, typeBinding);
 		// <jml-end id="6" />
 	}
@@ -765,7 +764,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		unit.resolve();
 
 		// <jml-start id="6" />
-		if (this.options.jmlEnabled && JmlConstants.ENABLE_SPEC_MERGE) {
+		if (this.options.jmlEnabled) {
 			this.jmlSourceLookup.mergeWithSourceAndSpec(unit);
 		}
 		// <jml-end id="6" />

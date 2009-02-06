@@ -174,7 +174,7 @@ public void test_0013_SignalsWithBadThrowable() {
             "1. ERROR in X.java (at line 2)\n" +
             "	//@ signals (String);\n" +
             "	             ^^^^^^\n" +
-    		"No exception of type String can be thrown; an exception type must be a subclass of Throwable\n" + 
+            "Type mismatch: cannot convert from String to Throwable\n" +
     		"----------\n");
 }
 public void test_0014_SignalsWithPredicateWithBadThrowable() {
@@ -189,7 +189,7 @@ public void test_0014_SignalsWithPredicateWithBadThrowable() {
             "1. ERROR in X.java (at line 2)\n" +
             "	//@ signals (Object) true;\n" +
             "	             ^^^^^^\n" +
-    		"No exception of type Object can be thrown; an exception type must be a subclass of Throwable\n" + 
+            "Type mismatch: cannot convert from Object to Throwable\n" +
     		"----------\n");
 }
 public void test_0015_SignalsWithIdentifierWithBadThrowable() {
@@ -204,7 +204,7 @@ public void test_0015_SignalsWithIdentifierWithBadThrowable() {
             "1. ERROR in X.java (at line 2)\n" +
             "	//@ signals (X e);\n" +
             "	             ^\n" +
-    		"No exception of type X can be thrown; an exception type must be a subclass of Throwable\n" + 
+            "Type mismatch: cannot convert from X to Throwable\n" +
     		"----------\n");
 }
 public void test_0016_SignalsWithNotSpecifiedWithBadThrowable() {
@@ -219,7 +219,7 @@ public void test_0016_SignalsWithNotSpecifiedWithBadThrowable() {
             "1. ERROR in X.java (at line 2)\n" +
             "	//@ signals (Integer) \\not_specified;\n" +
             "	             ^^^^^^^\n" +
-    		"No exception of type Integer can be thrown; an exception type must be a subclass of Throwable\n" + 
+            "Type mismatch: cannot convert from Integer to Throwable\n" +
     		"----------\n");
 }
 public void test_0017_SignalsWithIdentifierAndPredicateWithBadThrowable() {
@@ -234,7 +234,7 @@ public void test_0017_SignalsWithIdentifierAndPredicateWithBadThrowable() {
             "1. ERROR in X.java (at line 2)\n" +
             "	//@ signals (Boolean e);\n" +
             "	             ^^^^^^^\n" +
-    		"No exception of type Boolean can be thrown; an exception type must be a subclass of Throwable\n" + 
+            "Type mismatch: cannot convert from Boolean to Throwable\n" +
     		"----------\n");
 }
 public void test_0018_SignalsWithIdentifierAndNotSpecifiedWithBadThrowable() {
@@ -249,7 +249,7 @@ this.runNegativeTest( new String[] {
         "1. ERROR in X.java (at line 2)\n" +
         "	//@ signals (Object e) \\not_specified;\n" +
         "	             ^^^^^^\n" +
-		"No exception of type Object can be thrown; an exception type must be a subclass of Throwable\n" + 
+        "Type mismatch: cannot convert from Object to Throwable\n" +
 		"----------\n");
 }
 public void test_0019_SignalsWithBadPredicate() {
@@ -264,7 +264,7 @@ public void test_0019_SignalsWithBadPredicate() {
             "1. ERROR in X.java (at line 2)\n" +
             "	//@ signals (NullPointerException) 0;\n" +
             "	                                   ^\n" +
-    		"Type mismatch: cannot convert from int to boolean\n" + 
+            "Type mismatch: cannot convert from int to boolean\n" +
             "----------\n");
 }
 public void test_0020_SignalsWithIdentifierAndBadPredicate() {
@@ -279,7 +279,7 @@ public void test_0020_SignalsWithIdentifierAndBadPredicate() {
             "1. ERROR in X.java (at line 2)\n" +
             "	//@ signals (NullPointerException e) \"hello\";\n" +
             "	                                     ^^^^^^^\n" +
-    		"Type mismatch: cannot convert from String to boolean\n" + 
+            "Type mismatch: cannot convert from String to boolean\n" +
             "----------\n");
 }
 public void test_0021_Signals_redundantly() {

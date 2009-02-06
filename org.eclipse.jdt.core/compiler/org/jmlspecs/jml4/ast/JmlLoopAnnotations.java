@@ -1,7 +1,6 @@
 package org.jmlspecs.jml4.ast;
 
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
-import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.codegen.BranchLabel;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.jdt.internal.compiler.flow.FlowContext;
@@ -9,21 +8,20 @@ import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;
 
-public class JmlLoopAnnotations extends ASTNode {
+public class JmlLoopAnnotations extends JmlAstNode {
 
-	public static final JmlLoopInvariant[] EMPTY_INVARIANTS = new JmlLoopInvariant[0];
-	public static final JmlLoopVariant[]   EMPTY_VARIANTS = new JmlLoopVariant[0];
-	
 	public final JmlLoopInvariant[] invariants;
 	public final JmlLoopVariant[]   variants;
-
+	private static final JmlLoopInvariant[] emptyInvariants = new JmlLoopInvariant[0];
+	private static final JmlLoopVariant[]   emptyVariants = new JmlLoopVariant[0];
+	
 	public JmlLoopAnnotations(JmlLoopInvariant[] invariants) {
 		this.invariants = invariants;
-		this.variants = EMPTY_VARIANTS;
+		this.variants = emptyVariants;
 	}
 
 	public JmlLoopAnnotations(JmlLoopVariant[] variants) {
-		this.invariants = EMPTY_INVARIANTS;
+		this.invariants = emptyInvariants;
 		this.variants = variants;
 	}
 

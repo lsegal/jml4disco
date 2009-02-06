@@ -22,6 +22,10 @@ public abstract class VariableBinding extends Binding {
 	protected Constant constant;
 	public int id; // for flow-analysis (position in flowInfo bit vector)
 	public long tagBits;
+	
+	//<jml-start id="jmlSetStatement" />
+	public boolean isGhost = false;
+	//<jml-end id="jmlSetStatement" />
 
 	public VariableBinding(char[] name, TypeBinding type, int modifiers, Constant constant) {
 		this.name = name;
@@ -63,6 +67,9 @@ public abstract class VariableBinding extends Binding {
 		output.append(type != null ? type.debugName() : "<no type>"); //$NON-NLS-1$
 		output.append(" "); //$NON-NLS-1$
 		output.append((name != null) ? new String(name) : "<no name>"); //$NON-NLS-1$
+		//<jml-start id="jmlSetStatement" />
+		output.append("[ghost:"+isGhost+"]");  //$NON-NLS-1$//$NON-NLS-2$
+		//<jml-edn id="jmlSetStatement" />
 		return output.toString();
 	}
 }

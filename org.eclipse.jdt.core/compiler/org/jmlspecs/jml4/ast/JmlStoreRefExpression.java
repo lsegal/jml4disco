@@ -3,11 +3,13 @@ package org.jmlspecs.jml4.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.jdt.internal.compiler.ast.Assignment;
 import org.eclipse.jdt.internal.compiler.ast.CompoundAssignment;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.ast.FieldReference;
+import org.eclipse.jdt.internal.compiler.ast.JmlAllRangeExpression;
 import org.eclipse.jdt.internal.compiler.ast.NameReference;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedThisReference;
@@ -21,13 +23,14 @@ import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.jdt.internal.compiler.flow.FlowContext;
 import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.jdt.internal.compiler.lookup.Binding;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
+import org.jmlspecs.jml4.ast.JmlAstUtils;
 
-/** @deprecated */
-public class JmlStoreRefExpression extends Reference {
+public class JmlStoreRefExpression extends JmlStoreRef {
 
 	final private JmlName[] names;
 	//@ invariant names.length > 0;
@@ -64,8 +67,8 @@ public class JmlStoreRefExpression extends Reference {
 	 *   N.B. Currently, "this" and "super" must be placed at the beginning
 	 *   of an expression. For example, A.this is not supported.
 	 * 
-	 * 6. wild-card expressions where wild cards are appended to the end of
-	 *    the above expressions: e.g., x.*, x.y.*, a[0..2].*, this.a[1].*
+	 *   6. wild-card expressions where wild cards are appended to the end of
+	 *   the above expressions: e.g., x.*, x.y.*, a[0..2].*, this.a[1].*
 	 **/
 	public void resolve(BlockScope scope) {
 		final JmlName firstStoreRefName = names[0];
@@ -172,13 +175,13 @@ public class JmlStoreRefExpression extends Reference {
 							final int restSize = refNames.length - i - 1;
 							final JmlName[] rest = new JmlName[restSize];
 							System.arraycopy(refNames, i+1, rest, 0, restSize);
-							DepricateJmlRangeArrayReference rar = 
-								new DepricateJmlRangeArrayReference(ref, storeRefName.getLowRange(), storeRefName.getHighRange());
+							JmlRangeArrayReference rar = 
+								new JmlRangeArrayReference(ref, storeRefName.getLowRange(), storeRefName.getHighRange());
 							resolveFieldRef(scope, rest, rar);
 							return;
 						} else {
-							DepricateJmlRangeArrayReference rar = 
-								new DepricateJmlRangeArrayReference(ref, storeRefName.getLowRange(), storeRefName.getHighRange());
+							JmlRangeArrayReference rar = 
+								new JmlRangeArrayReference(ref, storeRefName.getLowRange(), storeRefName.getHighRange());
 							reset(rar);
 							rar.resolveType(scope);
 							this.assignableReferences = new Reference[]{ rar };
@@ -189,11 +192,11 @@ public class JmlStoreRefExpression extends Reference {
 							final int restSize = refNames.length - i - 1;
 							final JmlName[] rest = new JmlName[restSize];
 							System.arraycopy(refNames, i+1, rest, 0, restSize);
-							DepricateJmlRangeArrayReference rar = new DepricateJmlRangeArrayReference(ref, new JmlAllRangeExpression());
+							JmlRangeArrayReference rar = new JmlRangeArrayReference(ref, new JmlAllRangeExpression());
 							resolveFieldRef(scope, rest, rar);
 							return;
 						} else {
-							DepricateJmlRangeArrayReference rar = new DepricateJmlRangeArrayReference(ref, new JmlAllRangeExpression());
+							JmlRangeArrayReference rar = new JmlRangeArrayReference(ref, new JmlAllRangeExpression());
 							reset(rar);
 							rar.resolveType(scope);
 							this.assignableReferences = new Reference[]{ rar };
@@ -280,11 +283,11 @@ public class JmlStoreRefExpression extends Reference {
 				case JmlName.SORT_RANGE:
 					if (i < refNames.length - 1) {
 						receiver = 
-							new DepricateJmlRangeArrayReference(receiver, storeRefName.getLowRange(), storeRefName.getHighRange());
+							new JmlRangeArrayReference(receiver, storeRefName.getLowRange(), storeRefName.getHighRange());
 						break;
 					} else {
-						DepricateJmlRangeArrayReference rar = 
-							new DepricateJmlRangeArrayReference(receiver, storeRefName.getLowRange(), storeRefName.getHighRange());
+						JmlRangeArrayReference rar = 
+							new JmlRangeArrayReference(receiver, storeRefName.getLowRange(), storeRefName.getHighRange());
 						reset(rar);
 						rar.resolveType(scope);
 						this.assignableReferences = new Reference[]{ rar };
@@ -292,10 +295,10 @@ public class JmlStoreRefExpression extends Reference {
 					}
 				case JmlName.SORT_ALL:
 					if (i < refNames.length - 1) {
-						receiver = new DepricateJmlRangeArrayReference(receiver, new JmlAllRangeExpression());
+						receiver = new JmlRangeArrayReference(receiver, new JmlAllRangeExpression());
 						break;
 					} else {
-						DepricateJmlRangeArrayReference rar = new DepricateJmlRangeArrayReference(receiver, new JmlAllRangeExpression());
+						JmlRangeArrayReference rar = new JmlRangeArrayReference(receiver, new JmlAllRangeExpression());
 						reset(rar);
 						rar.resolveType(scope);
 						this.assignableReferences = new Reference[]{ rar };
@@ -394,9 +397,8 @@ public class JmlStoreRefExpression extends Reference {
 	private void reset(Expression exp) {
 		// reset the bits of the receiver to resolve a field reference based on it
 		// when otherwise the resolution fails.
-		// [Chalin]: disabling as this is causing resolution to fail for SingleNameReferences that are type names.
-		// exp.bits &= ~ASTNode.RestrictiveFlagMASK;
-		// exp.bits |= Binding.LOCAL | Binding.FIELD;
+		exp.bits &= ~ASTNode.RestrictiveFlagMASK;
+		exp.bits |= Binding.LOCAL | Binding.FIELD;
 
 		if (exp instanceof FieldReference) {
 			Expression rcv = ((FieldReference) exp).receiver;
@@ -416,12 +418,9 @@ public class JmlStoreRefExpression extends Reference {
 			ReferenceBinding rb = (ReferenceBinding) tb;
 			do {
 				FieldBinding[] fs = rb.fields();
-				/* FIXME: fs contains all fields. Only those with the appropriate visibility
-				 * should be returned.  Until this is fixed, no fields will be added ... 
-				 */
-				// for (int i = 0; i < rb.fieldCount(); i++) {
-				// 	buffer.add(fs[i]);
-				// }
+				for (int i = 0; i < rb.fieldCount(); i++) {
+					buffer.add(fs[i]);
+				}
 				rb = rb.superclass();
 			} while (rb != null);
 		}
@@ -434,23 +433,26 @@ public class JmlStoreRefExpression extends Reference {
 			FlowContext flowContext, FlowInfo flowInfo, Assignment assignment,
 			boolean isCompound) {
 		// TODO Auto-generated method stub
-		return flowInfo;
+		return null;
 	}
 
 	public void generateAssignment(BlockScope currentScope,
 			CodeStream codeStream, Assignment assignment, boolean valueRequired) {
 		// TODO Auto-generated method stub
+
 	}
 
 	public void generateCompoundAssignment(BlockScope currentScope,
 			CodeStream codeStream, Expression expression, int operator,
 			int assignmentImplicitConversion, boolean valueRequired) {
 		// TODO Auto-generated method stub
+
 	}
 
 	public void generatePostIncrement(BlockScope currentScope,
 			CodeStream codeStream, CompoundAssignment postIncrement,
 			boolean valueRequired) {
 		// TODO Auto-generated method stub
+
 	}
 }

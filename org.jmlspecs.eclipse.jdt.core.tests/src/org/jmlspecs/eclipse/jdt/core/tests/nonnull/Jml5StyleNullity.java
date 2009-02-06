@@ -12,7 +12,7 @@ import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 public class Jml5StyleNullity extends JmlTestCase{
 	
 	public final String workspace = "..";
-	public final String path2jml4annotations = workspace + "/org.jmlspecs.annotation/bin";
+	public final String path2jml4runtime = workspace + "/org.jmlspecs.jml4.runtime/bin";
 	
 	public Jml5StyleNullity(String name) {
 		super(name);
@@ -22,7 +22,7 @@ public class Jml5StyleNullity extends JmlTestCase{
 		final int length = superDefaultClassPaths.length;
 	    String[] defaultClassPaths = new String[length + 1];
         System.arraycopy(superDefaultClassPaths, 0, defaultClassPaths, 0, length);
-        defaultClassPaths[length] = path2jml4annotations;
+        defaultClassPaths[length] = path2jml4runtime;
         return defaultClassPaths;
    }	
 	// Augment problem detection settings
@@ -60,7 +60,7 @@ public class Jml5StyleNullity extends JmlTestCase{
 		this.runNegativeTest(
 			new String[] {
 				"X.java",
-				"import org.jmlspecs.annotation.*;\n" +
+				"import org.jmlspecs.jml4.runtime.annotation.*;\n" +
 				"class X {\n" +
 				"	//FIELDS \n"+
 				"  @Nullable @Nullable String able1 = null;\n" +
@@ -151,7 +151,7 @@ public class Jml5StyleNullity extends JmlTestCase{
 		this.runNegativeTest(
 			new String[] {
 				"X.java",
-				"import org.jmlspecs.annotation.*;\n" +
+				"import org.jmlspecs.jml4.runtime.annotation.*;\n" +
 				"class X {\n" +
 				"  void m1(@Nullable String s) {s = null;}\n" +				
 				"  void m2(@Nullable String s) {s = \"test\";}\n" +			
@@ -179,7 +179,7 @@ public class Jml5StyleNullity extends JmlTestCase{
 		this.runNegativeTest(
 			new String[] {
 				"X.java",
-				"import org.jmlspecs.annotation.*;\n" +
+				"import org.jmlspecs.jml4.runtime.annotation.*;\n" +
 				"class X {\n" +
 				"	@Nullable String m1() { return null;}\n" +
 				"	@Nullable String m2() { return \"test\";}\n" +
@@ -210,7 +210,7 @@ public class Jml5StyleNullity extends JmlTestCase{
 		this.runNegativeTest(
 			new String[] {
 				"X.java",
-				"import org.jmlspecs.annotation.*;\n" +
+				"import org.jmlspecs.jml4.runtime.annotation.*;\n" +
 				"class X {\n" +
 				"	X(@Nullable String able, @NonNull String non) { }\n" + 
 				"	void m1(){ X x = new X(null,null); }\n" +
@@ -235,7 +235,7 @@ public class Jml5StyleNullity extends JmlTestCase{
 		this.runNegativeTest(
 			new String[] {
 				"X.java",
-				"import org.jmlspecs.annotation.*;\n" +
+				"import org.jmlspecs.jml4.runtime.annotation.*;\n" +
 				"class X {\n" +
 				"	X(@NonNull String s) {}\n" + 
 				"	void m() { X x = new X(null);}\n" +
@@ -283,7 +283,7 @@ public class Jml5StyleNullity extends JmlTestCase{
 		this.runNegativeTest(
 			new String[] {
 				"X.java",
-				"import org.jmlspecs.annotation.*;\n" +
+				"import org.jmlspecs.jml4.runtime.annotation.*;\n" +
 				"class X {\n" +
 				"	@Nullable String able1 = null ; \n" +
 				"	@Nullable String able2 = \"test\"; \n" +
@@ -302,7 +302,7 @@ public class Jml5StyleNullity extends JmlTestCase{
 		this.runNegativeTest(
 			new String[] {
 				"X.java",
-				"import org.jmlspecs.annotation.*;\n" +
+				"import org.jmlspecs.jml4.runtime.annotation.*;\n" +
 				"class X {\n" +
 				"	void m() { \n" +
 				"		@Nullable String able1 = null ; \n" +
@@ -321,10 +321,10 @@ public class Jml5StyleNullity extends JmlTestCase{
 
     public void test_1000_Persistence() throws IOException {
     	String batchCompilerOptions = "-jml -source 1.5 -target 1.5 -rac -dbc -warn:+nnts -nullable";
-    	String classPath= path2jml4annotations + File.pathSeparator;
+    	String classPath= "../org.jmlspecs.jml4.runtime/bin"+ File.pathSeparator;
 		String source_Helper = 
 			"package a;\n" +
-			"import org.jmlspecs.annotation.*;\n" +
+			"import org.jmlspecs.jml4.runtime.annotation.*;\n" +
 			"public class Helper {\n" +
 			"		public static @NonNull String able = \"test\"; \n" +
 			"}\n";

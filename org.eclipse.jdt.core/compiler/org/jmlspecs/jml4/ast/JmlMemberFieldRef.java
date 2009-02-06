@@ -2,7 +2,6 @@ package org.jmlspecs.jml4.ast;
 
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
-/** @deprecated */
 public class JmlMemberFieldRef extends ASTNode {
 
 	public final /*@nullable*/ char[] identifier;
@@ -16,7 +15,7 @@ public class JmlMemberFieldRef extends ASTNode {
 		this.member = refExpr;
 	}
 
-	public JmlMemberFieldRef(JmlMapsMemberRefExpr array, /*@nullable*/ JmlMapsMemberRefExpr member) {
+	public JmlMemberFieldRef(JmlMapsMemberRefExpr array, JmlMapsMemberRefExpr member) {
 		this.identifier = null;
 		this.array = array;
 		this.member = member;

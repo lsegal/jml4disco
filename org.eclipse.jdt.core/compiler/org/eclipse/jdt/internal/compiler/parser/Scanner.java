@@ -16,7 +16,6 @@ import org.eclipse.jdt.internal.compiler.CompilationResult;
 import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.jdt.internal.compiler.util.Util;
 import org.jmlspecs.jml4.compiler.JmlConstants;
-import org.jmlspecs.jml4.compiler.JmlScannerAnnotationState;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,6 +59,23 @@ public class Scanner implements TerminalTokens {
 	public boolean skipComments = false;
 	public boolean tokenizeComments = false;
 	public boolean tokenizeWhiteSpace = false;
+
+	// <jml-start id="level.0-1-a" />
+	private long jmlLevel = JmlConstants.JML_LEVEL_NO_JML;
+	private boolean inJmlComment = false;
+	private boolean inJmlLineComment = false;
+	private boolean inJmlCast = false;
+	private boolean inJmlClause = false;
+	public void setInJmlClause() {
+		this.inJmlClause = true;
+	}
+	public void resetInJmlClause() {
+		this.inJmlClause = false;
+	}
+	// <jml-end id="level.0-1-a" />
+	// <jml-start id="jmlComments" />
+	/*package*/ /*@nullable*/ Parser parser;
+	// <jml-end id="jmlComments" />
 
 	//source should be viewed as a window (aka a part)
 	//of a entire very large stream
@@ -254,6 +270,30 @@ public Scanner(
 		taskPriorities,
 		isTaskCaseSensitive);
 }
+
+//<jml-start id="?" />
+public Scanner(
+		boolean tokenizeComments, 
+		boolean tokenizeWhiteSpace, 
+		boolean checkNonExternalizedStringLiterals, 
+		long sourceLevel,
+		long complianceLevel,
+		char[][] taskTags,
+		char[][] taskPriorities,
+		boolean isTaskCaseSensitive,
+		long jmlLevel) {
+	this(
+			tokenizeComments,
+			tokenizeWhiteSpace,
+			checkNonExternalizedStringLiterals,
+			sourceLevel,
+			complianceLevel,
+			taskTags,
+			taskPriorities,
+			isTaskCaseSensitive);
+	this.jmlLevel = jmlLevel;
+}
+//<jml-end id="?" />
 
 public final boolean atEnd() {
 	// This code is not relevant if source is 
@@ -1104,9 +1144,12 @@ public int getNextToken() throws InvalidInputException {
 				} else {
 					offset = this.currentPosition - offset;
 					if ((this.currentCharacter == '\r') || (this.currentCharacter == '\n')) {
-						// <jml-start id="annotation-syntax" />
-						this.jmlAnnotationState.endOfSingleLineComment();
-						// <jml-end id="annotation-syntax" />
+						// <jml-start id="nnts" />
+						if (this.inJmlLineComment) {
+							this.inJmlLineComment = false;
+							this.inJmlComment = false;
+						}
+						// <jml-end id="nnts" />
 						if (this.recordLineSeparator) {
 							pushLineSeparator();
 						}
@@ -1155,27 +1198,24 @@ public int getNextToken() throws InvalidInputException {
 						return TokenNameERROR;
 					}*/
 					// <jml-start id="syntax.jml-annotation-markers" />
-					if (this.jmlAnnotationState.jmlAnnotationState() == JmlScannerAnnotationState.MULTI_LINE
-					 && this.jmlAnnotationState.nestedJavaCommentInJmlAnnotationState() == JmlScannerAnnotationState.NOT_IN) //
+					if (this.inJmlComment && !this.inJmlLineComment) //
 					{
-						// Might we have reached the end of /*@...*/ annotation?
-						// If so, ignore repeated '@' characters at the end; e.g. @@@@@*/.
+						// Might we have reached the end of /*...*/ comment?
 						int tempPosition = this.currentPosition;
+						// Ignore repeated '@' characters.
 						while (getNextChar('@')) { /* do nothing */	}
-						if ((getNextChar('+') || getNextChar('-') || true) && getNextChar('*') && getNextChar('/')) {
-							// We just consumed '+*/' or '-*/' or '*/'.
-							this.jmlAnnotationState.resetJmlAnnotationState();
+						if ((getNextChar('+') || true) && getNextChar('*') && getNextChar('/')) {
+							inJmlComment = false;
 							continue;
 						}
 						this.currentPosition = tempPosition;
 
-						// No, we had not reached the end of a JML comment.
-						// Maybe we are in the middle of a multiline comment.
 						// /*@ ...
 						//   @ <= check for a leading '@' like this one
 						//   @*/
 						int pos = getPosOfPrevEOL();
-						if (whiteStart <= pos + 1) {
+						// System.out.println("Line " + this.linePtr + ": found '@' at " + this.currentPosition + ": whiteStart = " + whiteStart + ", prev EOL = " + pos); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+						if (whiteStart <= pos) {
 							// This '@' only has whitespace in front of it.
 							// Ignore repeated '@' characters.
 							while (getNextChar('@')) { /* do nothing */	}
@@ -1188,7 +1228,7 @@ public int getNextToken() throws InvalidInputException {
 					// <jml-start id="informal-description" />
 					// FIXME: do more processing to ignore '@' and '*' after newlines
 					int tmp = this.currentPosition;
-					if (this.jmlAnnotationState.processJml() && getNextChar('*')) {
+					if (this.inJmlComment && getNextChar('*')) {
 						if (getNextChar(')')) {
 							this.currentPosition -= 2;
 							return TokenNameLPAREN;
@@ -1218,20 +1258,18 @@ public int getNextToken() throws InvalidInputException {
 					// <jml-end id="informal-description" />
 					// <jml-start id="5" />
 					// FIXME: ...
-					if (this.jmlAnnotationState.processJml()) 
-						inJmlCast = true;
+					if (inJmlComment) inJmlCast = true;
 					// <jml-end id="5" />
 					return TokenNameLPAREN;
 				case ')' :
 					// <jml-start id="5" />
 					// FIXME: ...
-					if (this.jmlAnnotationState.processJml() && inJmlCast) 
-						inJmlCast = false;
+					if (inJmlComment && inJmlCast) inJmlCast = false;
 					// <jml-end id="5" />
 					return TokenNameRPAREN;
 				case '{' :
 					// <jml-start id="specCaseBlock.parser.scanner" />
-					if (this.jmlAnnotationState.processJml() && getNextChar('|')) {
+					if (this.inJmlComment && getNextChar('|')) {
 						return TokenNameLBRACE_OR;
 					}
 					// <jml-end id="specCaseBlock.parser.scanner" />
@@ -1256,7 +1294,7 @@ public int getNextToken() throws InvalidInputException {
 							return TokenNameELLIPSIS;
 						} else {
 							// <jml-start id="assignableClause" />
-							if (this.jmlAnnotationState.processJml()) {
+							if (this.inJmlComment) {
 								return TokenNameDOTDOT;
 							}
 							// <jml-end id="assignableClause" />
@@ -1293,8 +1331,9 @@ public int getNextToken() throws InvalidInputException {
 					return TokenNameNOT;
 				case '*' :
 					// <jml-start id="nnts" />
-					if (getNextChar('/') && this.jmlAnnotationState.endOfMultiLineComment()) {
-						continue;
+					if (inJmlComment && !inJmlLineComment && getNextChar('/')) {
+						inJmlComment = false;
+					    continue;
 					}
 					// TODO: are JML comments still ending up in the comment list?
 					// <jml-end id="nnts" />
@@ -1311,7 +1350,7 @@ public int getNextToken() throws InvalidInputException {
 						if ((test = getNextChar('=', '<')) == 0)
 							// <jml-start id="level.0-1-as" />
 							// "<="
-							if (this.jmlAnnotationState.processJml() && getNextChar('=')) {
+							if (this.inJmlComment && getNextChar('=')) {
 								// "<=="
 								return getNextChar('>')
 									? TokenNameEQUIV // "<==>"
@@ -1321,7 +1360,7 @@ public int getNextToken() throws InvalidInputException {
 								// Save pos in case we match '!'
 								// but that it is not a part of '<=!=>'.
 								int temp2 = this.currentPosition;
-								if (this.jmlAnnotationState.processJml() && getNextChar('!')) {
+								if (this.inJmlComment && getNextChar('!')) {
 									// "<=!"
 									if (getNextChar('=') && getNextChar('>')) {
 										return TokenNameNOT_EQUIV;
@@ -1339,7 +1378,7 @@ public int getNextToken() throws InvalidInputException {
 							return TokenNameLEFT_SHIFT;
 						}
 						// <jml-start id="subtype-expression" />
-						if (this.jmlAnnotationState.processJml() && getNextChar(':')) {
+						if (this.inJmlComment && getNextChar(':')) {
 							// "<:"
 							return TokenNameSUBTYPE;
 						}
@@ -1369,7 +1408,7 @@ public int getNextToken() throws InvalidInputException {
 				case '=' :
 					if (getNextChar('='))
 						// <jml-start id="level.0-1-a" />
-						if (this.jmlAnnotationState.processJml() && getNextChar('>')) {
+						if (this.inJmlComment && getNextChar('>')) {
 							return TokenNameIMPLIES;
 						} else
 						// <jml-end id="level.0-1-a" />
@@ -1392,7 +1431,7 @@ public int getNextToken() throws InvalidInputException {
 						if (test > 0)
 							return TokenNameOR_EQUAL;
 						// <jml-start id="specCaseBlock.parser.scanner" />
-						if (this.jmlAnnotationState.processJml() && getNextChar('}')) {
+						if (this.inJmlComment && getNextChar('}')) {
 							return TokenNameOR_RBRACE;
 						}
 						// <jml-end id="specCaseBlock.parser.scanner" />
@@ -1659,9 +1698,6 @@ public int getNextToken() throws InvalidInputException {
 										}
 									}
 								}
-								// <jml-start id="syntax.jml-annotation-markers" />
-								this.jmlAnnotationState.endOfSingleLineComment();
-								// <jml-end id="syntax.jml-annotation-markers" />
 								if (this.tokenizeComments) {
 									return TokenNameCOMMENT_LINE;
 								}
@@ -1807,12 +1843,12 @@ public int getNextToken() throws InvalidInputException {
 					char c = this.currentCharacter;
 					if (c < ScannerHelper.MAX_OBVIOUS) {
 						// <jml-start id="resultKeyword" />
-						if (this.jmlAnnotationState.processJml() && jmlLevel >= JmlConstants.JML_LEVEL_DBC && c == '\\')
+						if (inJmlComment && jmlLevel >= JmlConstants.JML_LEVEL_DBC && c == '\\')
 							return scanIdentifierOrKeyword();
 						// <jml-end id="resultKeyword" />
 						if ((ScannerHelper.OBVIOUS_IDENT_CHAR_NATURES[c] & ScannerHelper.C_IDENT_START) != 0) {
 							// <jml-start id="nnts" />
-							if (this.jmlAnnotationState.processJml() && jmlLevel == JmlConstants.JML_LEVEL_NNTS) {
+							if (inJmlComment && jmlLevel == JmlConstants.JML_LEVEL_NNTS) {
 								// When recognizing nullity modifiers but ignore other
 								// elements of JML, we skip the entire content of a JML
 								// comment except for nullity keywords, pure and identifiers inside casts.
@@ -1837,24 +1873,13 @@ public int getNextToken() throws InvalidInputException {
 									continue;
 								}
 							} else {
-								int nowarnSourceStart = this.currentPosition;
-								int token = scanIdentifierOrKeyword();
-								if (token == TokenNamenowarn) {
-									token = this.skipRestOfJmlNowarnAndReturnNextToken();
-									if (token == 0)
-										continue;
-									else {
-										// FIXME: make this into a proper Problem.
-										this.parser.problemReporter().jmlEsc2Error("invalid nowarn syntax", nowarnSourceStart, this.currentPosition); //$NON-NLS-1$
-									}
-								}
-								return token;
+								return scanIdentifierOrKeyword();
 							}
 							// <jml-end id="nnts" />
 						} else if ((ScannerHelper.OBVIOUS_IDENT_CHAR_NATURES[c] & ScannerHelper.C_DIGIT) != 0) {
 								return scanNumber(false);
 						// <jml-start id="resultKeyword" />
-						} else if (this.jmlAnnotationState.processJml() && jmlLevel <= JmlConstants.JML_LEVEL_NNTS && c == '\\') {
+						} else if (inJmlComment && jmlLevel <= JmlConstants.JML_LEVEL_NNTS && c == '\\') {
 							return scanIdentifierOrKeyword();
 						// <jml-start id="resultKeyword" />
 						} else {
@@ -2337,7 +2362,10 @@ public final boolean jumpOverUnicodeWhiteSpace() throws InvalidInputException {
 	getNextUnicodeChar();
 	// <jml-start id="nnts" />
 	if ((this.currentCharacter == '\r') || (this.currentCharacter == '\n')) {
-		this.jmlAnnotationState.endOfSingleLineComment();
+		if (this.inJmlLineComment) {
+			this.inJmlLineComment = false;
+			this.inJmlComment = false;
+		}
 	}
 	// <jml-end id="nnts" />
 	return CharOperation.isWhitespace(this.currentCharacter);
@@ -2786,9 +2814,6 @@ public void resetTo(int begin, int end) {
 		this.eofPosition = end < Integer.MAX_VALUE ? end + 1 : end;
 	}
 	this.commentPtr = -1; // reset comment stack
-	// <jml-start id="scanner.nested-comments" />
-	this.resetJmlRelatedAttributes(begin);
-	// <jml-end id="scanner.nested-comments" />
 	this.foundTaskCount = 0;
 }
 
@@ -2988,7 +3013,7 @@ public int scanIdentifierOrKeyword() {
 	}
 
 	//<jml-start id="nnts" />
-	if (this.jmlAnnotationState.processJml()) {
+	if (inJmlComment) {
 		int token = internalScanJmlKeyword(index, length, data);
 		if (token != TokenNameIdentifier) {
 			return token;
@@ -3820,9 +3845,6 @@ public final void setSource(char[] sourceString){
 	this.initialPosition = this.currentPosition = 0;
 	this.containsAssertKeyword = false;
 	this.linePtr = -1;	
-	// <jml-start id="scanner.nested-comments" />
-	this.resetJmlRelatedAttributes(0);
-	// <jml-end id="scanner.nested-comments" />
 }
 /*
  * Should be used if a parse (usually a diet parse) has already been performed on the unit, 
@@ -4123,76 +4145,6 @@ public void unicodeStore() {
 //=============================================================================
 // Only JML4 specific additions below this point
 
-	//<jml-start id="?" />
-	public Scanner(
-			boolean tokenizeComments, 
-			boolean tokenizeWhiteSpace, 
-			boolean checkNonExternalizedStringLiterals, 
-			long sourceLevel,
-			long complianceLevel,
-			char[][] taskTags,
-			char[][] taskPriorities,
-			boolean isTaskCaseSensitive,
-			long jmlLevel) {
-		this(
-				tokenizeComments,
-				tokenizeWhiteSpace,
-				checkNonExternalizedStringLiterals,
-				sourceLevel,
-				complianceLevel,
-				taskTags,
-				taskPriorities,
-				isTaskCaseSensitive);
-		this.jmlLevel = jmlLevel;
-	}
-	//<jml-end id="?" />
-
-	// <jml-start id="level.0-1-a" />
-	private long jmlLevel = JmlConstants.JML_LEVEL_NO_JML;
-	private final JmlScannerAnnotationState jmlAnnotationState = new JmlScannerAnnotationState();
-	public void startJmlAnnotation(boolean isSingleLine) {
-		this.jmlAnnotationState.startJmlAnnotation(isSingleLine);
-	}
-	private void resetJmlAnnotationState() {
-		this.jmlAnnotationState.resetJmlAnnotationState();
-	}
-	private boolean inJmlCast = false;
-
-	private boolean inExpressionPartOfJmlClause = false;
-	public void setInExpressionPartOfJmlClause() {
-		this.inExpressionPartOfJmlClause = true;
-		this.lastJmlClauseExpressionPosition = this.currentPosition;
-	}
-	public void resetInExpressionPartOfJmlClause() {
-		this.inExpressionPartOfJmlClause = false;
-		this.lastJmlClauseExpressionPosition = 0 ;
-	}
-	
-	/** Marks the position of the last JML annotation processed
-	 * by the scanner. Note that is marks the position of the
-	 * first character inside the annotation; i.e. after the, e.g.,
-	 * '/*@', '//+@', etc. markers. */
-	private int lastJmlAnnotationPosition;
-	private int lastJmlClauseExpressionPosition;
-	
-	public void resetJmlRelatedAttributes(int pos) {
-		if (pos < this.lastJmlAnnotationPosition) {
-			this.resetJmlAnnotationState();
-			// Sometimes this.parser is null (e.g. when the dom.ASTConverter uses
-			// the scanner, hence test for null.
-			// [Chalin] Still not convinced the following field reset is necessary ...
-			if (this.parser != null)
-				this.parser.jmlHelper.processingSpecVarDecls = false;
-		}
-		if (pos < this.lastJmlClauseExpressionPosition)
-			this.resetInExpressionPartOfJmlClause();
-		this.inJmlCast = false;
-	}
-	// <jml-end id="level.0-1-a" />
-	// <jml-start id="jmlComments" />
-	/*package*/ /*@nullable*/ Parser parser;
-	// <jml-end id="jmlComments" />
-	
 	//<jml-start id="nnts" />
 	//private boolean prevChar(char c) {
 	//	return this.currentPosition > 0 && this.source[this.currentPosition-1] == c;
@@ -4207,127 +4159,41 @@ public void unicodeStore() {
 		}
 		return this.linePtr > 0 ? this.lineEnds[this.linePtr] : -1;
 	}
-
-	/**
-	 * This method is to be called once the scanner has recognized
-	 * the start of a Java comment.
-	 * 
-	 * @param isSingleLineComment
-	 * @return true iff this Java comment is to be processed as a JML annotation.
-	 * @throws InvalidInputException
-	 */
-	private boolean processJmlAnnotationMarkers(boolean isSingleLineComment) throws InvalidInputException {
-		if (this.jmlLevel == JmlConstants.JML_LEVEL_NO_JML)
-			return false;
-		int savedCurrentPosition = this.currentPosition;
-		if (getNextChar('+', '#') >= 0) {
-			// '+@' marks the start of a JML2-checker-only annotation.
-			// '-@' marks the start of a ESC/Java2-only annotation. // FIXME: NOT CURRENTLY PROCESSED
-			// '#@' marks the start of a JML4-only annotation (ingored by JML2 tools).
-			if (getNextChar('@')) {
-				if (setInJmlAnnotationAndConsumeExtraAtChars(isSingleLineComment))
+	private boolean processJmlAnnotationMarkers(boolean isLineComment) {
+		// TODO: do the following only if JML support is enabled ... here and elsewhere. [PC] is this comment still relevant?
+		if (this.jmlLevel != JmlConstants.JML_LEVEL_NO_JML) {
+			int tempPosition = this.currentPosition;
+			if (getNextChar('+', '#') >= 0) {
+				// '+' is for backwards compatibility and '#' is for JML4-only annotation
+				if (getNextChar('@')) { // jmlLineComment
+					this.inJmlComment = true;
+					this.inJmlLineComment = isLineComment;
+					// Consume any '@' characters that follow the first.
+					while(getNextChar('@')) { /* do nothing */ }
 					return true;
-				// else fall through to process as ordinary Java comment.
-			}
-		} else if (getNextChar('@')) {
-			if (setInJmlAnnotationAndConsumeExtraAtChars(isSingleLineComment))
+				} else {
+					this.currentPosition = tempPosition;
+				}
+			} else if (getNextChar('@')) { // jmlLineComment
+				this.inJmlComment = true;
+				this.inJmlLineComment = isLineComment;
+				while(getNextChar('@')) { /* do nothing */ }
 				return true;
-			// else fall through to process as ordinary Java comment.
-		} else if (getNextChar(' ')) {
-			if (getNextChar('@') && getNextChar(' ') ) {
-				this.parser.jmlHelper.jmlDisabled(this.currentPosition - 5, this.currentPosition - 1);
-				// fall through to reset the position so that the comment is processed as normal ...
+			} else if (getNextChar(' ')) {
+				if (getNextChar('@') && getNextChar(' ') ) {
+						this.parser.jmlDisabled(this.currentPosition - 5, this.currentPosition - 1);
+						// fall through to reset the position so that the comment is processed as normal ...
+				}
+				this.currentPosition = tempPosition;
 			}
-		}
-		this.currentPosition = savedCurrentPosition;
-		// This is an ordinary Java comment.
-		if (this.jmlAnnotationState.processJml()) {
-			this.jmlAnnotationState.startNestedJavaCommentInJmlAnnotation(isSingleLineComment);
 		}
 		return false;
 	}
-
-	/** This method is called once it has been recognized that this.currentPosition is
-	 * at the start of the contents of a JML annotation. 
-	 * @throws InvalidInputException */
-	private boolean setInJmlAnnotationAndConsumeExtraAtChars(boolean isSingleLineComment) throws InvalidInputException {
-		final boolean throwSyntaxErrorRatherThanIssueWarning = false;
-		String msg = "Nested JML annotation will be treated as ordinary Java comment"; //$NON-NLS-1$
-		int startPosition = this.currentPosition - 2;
-		int endPosition = this.currentPosition;
-		if (!this.jmlAnnotationState.canNestJmlAnnotation(isSingleLineComment)) {
-			msg += " (cannot nest JML annotation); "; //$NON-NLS-1$
-			// msg += new String(this.parser.compilationUnit.getFileName());
-			if (throwSyntaxErrorRatherThanIssueWarning)
-				throw new InvalidInputException(msg);
-			else
-				this.parser.problemReporter.jmlEsc2Warning(msg, startPosition, endPosition);
-			return false;
-		}
-		if (this.jmlAnnotationState.nestedJavaCommentInJmlAnnotationState() != JmlScannerAnnotationState.NOT_IN) {
-			if (throwSyntaxErrorRatherThanIssueWarning)
-				throw new InvalidInputException(msg);
-			else
-				this.parser.problemReporter.jmlEsc2Warning(msg + " (cannot have JML annotation within a nested Java comment)", startPosition, endPosition); //$NON-NLS-1$
-			return false;
-		}
-		this.jmlAnnotationState.startJmlAnnotation(isSingleLineComment);
-		// Consume any '@' characters that follow the first.
-		while(getNextChar('@')) { /* do nothing */ }
-		this.lastJmlAnnotationPosition = this.currentPosition;
-		return true;
-	}
-
-	/**
-	 * Strip the rest of the nowarn statement and return the next token after
-	 * that.
-	 * 
-	 * @pre A "nowarn" has just been scanned.
-	 * @return 0 if the "nowarn" statement was successfully consumed (and hence
-	 *         the caller can resume scanning); otherwise, the input was not
-	 *         valid nowarn statement syntax and we return the id of the first
-	 *         unexpected token.
-	 * @throws InvalidInputException
-	 */
-	private int skipRestOfJmlNowarnAndReturnNextToken() throws InvalidInputException {
-
-		// Note that this method merely consumes a JML nowarn statement from
-		// the input. Nowarns are not yet being semantically processed.
-		// FIXME: do something with the nowarn statement.
-
-		// The "nowarn" was read just prior to the call to this method.
-		// What should follow is
-		// [ identifier ] [ ',' identifier]* ';'
-
-		int token = getNextToken();
-		if (token == TokenNameSEMICOLON) {
-			return 0;
-		}
-		// We expect an identifier
-		while(token == TokenNameIdentifier) {
-			token = getNextToken();
-			if (token == TokenNameCOMMA) {
-				token = getNextToken();
-				continue;
-			} else if (token == TokenNameSEMICOLON) {
-				return 0;
-			} else {
-				break;
-			}
-		}
-		// Identifier expected, but something else found. Complain:
-		// FIXME: add code to complain here.
-		return token;
-	}
-	
-	//@ requires this.jmlCommentState.inJmlComment();
-	//@ ensures !this.jmlCommentState.isJmlComment();
 	private void skipToEndOfJmlComment() {
-		if (this.jmlAnnotationState.jmlAnnotationState() == JmlScannerAnnotationState.SINGLE_LINE)
+		if (this.inJmlLineComment)
 			skipToEndOfLine();
 		else
 			skipToEndOfBlockComment();
-		this.jmlAnnotationState.resetJmlAnnotationState();
 	}
 	
 	private void skipToEndOfLine() {
@@ -4335,6 +4201,8 @@ public void unicodeStore() {
 		do {
 			c = getNextChar();
 		} while (c != '\r' && c != '\n'); // FIXME: want to consume EOL properly on all OSs.
+		this.inJmlComment = false;
+		this.inJmlLineComment = false;
 	}
 	
 	private void skipToEndOfBlockComment() {
@@ -4349,6 +4217,7 @@ public void unicodeStore() {
 			if (c == '/' 
 				|| c == -1 // FIXME: report an error ... just like they do.
 				) {
+				this.inJmlComment = false;
 				return;
 			}
 		}
@@ -4384,15 +4253,13 @@ public void unicodeStore() {
 	    m.put( "decreases_redundantly", new Integer( TokenNamedecreases_redundantly));           //$NON-NLS-1$
 	    m.put( "decreasing",            new Integer( TokenNamedecreases));                       //$NON-NLS-1$
 	    m.put( "decreasing_redundantly",new Integer( TokenNamedecreases_redundantly));           //$NON-NLS-1$
-	    m.put( "diverges",              new Integer( TokenNamediverges));                        //$NON-NLS-1$
-	    m.put( "diverges_redundantly",  new Integer( TokenNamediverges_redundantly));            //$NON-NLS-1$
+	    m.put( "diverges",              new Integer( TokenNamediverges ));                       //$NON-NLS-1$
 	    m.put( "ensures",               new Integer( TokenNameEnsuresOrSynonym ));               //$NON-NLS-1$
 	    m.put( "ensures_redundantly",   new Integer( TokenNameEnsuresRedundantlyOrSynonym ));    //$NON-NLS-1$
 	    m.put( "exceptional_behavior",  new Integer( TokenNameBehaviorOrSynonym ));              //$NON-NLS-1$
 	    m.put( "exceptional_behaviour", new Integer( TokenNameBehaviorOrSynonym ));              //$NON-NLS-1$
 	    m.put( "exsures",               new Integer( TokenNameSignalsOrSynonym ));               //$NON-NLS-1$
 	    m.put( "exsures_redundantly",   new Integer( TokenNameSignalsRedundantlyOrSynonym ));    //$NON-NLS-1$
-	    m.put( "forall",                new Integer( TokenNameforall ));                         //$NON-NLS-1$
 	    m.put( "ghost",                 new Integer( TokenNameghost ));                          //$NON-NLS-1$
 	    m.put( "helper",                new Integer( TokenNamehelper ));                         //$NON-NLS-1$
 	    m.put( "implies_that",          new Integer( TokenNameimplies_that ));                   //$NON-NLS-1$
@@ -4419,10 +4286,8 @@ public void unicodeStore() {
 	    m.put( "non_null_by_default",   new Integer( TokenNamenon_null_by_default ));            //$NON-NLS-1$
 	    m.put( "normal_behavior",       new Integer( TokenNameBehaviorOrSynonym ));              //$NON-NLS-1$
 	    m.put( "normal_behaviour",      new Integer( TokenNameBehaviorOrSynonym ));              //$NON-NLS-1$
-	    m.put( "nowarn",                new Integer( TokenNamenowarn ));                         //$NON-NLS-1$
 	    m.put( "nullable",              new Integer( TokenNamenullable ));                       //$NON-NLS-1$
 	    m.put( "nullable_by_default",   new Integer( TokenNamenullable_by_default ));            //$NON-NLS-1$
-	    m.put( "old",                   new Integer( TokenNameold ));                            //$NON-NLS-1$
 	    m.put( "peer",                  new Integer( TokenNamepeer ));                           //$NON-NLS-1$
 	    m.put( "pre",                   new Integer( TokenNameRequiresOrSynonym ));              //$NON-NLS-1$
 	    m.put( "post",                  new Integer( TokenNameEnsuresOrSynonym ));               //$NON-NLS-1$
@@ -4454,8 +4319,6 @@ public void unicodeStore() {
 	    m.put( "\\max",                 new Integer( TokenNameslash_max ));               //$NON-NLS-1$
 	    m.put( "\\min",                 new Integer( TokenNameslash_min ));               //$NON-NLS-1$
 	    m.put( "\\nonnullelements",     new Integer( TokenNameslash_nonnullelements ));   //$NON-NLS-1$
-	    m.put( "\\not_assigned",        new Integer( TokenNameslash_not_assigned ));     //$NON-NLS-1$
-	    m.put( "\\not_modified",        new Integer( TokenNameslash_not_modified ));     //$NON-NLS-1$
 	    m.put( "\\not_specified",       new Integer( TokenNameslash_not_specified ));     //$NON-NLS-1$
 	    m.put( "\\nothing",             new Integer( TokenNameslash_nothing ));           //$NON-NLS-1$
 	    m.put( "\\num_of",              new Integer( TokenNameslash_num_of ));            //$NON-NLS-1$
@@ -4475,27 +4338,19 @@ public void unicodeStore() {
 	}
 
 	/**
-	 * @return the token id of the given lexeme if 
-	 * - it represents a JML keyword and,
-	 * - relative to the input context, JML keywords are not to be interpreted as ordinary identifiers;
-	 * Otherwise return TokenNameIdentifier.
+	 * Returns the token id of the given lexeme if it is a JML keyword,
+	 * TokenNameIdentifier otherwise.
 	 */
 	private int internalScanJmlKeyword(int index, int length, char[] data) {
 		String lexeme = new String(data,index,length);
-		Integer tokenIdInt = (Integer) JML_KEYWORD_TO_TOKEN_ID_MAP.get(lexeme);
-		if (tokenIdInt == null) {
-			// Lexeme does not match any JML keyword.
-			return TokenNameIdentifier;
+		Integer tokenId = (Integer) JML_KEYWORD_TO_TOKEN_ID_MAP.get(lexeme);
+		if (tokenId != null && ! shouldIgnoreJmlKeyword(lexeme, tokenId.intValue())) {
+			return tokenId.intValue();
 		}
-		// Lexeme coincides with a JML keyword.
-		int tokenId = tokenIdInt.intValue();
-		// Are we in a context where JML keywords are to
-		// be interpreted as a Java identifier?
-		return treatJmlKeywordLexemeAsJavaIdentifier(lexeme, tokenId)
-			? TokenNameIdentifier : tokenId;
+		return TokenNameIdentifier;
 	}
-	private boolean treatJmlKeywordLexemeAsJavaIdentifier(String lexeme, int tokenId) {
-		if (this.inExpressionPartOfJmlClause == false)
+	private boolean shouldIgnoreJmlKeyword(String lexeme, int tokenId) {
+		if (this.inJmlClause == false)
 			return false;
 		if (lexeme.charAt(0) == '\\')
 			return false;

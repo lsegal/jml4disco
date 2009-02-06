@@ -1,7 +1,6 @@
 package org.jmlspecs.jml4.ast;
 
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
-import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
@@ -13,8 +12,6 @@ import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
-import org.jmlspecs.jml4.compiler.JmlConstants;
-import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 
 /** An abstraction of a JML clause which can be either a:
  * - type body clause,
@@ -24,104 +21,91 @@ import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
  * we have currently chosen not to do so (keeping the type hierarchy a bit
  * flatter and simpler).
  * 
- * Features of instance of this class:
- * - clause has a keyword
- * - argument to the clause is either a single expression and/or
- *   a non-empty array of expressions. The type of the single expression is assumed to be
- *   a boolean (since it is generally a predicate). No assumption is made about the type
- *   of the expression array. 
+ * Most JML clauses contain a predicate and can be marked as redundant, 
+ * hence this characteristics are captured here.
  */
-public abstract class JmlClause extends ASTNode implements JmlConstants {
+public abstract class JmlClause extends JmlAstNode {
 
 	protected static final boolean DEBUG = false;
+	//@ public static final String REDUNDANTLY_SUFFIX = "_redundantly"; //$NON-NLS-1$
 	// FIXME: eventually throw a JML specific runtime exception.
-	// FIXME: the following should be with other type name decls.
 	public static final char[] JML_RUNTIME_EXCEPTION = "java/lang/Error".toCharArray(); //$NON-NLS-1$
 
-	public static final Expression NULL_EXPR = null;
-	public static final Expression[] EMPTY_EXPR_LIST = new Expression[0];
-	
-	private final char[] clauseKeyword;
+	public final String clauseKeyword;
 	private final boolean isRedundant;
-	public final /*@nullable*/ Expression expr;
+	public final /*@nullable*/ Expression pred;
 
-	protected JmlClause(JmlIdentifier keyword, /*@nullable*/Expression expr) {
-		this.clauseKeyword = keyword.token();
-		this.isRedundant = keyword.hasRedundantSuffix();
-		this.expr = expr;
-		
-		this.sourceStart = keyword.sourceStart();
+	//@ ensures this.clauseKeyword == clauseKeyword;
+	//@ ensures this.pred == pred;
+	//@ ensures this.notSpecifiedLexeme == notSpecifiedLexeme;
+	private JmlClause(String clauseKeyword, boolean isRedundant, Expression pred, String keywordGivenInsteadOfPred) {
+		this.clauseKeyword = clauseKeyword.intern();
+		this.isRedundant = isRedundant;
+		this.pred = pred;
 	}
 
-	protected JmlClause(JmlIdentifier keyword) {
-		this(keyword, NULL_EXPR);
+	//@ ensures this.clauseKeyword == clauseKeyword;
+	//@ ensures this.pred == pred;
+	//@ ensures "".equals(this.notSpecifiedLexeme);
+	public JmlClause(String clauseKeyword, boolean isRedundant, Expression pred) {
+		this(clauseKeyword, isRedundant, pred, EMPTY_STRING);
+	}
+
+	//@ ensures this.clauseKeyword == clauseKeyword;
+	//@ ensures this.pred == null;
+	//@ ensures this.notSpecifiedLexeme == notSpecifiedLexeme;
+	public JmlClause(String clauseKeyword, boolean isRedundant) {
+		this(clauseKeyword, isRedundant, null, EMPTY_STRING);
 	}
 
 	public StringBuffer print(int indent, StringBuffer output) {
-		printIndent(indent, output).append(this.clauseKeyword).append(SPACE);
-		return printClauseContent(output).append(SEMICOLON);
-	}
-
-	protected StringBuffer printClauseContent(StringBuffer output) {
-		if(hasExpr())
-			this.expr.print(0, output);
-		return output;
+		printIndent(indent, output).append(this.clauseKeyword + SPACE);
+		if (hasPred())
+			this.pred.print(0, output);
+		return output.append(SEMICOLON);
 	}
 
 	public void resolve(BlockScope scope) {
-		if (hasNonKeywordExpr()) {
-			resolveType(scope);
-		} else if (this.isRedundant() ) {
-			String msg = "A redundant " + kind() + " must be followed by an expression"; //$NON-NLS-1$ //$NON-NLS-2$
-			// FIXME: define a real error.
-			scope.problemReporter().jmlEsc2Error(msg, sourceStart, sourceEnd);
+		if (hasPred()) {
+			TypeBinding type = pred.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
+			pred.computeConversion(scope, type, type);	
+		}
+		else if (this.isRedundant()) {
+			// FIXME: ensure hasPred() for redundant clauses.
+			// Report a problem!
+			System.err.println("FIXME: report a problem -- redundant clause must have a predicate."); //$NON-NLS-1$
 		}
 	}
 
-	// Resolve type of this.expr.
-	//@ requires hasNonKeywordExpr();
-	protected TypeBinding resolveType(BlockScope scope) {
-		return expr.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
-	}
-
 	public void analyseCode(BlockScope scope, FlowContext context, FlowInfo flowInfo) {
-		if (hasExpr())
-			this.expr.analyseCode(scope, context, flowInfo);
+		if (hasPred())
+			this.pred.analyseCode(scope, context, flowInfo);
 	}
 
-	public void generateCheck(BlockScope currentScope, AbstractMethodDeclaration methodDecl, CodeStream codeStream) {
-		// do nothing
-	}
+	public abstract void generateCheck(BlockScope currentScope, AbstractMethodDeclaration methodDecl, CodeStream codeStream);
 
-	//@ ensures \result == (expr != null);
+	//@ ensures \result <==> expr != null;
 	//@ pure
-	public boolean hasExpr() {
-		return expr != null;
+	public boolean hasPred() {
+		return pred != null;
 	}
 	
-	public boolean hasNonKeywordExpr() {
-		return expr != null && !(expr instanceof JmlKeywordExpression);
-	}
 	/**
 	 * Returns the kind of this clause as a String for the purpose of error
 	 * reporting -- e.g. "precondition".
 	 */
 	public String kind() {
-		return this.clauseKeyword() + " clause"; //$NON-NLS-1$
-	}
-
-	public String clauseKeyword() {
-		return new String(this.clauseKeyword).intern();
+		return this.clauseKeyword + " clause"; //$NON-NLS-1$
 	}
 
 	protected void generateEvaluateAndThrowIfFalse(BlockScope currentScope,	CodeStream codeStream) {
-		String msg = kind() + " failed ('"+(this.expr.toString())+"')";  //$NON-NLS-1$//$NON-NLS-2$
+		String msg = kind() + " failed ('"+(this.pred.toString())+"')";  //$NON-NLS-1$//$NON-NLS-2$
 		generateEvaluateAndThrowIfFalse(currentScope, codeStream, msg);
 	}
 
 	private void generateEvaluateAndThrowIfFalse(BlockScope currentScope,
 			CodeStream codeStream, String msg) {
-		expr.generateCode(currentScope, codeStream, true);
+		pred.generateCode(currentScope, codeStream, true);
 		BranchLabel trueLabel = new BranchLabel(codeStream);
 		codeStream.ifne(trueLabel);
 		codeStream.newClassFromName(JML_RUNTIME_EXCEPTION, msg);
@@ -147,16 +131,16 @@ public abstract class JmlClause extends ASTNode implements JmlConstants {
 	}
 	private void generatePrintValue(BlockScope currentScope,
 			CodeStream codeStream, String where) {
-		if (expr == null || expr.resolvedType == null)
+		if (pred == null || pred.resolvedType == null)
 			return;
 		String msg = kind() + " of " +  where //$NON-NLS-1$
-		           + " is '" + expr + "' and evaluated to "; //$NON-NLS-1$ //$NON-NLS-2$
+		           + " is '" + pred + "' and evaluated to "; //$NON-NLS-1$ //$NON-NLS-2$
 		codeStream.getSystemDotOut();
 		codeStream.newClassFromName(ConstantPool.JavaLangStringBufferConstantPoolName);
 		codeStream.ldc(msg);
 		codeStream.invokeStringBufferAppend(ConstantPool.JavaLangStringSignature);
-		expr.generateCode(currentScope, codeStream, true);
-		codeStream.invokeStringBufferAppend(expr.resolvedType.signature());
+		pred.generateCode(currentScope, codeStream, true);
+		codeStream.invokeStringBufferAppend(pred.resolvedType.signature());
 		codeStream.invokeStringConcatenationToString();
 		codeStream.invokeSystemOutPrintln();
 	}
@@ -182,8 +166,8 @@ public abstract class JmlClause extends ASTNode implements JmlConstants {
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		if(visitor.visit(this, scope)) {
-			if(this.expr != null)
-				this.expr.traverse(visitor, scope);
+			if(this.pred != null)
+				this.pred.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
 	}

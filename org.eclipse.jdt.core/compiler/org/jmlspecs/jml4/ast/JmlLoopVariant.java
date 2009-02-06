@@ -13,17 +13,27 @@ import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
+import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 
 public class JmlLoopVariant extends JmlClause {
 
-	public final Expression expr;
-	private /*nullable*/ LocalDeclaration variantLocal;
+	private /*@nullable*/LocalDeclaration variantLocal;
 	private static int varCount = 0;
+	//@ public invariant this.expr != null;
 
-	public JmlLoopVariant(String clauseKeyword, boolean isRedundant,
-			Expression expr) {
-		super(clauseKeyword, isRedundant);
-		this.expr = expr;
+	public JmlLoopVariant(JmlIdentifier keyword, Expression expr) {
+		super(keyword, expr);
+	}
+
+	protected TypeBinding resolveType(BlockScope scope) {
+		TypeBinding type = this.expr.resolveTypeExpecting(scope, TypeBinding.INT);
+		this.expr.computeConversion(scope, type, type);	
+		
+		// [chalin] should this really be done here?
+		createLocalForStore(scope);
+		scope.addLocalVariable(this.variantLocal.binding);
+		this.variantLocal.binding.recordInitializationStartPC(0);
+		return type;
 	}
 
 	public void analyseCode(BlockScope scope, FlowContext context,
@@ -33,13 +43,6 @@ public class JmlLoopVariant extends JmlClause {
 		this.variantLocal.binding.useFlag = LocalVariableBinding.USED;
 	}
 
-	public void resolve(BlockScope scope) {
-		TypeBinding type = this.expr.resolveTypeExpecting(scope, TypeBinding.INT);
-		this.expr.computeConversion(scope, type, type);	
-		createLocalForStore(scope);
-		scope.addLocalVariable(this.variantLocal.binding);
-		this.variantLocal.binding.recordInitializationStartPC(0);
-	}
 	//@ ensures  this.variantLocal != null && this.variantLocal.binding != null;
 	private void createLocalForStore(BlockScope scope) {
 		JmlLocalDeclaration local = new JmlLocalDeclaration(("jml$var_"+(varCount ++)).toCharArray(), 0, 0); //$NON-NLS-1$
@@ -120,11 +123,4 @@ public class JmlLoopVariant extends JmlClause {
 		}
 		visitor.endVisit(this, scope);
 	}
-
-	public StringBuffer print(int indent, StringBuffer output) {
-		printIndent(indent, output).append(this.clauseKeyword + SPACE);
-		this.expr.print(0, output);
-		return output.append(SEMICOLON);
-	}
-
 }

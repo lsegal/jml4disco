@@ -6,6 +6,7 @@ import org.eclipse.jdt.internal.compiler.flow.FlowContext;
 import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.TagBits;
+import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 import org.jmlspecs.jml4.nonnull.Nullity;
 
 public class JmlLocalDeclaration extends LocalDeclaration {
@@ -17,6 +18,10 @@ public class JmlLocalDeclaration extends LocalDeclaration {
 			if (jmlType.getNullity().hasDefaultNullity())
 				jmlType.setNullity(Nullity.nullable_by_default);
 		}
+	}
+
+	public JmlLocalDeclaration(JmlIdentifier identifier) {
+		this(identifier.token(), identifier.sourceEnd(), identifier.sourceEnd());
 	}
 
 	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {

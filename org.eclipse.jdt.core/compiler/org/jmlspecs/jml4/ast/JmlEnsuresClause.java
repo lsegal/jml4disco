@@ -4,33 +4,23 @@ import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
+import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 
 public class JmlEnsuresClause extends JmlClause {
 
-	public JmlEnsuresClause(String keyword, boolean isRedundant, Expression pred) {
-		super(keyword, isRedundant, pred);
+	//@ public invariant this.expr != null;
+
+	public JmlEnsuresClause(JmlIdentifier keyword, Expression predOrKeyword) {
+		super(keyword, predOrKeyword);
 	}
 
-	public JmlEnsuresClause(String keyword, boolean isRedundant) {
-		super(keyword, isRedundant);
-	}
-
+	// FIXME: is this really much better than "ensures clause"?  What is it is a _redundantly variant?
 	public String kind() {
 		return "postcondition"; //$NON-NLS-1$
 	}
 
-	public StringBuffer print(int indent, StringBuffer output) {
-		output.append(this.clauseKeyword + SPACE);
-		if (hasPred()) {
-			this.pred.print(indent, output);
-		} else {
-			output.append("\\not_specified"); //$NON-NLS-1$
-		}
-		return output.append(SEMICOLON);
-	}
-
 	public void generateCheck(BlockScope currentScope, AbstractMethodDeclaration methodDecl, CodeStream codeStream) {
-		if (!hasPred())
+		if (!hasNonKeywordExpr())
 			return;
 		final JmlLocalDeclaration result = (methodDecl instanceof JmlMethodDeclaration)
 											? ((JmlMethodDeclaration) methodDecl).resultValue

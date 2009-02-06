@@ -756,7 +756,7 @@ public TypeReference getTypeReference(int dim) {
 					new JmlSingleTypeReference(
 						identifierStack[identifierPtr], 
 						identifierPositionStack[identifierPtr--],
-						getAndResetNullity(), getAndResetOwnershipModifiers());
+						jmlHelper.getAndResetNullity(), jmlHelper.getAndResetOwnershipModifiers());
 					// <jml-end id="3" />
 				if (reportReferenceInfo) {
 					requestor.acceptTypeReference(ref.token, ref.sourceStart);
@@ -769,8 +769,8 @@ public TypeReference getTypeReference(int dim) {
 						identifierStack[identifierPtr], 
 						dim, 
 						identifierPositionStack[identifierPtr--],
-						popNullityStack(dim),
-						getAndResetNullity(), getAndResetOwnershipModifiers());
+						jmlHelper.popNullityStack(dim),
+						jmlHelper.getAndResetNullity(), jmlHelper.getAndResetOwnershipModifiers());
 					// <jml-end id="3" />
 				ref.sourceEnd = endPosition;
 				if (reportReferenceInfo) {
@@ -792,7 +792,7 @@ public TypeReference getTypeReference(int dim) {
 				length); 
 			if (dim == 0) {
 				// <jml-start id="3" />
-				QualifiedTypeReference ref = new JmlQualifiedTypeReference(tokens, positions, getAndResetNullity(), getAndResetOwnershipModifiers());
+				QualifiedTypeReference ref = new JmlQualifiedTypeReference(tokens, positions, jmlHelper.getAndResetNullity(), jmlHelper.getAndResetOwnershipModifiers());
 				// <jml-end id="3" />
 				if (reportReferenceInfo) {
 					requestor.acceptTypeReference(ref.tokens, ref.sourceStart, ref.sourceEnd);
@@ -801,7 +801,7 @@ public TypeReference getTypeReference(int dim) {
 			} else {
 				// <jml-start id="3" />
 				ArrayQualifiedTypeReference ref = 
-					new JmlArrayQualifiedTypeReference(tokens, dim, positions, popNullityStack(dim), getAndResetNullity(), getAndResetOwnershipModifiers()); 
+					new JmlArrayQualifiedTypeReference(tokens, dim, positions, jmlHelper.popNullityStack(dim), jmlHelper.getAndResetNullity(), jmlHelper.getAndResetOwnershipModifiers()); 
 				// <jml-end id="3" />
 				ref.sourceEnd = endPosition;					
 				if (reportReferenceInfo) {

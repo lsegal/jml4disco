@@ -1,33 +1,34 @@
 package org.jmlspecs.jml4.ast;
 
-import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+import org.eclipse.jdt.internal.compiler.ast.Expression;
+import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
+import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 
-public class JmlMapsIntoClause extends ASTNode implements JmlDataGroupClause {
+public class JmlMapsIntoClause extends JmlClause implements JmlDataGroupClause {
 	
-	public final boolean isRedundant;
-	public final JmlMemberFieldRef fieldRef;
-	public final JmlGroupName[] groupNames;
+	public final Expression[] groupNames;
 	
-	public JmlMapsIntoClause(boolean isRedundant,
-			JmlMemberFieldRef fieldRef, JmlGroupName[] groupNames) {
-		this.isRedundant = isRedundant;
-		this.fieldRef = fieldRef;
+	public JmlMapsIntoClause(JmlIdentifier clauseKeyword, Expression mapstoExprRef, Expression[] groupNames) {
+		super(clauseKeyword, mapstoExprRef);
 		this.groupNames = groupNames;
 	}
 
-	public StringBuffer print(int indent, StringBuffer output) {
-		output.append("maps"); //$NON-NLS-1$
-		if (this.isRedundant)
-			output.append("_redundantly"); //$NON-NLS-1$
-		output.append(" "); //$NON-NLS-1$
-		this.fieldRef.print(indent, output);
+	public void resolve(BlockScope scope) {
+		super.resolve(scope);
+		for (int i = 0; i < this.groupNames.length; i++) {
+			this.groupNames[i].resolve(scope);
+		}
+	}
+
+	protected StringBuffer printClauseContent(StringBuffer output) {
+		super.printClauseContent(output);
 		output.append(" \\into "); //$NON-NLS-1$
-		for (int i=0; i<this.groupNames.length; i++) {
+		for (int i = 0; i < this.groupNames.length; i++) {
 			if (i>0)
 				output.append(", "); //$NON-NLS-1$
-			this.groupNames[i].print(indent, output);
+			this.groupNames[i].print(0, output);
 		}
-		return output.append(";"); //$NON-NLS-1$
+		return output;
 	}
 
 }

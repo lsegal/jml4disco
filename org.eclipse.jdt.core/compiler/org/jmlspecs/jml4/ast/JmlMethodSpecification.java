@@ -3,6 +3,7 @@ package org.jmlspecs.jml4.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
@@ -12,7 +13,7 @@ import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 
 
-public class JmlMethodSpecification extends JmlAstNode {
+public class JmlMethodSpecification extends ASTNode {
 
 	public final JmlSpecCase[] specCases;	// main spec cases
 	public final JmlSpecCase[] redundantSpecCases;

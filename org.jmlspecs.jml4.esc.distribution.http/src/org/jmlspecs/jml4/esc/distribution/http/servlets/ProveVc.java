@@ -11,10 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jmlspecs.jml4.esc.Esc;
-//import org.jmlspecs.jml4.esc.distribution.ServerProfile;
-import org.jmlspecs.jml4.esc.distribution.ServerProfile;
 import org.jmlspecs.jml4.esc.distribution.servers.vc.ProveVcServer;
-import org.jmlspecs.jml4.esc.result.lang.Result;
+import org.jmlspecs.jml4.esc.distribution.servers.vc.ProveVcServerResult;
 import org.jmlspecs.jml4.esc.vc.lang.VC;
 
 /**
@@ -41,7 +39,7 @@ public class ProveVc extends HttpServlet {
 	   
 		String contentType = "application/x-java-serialized-object";  
 
-		Result[] result = Result.EMPTY;
+		ProveVcServerResult result = null;
 		ObjectInputStream in = null;
 		VC vc = null;
 		Map<String, Integer> map;
@@ -60,14 +58,7 @@ public class ProveVc extends HttpServlet {
 		response.setContentType(contentType);
 		ObjectOutputStream out = new ObjectOutputStream(response.getOutputStream());  	   
 		out.writeObject(result);
-		ServerProfile profile = new ServerProfile(); // added by Dickie on Fri Nov 28th 2:00pm-ish
-		out.writeObject(profile);
 		out.flush();
 		out.close();
-			   
-//		   response.setContentType("text/html");
-//		   PrintWriter out = response.getWriter();
-//		   out.println("Hello web (from the servlet)! "+ value);
-//		   out.close();	   
-   		}
+   	}
 }

@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Caching Evaluation</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="CachingEvaluation"><strong>Caching Evaluation</strong></h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.DefinitionofacachewithrespecttoaDistributedJML4:">1. Definition of a cache (with respect to a Distributed JML4):</a></li><li class="active">
+<a href="#a2.OurCachingversusTypicalCaching:">2. Our Caching versus “Typical” Caching:</a></li><li class="active">
+<a href="#a3.NatureoftheVCProblem:">3. Nature of the VC Problem:</a></li><li class="active">
+<a href="#a4.TypesofCachingAlgorithms:">4. Types of Caching Algorithms:</a><ol><li class="active"><a href="#a4.1FIFO">4.1 FIFO</a></li><li class="active">
+<a href="#a4.2LRU">4.2 LRU</a></li><li class="active">
+<a href="#a4.3LFU">4.3 LFU</a></li><li class="active">
+<a href="#a4.4MFU">4.4 MFU</a></li></ol><li class="active"><a href="#a5.SourcesofRisk:">5. Sources of Risk:</a></li></li><li class="active">
+<a href="#a6.PurchasingUsingComponentsofftheShelf:">6. Purchasing/Using Components off the Shelf:</a><ol><li class="active"><a href="#a6.1OSCache">6.1 OSCache</a></li><li class="active">
+<a href="#a6.2Cache4J">6.2 Cache4J</a></li><li class="active">
+<a href="#a6.3Swarm-Cache">6.3 Swarm-Cache</a></li><li class="active">
+<a href="#a6.4JCS:JavaCachingSystem">6.4 JCS: Java Caching System</a></li></ol><li class="active"><a href="#a7.References">7. References</a></li></li></ol></div>
+
+</p>
+<h2 id="a1.DefinitionofacachewithrespecttoaDistributedJML4:">1. Definition of a cache (with respect to a Distributed JML4):</h2>
+<p>
+A cache is a record of previously proven Verification Condition (VC) and their result. If the same VC is sent for proving a second time, then the cache is checked first. If present, a cache “hit” occurs and the result is returned directly from the cache. If a “miss” occurs, then the data continues on as normal to the provers… although the time taken to check the cache for it is a “miss penalty”. 
+</p>
+<h2 id="a2.OurCachingversusTypicalCaching:">2. Our Caching versus “Typical” Caching:</h2>
+<p>
+Caching is often a throw away term used for describing an increase of performance by avoiding I/O operations to and from disk. Our case is very different: we are caching proof results from slow and unwieldy provers. We are less concerned with the typical “fear” of reducing disk access time and are more concerned with avoiding re-proving VCs. This means that our cache can even be implemented as a database table if access is fast enough (the whole cache need not be in RAM). That being said, we will still want to concern ourselves with how our cache operates in memory, but it is a secondary concern.  
+</p>
+<h2 id="a3.NatureoftheVCProblem:">3. Nature of the VC Problem:</h2>
+<p>
+Whenever a user/programmer compiles, a VC program will be created for every method. Inside each VC program is a number of VCs which require proving and will be fed through theorem provers. However, as theorem provers may take significant time to prove each VC, it would be undesirable to re-prove VCs that have already been solved, especially if the user is recompiling often (as most are likely to do). Thus it would be appropriate to implement caching, so that the results of previously proven VCs can simply be retransmitted. There are, however, many attributes of VCs that make caching difficult:
+</p>
+<ul><li>VC programs grow linearly with the amount of code, but the number of VCs that they are broken into may grow exponentially. So which would be better to cache? Unaltered methods will produce the same VC programs and if they are in the cache that would mean that time can be saved from not breaking them up into VCs (to be sent to the provers). However, if a method is altered, some or all of the VCs may be altered, but some may be left intact. Caching VCs then would yield improved results for altered methods if the pieces left intact were cached (though it may require much more space).
+</li></ul><ul><li>As mentioned before, a single change to a method may result in a completely new set of VCs being generated. Thus, anything previously cached may be now completely useless. However, the change may also result in a small modification to the set of VCs in which case some of the VCs will most likely remain unchanged which would allow good use of caching. It is obviously impossible to tell which of the VCs are likely to be altered, so caching VCs must be done fairly intelligently.
+</li></ul><ul><li>The VC Programs are going to be compiled from specific user code; meaning that sharing the results with other users will be pointless. This then begs the question of if it is preferable to have caching done by the “server” or by the “client” or by both. It may also depend on where the breaking of VC Programs into VCs is done.
+</li></ul><ul><li>It may also be unlikely that caching VCs will prove beneficial due to the sheer number of them. If there are too few VCs being cached then “hits” may occur too rarely and thrashing may occur. If there are too many, the lookup time may be more than the time to prove the actual VC. 
+</li></ul><ul><li>Each VC program is split into VCs which in turn need proving. In a distributed system, these VCs are then sent off (via a Dispatcher) to several different Servants who will try each VC against a series of provers. Therefore, if the cache is server-side, will the cache reside with the Dispatcher? Or will there be a cache for each Servant? Or will there be a single cache that is checked/updated by each Servant? Or will there be a distributed cache?
+</li></ul><p>
+A starting hypothesis would be that caching the VC programs on the client side and caching VCs on the server side (where they would be created from breaking non-cached VC programs) is likely to yield good results. Server side, the cache would be used by the dispatcher and the cache could reside either on a single machine or be distributed among the servants. This way, mostly altered methods will be transmitted from the user to the server where the VC program will be broken and each VC will be checked against the server’s cache. However, the overhead of checking two caches may result in too much overhead and delay. It also implies that the server must be stateful.
+</p>
+<h2 id="a4.TypesofCachingAlgorithms:">4. Types of Caching Algorithms:</h2>
+<p>
+Obviously a cache functions best if the time taken to find an element is less than it takes to calculate the value for that element. This implies that caches are, by their very nature, bounded (unless superior searching algorithms can one day be found) and therefore will require the removal of less “relevant” items in order to make space for more “relevant” items. In short, the method of removal and addition of elements to caches is very important and there are many different algorithms to meet various mitigation needs.
+</p>
+<p>
+Some of the most popular caching mitigation algorithms are:
+</p>
+<h3 id="a4.1FIFO">4.1 FIFO</h3>
+<p>
+Stands for First In First Out. This is the most basic algorithm and essentially behaves as a buffer. When the cache fills, the elements are ejected in the order that they were entered, regardless of their frequency of use. Since no care is taken to “keep” important elements, this is not a particularly useful algorithm for our purposes.
+</p>
+<h3 id="a4.2LRU">4.2 LRU</h3>
+<p>
+Stands for Least Recently Used. This algorithm fills the cache in the same way that FIFO does, however the elements to remove are chosen with slightly more care. This algorithm, which is typically implemented as a list, will move an element to the front of the list when it is “hit”. When another element is to be added, the last element in the list is removed as it is the one that has gone the longest without being requested. This algorithm (and its variations) is very commonly used.
+</p>
+<h3 id="a4.3LFU">4.3 LFU</h3>
+<p>
+Stands for Least Frequently Used. This algorithm assigns a usage counter to each element. If the element, historically, has been used a lot then it is more likely to stay in the cache than one that has not been used as much. Although this may sound great, there may be cases where a particular element was used with a very high frequency early on (such as during setup) but not for a while since. This would cause “dead” cache space, as the element would remain for a long time afterward while not being used.
+</p>
+<h3 id="a4.4MFU">4.4 MFU</h3>
+<p>
+Stands for Most Frequently Used. This is a much less commonly used algorithm. It operates under the assumption that the page with the smallest usage has just been brought in for major use and that pages with the largest usage are almost finished with being useful. Therefore it removes the elements with the highest usage count. While this is most likely not practical for the entire caching system, it has been included because under certain (strict) conditions it may still prove viable.
+</p>
+<p>
+There are, of course, slight variations on all of these algorithms, (such as LRU-Threshold) but they still rely on the concepts detailed above.
+</p>
+<h2 id="a5.SourcesofRisk:">5. Sources of Risk:</h2>
+<p>
+There are not many risk factors associated with caching. The foremost risk is in implementing a caching strategy that may not improve performance enough to merit the time spent. This is especially the case when constructing the caching mechanism from scratch. However this can be dealt with by first using the Open Source caching mechanisms which allow for various caching strategies.
+</p>
+<p>
+Possible risks of the pre-built components:
+</p>
+<ul><li>Too many useless features creating too much overhead
+</li><li>Not enough configurability to allow for high performance tweaks
+</li><li>May not be fast enough
+</li><li>May have undocumented or confusing code
+</li><li>May be unnecessarily hard to deploy
+</li><li>May be unreliable  
+</li><li>May be expensive or have restricted licenses
+</li></ul><p>
+Possible risks of build the component in-house:
+</p>
+<ul><li>May be buggy and fragile
+</li><li>May not be sufficiently robust
+</li><li>May not be fast enough
+</li><li>May take long to implement
+</li><li>May not have enough desired functionality
+</li></ul><h2 id="a6.PurchasingUsingComponentsofftheShelf:">6. Purchasing/Using Components off the Shelf:</h2>
+<p>
+As mentioned in the Plan for Distributed Discharging of VCs Requirements there are four potentially viable options that we are considering at this time. They are:
+</p>
+<h3 id="a6.1OSCache">6.1 OSCache</h3>
+<p>
+A caching solution that provides both a Java Class Library and a JSP Tag Library to perform caching on JSP content, servlet responses or (most importantly) arbitrary Java Objects. It gives the choice of having the cache in volatile memory or in persistent memory.  Has a robust set of features, good documentation/support, is Java native, extends the Apache Software License (<a href="http://www.apache.org/LICENSE.txt" class="ext-link"><span class="icon">http://www.apache.org/LICENSE.txt</span></a>) and is open source.
+Feature list available <a href="http://www.opensymphony.com/oscache/wiki/Feature%20List.html" class="ext-link"><span class="icon">here</span></a>
+</p>
+<h3 id="a6.2Cache4J">6.2 Cache4J</h3>
+<p>
+Not viable. “Performance tester” is the only file currently available for download. Has little or no support and still seems to be in its infancy. 
+</p>
+<h3 id="a6.3Swarm-Cache">6.3 Swarm-Cache</h3>
+<p>
+Swarm-Cache provides a distributed caching solution through a Java Class Library and operates over TCP. It implements LRU as well as a Timeout, Automatic and Hybrid algorithm. The least obvious one, Automatic, is an algorithm that works with the JVM garbage collector to remove elements. Unlike LRU, it does not ensure that recently used elements will be in the cache but it does allow for “a cache size that is bounded only by the memory available to the JVM”. Has minor support and documentation.
+</p>
+<h3 id="a6.4JCS:JavaCachingSystem">6.4 JCS: Java Caching System</h3>
+<p>
+Another distributed caching solution that also operates over TCP as wells as UDP (for some functionality). IT implements LRU as well as a highly configurable Indexed Disk Cache, TCP Lateral Cache and an RMI Remote Cache, the latter two of which are distributed caching schemes (the first has every node “talking” to each other, the second has a central repository that the nodes interact with). Has a generous amount of documentation and support. Is also open source.
+</p>
+<p>
+Feature list available <a href="http://jakarta.apache.org/jcs/index.html" class="ext-link"><span class="icon">here</span></a> 
+</p>
+<h2 id="a7.References">7. References</h2>
+<ul><li>Silberschatz, Galvin, Gagne. Operating System Concepts. 7th ed. 2005. 
+</li></ul><ul><li>ROTARU, Octavian. “Caching Patterns and Implementation” August 2006. 24 October 2008 <a href="http://ljs.academicdirect.org/A08/61_76.htm" class="ext-link"><span class="icon">http://ljs.academicdirect.org/A08/61_76.htm</span></a>
+</li></ul><ul><li>Dr. Constantinides, C. “SOEN 384: Management and Quality Control in Software Development”. Fall Term 2008 <a href="http://hypatia.cs.concordia.ca/courses/soen384/" class="ext-link"><span class="icon">http://hypatia.cs.concordia.ca/courses/soen384/</span></a>
+</li></ul></div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

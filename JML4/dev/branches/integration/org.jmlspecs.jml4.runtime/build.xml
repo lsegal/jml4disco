@@ -1,0 +1,54 @@
+<project name="JML4 Runtime Ant Build File" default="make_jar">
+
+	<description>JML4 Runtime Ant Build File</description>
+
+	<property name="project" value="JML4Runtime" />
+	<property name="version" value="1.0" />
+	<property name="jars_dir" value="bin"/>
+
+	<target name="make_jar">
+		<description>Generate jar file of the decsrc library.</description>
+		<jar 
+			destfile="${jars_dir}/jml4runtime.jar" 
+			basedir="bin"
+			includes="**/*.class" 
+		/>
+	</target>
+
+	<!-- 
+	<target name="make_mf">
+		<manifest file="META-INF/MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<section name="common">
+				<attribute name="Specification-Title" value="Example" />
+				<attribute name="Specification-Version" value="${version}" />
+				<attribute name="Specification-Vendor" value="Example Organization" />
+				<attribute name="Implementation-Title" value="${project}" />
+				<attribute name="Implementation-Version" value="${version} ${TODAY}" />
+				<attribute name="Implementation-Vendor" value="DSRG" />
+			</section>
+			<fileset dir="bin" id="id">
+				<include name="**/*.class" />
+			</fileset>
+		</manifest>
+	</target>
+
+	<target name="make_jar1">
+		<mkdir dir="bin/jar"/>
+		<jar destfile="bin/jar/jml4runtime.jar" basedir="bin/classes">
+			<manifest>
+				<section name="common">
+					<attribute name="Implementation-Title" value="${project}" />
+					<attribute name="Implementation-Version" value="${version} ${date}" />
+					<attribute name="Implementation-Vendor" value="DSRG" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+	-->
+
+	<!-- 
+		<attribute name="Main-Class" value="oata.HelloWorld"/>
+	-->
+
+</project>

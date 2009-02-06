@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.FrontControllerException;
+
 public class TestDriver {
 
 	public static void main(String[] argv) {

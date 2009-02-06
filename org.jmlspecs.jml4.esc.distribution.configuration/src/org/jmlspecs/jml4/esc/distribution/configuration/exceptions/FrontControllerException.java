@@ -1,4 +1,4 @@
-package org.jmlspecs.jml4.esc.distribution.configuration;
+package org.jmlspecs.jml4.esc.distribution.configuration.exceptions;
 
 public class FrontControllerException extends Exception {
 

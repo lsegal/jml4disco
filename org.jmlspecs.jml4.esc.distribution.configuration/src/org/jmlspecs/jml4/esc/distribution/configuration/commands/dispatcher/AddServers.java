@@ -2,7 +2,7 @@ package org.jmlspecs.jml4.esc.distribution.configuration.commands.dispatcher;
 
 import org.jmlspecs.jml4.esc.distribution.configuration.FrontCommand;
 import org.jmlspecs.jml4.esc.distribution.configuration.CommandInput;
-import org.jmlspecs.jml4.esc.distribution.configuration.FrontControllerException;
+import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.FrontControllerException;
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerQueueRegistry;
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerQueueRegistryException;
 

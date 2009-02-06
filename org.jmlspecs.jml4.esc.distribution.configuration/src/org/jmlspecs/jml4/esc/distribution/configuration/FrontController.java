@@ -2,12 +2,15 @@ package org.jmlspecs.jml4.esc.distribution.configuration;
 
 import java.util.ResourceBundle;
 
+import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.CommandNotFoundException;
+import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.FrontControllerException;
+
 public class FrontController {
 
 	private static final String PROPERTIES_FILE = "jml4-disco-config";
 	private static ResourceBundle bundle = initResourceBundle();
 	
-	public static void main(CommandInput commandInput) throws FrontControllerException {
+	public static void main(CommandInput commandInput) throws FrontControllerException, CommandNotFoundException {
 		
 		String command = commandInput.getCommandName();
 		
@@ -25,7 +28,7 @@ public class FrontController {
 			
 			
 		} catch (ClassNotFoundException e) {
-			throw new FrontControllerException("No such command '"+command+"'.", e);
+			throw new CommandNotFoundException("No such command '"+command+"'.", e);
 		} catch (InstantiationException e) {
 			throw new RuntimeException("Failed to execute command '"+command+"'.", e);
 		} catch (IllegalAccessException e) {

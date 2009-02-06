@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Supplementary Specification</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="SupplementarySpecification">Supplementary Specification</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.0Introduction">1.0 Introduction</a><ol><li class="active"><a href="#a1.1Purpose">1.1 Purpose</a></li><li class="active">
+<a href="#a1.2Scope">1.2 Scope</a></li><li class="active">
+<a href="#a1.4DefinitionsAcronymsandAbbreviations">1.4 Definitions, Acronyms, and Abbreviations</a></li></ol></li><li class="active"><a href="#a2.0FunctionalRequirements">2.0 Functional Requirements</a><ol><li class="active"><a href="#a2.1LoadBalancing">2.1 Load Balancing</a></li><li class="active">
+<a href="#a2.2Caching">2.2 Caching</a></li><li class="active">
+<a href="#a2.3IntegrationofBoogieProver">2.3 Integration of Boogie Prover</a></li></ol><li class="active"><a href="#a3.0Usability">3.0 Usability</a></li></li><li class="active">
+<a href="#a4.0Reliability">4.0 Reliability</a><ol><li class="active"><a href="#Availability">Availability</a></li><li class="active">
+<a href="#Recoverability">Recoverability</a></li><li class="active">
+<a href="#a4.1Accuracy">4.1 Accuracy</a></li></ol><li class="active"><a href="#a5.0Performance">5.0 Performance</a></li></li><li class="active">
+<a href="#a6.0Supportability">6.0 Supportability</a><ol><li class="active"><a href="#a6.1Configurability">6.1 Configurability</a></li><li class="active">
+<a href="#a6.2Scalability">6.2 Scalability</a></li></ol></li><li class="active"><a href="#a7.0Constraints">7.0 Constraints</a><ol><li class="active"><a href="#a7.1DesignConstraints">7.1 Design Constraints</a></li><li class="active">
+<a href="#a7.2ImplementationConstraints">7.2 Implementation Constraints</a></li></ol><li class="active"><a href="#a8.0DocumentationRequirements">8.0 Documentation Requirements</a></li><li class="active">
+<a href="#a9.0PurchasedComponents">9.0 Purchased Components</a></li><li class="active">
+<a href="#a10.0Open-SourceComponents">10.0 Open-Source Components</a></li></li><li class="active">
+<a href="#a11.0Interfaces">11.0 Interfaces</a><ol><li class="active"><a href="#a11.1UserInterfaces">11.1 User Interfaces</a></li><li class="active">
+<a href="#a11.2SoftwareInterfaces">11.2 Software Interfaces</a></li><li class="active">
+<a href="#a11.3CommunicationInterfaces">11.3 Communication Interfaces</a></li></ol><li class="active"><a href="#a12.0LicensingandSecurityRequirements">12.0 Licensing and Security Requirements</a></li><li class="active">
+<a href="#a13.0LegalCopyrightandOtherNotices">13.0 Legal, Copyright, and Other Notices</a></li></li><li class="active">
+<a href="#a14.0ApplicableStandards">14.0 Applicable Standards</a><ol><li class="active"><a href="#a14.1CodingStandards">14.1 Coding Standards</a></li></ol><li class="active"><a href="#a15.0InternationalisationandLocalisation">15.0 Internationalisation and Localisation</a></li><li class="active">
+<a href="#a16.0PhysicalDeliverables">16.0 Physical Deliverables</a></li><li class="active">
+<a href="#a17.0InstallationandDeployment">17.0 Installation and Deployment</a></li><li class="active">
+<a href="#a18.0References">18.0 References</a></li></li></ol></div>
+
+</p>
+<h2 id="a1.0Introduction">1.0 Introduction</h2>
+<h3 id="a1.1Purpose">1.1 Purpose</h3>
+<p>
+The purpose of this document is to collect all non-functional requirements and design constraints placed on the JML4 Disco project, as well as any functional requirements not expressed in the Use Case Model.
+</p>
+<h3 id="a1.2Scope">1.2 Scope</h3>
+<p>
+This document is relevant to the JML4 Disco project. JML4 Disco will be an evolution of the Dependable Software Research Group's JML4 Integrated development and Verification Environment, meant to alleviate the problem of applying ESC to industrial-scale applications, by means of improving ESC4's potential distributed application verification, so as to better utilize non-local resources and reduce the time to assert the validity of software components and interfacing with Microsoft's state-of-the-art program verifier Boogie.
+</p>
+<h3 id="a1.4DefinitionsAcronymsandAbbreviations">1.4 Definitions, Acronyms, and Abbreviations</h3>
+<p>
+Please see the <a href="/trac/wiki/Glossary" class="wiki">Glossary</a> for all definitions, acronyms, and abbreviations.
+</p>
+<h2 id="a2.0FunctionalRequirements">2.0 Functional Requirements</h2>
+<h3 id="a2.1LoadBalancing">2.1 Load Balancing</h3>
+<p>
+The distributed program verification capabilities of JML4 Disco should be able to perform dynamic load balancing so as to optimize the use of remote resources.
+</p>
+<h3 id="a2.2Caching">2.2 Caching</h3>
+<p>
+Given that network communication can be costly, the distributed program verification capabilities of JML4 Disco should be able to cache results which have been unchanged. Cached results will not make need for remote resources.
+</p>
+<h3 id="a2.3IntegrationofBoogieProver">2.3 Integration of Boogie Prover</h3>
+<p>
+To make proving more complete, the JML decorated Java source will need to be translated to Boogie and then checked for correctness. Using Boogie as a means of extending proving was stated as a requirement by the stakeholder.
+</p>
+<h2 id="a3.0Usability">3.0 Usability</h2>
+<p>
+A user who is familiar with the semantics of the JML modeling language as well as the Eclipse Integrated Development Environment should require minimal - if any - additional training when using JML4 Disco.
+In order for JML4 Disco to be consistent with the rest of the Eclipse Integrated Development Environment, any additional User-Interface components developed should conform to the <a href="http://wiki.eclipse.org/User_Interface_Guidelines" class="ext-link"><span class="icon">Eclipse Use Interface Guidelines</span></a>.
+</p>
+<h2 id="a4.0Reliability">4.0 Reliability</h2>
+<h3 id="Availability">Availability</h3>
+<p>
+The system shall be available 24 hours a day, 7 days a week. Since there is no central server, the application runs locally on each terminal. If a terminal is not functioning properly, the system can be accessed through another one.
+</p>
+<h3 id="Recoverability">Recoverability</h3>
+<p>
+Since the system can be accessed concurrently by users, data integrity shall be kept with the use of transactions in the system and pessimistic locking from the database tables. 
+</p>
+<h3 id="a4.1Accuracy">4.1 Accuracy</h3>
+<p>
+The JML4 Disco system should be at least as accurate as JML4 (...)
+</p>
+<h2 id="a5.0Performance">5.0 Performance</h2>
+<p>
+JML4 Disco must improve upon the performance of JML4, and JML4 Disco should at least be as responsive as the Prototype Distributed Multi-Threaded Java Program verifier developed by the DSRG. [1] The following are the timing results from that prototype, validating a single Java class with 51 methods: [1]
+</p>
+<table class="wiki">
+<tr><td> <strong>Number of Servers</strong> </td><td> <strong>Number of Cores</strong> </td><td> <strong>Time to prove Locally</strong> </td><td> <strong>Time to prove Remotely</strong> 
+</td></tr><tr><td> 1 </td><td> 4 </td><td> 26.6 </td><td> 26.4 
+</td></tr><tr><td> 2 </td><td> 8 </td><td> 16.9 </td><td> 16.2 
+</td></tr><tr><td> 3 </td><td> 12 </td><td> 12.8 </td><td> 13.3 
+</td></tr></table>
+<h2 id="a6.0Supportability">6.0 Supportability</h2>
+<h3 id="a6.1Configurability">6.1 Configurability</h3>
+<p>
+JML4 Disco should be able to connect to and make use of resources on varying remote machines based off information in configurations files. JML4 Disco should also make use of varying proving strategies. 
+</p>
+<h3 id="a6.2Scalability">6.2 Scalability</h3>
+<p>
+The distributed application verification capabilities of a JML4 Disco client should be able to connect to and make use of resources on multiple remote machines.
+</p>
+<h2 id="a7.0Constraints">7.0 Constraints</h2>
+<h3 id="a7.1DesignConstraints">7.1 Design Constraints</h3>
+<p>
+JML4 Disco must provide a user with the ability to perform program verification making use of resources on remote machines.
+JML4 Disco must improve performance of Extended Static Checking using caching of previous application verification results.
+JML4 Disco is constrained to using Microsoft's state-of-the-art Boogie program verifier to achieve more complete coverage of Java.
+</p>
+<h3 id="a7.2ImplementationConstraints">7.2 Implementation Constraints</h3>
+<p>
+Since JML4 Disco is an evolution of JML4, JML4 Disco must be implemented in Java.
+Given that the Boogie program verifier's source code is not available, in order to interface with the Boogie program verifier, JML4 must be able to translate JML-annotated java files into Boogie code, which will be fed into the Boogie program verifier.
+</p>
+<h2 id="a8.0DocumentationRequirements">8.0 Documentation Requirements</h2>
+<p>
+Any Software Engineering artifact that would be highly useful to the successful completion of the project should be included in the documentation. 
+</p>
+<h2 id="a9.0PurchasedComponents">9.0 Purchased Components</h2>
+<p>
+There are no known purchased components.
+</p>
+<h2 id="a10.0Open-SourceComponents">10.0 Open-Source Components</h2>
+<ul><li>Eclipse
+</li><li>Boogie 
+</li><li>Isabelle
+</li><li>Simplify
+</li><li>CVC3
+</li><li>TPTP
+</li></ul><h2 id="a11.0Interfaces">11.0 Interfaces</h2>
+<p>
+ 
+</p>
+<h3 id="a11.1UserInterfaces">11.1 User Interfaces</h3>
+<p>
+The end-user will be using the Eclipse SDE with JML4 Disco. Setup of the project can be done through the configuration panel of Eclipse as well as configuration files.
+</p>
+<h3 id="a11.2SoftwareInterfaces">11.2 Software Interfaces</h3>
+<p>
+The system shall interface with the Eclipse JDT components, the JML4 Project (including its provers) as well as Boogie. JUnit will also be used for testing. Cashing is done by storing information to binary files at the moment, but a database remains a possibility in future iterations.
+</p>
+<h3 id="a11.3CommunicationInterfaces">11.3 Communication Interfaces</h3>
+<p>
+The JML4 Disco project should be able to considerably improve the verification time of Extended Static Checking utilising either remote resources available over either LAN or WAN.
+</p>
+<h2 id="a12.0LicensingandSecurityRequirements">12.0 Licensing and Security Requirements</h2>
+<p>
+Due to the use of Boogie, this project is bound by the This Microsoft Research License Agreement. The license can be found in detail at <a href="http://research.microsoft.com/Pex/msr-la.txt" class="ext-link"><span class="icon">http://research.microsoft.com/Pex/msr-la.txt</span></a>
+</p>
+<p>
+We are also subjected to the Eclipse Public License. This can be found at <a href="http://www.eclipse.org/legal/eplfaq.php" class="ext-link"><span class="icon">http://www.eclipse.org/legal/eplfaq.php</span></a>.
+</p>
+<h2 id="a13.0LegalCopyrightandOtherNotices">13.0 Legal, Copyright, and Other Notices</h2>
+<h2 id="a14.0ApplicableStandards">14.0 Applicable Standards</h2>
+<p>
+JML4 Disco is an evolution of JML4. Given that JML4 is an Eclipse-based Integrated development Verification Environment, built on top of the Eclipse Java Development Tooling, JML4 Disco should be roughly complaisant with the <a href="http://wiki.eclipse.org/index.php/Development_Conventions_and_Guidelines" class="ext-link"><span class="icon">Eclipse Development Conventions and Guidelines</span></a>.
+</p>
+<h3 id="a14.1CodingStandards">14.1 Coding Standards</h3>
+<p>
+Since JML4 Disco is an evolution of the JML4, which in turn is being built on top of the Eclipse Java Development Tooling (JDT) JML4 Disco should follow Eclipse's <a href="http://wiki.eclipse.org/Coding_Conventions" class="ext-link"><span class="icon">Coding Conventions</span></a>.
+</p>
+<h2 id="a15.0InternationalisationandLocalisation">15.0 Internationalisation and Localisation</h2>
+<p>
+The JML4 Disco Project follows the Internationalisation conventions of the Eclipse PDE. The process of Internationalisation is done by NLS-enabling the product. Enabling a product for National Language Support (NLS) ensures the product is designed for national language function and uses proper APIs to handle national language data. At the moment, no significant translation is needed since most of the information returned to the user through the JML4 Disco Project does not need translation.
+</p>
+<h2 id="a16.0PhysicalDeliverables">16.0 Physical Deliverables</h2>
+<p>
+As it stands there is no physical deliverable of the project. 
+</p>
+<h2 id="a17.0InstallationandDeployment">17.0 Installation and Deployment</h2>
+<p>
+An Installation &amp; Commissioning document contains all the installation and deployment instructions necessary to successfully run the project.
+</p>
+<h2 id="a18.0References">18.0 References</h2>
+<ol><li>P. R. James, P. Chalin, L. Giannas, and G. Karabotsos, <span class="underline">Distributed, Multi-threaded Verification of Java Programs.</span> <i>Proceedings of the International Workshop on Specification and Verification of Component-Based Systems (SAVCBS)</i>, Atlanta, Georgia (USA), November, 2008.
+</li></ol></div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

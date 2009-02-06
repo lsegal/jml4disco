@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.jdt.core.tests.compiler"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.test.performance"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.jdt.core"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.jmlspecs.eclipse.jdt.ui"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.jmlspecs.jml4.runtime"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

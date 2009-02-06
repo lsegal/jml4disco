@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - First Prototype</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="Prototype:ADistributedMulti-ThreadedVerifyforJavaPrograms">Prototype: A Distributed Multi-Threaded Verify for Java Programs</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#Milestone2">Milestone 2</a><ol><li class="active"><a href="#ImplementationDetails">Implementation Details</a><ol><li class="active"><a href="#TheClient">The Client</a><ol><li class="active"><a href="#InteractionDiagram">Interaction Diagram</a></li><li class="active">
+<a href="#RelevantComponents">Relevant Components</a></li></ol></li><li class="active"><a href="#TheProve-VCProgramServlet">The Prove-VCProgram Servlet</a><ol><li class="active"><a href="#InteractionDiagram1">Interaction Diagram</a></li><li class="active">
+<a href="#RelevantComponents1">Relevant Components</a></li></ol></li><li class="active"><a href="#TheProver-Server">The Prover-Server</a><ol><li class="active"><a href="#InteractionDiagram2">Interaction Diagram</a></li><li class="active">
+<a href="#RelevantComponents2">Relevant Components</a></li></ol><li class="active"></li></li></ol><li class="active"></li></li></ol><li class="active"><a href="#Milestone3">Milestone 3</a><ol><li class="active"><a href="#ImplementationDetails1">Implementation Details</a></li><li class="active">
+<a href="#ClassDiagram">Class Diagram</a></li><li class="active">
+<a href="#ProcessView">Process View</a></li></ol></li></li></ol></div>
+
+</p>
+<h2 id="Milestone2">Milestone 2</h2>
+<p>
+An existing prototype of a distributed multi-threaded verify for java programs has been developed by the Dependable Software Research Group, based off of the JML4 Integrated Verification Environment. This prototype demonstrates that the modular nature of the underlying verification techniques for Extended Static Checking, combined with the use of a prover strategies provide for potential to develop distributed discharging, so that non-local resources can be used to reduce the time to verify a set of classes.
+</p>
+<h3 id="ImplementationDetails">Implementation Details</h3>
+<p>
+The prototype is divided into three major sub-systems. All three subsystems make use of a slightly modified version of JML4, which includes the <tt>ProveVcDistributed</tt> implementation of interface <tt>IProverStrategy</tt> so as to allow it to send a <tt>VCProgram</tt> to be proven remotely. This implementation of JML4 has also undergone some modifications so as to allow both VCs and VCPrograms to be serialized using Java Native Serialization. Such changes include:
+</p>
+<ul><li>Class <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcDistributed</tt> was created.
+</li><li>Class <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcPiecewise_timings</tt> was added only for benchmarking and outputting of results.
+</li><li>The <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProverStrategyFactory</tt> was modified to include the new distributed prover strategy.
+</li><li>Several classes in the Distributed Prototype have had to be altered so they implement <tt>java.io.Serializable</tt>:
+<ul><li><tt>org.jmlspecs.jml4.esc.gc.lang.KindOfAssertion</tt>
+</li><li><tt>org.jmlspecs.jml4.esc.result.lang.Result</tt>
+</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VC</tt>
+</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VcOperator</tt>
+</li></ul></li><li>Several classes had the 'final' keyword removed from the declaration of instance variables to allow for serialization:
+<ul><li><tt>org.jmlspecs.jml4.esc.vc.lang.VcLogicalExpression</tt>
+</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VcArithExpression</tt>
+</li></ul></li><li>In class <tt>org.jmlspecs.jml4.esc.Esc</tt> some variables were changed to be 'final' for serialization purposes.
+</li><li>Class <tt>org.jmlspecs.jml4.esc.vc.lang.VcArithExpression</tt>, <tt>org.jmlspecs.jml4.esc.vc.lang.VcLogicalExpression</tt> and <tt>org.jmlspecs.jml4.esc.vc.lang.VcRelativeExpression</tt> also had changes made for custom serialization overriding.
+</li><li>The instance variable <tt>operator</tt> in class <tt>org.jmlspecs.jml4.esc.vc.lang.VcRelativeExpression</tt> was made public for the purpose of serialization.
+</li><li>Outputs and logging were added to class <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcPiecewise</tt> and several method calls are made with null parameters to make serialization possible.
+</li><li>In class <tt>org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter</tt> instance variables <tt>CompierlerOptions</tt> and <tt>ProblemReporter</tt> are set to null to allow serialization.
+</li><li>Several classes derived from <tt>org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter</tt> have <tt>problemReporter</tt> set to null to allow serialization.
+<ul><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter</tt>
+</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapter</tt>
+</li></ul></li><li>In class <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveEntireVC::prove(VcProgram)</tt>, variable <tt>problemReporter</tt> is null to allow serialization. (??)
+</li><li>In class <tt>org.jmlspecs.jml4.esc.Esc</tt> several changes were made pertinent to timing and printout. (??)
+</li><li>Eclipse-class <tt>org.eclipse.jdt.internal.compiler.lookup.LookupEnvironment</tt> was given an empty constructor to facilitate the creation of serializable classes which inherit from it.
+</li><li>Eclipse-class <tt>org.eclipse.jdt.internal.compiler.lookup.LookupEnvironmentEmptyForSerialization</tt> is an "empty class to allow easy serialization." (??)
+</li></ul><h4 id="TheClient">The Client</h4>
+<p>
+The Client is a JML4-enabled Eclipse Development Environment with the above alterations. It uses the <tt>ProveVcDistributed</tt> to send VCs to be proven remotely.
+</p>
+<h5 id="InteractionDiagram">Interaction Diagram</h5>
+<p>
+When the <tt>ProverCoordinator</tt> calls method <tt>ProveVcDistributedd::prove(VCProgram)</tt> the <tt>VCProgram</tt> object is serialized and sent to be proven remotely via HTTP POST request. Below is an interaction diagram of this scenario:
+</p>
+<p>
+<a href="/trac/attachment/wiki/FirstPrototype/InteractionDiagram-DistributedProverStrategyImplementation-Client.png" style="padding:0; border:none"><img src="images/InteractionDiagram-DistributedProverStrategyImplementation-Client.png" /></a>
+</p>
+<h5 id="RelevantComponents">Relevant Components</h5>
+<ul><li><span class="underline"><tt>ProverCoordinator</tt> -</span> (...)
+</li><li><span class="underline"><tt>ProveVcDistributed</tt> -</span> An implementation of interface <tt>IProverStrategy</tt> meant for a <tt>VCProgram</tt> to be proven remotely.
+</li><li><span class="underline"><tt>Properties</tt> -</span> Standard Java class <tt>java.util.Properties</tt>. Used to read select information out of a file by interpreting its content as key-value pairs.
+</li><li><span class="underline"><tt>File</tt> -</span> Standard Java class <tt>java.io.File</tt>. Used to read textual information out of a <tt>proverCoordinatorUrls.properties</tt> file.
+</li><li><span class="underline"><tt>ObjectOutputStream</tt> -</span> Standard Java class <tt>java.io.ObjectOutputStream</tt> which - in the scope of this example - writes to the <tt>OutputStream</tt> provided by the <tt>URLConnection</tt> object. When this <tt>ObjectOutputStream</tt> is closed, the data written to the <tt>OutputStream</tt> is written to an HTTP POST request.
+</li><li><span class="underline"><tt>URLConnection</tt> -</span> Standard Java class <tt>java.net.URLConnection</tt> that represent a communications link between the application and a URL, or in this instance, the remote VCProgram-Prover-Servlet <tt>ProveVCProgram</tt>.
+</li><li><span class="underline"><tt>ObjectInputStream</tt> -</span> Standard Java class <tt>java.io.ObjectInputStream</tt> which - within the scope of this example - reads from the <tt>InputStream</tt> provided by the <tt>URLConnection</tt> object. The data is read out of an HTTP response, sent by the remote Prove-VCProgram Servlet <tt>ProveVCProgram</tt>.
+</li><li><span class="underline"><tt>ProveVCProgram</tt> -</span> This Servlet recieves a <tt>VCProgram</tt> via an HTTP POST request and dispatches that <tt>VCProgram</tt>'s VCs to be proven concurrently by remote provers.
+</li></ul><h4 id="TheProve-VCProgramServlet">The Prove-VCProgram Servlet</h4>
+<p>
+This Servlet is a remote server which recieves a <tt>VCProgram</tt> object via HTTP POST request, breaks it up into individual VCs and proceeds to dispatch these individul VCs to prover-servers. (..)
+</p>
+<h5 id="InteractionDiagram1">Interaction Diagram</h5>
+<p>
+When the server recieves the HTTP POST request, the TomCat web container performs some initialization and then executes the <tt>ProveVCProgram</tt> Servlet. The VCs are then sent to remote prover-servers via HTTP POST requests. (...)
+</p>
+<p>
+<a href="/trac/attachment/wiki/FirstPrototype/InteractionDiagram-DistributedProverStrategyImplementation-ProveVCProgram-Servlet.png" style="padding:0; border:none"><img src="images/InteractionDiagram-DistributedProverStrategyImplementation-ProveVCProgram-Servlet.png" /></a>
+</p>
+<h5 id="RelevantComponents1">Relevant Components</h5>
+<ul><li><span class="underline"><tt>prVcProg:ProveVcProgram</tt> -</span> Servlet which recieves a <tt>VCProgram</tt> via an HTTP POST request and dispatches that <tt>VCProgram</tt>'s VCs to be proven concurrently by remote provers.
+</li><li><span class="underline"><tt>HttpServletRequest</tt> -</span> Instance of Apache TomCat interface <tt>javax.servlet.http.HttpServletRequest</tt>.
+</li><li><span class="underline"><tt>HttpServletResponse</tt> -</span> Instance of Apache TomCat interface <tt>javax.servlet.http.HttpServletResponse</tt>.
+</li><li><span class="underline"><tt>ProveVcDistributed</tt> -</span> Class meant for use in proving VCs and VCPrograms remotely; see the Client above.
+</li><li><span class="underline"><tt>reqIn:ObjectInputStream</tt> -</span> Standard Java class <tt>java.io.ObjectInputStream</tt> which - within the scope of this example - reads from the <tt>InputStream</tt> provided by the <tt>HttpServletRequest</tt> object. The data is read out of an HTTP POST request, sent by the client.
+</li><li><span class="underline"><tt>respOut:ObjectOutputStream</tt> -</span> Standard Java class <tt>java.io.ObjectOutputStream</tt> which - in the scope of this example - writes to the <tt>OutputStream</tt> provided by the <tt>HttpServletResponse</tt> object. The data written to the <tt>OutputStream</tt> will eventually be written to an HTTP response.
+</li><li>Each of the following components are re-instantiated for each VC, iterating over the available prover-servers.
+<ul><li><span class="underline"><tt>Properties</tt> -</span> Standard Java class <tt>java.util.Properties</tt>. Used to read select information out of a file by interpreting its content as key-value pairs.
+</li><li><span class="underline"><tt>File</tt> -</span> Standard Java class <tt>java.io.File</tt>. Used to read textual information out of a <tt>proverCoordinatorUrls.properties</tt> file.
+</li><li><span class="underline"><tt>servReqIn:ObjectOutputStream</tt> -</span> Standard Java class <tt>java.io.ObjectOutputStream</tt> which - in the scope of this example - writes to the <tt>OutputStream</tt> provided by the <tt>URLConnection</tt> object. When this <tt>ObjectOutputStream</tt> is closed, the data written to the <tt>OutputStream</tt> is written to an HTTP POST request.
+</li><li><span class="underline"><tt>URLConnection</tt> -</span> Standard Java class <tt>java.net.URLConnection</tt> that represent a communications link between the application and a URL, or in this instance, the remote VCProgram-Prover-Servlet <tt>ProveVCProgram</tt>.
+</li><li><span class="underline"><tt>servRespIn:ObjectInputStream</tt> -</span> Standard Java class <tt>java.io.ObjectInputStream</tt> which - within the scope of this example - reads from the <tt>InputStream</tt> provided by the <tt>URLConnection</tt> object. The data is read out of an HTTP POST request, sent by the remote Prove-VCProgram Servlet <tt>ProveVCProgram</tt>.
+</li><li><span class="underline"><tt>ProveVC</tt> -</span> This Servlet recieves a <tt>VC</tt> via an HTTP POST request and proves it using ESC4, JML4's static verification component.
+</li></ul></li></ul><h4 id="TheProver-Server">The Prover-Server</h4>
+<p>
+The Prover-Server is a remote server which recieves a <tt>VC</tt> object via HTTP POST request and proves it. (..)
+</p>
+<h5 id="InteractionDiagram2">Interaction Diagram</h5>
+<p>
+When the server recieves the HTTP POST request, the TomCat web container performs some initialization and then executes the <tt>ProveVCProgram</tt> Servlet. The VCs are then proven. (...)
+</p>
+<p>
+<a href="/trac/attachment/wiki/FirstPrototype/InteractionDiagram-DistributedProverStrategyImplementation-Server.png" style="padding:0; border:none"><img src="images/InteractionDiagram-DistributedProverStrategyImplementation-Server.png" /></a>
+</p>
+<h5 id="RelevantComponents2">Relevant Components</h5>
+<ul><li><span class="underline"><tt>HttpServletRequest</tt> -</span> Instance of Apache TomCat interface <tt>javax.servlet.http.HttpServletRequest</tt>.
+</li><li><span class="underline"><tt>HttpServletResponse</tt> -</span> Instance of Apache TomCat interface <tt>javax.servlet.http.HttpServletResponse</tt>.
+</li><li><span class="underline"><tt>ProveVcDistributed</tt> -</span> Class meant for use in proving VCs and VCPrograms remotely; see the Client above.
+</li><li><span class="underline"><tt>ObjectInputStream</tt> -</span> Standard Java class <tt>java.io.ObjectInputStream</tt> which - within the scope of this example - reads from the <tt>InputStream</tt> provided by the <tt>HttpServletRequest</tt> object. The data is read out of an HTTP POST request, sent by the client.
+</li><li><span class="underline"><tt>ObjectOutputStream</tt> -</span> Standard Java class <tt>java.io.ObjectOutputStream</tt> which - in the scope of this example - writes to the <tt>OutputStream</tt> provided by the <tt>HttpServletResponse</tt> object. The data written to the <tt>OutputStream</tt> will eventually be written to an HTTP response.
+</li><li><span class="underline"><tt>ProveVcPiecewise</tt> -</span> (...)
+</li></ul><h2 id="Milestone3">Milestone 3</h2>
+<h3 id="ImplementationDetails1">Implementation Details</h3>
+<p>
+The following changes have been made to the core JML4 code in order to create a Load Balanced Prototype.
+</p>
+<ul><li><tt>org.jmlspecs.jml4.compiler.JmlCompilerExtension</tt> was changed. (see svn changelog 102)
+</li><li><tt>org.jmlspecs.jml4.compiler.JmlCompilerOptions</tt> had distributed options added to it. (see svn changelog 102)
+</li><li><tt>org.jmlspecs.jml4.esc.Esc</tt> was changed for threading. (see svn changelog 102)
+</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter</tt> instance variables CompierlerOptions and ProblemReporter are now transient.
+</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.cvc3.Cvc3Adapter</tt> a problem is reported every time a failed attempt to invoke cvc3 is made. 
+</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter</tt> a problem is reported every time isabelle fails to launch. 
+</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.SimplifyAdapter</tt> a problem is reported every time simplify fails to launch.
+</li><li>In <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcDistributed</tt> the name of the properties configuration file in which URLs are found was changed.
+</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcPiecewise</tt> underwent several changes.
+</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProverStrategyFactory</tt> was modified again.
+</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VC</tt> underwent several changes for custom serialization.
+</li><li>Class <tt>org.jmlspecs.jml4.esc.vc.lang.VcOperator</tt>, <tt>org.jmlspecs.jml4.esc.vc.lang.VcQuantifire</tt> and <tt>org.jmlspecs.jml4.esc.vc.lang.VcRelativeExpression</tt> was changes made for custom serialization overriding.
+</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VcTypeBinding</tt> is a new type to allow serialization.
+</li><li>The existing tests in package <tt>org.jmlspecs.eclipse.jdt.core.tests.esc</tt> were copied to <tt>org.jmlspecs.eclipse.jdt.core.tests.esc.distributed</tt> and modified for applicability to distribution.
+</li><li><tt>org.eclipse.jdt.core.compiler.org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcPiecewise.java</tt> commented out 5 lines in the proveVC(...) method in order to prevent adding to and checking the cache.
+</li><li><tt>org.eclipse.jdt.core.compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter.java</tt> Added a check in matchingTheoryFileExists(...) method to ensure that the file is readable before attempting the read.
+</li></ul><h3 id="ClassDiagram">Class Diagram</h3>
+<p>
+<a href="/trac/attachment/wiki/FirstPrototype/SecondPrototypeClassDiagram.png" style="padding:0; border:none"><img src="images/SecondPrototypeClassDiagram.png" /></a> 
+</p>
+<h3 id="ProcessView">Process View</h3>
+<p>
+<a href="/trac/attachment/wiki/FirstPrototype/ProcessView.png" style="padding:0; border:none"><img src="images/ProcessView.png" /></a> 
+</p>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

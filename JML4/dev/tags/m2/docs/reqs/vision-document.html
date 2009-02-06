@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Vision Document?version=29</title>
+ <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+    <table id="info" summary="Revision info"><tbody><tr>
+      <th scope="col">
+       Version 29 (modified by c_kara, 2 months ago)
+      </th></tr><tr>
+      <td class="message">--</td>
+     </tr>
+    </tbody></table>
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="VisionDocument">Vision Document</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.Introduction">1. Introduction</a><ol><li class="active"><a href="#a1.1Purpose">1.1 Purpose</a></li><li class="active">
+<a href="#a1.2.JML4DiscoOverview">1.2. JML4 Disco Overview</a><ol><li class="active"><a href="#a1.2.1DistributedApplicationVerification">1.2.1 Distributed Application Verification</a></li><li class="active">
+<a href="#a1.2.2MoreCompleteJavaCoverage">1.2.2 More Complete Java Coverage</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a2.Positioning">2. Positioning</a><ol><li class="active"><a href="#a2.1ProductStatement">2.1 Product Statement</a></li><li class="active">
+<a href="#a2.2ProductPositionStatement">2.2 Product Position Statement</a></li></ol></li><li class="active"><a href="#a3.StakeholderDescriptions">3. Stakeholder Descriptions</a><ol><li class="active"><a href="#StakeholderSummary">Stakeholder Summary</a></li><li class="active">
+<a href="#UserEnvironment">User Environment</a></li></ol></li><li class="active"><a href="#a4.ProductOverview">4. Product Overview</a><ol><li class="active"><a href="#ProductPerspective">Product Perspective</a></li><li class="active">
+<a href="#AssumptionsandDependencies">Assumptions and Dependencies</a></li><li class="active">
+<a href="#NeedsandFeatures">Needs and Features</a></li><li class="active">
+<a href="#AlternativesandCompetition">Alternatives and Competition</a><ol><li class="active"><a href="#ContractsforJava">Contracts for Java</a></li><li class="active">
+<a href="#FirstGenerationJMLTools">First Generation JML Tools</a><ol><li class="active"><a href="#CommonJMLToolsuiteJML2">Common JML Tool suite (JML2)</a></li><li class="active">
+<a href="#ESCJava2">ESC/Java2</a></li><li class="active">
+<a href="#PVSTool">PVS Tool</a></li></ol><li class="active"></li></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a5.OtherProductRequirements">5. Other Product Requirements</a><ol><li class="active"><a href="#a5.1ApplicableStandards">5.1 Applicable Standards</a></li><li class="active">
+<a href="#a5.2SystemRequirements">5.2 System Requirements</a></li><li class="active">
+<a href="#a5.3LicensingSecurityandInstallation">5.3 Licensing, Security and Installation</a></li><li class="active">
+<a href="#a5.4PerformanceRequirements">5.4 Performance Requirements</a></li></ol><li class="active"><a href="#a6.InOutList">6. In/Out List</a></li><li class="active">
+<a href="#References">References</a></li></li></ol></div>
+
+</p>
+<h2 id="a1.Introduction">1. Introduction</h2>
+<p>
+The Vision document defines our team's vision for the JML Disco Project. In the project we will aid the DSRG team in developing solutions intended for JAVA developers using the Java Modeling Language (JML) to do design by contract (DBC). We will contribute to the project by working on 2 features to further improve JML4. One is to improve the implementation of distributed discharging of verification conditions (VCs). Extended Static Checking (ESC) is a fully automated formal verification technique and is generally quite efficient, as far as verification tools go, but it is still orders of magnitude slower than simple compilation. Verification in ESC is achieved by translating programs and their specifications into verification conditions (VCs). Proof of a VC establishes the correctness of the program but proving VCs is computationally expensive. (1) To help address this lack of scalability, we will improve the the current version of ESC4 and its distributed prover back-end.  The other key feature is to integrate Boogie in the project.Boogie is a verification language, designed to make the prescription of verification conditions natural and convenient. JML Disco will translate JML-decorated AST to Boogie, use it as a verification tool and use its output to report errors/warnings. 
+</p>
+<h2 id="a2.Positioning">2. Positioning</h2>
+<h3 id="a2.1ProductStatement">2.1 Product Statement</h3>
+<table class="wiki">
+<tr><td>The Problem of:</td><td> Lack of efficient and reliable extended static checking of Object Oriented Java through JML4
+</td></tr><tr><td>Affects:</td><td> Java developers using JML and ESC and to do design by contract (DBC) and do DC ESC 
+</td></tr><tr><td>The impact of which is:</td><td> Time lost generating (sometimes unattainable) results using ESC4 provers 
+</td></tr><tr><td>A successful solution would be: </td><td> Evolve the current prototype system with better distributed strategies and added Boogie compatibility.
+</td></tr></table>
+<h3 id="a2.2ProductPositionStatement">2.2 Product Position Statement</h3>
+<table class="wiki">
+<tr><td>For</td><td>Java Developers and the ESC4 team 
+</td></tr><tr><td>Who</td><td> Use DBC with JML and perform ESC in the Eclipse IDE
+</td></tr><tr><td>JML4Disco</td><td> Is a improved version of the JML4 project with Better ESC4 logic 
+</td></tr><tr><td>That</td><td> Will improve the performance and functionality of the ESC4 Project 
+</td></tr><tr><td>Unlike</td><td> Proving VCs locally and lacking some functionality 
+</td></tr><tr><td>Our Product</td><td> Will prove VCs much faster over distributed systems as well as utilizing Boogie for added usability and reliability.
+</td></tr></table>
+<p>
+        
+</p>
+<h2 id="a3.StakeholderDescriptions">3. Stakeholder Descriptions</h2>
+<h3 id="StakeholderSummary">Stakeholder Summary</h3>
+<table class="wiki">
+<tr><td>Name</td><td>Description</td><td>Responsibilities
+</td></tr><tr><td>Perry James</td><td>PhD Student </td><td> JML4 Developer 
+</td></tr><tr><td>John Doe </td><td> Java Developers</td><td> Designing By Contract using JML with ESC 
+</td></tr><tr><td>Concordia University </td><td> University Offering Computer Science and Engineering </td><td> Who want to teach design by contract programming 
+</td></tr></table>
+<h3 id="UserEnvironment">User Environment</h3>
+<p>
+A Java developer wanting to do do DBC using JML4 with JML4 Disco will typically do so through the Eclipse Ganymede Environment.  Multiple servers can be setup to act as provers as a client using Eclipse may distribute the discharging of VCs on to these multiple machines. These servers will have Tomcat Servlets ready to receive VCs and process them. These servers can be run locally or remotely although prototyping and test results have only been generated for distributed discharging of VCs over LAN.
+</p>
+<h2 id="a4.ProductOverview">4. Product Overview</h2>
+<h3 id="ProductPerspective">Product Perspective</h3>
+<p>
+The JML4
+JML4 Disco is part of JML4 and can be added to Eclipse Ganymede Environment as a plug in. The interface to handle the features of JML4 Disco can be accessed through the Eclipse Environment.  
+</p>
+<h3 id="AssumptionsandDependencies">Assumptions and Dependencies</h3>
+<h3 id="NeedsandFeatures">Needs and Features</h3>
+<table class="wiki">
+<tr><td> Need </td><td> Features </td><td> Effort </td><td> Risk </td><td> Priority </td><td> Planned Release 
+</td></tr><tr><td> Complete, efficient, fault tolerant, transparent, and speedy distributed proving.  </td><td> Benchmarking of the Current System </td><td> Very High </td><td> Very High </td><td> Very High </td><td> Milestone 2 
+</td></tr><tr><td> </td><td> Load balancing </td><td>High</td><td> High </td><td>High </td><td> Milestone 3 (Minimal Version) 
+</td></tr><tr><td> </td><td> Parallel Proving </td><td>High</td><td> High </td><td>High </td><td>Milestone 3 (Minimal Version) 
+</td></tr><tr><td> </td><td> Improvement of Object Serialization </td><td>TBA </td><td>TBA </td><td>TBA </td><td>TBA 
+</td></tr><tr><td> </td><td> VC proving over distributed Systems (CORBA, RMI) </td><td>TBA </td><td>TBA </td><td>TBA </td><td>TBA 
+</td></tr><tr><td> </td><td> Caching </td><td>High </td><td> High </td><td>High </td><td> Milestone3 (Minimal Version)
+</td></tr><tr><td> Static verification of JML annotated Java programs using Boogie</td><td> TBA </td><td> </td><td> </td><td> </td><td> 
+</td></tr><tr><td> </td><td> </td><td> </td><td> </td><td> </td><td> 
+</td></tr></table>
+<h3 id="AlternativesandCompetition">Alternatives and Competition</h3>
+<p>
+Contracts for Java (C4J) is a Design By Contract Java. The primary goal for C4J is ease of use. TSascha Zelzer is developing an Eclipse plugin for C4J, which is available on <a href="/trac/wiki/SourceForge" class="missing wiki" rel="nofollow">SourceForge?</a>. 
+</p>
+<p>
+Contract4J provides a standard way to define DbC tests and to evaluate them at runtime. Using XDoclet tags and generating AspectJ test code. Contract4J uses Java 5 annotations to define the condition tests and it uses "prebuilt" AspectJ aspects to advise the execution points ("join points") where the tests should be evaluated. If the tests fail, both tools terminate program execution.(2)
+</p>
+<h2 id="a5.OtherProductRequirements">5. Other Product Requirements</h2>
+<h2 id="a6.InOutList">6. In/Out List</h2>
+<h2 id="References">References</h2>
+<p>
+1. Distributed, Multi-threaded Veriﬁcation of Java Programs
+Perry R. James, Patrice Chalin and Leveda Giannas Dependable Software Research Group Department of Computer Science and Software Engineering Concordia University, Montreal, Canada 
+</p>
+<p>
+2. <a href="http://www.contract4j.org/contract4j" class="ext-link"><span class="icon">http://www.contract4j.org/contract4j</span></a>
+</p>
+</div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

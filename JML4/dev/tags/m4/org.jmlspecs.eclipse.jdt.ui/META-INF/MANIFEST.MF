@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JML UI
+Bundle-SymbolicName: org.jmlspecs.eclipse.jdt.ui;singleton:=true
+Bundle-Version: 0.0.3.qualifier
+Bundle-Activator: org.jmlspecs.eclipse.jdt.ui.Activator
+Bundle-Vendor: jmlspecs.org
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.forms,
+ org.eclipse.ui.console,
+ org.eclipse.jface.text,
+ org.eclipse.jdt.core,
+ org.eclipse.debug.core
+Eclipse-LazyStart: true
+Export-Package: org.jmlspecs.eclipse.jdt.ui
+Bundle-ClassPath: .,
+ bin/,
+ bcel-5.2.jar,
+ esctools2.jar
+Import-Package: org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.texteditor,
+ org.eclipse.ui.wizards.newresource

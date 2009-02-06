@@ -1,0 +1,458 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Jml4Disco-Use Case View</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="UseCaseView">Use Case View</h1>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-UseCaseView/UseCaseDiag.gif" style="padding:0; border:none"><img src="images/UseCaseDiag.gif" /></a>
+</p>
+<h2 id="DeveloperUseCases">Developer Use Cases</h2>
+<h3 id="UseCase1:EnableCaching"><strong>Use Case 1: Enable Caching </strong></h3>
+<h4 id="Properties:"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> Caching is enabled<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Caching is disabled
+</li></ol><h4 id="MainSuccessScenario:"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary Actor indicates to System that they wish to activate caching
+</li><li>System provides a form for the Primary Actor to set the amount of disk space and/or memory to be dedicated to caching
+</li><li>Primary Actor enters the appropriate data and submits
+</li><li>System confirms that caching has been enabled
+</li></ol><h4 id="Extensions:"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+3.a. The data provided by the Primary Actor is wrong
+</p>
+<blockquote>
+<p>
+3.a.1. The system returns an error message to the Primary Actor specifying why the data is not acceptable (if applicable)<br />
+3.a.2. Use case resumes at Step 3
+</p>
+</blockquote>
+</blockquote>
+<h3 id="UseCase2:DisableCaching"><strong>Use Case 2: Disable Caching </strong></h3>
+<h4 id="Properties:1"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> Caching is disabled <br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:1"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Caching is enabled
+</li></ol><h4 id="MainSuccessScenario:1"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary Actor indicates to the system that they wish to disable caching
+</li><li>System confirms that caching has been disabled
+</li></ol><h4 id="Extensions:1"><strong>Extensions:</strong></h4>
+<h3 id="UseCase3:EnableConsoleLogging"><strong>Use Case 3: Enable Console Logging </strong></h3>
+<h4 id="Properties:2"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> System Console Logging is Enabled<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:2"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Console Logging is disabled
+</li></ol><h4 id="MainSuccessScenario:2"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies that he/she wants to enable console logging
+</li><li>System confirms that console logging as been enabled
+</li></ol><h4 id="Extensions:2"><strong>Extensions:</strong></h4>
+<h3 id="UseCase4:DisableConsoleLogging"><strong>Use Case 4: Disable Console Logging </strong></h3>
+<h4 id="Properties:3"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> System Console Logging is Disabled<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:3"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Console Logging is enabled
+</li></ol><h4 id="MainSuccessScenario:3"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies that he/she wants to disable console logging.
+</li><li>System confirms that console logging as been disabled.
+</li></ol><h4 id="Extensions:3"><strong>Extensions:</strong></h4>
+<h3 id="UseCase4:VerifyCode"><strong>Use Case 4: Verify Code </strong></h3>
+<h4 id="Properties:4"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> System verifies code and reports errors<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:4"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li></ol><h4 id="MainSuccessScenario:4"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies that he/she wants to verify the code.
+</li><li>System performs verification.
+</li><li>System reports problems in console &amp; source code.
+</li></ol><h4 id="Extensions:4"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+3.a. The primary actor specifies that they  want to view an error report for a specific line of source code.
+</p>
+<blockquote>
+<p>
+3.a.1. The system returns an error report for the specific line in the source code.
+</p>
+</blockquote>
+</blockquote>
+<h3 id="UseCase5:EnableDistributedProving"><strong>Use Case 5: Enable Distributed Proving</strong></h3>
+<h4 id="Properties:5"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> System will be prepared to utilize remote resources during verification<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:5"><strong>Preconditions:</strong></h4>
+<ol><li>Distributed verification is disabled.
+</li></ol><h4 id="MainSuccessScenario:5"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies that he/she wants to configure settings for JML4 Disco.
+</li><li>Primary actor toggles distributed verification to be enabled.
+</li><li>System confirms that verification has been enabled.
+</li></ol><h4 id="Extensions:5"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+2.a. The system reports that it has not been properly configured to perform distributed verification.
+</p>
+<blockquote>
+<p>
+2.a.1. The system returns an error message, and distributed verification remains disable.
+</p>
+</blockquote>
+</blockquote>
+<h3 id="UseCase6:DisableDistributedProving"><strong>Use Case 6: Disable Distributed Proving</strong></h3>
+<h4 id="Properties:6"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> System will be prepared to utilize only local resources during verification<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:6"><strong>Preconditions:</strong></h4>
+<ol><li>Distributed verification is enabled.
+</li></ol><h4 id="MainSuccessScenario:6"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies that he/she wants to configure settings for JML4 Disco.
+</li><li>Primary actor toggles distributed verification to be disabled.
+</li><li>System enables Boogie and presents it as disabled. 
+</li></ol><h3 id="UseCase7:EnableBoogie"><strong>Use Case 7: Enable Boogie</strong></h3>
+<h4 id="Properties:7"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> Boogie will be used to verify the correctness of the code<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:7"><strong>Preconditions:</strong></h4>
+<ol><li>Boogie is installed.
+</li><li>Boogie is disabled.
+</li></ol><h4 id="MainSuccessScenario:7"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies that he/she wants to configure settings for JML4 Disco.
+</li><li>Primary actor specifies that he/she wants to enable Boogie.
+</li><li>Primary actor toggles Boogie to be enabled.
+</li><li>System enables Boogie and presents it as enabled. 
+</li></ol><h3 id="UseCase8:DisableBoogie"><strong>Use Case 8: Disable Boogie</strong></h3>
+<h4 id="Properties:8"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> Boogie will not be used to verify the correctness of the code<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:8"><strong>Preconditions:</strong></h4>
+<ol><li>Boogie is installed.
+</li><li>Boogie is enabled.
+</li></ol><h4 id="MainSuccessScenario:8"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies that he/she wants to configure settings for JML4 Disco.
+</li><li>Primary actor specifies that he/she wants to disable Boogie.
+</li><li>Primary actor toggles Boogie to be disabled.
+</li><li>System disables Boogie and presents it as disabled. 
+</li></ol><h3 id="UseCase9:ConfigureVerification"><strong>Use Case 9: Configure Verification</strong></h3>
+<h4 id="Properties:9"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> Verification of code is customised to the types of verifications chosen by primary actor. <br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:9"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible.
+</li></ol><p>
+ 
+</p>
+<h4 id="MainSuccessScenario:9"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies that he/she wants to configure settings for JML4 Disco.
+</li><li>Primary actor specifies that he/she wants to configure the verification.
+</li><li>Primary actor toggles which elements he/she wants to test for (ex. Statements, Expressions, Fields, Declarations.. etc)
+</li><li>System registers changes and presents them to primary actor.
+</li></ol><h2 id="AdminUseCases">Admin Use Cases</h2>
+<h3 id="UseCase10:InitialServerSetup"><strong>Use Case 10: Initial Server Setup</strong></h3>
+<h4 id="Properties:10"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Admin<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> A server machine will be prepared for its resources to be utilized remotely so as to prove VcPrograms.<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:10"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Primary actor currently has access to a user interface for system configuration.
+</li></ol><h4 id="MainSuccessScenario:10"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies if this machine should serve as a dispatcher server or a prover server.
+</li><li>Primary actor specifies various configuration information necessary for the server machine to function as a prover server.
+</li></ol><h4 id="Extensions:6"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+1.a. Primary actor specified the machine is a dispatcher machine.
+</p>
+<blockquote>
+<p>
+1.a.1 Primary actor provides information for connecting to prover servers.
+</p>
+<blockquote>
+<p>
+1.a.1.a. Server information is invalid.
+1.a.1.a.1 The system returns an error message.
+</p>
+</blockquote>
+</blockquote>
+<p>
+2.a. Some configuration information is invalid or inapplicable.
+</p>
+<blockquote>
+<p>
+2.a.1. The system returns an error message.
+</p>
+</blockquote>
+</blockquote>
+<h3 id="UseCase11:AddServer"><strong>Use Case 11: Add Server</strong></h3>
+<h4 id="Properties:11"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Admin<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> The system will be able to utilize resources on an additional remote machine.<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:11"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Primary actor currently has access to a user interface for system configuration.
+</li></ol><h4 id="MainSuccessScenario:11"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies they wish to alter the list of remote machines from which the system can utilize resources.
+</li><li>Primary actor provides information for connecting to an additional prover server.
+</li></ol><h4 id="Extensions:7"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+2.a. Server information is invalid.
+</p>
+<blockquote>
+<p>
+2.a.1 The system returns an error message.
+</p>
+</blockquote>
+</blockquote>
+<h3 id="UseCase12:RemoveServer"><strong>Use Case 12: Remove Server</strong></h3>
+<h4 id="Properties:12"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Admin<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> The system will no longer be able to utilize resources on remote machines specified.<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:12"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Primary actor currently has access to a user interface for system configuration.
+</li></ol><h4 id="MainSuccessScenario:12"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies they wish to alter the list of remote machines from which the system can utilize resources.
+</li><li>Primary actor specifies which machines the system should no longer utilize during verification.
+</li></ol><h4 id="Extensions:8"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+2.a. Primary actor removes all severs.
+</p>
+<blockquote>
+<p>
+2.a.1 The system returns a warning indicating that this will disable distributed verification and requests confirmation.
+</p>
+<blockquote>
+<p>
+2.a.1.a Primary actor confirms their choice to remove all remote machines for distributed verification.
+</p>
+<blockquote>
+<p>
+2.a.1.a.1 System removes all remote machines and disables distributed verification.
+</p>
+</blockquote>
+<p>
+2.a.1.b Primary actor cancels their choice to remove all remote machines for distributed verification.
+</p>
+<blockquote>
+<p>
+2.a.1.b.1 The list of remote machines from which the system can utilize resources is unchanged.
+</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="UseCase13:InstallSetupBoogie"><strong>Use Case 13: Install/Setup Boogie</strong></h3>
+<h4 id="Properties:13"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Admin<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> The system will now be able to use Boogie for verification.<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:13"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Boogie is installed on the system.
+</li></ol><h4 id="MainSuccessScenario:13"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor specifies that he/she wants to configure settings for JML4 Disco.
+</li><li>Primary actor specifies that he/she wants to install/setup Boogie.
+</li><li>System prompts user for the path to Boogie.
+</li><li>Primary actor specifies the path to Boogie.
+</li><li>System acknowledges the path and presents the system as being setup to use Boogie.
+</li></ol><h4 id="Extensions:9"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+5.a. Path Specified is invalid.
+</p>
+<blockquote>
+<p>
+5.a.1. The system returns a warning indicating that the path specified by the user is invalid.
+</p>
+<blockquote>
+<p>
+5.a.1.a The user corrects the specified path to Boogie.
+</p>
+<blockquote>
+<p>
+5.a.1.a.1 The system goes to step 5.
+</p>
+</blockquote>
+</blockquote>
+<p>
+5.a.1.b The user cancels the setup.
+</p>
+<blockquote>
+<blockquote>
+<p>
+5.a.1.b.1 System does not setup Boogie.
+</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="UseCase14:EnableCaching"><strong>Use Case 14: Enable Caching</strong></h3>
+<h4 id="Properties:14"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Admin<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> Caching is enabled<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:14"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Caching is disabled
+</li></ol><h4 id="MainSuccessScenario:14"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary Actor indicates to System that they wish to activate caching
+</li><li>System provides a list of all currently "available" caching servers
+</li><li>Primary Actor selects from the list and/or manually enters the desired servers and submits
+</li><li>System provides a form for the Primary Actor to set the amount of disk space and/or memory to be dedicated to caching for each "available" caching server
+</li><li>Primary Actor enters the appropriate data and submits
+</li><li>System confirms that caching has been enabled for each server
+</li></ol><h4 id="Extensions:10"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+2.a. There are no currently "available" caching servers
+</p>
+<blockquote>
+<p>
+2.a.1. The system indicates there are no "available" servers and provides the manual entry form<br />
+2.a.2. Use case resumes at Step 3
+</p>
+</blockquote>
+<p>
+5.a. The data provided by the Primary Actor is wrong
+</p>
+<blockquote>
+<p>
+5.a.1. The system returns an error message to the Primary Actor specifying why the data is not acceptable (if applicable)<br />
+5.a.2. Use case resumes at Step 5
+</p>
+</blockquote>
+</blockquote>
+<h3 id="UseCase15:DisableCaching"><strong>Use Case 15: Disable Caching </strong></h3>
+<h4 id="Properties:15"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Developer<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> Caching is disabled <br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:15"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Caching is enabled on at least one server
+</li></ol><h4 id="MainSuccessScenario:15"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary Actor indicates to the system that they wish to disable caching
+</li><li>System provides a list of all servers currently caching
+</li><li>Primary Actor submits the server(s) from the list that they desire to stop caching on
+</li><li>The System confirms that caching has been disabled for the selected servers
+</li></ol><h4 id="Extensions:11"><strong>Extensions:</strong></h4>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

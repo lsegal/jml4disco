@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Test Plan?version=2</title>
+ <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+    <table id="info" summary="Revision info"><tbody><tr>
+      <th scope="col">
+       Version 2 (modified by c_kara, 1 month ago)
+      </th></tr><tr>
+      <td class="message">Added diagram and boogie translation test plan</td>
+     </tr>
+    </tbody></table>
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="TestPlan">Test Plan</h1>
+<h2 id="a1.Introduction">1. Introduction</h2>
+<p>
+The purpose of the Test Plan Document is to identify all the components of the
+system that are to be tested and to describe in detail how they will be tested.
+The tests of JML4 Disco are done in every iteration concurrently with the development of the source code. The objective of the testing
+process is to uncover as many defects in the system as possible, as soon as possible. Tests
+will be written using Junit. 
+</p>
+<h2 id="a2.TestItems">2. Test Items</h2>
+<h3 id="a2.1UnitTests">2.1 Unit Tests</h3>
+<blockquote>
+<p>
+Developers will be responsible for writing JUnit test cases for classes and
+modules they write.
+</p>
+</blockquote>
+<h3 id="a2.2SystemLevelTests">2.2 System Level Tests</h3>
+<blockquote>
+<p>
+Testing of the JML4 Boogie project as a whole will be done using JUnit. The purpose and goal of these tests is to detect an failures in the implementation of the overall features of the system as a whole.
+</p>
+</blockquote>
+<h3 id="a3.TestingStrategies">3. Testing Strategies</h3>
+<h2 id="a3.1TestingforBoogieTranslation">3.1 Testing for Boogie Translation</h2>
+<p>
+One of the requirements of our project is to translate the Java source into Boogie so that it can then be tested for correctness. To do so we will testing each
+We will be implementing the translation of the AST to Boogie through TDD (Test Driven Design).We will be creating JUnit tests first which compare Java Source code against the Boogie code it should be translated into. After this is done we will focus on making the necessary changes to the code so that the particular test passes. (See Diagram) 
+</p>
+<p>
+<a href="/trac/attachment/wiki/TestPlan/tdd.png" style="padding:0; border:none"><img title="tdd_boogie" src="images/tdd.png" alt="tdd_boogie" /></a>
+</p>
+<p>
+The following traceability shows our progress of the this feature through the tests that have passed. We are mapping tests to each type of node being traversed through the AST to ensure that translation is being done properly. See <a href="/trac/wiki/BoogieTraceability" class="wiki">BoogieTraceability</a> 
+</p>
+<h2 id="a3.2TestingofDistributedDispatchingofVCs">3.2 Testing of Distributed Dispatching of VCs</h2>
+<p>
+Tests start as soon as first design decisions are made. Since time and resources are
+limited, testing will be delimited by the requirements baseline.
+</p>
+<h3 id="a3.1.1TestEntryCriteria">3.1.1 Test Entry Criteria</h3>
+<blockquote>
+<p>
+For tests supporting the features including Boogie implementation, TTD (Test Driven Design) is used. As for other 
+The test plans described in this document can commence once the implementation of
+the corresponding target items have been implemented.
+</p>
+</blockquote>
+<h3 id="a3.2.2TestPlanExitCriteria">3.2.2 Test Plan Exit Criteria</h3>
+<blockquote>
+<p>
+The test plan is considered to be complete once all tests have passed successfully.
+</p>
+</blockquote>
+<h3 id="a3.2.3SuspensionandResumptionCriteria">3.2.3 Suspension and Resumption Criteria</h3>
+<blockquote>
+<p>
+A test plan may be suspend if there is not enough time to do it.
+</p>
+</blockquote>
+<p>
+     
+</p>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

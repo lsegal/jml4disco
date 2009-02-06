@@ -1,0 +1,1 @@
+start: [start: [[VCVarDecl: x :: tests.esc.Field_0003]] [[True/\True]-->[(ntests.esc.Field_0003@0$0 == (ntests.esc.Field_0003@0$0 + 1))-->[return$ok@0$0/\True]]],  return: [[True/\(ntests.esc.Field_0003@0$0 == (ntests.esc.Field_0003@0$0 + 1))]/\True]]

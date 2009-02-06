@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Installation And Commissioning?version=13</title>
+ <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+    <table id="info" summary="Revision info"><tbody><tr>
+      <th scope="col">
+       Version 13 (modified by l_sega, 2 months ago)
+      </th></tr><tr>
+      <td class="message">formatting.</td>
+     </tr>
+    </tbody></table>
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="InstallationandCommissioning">Installation and Commissioning</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a0.RevisionHistory">0. Revision History</a></li><li class="active">
+<a href="#a1.Introduction">1. Introduction</a><ol><li class="active"><a href="#a1.1Purpose">1.1 Purpose</a></li><li class="active">
+<a href="#a1.2IntendedAudience">1.2 Intended Audience</a></li></ol></li><li class="active"><a href="#a2.HardwareSoftwareRequirements">2. Hardware &amp; Software Requirements</a><ol><li class="active"><a href="#a2.1Hardware">2.1 Hardware</a></li><li class="active">
+<a href="#a2.2Software">2.2 Software</a></li><li class="active">
+<a href="#a2.3BaseEnvironmentRecommendations">2.3 Base Environment Recommendations</a></li></ol><li class="active"><a href="#a3.InstallationInstructions">3. Installation Instructions</a><ol><li class="active"><a href="#a3.1InstallationofSoftwareDependencies">3.1 Installation of Software Dependencies</a><ol><li class="active"><a href="#a3.1.1QuickInstallTarball">3.1.1 Quick Install (Tarball)</a></li><li class="active">
+<a href="#a3.1.2FullInstallRecompile">3.1.2 Full Install (Recompile)</a><ol><li class="active"><a href="#a3.1.2.1RecompileIsabelle">3.1.2.1 Recompile Isabelle</a></li><li class="active">
+<a href="#a3.1.2.2RecompileESC4">3.1.2.2 Recompile ESC4</a></li><li class="active">
+<a href="#a3.1.2.3RecompileSimplify">3.1.2.3 Recompile Simplify</a></li><li class="active">
+<a href="#a3.1.2.4RecompileCVC3">3.1.2.4 Recompile CVC3</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#a3.2CheckingoutJML4SourceCode">3.2 Checking out JML4 Source Code</a></li><li class="active">
+<a href="#a3.3RunningTests">3.3 Running Tests</a></li></li></ol></li></li></ol></div>
+
+</p>
+<h2 id="a0.RevisionHistory">0. Revision History</h2>
+<ul><li><strong>October 29, 2008; l_sega</strong> Initial draft
+</li></ul><h2 id="a1.Introduction">1. Introduction</h2>
+<h3 id="a1.1Purpose">1.1 Purpose</h3>
+<p>
+The purpose of this document is to describe the installation and running procedures for the <a href="http://jmlspecs.sourceforge.net" class="ext-link"><span class="icon">JML4</span></a> project for the <a href="http://eclipse.org" class="ext-link"><span class="icon">Eclipse IDE</span></a>, as well as all of its dependencies (<a href="http://www.cl.cam.ac.uk/research/hvg/Isabelle/" class="ext-link"><span class="icon">Isabelle</span></a>, <a href="http://www.cs.nyu.edu/acsys/cvc3/" class="ext-link"><span class="icon">CVC3</span></a>, <a href="http://kindsoftware.com/products/opensource/Simplify/" class="ext-link"><span class="icon">Simplify</span></a>). The documentation should also describe checking out of the source code using <a href="http://subversion.tigris.org" class="ext-link"><span class="icon">Subversion</span></a>.
+</p>
+<h3 id="a1.2IntendedAudience">1.2 Intended Audience</h3>
+<p>
+Currently, this document is not yet aimed at users who wish to install JML4 as an Eclipse plugin, but rather for those who wish to contribute to the project's development. As such, there are extra dependencies described in this document such as the Eclipse <a href="http://www.eclipse.org/pde/" class="ext-link"><span class="icon">Plug-in Development Environment</span></a>.
+</p>
+<h2 id="a2.HardwareSoftwareRequirements">2. Hardware &amp; Software Requirements</h2>
+<h3 id="a2.1Hardware">2.1 Hardware</h3>
+<ul><li>At least 1GB of disk space is required to install and test the project
+</li></ul><h3 id="a2.2Software">2.2 Software</h3>
+<ul><li>Java JDK/JRE 1.4 or 1.5 only
+</li><li>JUnit 4.5
+</li><li><a href="http://subversion.tigris.org" class="ext-link"><span class="icon">Subversion</span></a> &gt;= 1.5 or greater
+</li><li><a href="http://eclipse.org" class="ext-link"><span class="icon">Eclipse</span></a> &gt;= 3.4 (Ganymede) or later **
+</li><li><a href="http://eclipse.org/pde" class="ext-link"><span class="icon">Eclipse PDE</span></a> plugin for Eclipse
+</li><li><a href="http://subclipse.tigris.org/" class="ext-link"><span class="icon">Subclipse</span></a> plugin for Eclipse
+</li><li><a href="http://www.eclipse.org/tptp" class="ext-link"><span class="icon">TPTP</span></a> plugin for Eclipse ***
+</li></ul><p>
+<i>** Note: Eclipse 3.4 is incompatible with the XULRunner 1.9 distributed with Fedora Core 9, please upgrade or uninstall it before proceeding (<tt>yum remove xulrunner</tt>)</i>
+</p>
+<p>
+<i>*** Note: To run the TPTP in Fedora Core 9, Eclipse 3.4, you  will need <tt>libstdc++-libc6.2-2.so.3</tt>.  (<tt>yum install libstdc++-libc6.2-2.so.3</tt>)</i>
+</p>
+<p>
+<i>Note: You may be run out of java heap with the project.  To increase the heap size, edit the <tt>eclipse.ini</tt> file and change <tt>Xmx</tt> parameter to <tt>Xmx512m</tt>, where <tt>512m</tt> is the size in mb of the heap.</i>
+</p>
+<p>
+To install Eclipse plugins it is best to use the "Software Updates" menu item from the "Help" menu in Eclipse. To install <i>Subclipse</i> make sure to add the correct site update URL (<tt>http://subclipse.tigris.org/update_1.4.x</tt>) to the list, as it is not provided by default.
+</p>
+<h3 id="a2.3BaseEnvironmentRecommendations">2.3 Base Environment Recommendations</h3>
+<p>
+The installation instructions assume (and recommend) the following configuration for the <i>Quick Install</i>:
+</p>
+<ul><li>Fedora Core 9
+</li><li>Intel architecture (x86) 32-bit (compatible) processor
+</li></ul><p>
+For any other environments, please try the the <i>Full Install</i> instructions, as they have been briefly verified under a few Win32 and OS X configurations.
+</p>
+<h2 id="a3.InstallationInstructions">3. Installation Instructions</h2>
+<h3 id="a3.1InstallationofSoftwareDependencies">3.1 Installation of Software Dependencies</h3>
+<p>
+For users on the recommended installation environment (see section 2.3), the <i>Quick Install</i> is enough to properly install the dependencies for JML4. However, for non-Linux operating systems or differing processor architectures, a <i>Full Install</i> (including a recompile of Isabelle, ESC4, CVC3 and Simplify) will be necessary. In this latter case, users should still follow the <i>Quick Install</i> instructions to install the base dependencies before performing a recompile. 
+</p>
+<h4 id="a3.1.1QuickInstallTarball">3.1.1 Quick Install (Tarball)</h4>
+<p>
+The quick install tarball can be downloaded from <a href="https://group0j.stu01.encs.concordia.ca/jml4.tar.gz" class="ext-link"><span class="icon">here</span></a>. 
+</p>
+<p>
+1. To install this package, untar the archive to the recommended location of <tt>/usr/local/jml4</tt>. <i>This requires root access to the machine (<tt>sudo</tt>)</i>: 
+</p>
+<pre class="wiki">    wget --no-check-certificate https://group0j.stu01.encs.concordia.ca/jml4.tar.gz
+    sudo mv jml4.tar.gz /usr/local 
+    cd /usr/local &amp;&amp; sudo tar xvzf jml4.tar.gz &amp;&amp; sudo rm -f jml4.tar.gz
+</pre><p>
+2. Add the following line to your <tt>~/.bashrc</tt> (or <tt>~/.profile</tt> under OS X) to change your path:
+</p>
+<pre class="wiki">    export PATH=/usr/local/jml4/bin:$PATH
+</pre><p>
+3. Restart your shell and test the install by typing <tt>which isabelle</tt>. This should return <tt>/usr/local/jml4/bin</tt>. If it does, type <tt>eclipse</tt> to start the Eclipse IDE. Note that the tarball comes with its own version of Eclipse. If you wish to use your own, make sure you have the required plug-ins and remove the <tt>eclipse</tt> symlink from <tt>/usr/local/jml4/bin</tt>.
+</p>
+<p>
+4. You may now proceed to section 3.2
+</p>
+<h4 id="a3.1.2FullInstallRecompile">3.1.2 Full Install (Recompile)</h4>
+<p>
+As mentioned above, for non-Linux operating systems or differing processor architectures, a recompile of Isabelle, ESC4, CVC3 and Simplify may be necessary.
+</p>
+<h5 id="a3.1.2.1RecompileIsabelle">3.1.2.1 Recompile Isabelle</h5>
+<p>
+First acquire the Poly/ML package for your system from <a href="http://www.cl.cam.ac.uk/research/hvg/Isabelle/download_x86-linux.html" class="ext-link"><span class="icon">Isabelle's website</span></a>. Build and install this package to the <tt>/usr/local/jml4/polyml</tt> directory. For example, under OS X, the binaries should be moved to <tt>/usr/local/jml4/polyml/x86-darwin</tt>.
+</p>
+<p>
+After Poly/ML is installed, run the following to recompile the HOL for Isabelle (you can also download a pre-compiled package for your system from the site above):
+</p>
+<pre class="wiki">    cd /usr/local/jml4/isabelle
+    ./build
+</pre><p>
+Hit enter to compile HOL
+</p>
+<h5 id="a3.1.2.2RecompileESC4">3.1.2.2 Recompile ESC4</h5>
+<p>
+Run the following code to recompile ESC4 for your system
+</p>
+<pre class="wiki">    cd /usr/local/jml4/ESC4
+    isatool make
+</pre><h5 id="a3.1.2.3RecompileSimplify">3.1.2.3 Recompile Simplify</h5>
+<p>
+Before performing a recompile of Simplify, verify if the binary package for your system is available from <a href="http://freshmeat.net/redir/simplifyprover/72120/url_zip/Simplify-1.5.5-13-06-07-binary.zip" class="ext-link"><span class="icon">this location</span></a>. If it is, replace the binary at <tt>/usr/local/jml4/bin/simplify</tt> with the binary from the archive (cygwin/win32 users should call the file <tt>simplify.exe</tt>). 
+</p>
+<p>
+If there is no binary available for your system, follow the installation instructions from <a href="https://mobius.ucd.ie/repos/src/simplify/" class="ext-link"><span class="icon">Simplify's Subversion repository</span></a>.
+</p>
+<h5 id="a3.1.2.4RecompileCVC3">3.1.2.4 Recompile CVC3</h5>
+<p>
+Download and build the CVC3 program from source available <a href="http://www.cs.nyu.edu/acsys/cvc3/download.html" class="ext-link"><span class="icon">here</span></a>
+</p>
+<pre class="wiki">    cd ~ 
+    wget http://www.cs.nyu.edu/acsys/cvc3/download/1.5/cvc3-1.5.tar.gz
+    tar xvzf cvc3-1.5.tar.gz
+    cd cvc3-1.5 
+    ./configure &amp;&amp; make
+    sudo make install
+</pre><p>
+Alternatively instead of doing a <tt>make install</tt> you can copy the cvc3 binary from <tt>bin/cvc3</tt> to the <tt>/usr/local/jml4</tt> directory.
+</p>
+<h3 id="a3.2CheckingoutJML4SourceCode">3.2 Checking out JML4 Source Code</h3>
+<p>
+The repository location is: <i><a href="svn+ssh://lstu01.encs.concordia.ca/svn_rep/JML4/dev/trunk" class="ext-link"><span class="icon">svn+ssh://lstu01.encs.concordia.ca/svn_rep/JML4/dev/trunk</span></a></i>
+</p>
+<p>
+Use Subclipse to checkout the above URL into an empty workspace to create the project. Make sure to enter valid user credentials, as the repository does not permit anonymous logins.
+</p>
+<h3 id="a3.3RunningTests">3.3 Running Tests</h3>
+<p>
+There are two test suites of interest in the project (located in <tt>org.jmlspecs.eclipse.jdt.core.tests</tt>)
+</p>
+<ul><li><tt>RunJml4_Without_Esc4_Tests</tt>
+</li><li><tt>RunJml4Tests</tt>
+</li></ul><p>
+Run both of these suites as JUnit tests. All tests should pass under Linux/OS X.
+</p>
+<p>
+<i>** Note: If certain tests fail in <tt>WhileTests.java</tt>, clear the test cache by removing all files but <tt>Quant_1_m1_1.thy</tt> and <tt>Quant_2_m2_1.thy</tt> in the directory <tt>org.jmlspecs.eclipse.jdt.core.tests/tests/esc4/</tt>, then re-run the tests.</i>
+</p>
+</div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

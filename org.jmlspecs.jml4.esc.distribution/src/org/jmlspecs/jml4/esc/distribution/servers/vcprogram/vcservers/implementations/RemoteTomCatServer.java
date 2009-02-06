@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.jmlspecs.jml4.esc.distribution.IServerProfile;
+import org.jmlspecs.jml4.esc.distribution.servers.vc.ProveVcServerResult;
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.AbstractRemoteServer;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 import org.jmlspecs.jml4.esc.vc.lang.VC;
@@ -106,8 +107,9 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 			in = new ObjectInputStream(conn.getInputStream());
 			Result[] rs = Result.EMPTY;
 			if (in != null) {
-				rs = (Result[]) in.readObject();
-				setProfileInfo((IServerProfile) in.readObject());
+				ProveVcServerResult proverServerResult = (ProveVcServerResult) in.readObject();
+				rs = proverServerResult.getResult();
+				setProfileInfo(proverServerResult.getServerProfile());
 			}
 			in.close();
 			conn.disconnect();

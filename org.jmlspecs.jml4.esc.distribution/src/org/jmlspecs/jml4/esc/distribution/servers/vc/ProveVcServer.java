@@ -23,13 +23,15 @@ public class ProveVcServer {
 		
 	}
 	
-	public static Result[] prove(VC vc, Map<?,?> map) {
+	public static ProveVcServerResult prove(VC vc, Map<?,?> map) {
 		ServerProfile.incrementPending();
 		ProveVcPiecewise proveVcPiece= new ProveVcPiecewise(null, null, null);
 		Result[] result = proveVcPiece.proveVc(vc, map);
 		System.out.println("\n\tVcServer done...");
 		ServerProfile.decrementPending();
-		return result;
+		ServerProfile profile = new ServerProfile(); // added by Dickie on Fri Nov 28th 2:00pm-ish
+		ProveVcServerResult toReturn = new ProveVcServerResult(profile, result);
+		return toReturn;
 	}
 
 }

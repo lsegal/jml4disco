@@ -1,6 +1,5 @@
 package org.jmlspecs.jml4.esc.gc.lang;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +7,7 @@ import java.util.List;
  * Provides an enumeration of the kinds of assertions that can be
  * thrown in JML code.
  */
-// DISCO Serializable
-public class KindOfAssertion implements Serializable{
+public class KindOfAssertion {
 
 	//* a cache of all the kinds, initialized on the first call to all()
 	private static /*@nullable*/ KindOfAssertion[] allCache = null;

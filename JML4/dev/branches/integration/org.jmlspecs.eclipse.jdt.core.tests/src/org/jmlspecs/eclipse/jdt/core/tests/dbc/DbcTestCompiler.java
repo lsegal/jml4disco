@@ -12,7 +12,7 @@ public class DbcTestCompiler extends AbstractRegressionTest {
 	// ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
 	// For now, ".." seems to be the next best solution.
 	public final String workspace = "..";
-	public final String path2jml4runtime = workspace + "/org.jmlspecs.jml4.runtime/bin";
+	public final String path2jml4annotations = workspace + "/org.jmlspecs.annotation/bin";
 
 	public DbcTestCompiler(String name) {
 		super(name);
@@ -42,7 +42,7 @@ public class DbcTestCompiler extends AbstractRegressionTest {
 		final int length = superDefaultClassPaths.length;
 	    String[] defaultClassPaths = new String[length + 1];
         System.arraycopy(superDefaultClassPaths, 0, defaultClassPaths, 0, length);
-        defaultClassPaths[length] = path2jml4runtime;
+        defaultClassPaths[length] = path2jml4annotations;
         return defaultClassPaths;
    }
 
@@ -118,7 +118,7 @@ public class DbcTestCompiler extends AbstractRegressionTest {
                 "1. ERROR in X.java (at line 2)\n" +
                 "	//@ ensures \\same;\n" +
                 "	            ^^^^^\n" +
-                "Syntax error on token \"\\same\", invalid Expression\n" +
+                "Syntax error on token \"\\same\", invalid PredicateOrNotSpecified\n" +
                 "----------\n");
     }
     public void test_0004_ensuresNothing() {
@@ -133,7 +133,7 @@ public class DbcTestCompiler extends AbstractRegressionTest {
                 "1. ERROR in X.java (at line 2)\n" +
                 "	//@ post \\nothing;\n" +
                 "	         ^^^^^^^^\n" +
-                "Syntax error on token \"\\nothing\", invalid Expression\n" +
+                "Syntax error on token \"\\nothing\", invalid PredicateOrNotSpecified\n" +
                 "----------\n");
     }
     public void test_0005_requiresNotSpecified() {
@@ -170,7 +170,7 @@ public class DbcTestCompiler extends AbstractRegressionTest {
                 "1. ERROR in X.java (at line 2)\n" +
                 "	//@ pre \\nothing;\n" +
                 "	        ^^^^^^^^\n" +
-                "Syntax error on token \"\\nothing\", invalid Expression\n" +
+                "Syntax error on token \"\\nothing\", invalid PredicateOrNotSpecified\n" +
                 "----------\n");
     }
     public void test_0008_requiresRedundantly() {
@@ -263,18 +263,18 @@ public class DbcTestCompiler extends AbstractRegressionTest {
 		this.runNegativeTest(new String[] {
                 "P.java",
                 "public class P {\n"+
-                "   public void m() {} \n" +
+                "   public void m() {}\n" +
                 "}\n" +
                 "class C {\n"+
-                "   //@ also private behavior" +
+                "   //@ also private behavior\n" +
                 "	//@   requires true <== true ==> true;\n" +
                 "   public void m() {} \n" +
                 "}\n"
 		        },
 				"----------\n" + 
-				"1. ERROR in P.java (at line 5)\n" + 
-				"	//@ also private behavior	//@   requires true <== true ==> true;\n" + 
-				"	                         	                             ^^^\n" + 
+				"1. ERROR in P.java (at line 6)\n" + 
+				"	//@   requires true <== true ==> true;\n" + 
+				"	                             ^^^\n" + 
 				"Syntax error on token \"IMPLIES\", == expected\n" + 
 				"----------\n");
     }
@@ -644,7 +644,17 @@ public class DbcTestCompiler extends AbstractRegressionTest {
                 "     @ implies_that\n" +
                 "     @   requires true;\n" +
                 "     @*/" +
-                "   public void m() {} \n" +
+                "   public void m1() {} \n" +
+                "\n" +
+                "   /*@ implies_that\n" +
+                "     @   requires true;\n" +
+                "     @*/" +
+                "   public void m2() {} \n" +
+                "\n" +
+                "   /*@ also implies_that\n" +
+                "     @   requires true;\n" +
+                "     @*/" +
+                "   public void m3() {} \n" +
                 "}\n"
         },
         "");
@@ -670,5 +680,75 @@ public class DbcTestCompiler extends AbstractRegressionTest {
 		"Void methods cannot return a value\n" + 
 		"----------\n");
     }
+
+	public void test_0040_diverges() {
+	    this.runConformTest( new String[] {
+	            "X.java",
+	            "public class X {\n"+
+	            "   //@ requires true;\n" +
+	            "   //@ diverges false;\n" +
+	            "   public void m1() {} \n" +
+	            "\n" +
+	            "   //@ diverges true;\n" +
+	            "   //@ diverges_redundantly true;\n" +
+	            "   //@ ensures true;\n" +
+	            "   public void m2() {} \n" +
+	            "\n" +
+	            "   //@ diverges \\not_specified;\n" +
+	            "   //@ diverges_redundantly \\not_specified;\n" +
+	            "   public void m3() {} \n" +
+	            "}\n"
+	            },
+	            "");
+	}
+
+	public void test_0041_not_assigned_and_not_modified() {
+		runNegativeTest(
+				new String[] {
+					"X.java",
+					"public class X {\n" +
+					"	/*@ modifies i, s;\n" + 
+					"	  @ ensures \\not_assigned(s, i)\n" +
+					"	  @		 && \\not_modified(i);\n" +
+					"	  @*/\n" + 
+					"	Object m(int i, String s) {return \"\";}\n" + 
+					"}\n",
+				},
+				""
+		);
+	}
+
+	public void test_0042_spec_variables() {
+		runNegativeTest(
+				new String[] {
+					"X.java",
+					"public class X {\n" +
+					"	/*@ forall boolean a; \n" +
+					"	  @ forall int k;\n" + 
+					"	  @ old int j, old_i = i;\n" +
+					"	  @ old String old_s = s;\n" + 
+					"	  @ ensures true;\n" +
+					"	  @*/\n" + 
+					"	Object m(int i, boolean b, String s) {return \"\";}\n" + 
+					"}\n",
+				},
+				""
+		);
+	}
+
+	public void test_0043_result_as_array() {
+		runNegativeTest(
+				new String[] {
+					"X.java",
+					"public class X {\n" +
+					"	//@ ensures \\result[0] != null;" +
+					"	Object[] m() {\n" +
+					"		return new Object[] { \"\" };" +
+					"	}\n" + 
+					"}\n",
+				},
+				""
+		);
+	}
     
 }

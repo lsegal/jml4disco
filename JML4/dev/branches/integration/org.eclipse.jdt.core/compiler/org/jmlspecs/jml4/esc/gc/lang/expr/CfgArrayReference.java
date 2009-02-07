@@ -25,7 +25,7 @@ public class CfgArrayReference extends CfgAssignable {
 	}
 
 	public String toString() {
-		return "{"+this.receiver+"[|"+this.position+"|]}";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		return "{"+this.receiver+"[|"+this.position+"|]_"+this.incarnation()+"}";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 
 	public String getName() {
@@ -36,4 +36,9 @@ public class CfgArrayReference extends CfgAssignable {
 		return new CfgArrayReference(this.receiver, this.position, newIncarnation, this.type, sourceStart, sourceEnd);
 	}
 
+	public void setIncarnation(int newIncarnation) {
+		this.incarnation = newIncarnation;
+		if (this.receiver instanceof CfgAssignable)
+		((CfgAssignable)this.receiver).setIncarnation(newIncarnation);
+	}
 }

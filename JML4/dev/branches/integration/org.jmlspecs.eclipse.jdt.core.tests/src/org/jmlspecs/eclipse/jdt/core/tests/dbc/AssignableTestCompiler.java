@@ -45,7 +45,7 @@ public class AssignableTestCompiler extends AbstractRegressionTest {
                 "1. ERROR in X.java (at line 3)\n" +
                 "	//@ assignable ;\n" +
                 "	    ^^^^^^^^^^\n" +
-                "Syntax error on token \"assignable\", StoreRef expected after this token\n" +
+                "Syntax error on token \"assignable\", StoreRefSeqOrKeyword expected after this token\n" +
                 "----------\n");
     }
 
@@ -121,7 +121,8 @@ public class AssignableTestCompiler extends AbstractRegressionTest {
         this.runConformTest( new String[] {
                 "X.java",
                 "public class X {\n"+
-                "   //@ modifiable (* Zork rules! *);\n" + 
+                "   //@ modifiable (*abc*);\n" + 
+                "   //@ modifiable (* Zork rules! *), (*abc*);\n" + 
                 "   public void m() {} \n" +
                 "}\n"
                 },
@@ -138,8 +139,8 @@ public class AssignableTestCompiler extends AbstractRegressionTest {
                 "----------\n" +
                 "1. ERROR in X.java (at line 2)\n" +
                 "	//@ modifiable (*);\n" +
-                "	               ^^^\n" +
-                "Syntax error on tokens, StoreRef expected instead\n" +
+        		"	                ^\n" + 
+        		"Syntax error on token \"*\", invalid Expression\n" + 
                 "----------\n");
     }
     public void test_0008c_AssignableWithInvalidInformalDescription() {
@@ -154,10 +155,21 @@ public class AssignableTestCompiler extends AbstractRegressionTest {
                 "1. ERROR in X.java (at line 2)\n" +
                 "	//@ modifiable (*;\n" +
                 "	               ^^\n" +
-                "Syntax error on tokens, StoreRef expected instead\n" +
+                "Syntax error on tokens, StoreRefSeqOrKeyword expected instead\n" +
                 "----------\n");
     }
-    public void test_0009_AssignableWithIdentifierSuffix() {
+    public void test_0009a_AssignableWithIdentifierSuffix() {
+        this.runConformTest( new String[] {
+                "X.java",
+                "public class X {\n"+
+                "   int i;\n" +
+                "   //@ modifies i, this.i;\n" + 
+                "   public void m() { } \n" +
+                "}\n"
+                },
+                "");
+    }
+    public void test_0009b_AssignableWithIdentifierSuffix() {
         this.runConformTest( new String[] {
                 "X.java",
                 "public class X {\n"+
@@ -166,7 +178,7 @@ public class AssignableTestCompiler extends AbstractRegressionTest {
                 "   }\n" +
                 "   A x;\n" +
                 "   //@ modifies x.y;\n" + 
-                "   public void m() {} \n" +
+                "   public void m() { x.y = 0; } \n" +
                 "}\n"
                 },
                 "");
@@ -182,7 +194,33 @@ public class AssignableTestCompiler extends AbstractRegressionTest {
                 },
                 "");
     }
-    public void test_0011_AssignableWithWildcardSuffix() {
+    public void test_0011a_AssignableWithWildcardSuffix() {
+        this.runConformTest( new String[] {
+                "X.java",
+                "public class X {\n"+
+                "   X x = new X();\n" +
+                "   //@ modifies this.*;\n" + 
+                "   public void m() {} \n" +
+                "}\n"
+                },
+                "");
+    }
+    public void test_0011b_AssignableWithWildcardSuffix() {
+	    this.runNegativeTest( new String[] {
+	            "X.java",
+	            "public class X {\n"+
+                "   //@ modifies this.*;\n" + 
+	            "   public void m() {} \n" +
+	            "}\n"
+	            },
+	    		"----------\n" + 
+	    		"1. ERROR in X.java (at line 2)\n" + 
+	    		"	//@ modifies this.*;\n" + 
+	    		"	             ^^^^\n" + 
+	    		"Receiver has no fields\n" + 
+	    		"----------\n");
+	}
+    public void test_0011c_AssignableWithWildcardSuffix() {
         this.runConformTest( new String[] {
                 "X.java",
                 "public class X {\n"+
@@ -193,7 +231,25 @@ public class AssignableTestCompiler extends AbstractRegressionTest {
                 },
                 "");
     }
-    public void test_0012_AssignableWithArrayExpr() {
+    public void test_0011d_AssignableWithWildcardSuffix() {
+        this.runNegativeTest( new String[] {
+                "X.java",
+                "public class X {\n"+
+                "   //@ modifies h.*, (**);\n" + 
+                "   public void m(Helper h) {} \n" +
+                "}\n" +
+                "class Helper {\n"+
+                "}\n"
+                },
+        		"----------\n" + 
+        		"1. ERROR in X.java (at line 2)\n" + 
+        		"	//@ modifies h.*, (**);\n" + 
+        		"	             ^^^\n" + 
+        		"Receiver has no fields\n" + 
+        		"----------\n");
+    }
+
+	public void test_0012_AssignableWithArrayExpr() {
         this.runConformTest( new String[] {
                 "X.java",
                 "public class X {\n"+
@@ -232,7 +288,7 @@ public class AssignableTestCompiler extends AbstractRegressionTest {
                 "public class X {\n"+
                 "   int[] y = new int[5];\n" +
                 "   X x = new X();\n" +
-                "   //@ modifies this.x.y[0 ..3];\n" + 
+                "   //@ modifies this.x.y[0..3];\n" + 
                 "   public void m() {} \n" +
                 "}\n"
                 },
@@ -249,5 +305,26 @@ public class AssignableTestCompiler extends AbstractRegressionTest {
                 "}\n"
                 },
                 "");
+    }
+    public void test_0017_AssignableWithConstant() {
+        this.runNegativeTest( new String[] {
+                "X.java",
+                "public class X {\n"+
+                "   //@ modifies 3;\n" + 
+                "   //@ modifies i+1;\n" + 
+                "   public void m(int i) {} \n" +
+                "}\n"
+                },
+        		"----------\n" + 
+        		"1. ERROR in X.java (at line 2)\n" + 
+        		"	//@ modifies 3;\n" + 
+        		"	             ^\n" + 
+        		"JML store reference expected\n" + 
+        		"----------\n" + 
+        		"2. ERROR in X.java (at line 3)\n" + 
+        		"	//@ modifies i+1;\n" + 
+        		"	             ^^^\n" + 
+        		"JML store reference expected\n" + 
+        		"----------\n");
     }
 }

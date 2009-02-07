@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>JML4 Commit 2008-12-12</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+
+<body>
+<h2>JML4 Commit Notes - 2008-12-12</h2>
+<hr />
+<h2>WHAT is in commit <a href="http://jmlspecs.svn.sourceforge.net/viewvc/jmlspecs?view=rev&revision=1166">1166</a>?</h2>
+<p>This commit introduces changes to the front-end:</p>
+<ul>
+  <li>An important <strong>simplification</strong> and <strong>consolidation</strong> of the <strong>grammar</strong>, <strong>parser</strong> and <strong>JML AST</strong> nodes. Besides making the front-end easier to understand and evolve, these changes will also help ease the transition towards full Java 5 support. These changes were also motivated by the need to make our JML editing incremental-parser and feedback-as-you-type friendly.</li>
+  <li>More support for some <strong>new language constructs</strong> and completed the <strong>implementation of resolution</strong> for other language elements. The latter leading to the introduction of new type bindings. </li>
+  <li>We now better <strong>isolate JML-specific parser elements</strong> (consume methods, etc) in a new JmlParserHelper.java file so as to make merging in of Eclipse.org deltas less painful -- the most difficult to merge was the thousand line switch in Parser.java file. Well, we don't have to do that anymore; this is good news since, at the time of writing, we are behind by 30 deltas!.</li>
+</ul>
+<p>More specifically w.r.t. the language support changes we have:</p>
+<ul>
+  <li>Added support (parsing and resolution) of \not_modified() and \not_assigned().</li>
+  <li>Added (or fixed) resolution support for almost all clauses including signals, signals_only, assignable clauses.</li>
+</ul>
+<p>While our goal has been to reach full support for JML level 0, this has turned out to be impractical since it means giving up the processing of JML API specifications (or to do only minimal processing such as extracting nullity information). This, I believe, is too much of a loss. Hence, our updated goal has become to reach full support for JML level 0 <em>and</em> have parser support for level 1 and some elements of level 2. </p>
+<h2>DETAILS</h2>
+<p>Changes to help in subsequent merging:</p>
+<ul>
+  <li>compiler/org/eclipse/jdt/internal/compiler/parser/<strong>JmlParserHelper</strong>.java: is a new file created to contain the JML-specific consumeRule() method. Parser.java will now always contain the Eclipse.org consumeRule(). All <strong>JML-specific consume methods </strong> have also been moved into this Helper class.</li>
+  <li>The jml4-utils weaver script and make file have been updated as well. Now the weaving process affects JmlParserHelper and Parser.java remains untouched. </li>
+</ul>
+<p>Grammar changes: <strong>grammar/java.g</strong>. With the simplification of the grammar, it is now almost 200 lines shorted, even with the addition new production rules.</p>
+<ul>
+  <li>The main changes are the elimination of ad hoc grammar rules for store refs and what are called &quot;maps member refs&quot;. JmlPrimary has essentially be extended with new <strong>&quot;multi-reference&quot; expressions</strong> (e.g. a[*]) and a store-ref is now simply a Name or a Primary.</li>
+  <li>All <strong>JML-specific consume methods</strong> are now prefixed with the special marker<strong> /*jml*/</strong>.</li>
+  <li>JML-specific grammar rules now have a cleaner and simpler layout. E.g. there is only one rule per non-terminal. Extraneous text has been removed -- e.g. if the informal JML grammar rule comment is identical to the Jikes grammar rule then the comment has been removed. Also, the $readableName directives have been removed when they match the non-terminal name.</li>
+  <li>To the extend possible, JML related production rules have been gathered into one &quot;JML&quot; section. </li>
+</ul>
+<p>The <strong>\not_assigned(...)</strong> and <strong>\not_modified(...)</strong> operators were added as JML unary operators were we take there unique argument to the their entire list of store refs. Having extended the Expression production rule  support multi-reference expressions, treating a list of references as a kind of multi-reference became a natural next step. This generalization helps us simplify the processing of these new store ref operators (and, btw, there are quite a few more to add) as well as the assignable clause. </p>
+<p>AST hierarchy changes:</p>
+<ul>
+  <li>Several of the <strong>JML clause AST nodes have reparented</strong> (to be subtypes of <strong>JmlClause</strong>) and considerably simplified. Now much of the code, e.g. for resolution, is found in JmlClause. This makes some of the clause  classes slimmer even with enhanced functionality. </li>
+  <li>New AST nodes to support multi-reference expressions include: JmlNameDotStarStoreRef, JmlFieldDotStarStoreRef and JmlArrayRangeStoreRef (all subtypes of JmlMultiReferenceExpression). A JmlArrayIndexRangeExpression is essentially an array reference with a JmlArrayIndexRangeExpression identifying the array element positions being targeted. A JmlStoreRefListExpression is a single expression used to hold a store ref list. </li>
+  <li>JML keywords such as \same are now represented by the following subtype of Expression: JmlKeywordExpression. Such a treatment helps simplify the definition and processing of JML clauses.</li>
+  <li>The JmlASTNode class has been removed since it was essentially useless (it was empty). It might have been useful if it had been the parent of all AST node classes, but that was not the case. </li>
+  <li>JML some AST classes were moved from the jdt package to the jml4 ast package.</li>
+  <li>Some AST files have been deprecated and will be removed in the not too distant future. </li>
+</ul>
+<p>Another Parsing helper class that has been added is JmlIdentifier.java which is essentially used to hold a lexeme token, file position information, the token id and finally the &quot;is redundant&quot; flag. </p>
+<p>Of course tests have been updated (since resolution is now working, a few errors had gotten through in the test cases). A few tests have been added as well. </p>
+</body>
+</html>

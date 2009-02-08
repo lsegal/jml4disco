@@ -1,10 +1,8 @@
 package org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.AbstractRemoteServer;
@@ -15,9 +13,9 @@ import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.com
  * the head element is viewed.
  * 
  */
-public class ServerQueue implements Queue<AbstractRemoteServer> {
+public class ServerQueue_Depricated implements Queue<AbstractRemoteServer> {
 
-	private ArrayList<AbstractRemoteServer> queue;
+	private PriorityQueue<AbstractRemoteServer> queue;
 	private ServerComparator comparator; // Will determine which server is
 
 	// "better" than another
@@ -26,42 +24,32 @@ public class ServerQueue implements Queue<AbstractRemoteServer> {
 	 * @param initialCapacity
 	 *            The initial maximum number of servers to be stored.
 	 */
-	public ServerQueue(int initialCapacity) {
+	public ServerQueue_Depricated(int initialCapacity) {
 		comparator = new ServerComparator();
-		queue = new ArrayList<AbstractRemoteServer>(initialCapacity);
-		Collections.sort(queue, comparator);
+		queue = new PriorityQueue<AbstractRemoteServer>(initialCapacity,
+				comparator);
 	}
 	
-	public ServerQueue(Collection<AbstractRemoteServer> contents) {
+	public ServerQueue_Depricated(Collection<AbstractRemoteServer> contents) {
 		comparator = new ServerComparator();
-		queue = new ArrayList<AbstractRemoteServer>(contents.size());
+		queue = new PriorityQueue<AbstractRemoteServer>(contents.size(), comparator);
 		queue.addAll(contents);
-		Collections.sort(queue, comparator);
 	}
 
 	// --------- Overridden methods from Queue ---------
 	@Override
 	public boolean add(AbstractRemoteServer arg0) {
-		boolean toReturn = queue.add(arg0);
-		Collections.sort(queue, comparator);
-		return toReturn;
+		return queue.add(arg0);
 	}
 
 	@Override
 	public AbstractRemoteServer element() {
-		Collections.sort(queue, comparator);
-		try {
-			return queue.get(0);
-		}
-		catch(IndexOutOfBoundsException e) {
-			throw new NoSuchElementException("Queue is empty");
-		}
+		return queue.element();
 	}
 
 	@Override
 	public boolean offer(AbstractRemoteServer arg0) {
-		Collections.sort(queue, comparator);
-		return queue.add(arg0);
+		return queue.offer(arg0);
 	}
 
 	/**
@@ -71,30 +59,22 @@ public class ServerQueue implements Queue<AbstractRemoteServer> {
 	 * @return The "best" server to dispatch to.
 	 */
 	@Override
-	public AbstractRemoteServer peek() {
-		AbstractRemoteServer toReturn = queue.get(0);
-		Collections.sort(queue, comparator);
+	public synchronized AbstractRemoteServer peek() {
+		AbstractRemoteServer toReturn = queue.remove();
+		// Here the head is temporarily removed and replaced, causing the
+		// Priority Queue to resort itself.
+		queue.add(toReturn);
 		return toReturn;
 	}
 
 	@Override
 	public AbstractRemoteServer poll() {
-		if(queue.size()==0) {
-			return null;
-		}
-		else {
-			return queue.get(0);
-		}
+		return queue.poll();
 	}
 
 	@Override
 	public AbstractRemoteServer remove() {
-		try {
-			return queue.remove(0);
-		}
-		catch(IndexOutOfBoundsException e) {
-			throw new NoSuchElementException("Queue is empty");
-		}
+		return queue.remove();
 	}
 
 	@Override

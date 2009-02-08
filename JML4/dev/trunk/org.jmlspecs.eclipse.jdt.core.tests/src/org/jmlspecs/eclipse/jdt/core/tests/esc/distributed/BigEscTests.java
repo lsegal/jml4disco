@@ -6,6 +6,7 @@ import org.eclipse.jdt.core.tests.compiler.regression.AbstractRegressionTest;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.PostProcessor;
+import org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcDistributed;
 
 public class BigEscTests extends AbstractRegressionTest {
 		
@@ -47,8 +48,8 @@ public class BigEscTests extends AbstractRegressionTest {
 		options.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
 		options.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
 		options.put(CompilerOptions.OPTION_ReportNonStaticAccessToStatic, CompilerOptions.IGNORE);		
-		//options.put(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile, "proverCoordinatorUrls.properties");
-		//options.put(JmlCompilerOptions.OPTION_EscProverStrategy, ProveVcDistributed.getName());
+		options.put(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile, "proverCoordinatorUrls.properties");
+		options.put(JmlCompilerOptions.OPTION_EscProverStrategy, ProveVcDistributed.getName());
 		return options;
 	}
 	private final String testsPath = "tests" + '\\' + "esc" + '\\';

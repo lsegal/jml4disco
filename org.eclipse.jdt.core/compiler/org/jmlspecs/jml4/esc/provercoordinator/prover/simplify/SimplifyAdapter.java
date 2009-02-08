@@ -24,7 +24,6 @@ import org.jmlspecs.jml4.util.Logger;
 public class SimplifyAdapter extends ProverAdapter {
 
 	// private static final String  SIMPLIFY = "C:\\bin\\ssh.exe -p 4022 chalin@localhost simplify"; //$NON-NLS-1$
-	//private static final String  SIMPLIFY = "simplify";//"gnome-terminal --command simplify"; //$NON-NLS-1$
 	private static final String INVALID_REPONSE = "Invalid."; //$NON-NLS-1$
 	private static final String LABELS_MARKER = "labels: ("; //$NON-NLS-1$
 	private static final String VALID_RESPONSE = "Valid."; //$NON-NLS-1$
@@ -62,21 +61,26 @@ public class SimplifyAdapter extends ProverAdapter {
 					.getInputStream();
 			BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
 			String line = bIn.readLine();
+			try {
 			while (!(line.endsWith(INVALID_REPONSE) || line
 					.endsWith(VALID_RESPONSE) || line.contains(ERROR_RESPONSE))) {
 				result.append(line + "\n"); //$NON-NLS-1$
 				line = bIn.readLine();
 			}
 			result.append(line + "\n"); //$NON-NLS-1$
-//			line = bIn.readLine();
-//			result.append(line + "\n"); //$NON-NLS-1$
 			byte[] response = new byte[in.available()];
 			int i = in.read(response);
 			processPool.releaseProcess(process);
+			}catch (NullPointerException ex) {
+				if(line == null) {
+					result.append(INVALID_REPONSE);
+					return result.toString();
+				}
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 		return result.toString();
 	}
 

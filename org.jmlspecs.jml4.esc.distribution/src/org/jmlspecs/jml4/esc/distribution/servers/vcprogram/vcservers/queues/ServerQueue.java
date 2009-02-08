@@ -29,6 +29,12 @@ public class ServerQueue implements Queue<AbstractRemoteServer> {
 		queue = new PriorityQueue<AbstractRemoteServer>(initialCapacity,
 				comparator);
 	}
+	
+	public ServerQueue(Collection<AbstractRemoteServer> contents) {
+		comparator = new ServerComparator();
+		queue = new PriorityQueue<AbstractRemoteServer>(contents.size(), comparator);
+		queue.addAll(contents);
+	}
 
 	// --------- Overridden methods from Queue ---------
 	@Override

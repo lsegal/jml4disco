@@ -1100,4 +1100,22 @@ public class InitialTests extends AbstractRegressionTest {
 				""
 				);
 	}
+	
+	
+	// term=JmlAssertStatement,OR_OR_Expression
+	public void test_xx() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class X {\n" + 
+				"   public void m1() {\n" +
+				"		int x = 2;\n" +
+				"       int y = 1;\n" + 
+				"   }\n" + 				
+				"}\n"
+				,				
+				// expected boogie
+				""
+				);
+	}	
 }

@@ -1,5 +1,6 @@
 package org.jmlspecs.jml4.boogie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
@@ -104,12 +105,14 @@ import org.jmlspecs.jml4.ast.JmlMethodSpecification;
 import org.jmlspecs.jml4.ast.JmlOldExpression;
 import org.jmlspecs.jml4.ast.JmlRequiresClause;
 import org.jmlspecs.jml4.ast.JmlResultReference;
+import org.jmlspecs.jml4.boogie.ast.BoogieLocalDeclaration;
 
 public class BoogieVisitor extends ASTVisitor {
 	private static final boolean DEBUG = true;
 	private BlockScope methodScope;
 	private BoogieSource output;
 	
+	private boolean visitLocals = true;
 	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
 	private static final String STMT_END = ";"; //$NON-NLS-1$
@@ -623,22 +626,25 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// priority=3 group=decl
 	public boolean visit(LocalDeclaration term, BlockScope scope) {
-		debug(term, scope);
-		String name = new String(term.name);
-		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
-		term.type.traverse(this, scope);
-		appendLine(STMT_END);
-		
-		if (term.initialization != null) {
-			Assignment a = 
-				new Assignment(new SingleNameReference(term.name, term.sourceStart), 
-					term.initialization, term.sourceEnd);
-			a.traverse(this, scope);
+		if (visitLocals) {
+			debug(term, scope);
+			String name = new String(term.name);
+			append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
+			term.type.traverse(this, scope);
 			appendLine(STMT_END);
+			
+			if (term.initialization != null) {
+				Assignment a = 
+					new Assignment(new SingleNameReference(term.name, term.sourceStart), 
+						term.initialization, term.sourceEnd);
+				a.traverse(this, scope);
+				appendLine(STMT_END);
+			}
+		}else {
+			
 		}
 		return false;
 	}
-	
 	// TODO priority=3 group=lit
 	public boolean visit(LongLiteral term, BlockScope scope) {
 		debug(term, scope);
@@ -666,6 +672,11 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// priority=3 group=decl
 	public boolean visit(MethodDeclaration term, ClassScope scope) {
+		
+		BoogieVariableDeclFinderVisitor varDeclFinder = new BoogieVariableDeclFinderVisitor();
+		varDeclFinder.visit(term, scope);
+		ArrayList locals = varDeclFinder.getDecls(); 
+		
 		JmlMethodDeclaration jmlTerm = (JmlMethodDeclaration)term;
 		methodScope = term.scope; // used by #visit(JmlMethodSpecification, ClassScope)
 		
@@ -675,6 +686,7 @@ public class BoogieVisitor extends ASTVisitor {
 		append(new String(term.binding.declaringClass.readableName()) + "."); //$NON-NLS-1$
 		append(new String(term.selector));
 		append("("); //$NON-NLS-1$
+		
 		if (term.arguments != null) {
 			for (int i = 0; i < term.arguments.length; i++) {
 				term.arguments[i].traverse(this, scope);
@@ -698,6 +710,15 @@ public class BoogieVisitor extends ASTVisitor {
 		appendLine(" {"); //$NON-NLS-1$
 		output.increaseIndent();
 
+		if (locals != null) {
+			visitLocals = true;
+			for (int i = 0; i < locals.size(); i++) {
+				LocalDeclaration loc = (LocalDeclaration)locals.get(i);
+				loc.traverse(this, term.scope);				
+			}
+			visitLocals = false;
+		}
+		
 		if (term.statements != null) {
 			for (int i = 0; i < term.statements.length; i++) {
 				term.statements[i].traverse(this, term.scope);

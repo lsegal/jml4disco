@@ -10,6 +10,8 @@
  */
 package org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.comparator;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Comparator;
 
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.AbstractRemoteServer;
@@ -48,11 +50,11 @@ public class ServerComparator implements Comparator<AbstractRemoteServer> {
 			secondServerSystemLoadAverage = 0.000001;
 		}
 
-		int toReturn = (int) ((double) (firstServer.getPendingVcs() * 100) / firstServerSystemLoadAverage)
-				- (int) ((double) (serverToCompare.getPendingVcs() * 100) / secondServerSystemLoadAverage);
+		double toReturn = ((double) (firstServer.getPendingVcs() * 100.0) / firstServerSystemLoadAverage)
+				- ((double) (serverToCompare.getPendingVcs() * 100.0) / secondServerSystemLoadAverage);
 		
-		if(Math.abs(toReturn)>5) {
-			return toReturn;
+		if(Math.abs(toReturn)>10) {
+			return (int)toReturn;
 		}
 		else {
 			int timingdiff = (int) (firstServer.timeSinceLastProve()-serverToCompare.timeSinceLastProve());

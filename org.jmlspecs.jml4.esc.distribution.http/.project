@@ -3,9 +3,9 @@
 	<name>org.jmlspecs.jml4.esc.distribution.http</name>
 	<comment></comment>
 	<projects>
-		<project>org.jmlspecs.jml4.esc.distribution</project>
-		<project>org.eclipse.jdt.core</project>
 		<project>org.jmlspecs.jml4.esc.distribution.configuration</project>
+		<project>org.eclipse.jdt.core</project>
+		<project>org.jmlspecs.jml4.esc.distribution</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

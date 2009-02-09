@@ -30,7 +30,7 @@ public class ServerComparator implements Comparator<AbstractRemoteServer> {
 	 */
 	public int compare(AbstractRemoteServer firstServer,
 			AbstractRemoteServer serverToCompare) {
-/*
+
 		double firstServerSystemLoadAverage = firstServer
 				.getSystemLoadAverage();
 		double secondServerSystemLoadAverage = serverToCompare
@@ -54,10 +54,10 @@ public class ServerComparator implements Comparator<AbstractRemoteServer> {
 		if(Math.abs(toReturn)>5) {
 			return toReturn;
 		}
-		else {*/
+		else {
 			int timingdiff = (int) (firstServer.timeSinceLastProve()-serverToCompare.timeSinceLastProve());
 			return timingdiff;
-/*		}*/
+		}
 	}
 
 }

@@ -111,7 +111,6 @@ public class BoogieVisitor extends ASTVisitor {
 	private BlockScope methodScope;
 	private BoogieSource output;
 	
-	private boolean visitLocals = true;
 	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
 	private static final String STMT_END = ";"; //$NON-NLS-1$
@@ -625,25 +624,25 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// priority=3 group=decl
 	public boolean visit(LocalDeclaration term, BlockScope scope) {
-		if (visitLocals) {
-			debug(term, scope);
-			String name = new String(term.name);
-			append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
-			term.type.traverse(this, scope);
+		if (term.initialization != null) {
+			Assignment a = 
+				new Assignment(new SingleNameReference(term.name, term.sourceStart), 
+					term.initialization, term.sourceEnd);
+			a.traverse(this, scope);
 			appendLine(STMT_END);
-			
-			if (term.initialization != null) {
-				Assignment a = 
-					new Assignment(new SingleNameReference(term.name, term.sourceStart), 
-						term.initialization, term.sourceEnd);
-				a.traverse(this, scope);
-				appendLine(STMT_END);
-			}
-		}else {
-			
 		}
 		return false;
 	}
+	
+	public boolean visit(BoogieLocalDeclaration term, BlockScope scope) {
+		debug(term, scope);
+		String name = new String(term.name);
+		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
+		term.type.traverse(this, scope);
+		appendLine(STMT_END);
+		return false;
+	}
+	
 	// TODO priority=3 group=lit
 	public boolean visit(LongLiteral term, BlockScope scope) {
 		debug(term, scope);
@@ -710,12 +709,11 @@ public class BoogieVisitor extends ASTVisitor {
 		output.increaseIndent();
 
 		if (locals != null) {
-			visitLocals = true;
 			for (int i = 0; i < locals.size(); i++) {
 				LocalDeclaration loc = (LocalDeclaration)locals.get(i);
-				loc.traverse(this, term.scope);				
+				BoogieLocalDeclaration lcldecl = new BoogieLocalDeclaration (loc);
+				lcldecl.traverse(this, term.scope);				
 			}
-			visitLocals = false;
 		}
 		
 		if (term.statements != null) {

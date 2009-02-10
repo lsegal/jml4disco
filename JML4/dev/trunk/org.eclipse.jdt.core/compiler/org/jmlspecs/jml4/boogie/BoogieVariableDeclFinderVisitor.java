@@ -13,8 +13,10 @@ public class BoogieVariableDeclFinderVisitor extends ASTVisitor {
 	ArrayList locals = new ArrayList();
 	
 	public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
-		for(int i=0; i< methodDeclaration.statements.length; i ++) {
-			methodDeclaration.statements[i].traverse(this, methodDeclaration.scope);
+		if (methodDeclaration.statements != null) {
+			for(int i=0; i< methodDeclaration.statements.length; i ++) {
+				methodDeclaration.statements[i].traverse(this, methodDeclaration.scope);
+			}
 		}
 		return true;
 	}

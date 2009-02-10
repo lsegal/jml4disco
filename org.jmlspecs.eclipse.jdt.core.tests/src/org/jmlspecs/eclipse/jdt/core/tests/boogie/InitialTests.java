@@ -830,7 +830,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"package tests.esc;\n" +
 				"public class U {\n" + 
 				"   public void m1() {\n" +
-				"		for (int i=1,j=10; i<j; i++,j=j-i+1) {\n" +
+				"		//@assert (true);\n" +
+				"		for (int i=1,j=10; i<j; i++,j++) {\n" +
 				"		//@assert (true);\n" +			
 				" 		}\n" +	
 				"	}\n" +					
@@ -838,13 +839,17 @@ public class InitialTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.U.m1() {\n" +
-				"	var x : int;\n" +
-				"	x := 0;\n" +
-				"	while (x < 10) {\n" +
+				"	var i : int;\n" +
+				"	var j : int;\n" +
+				"	assert true;\n" +
+				"	i := 1;\n" +
+				"	j := 10;\n" +
+				"	while (i < j) {\n" +
 				"		assert true;\n" +
-				"		x := x + 1;\n" +
+				"		i := i + 1;\n" +
+				"		j := j + 1;\n" +
 				"	}\n" +
-				"}\n"			
+				"}\n"
 				);
 	}	
 	
@@ -891,6 +896,29 @@ public class InitialTests extends AbstractRegressionTest {
 				""			
 				);
 	}	
+	
+	// term=
+	public void test_700_localVarDecl_order() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class X {\n" + 
+				"   public void m1() {\n" +
+				"		int x = 2;\n" +
+				"       int y = 1;\n" + 
+				"   }\n" + 				
+				"}\n"
+				,				
+				// expected boogie
+				"procedure tests.esc.X.m1() {\n" +
+				"	var x : int;\n" +
+				"	var y : int;\n" +
+				"	x := 2;\n" +
+				"	y := 1;\n" +
+				"}\n"
+				);
+	}	
+	
 	// term=LocalDeclaration,SingleTypeReference,Assignment,IntLiteral
 	public void test_1000_int_localdeclaration() {
 		this.compareJavaToBoogie(
@@ -909,7 +937,6 @@ public class InitialTests extends AbstractRegressionTest {
 				//expected boogie
 				"procedure tests.esc.X.m() {\n" +
 				"	var i : int;\n" +
-				"	i := 0;\n" +
 				"	var x : int;\n" +
 				"	var a : int;\n" +
 				"	var s : int;\n" +
@@ -917,12 +944,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"	var q : int;\n" +
 				"	var w : int;\n" +
 				"	var e : int;\n" +
-				"	e := 0;\n" +
 				"	var y : int;\n" +
-				"	y := 10;\n" +
 				"	var u : int;\n" +
-				"	u := 20;\n" +
 				"	var o : int;\n" +
+				"	i := 0;\n" +
+				"	e := 0;\n" +
+				"	y := 10;\n" +
+				"	u := 20;\n" +
 				"	o := 30;\n" +
 				"}\n"
 				);
@@ -1100,22 +1128,4 @@ public class InitialTests extends AbstractRegressionTest {
 				""
 				);
 	}
-	
-	
-	// term=JmlAssertStatement,OR_OR_Expression
-	public void test_xx() {
-		this.compareJavaToBoogie(
-				//java
-				"package tests.esc;\n" +
-				"public class X {\n" + 
-				"   public void m1() {\n" +
-				"		int x = 2;\n" +
-				"       int y = 1;\n" + 
-				"   }\n" + 				
-				"}\n"
-				,				
-				// expected boogie
-				""
-				);
-	}	
 }

@@ -50,7 +50,8 @@ public class SimplifyAdapter extends ProverAdapter {
 			// FIXME: NO more problem reported :(
 			// DISCO distributed strategy reporter = null
 			if (this.problemReporter != null)
-				this.problemReporter.jmlEsc2Error(processPool.failedToLaunch(), 0, 0);
+				this.problemReporter.jmlEsc2Error(processPool.failedToLaunch(),
+						0, 0);
 			return ""; //$NON-NLS-1$
 		}
 		try {
@@ -62,25 +63,25 @@ public class SimplifyAdapter extends ProverAdapter {
 			BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
 			String line = bIn.readLine();
 			try {
-			while (!(line.endsWith(INVALID_REPONSE) || line
-					.endsWith(VALID_RESPONSE) || line.contains(ERROR_RESPONSE))) {
-				result.append(line + "\n"); //$NON-NLS-1$
-				line = bIn.readLine();
-			}
-			result.append(line + "\n"); //$NON-NLS-1$
-			byte[] response = new byte[in.available()];
-			int i = in.read(response);
-			processPool.releaseProcess(process);
-			}catch (NullPointerException ex) {
-				if(line == null) {
-					result.append(INVALID_REPONSE);
-					return result.toString();
+				while (!(line.endsWith(INVALID_REPONSE)
+						|| line.endsWith(VALID_RESPONSE) || line
+						.contains(ERROR_RESPONSE))) {
+					result.append(line + "\n"); //$NON-NLS-1$
+					line = bIn.readLine();
 				}
+				result.append(line + "\n"); //$NON-NLS-1$
+				byte[] response = new byte[in.available()];
+				int i = in.read(response);
+			} catch (NullPointerException ex) {
+				processPool.notifyDeadProcess(process);
+				result.append(INVALID_REPONSE);
+				return result.toString();
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		processPool.releaseProcess(process);
 		return result.toString();
 	}
 

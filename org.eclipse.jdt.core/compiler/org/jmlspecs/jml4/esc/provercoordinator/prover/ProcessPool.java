@@ -13,7 +13,7 @@ public abstract class ProcessPool {
 
 	
 	abstract protected Process createNewProcess();
-	abstract public String launcherCommand();
+	abstract protected String launcherCommand();
 	abstract public void getProcessConfiguration();
 	abstract public String failedToLaunch();
 
@@ -53,7 +53,13 @@ public abstract class ProcessPool {
 	public int getMAX_PROCESS() {
 		return MAX_PROCESS;
 	}
+	
 	public void setMAX_PROCESS(int max_process) {
 		MAX_PROCESS = max_process;
+	}
+	
+	public void notifyDeadProcess(Process p) {
+		p.destroy();
+		num_of_process_avaiable--;
 	}
 }

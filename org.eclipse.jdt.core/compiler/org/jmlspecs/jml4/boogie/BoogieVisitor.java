@@ -105,7 +105,6 @@ import org.jmlspecs.jml4.ast.JmlMethodSpecification;
 import org.jmlspecs.jml4.ast.JmlOldExpression;
 import org.jmlspecs.jml4.ast.JmlRequiresClause;
 import org.jmlspecs.jml4.ast.JmlResultReference;
-import org.jmlspecs.jml4.boogie.ast.BoogieLocalDeclaration;
 
 public class BoogieVisitor extends ASTVisitor {
 	private static final boolean DEBUG = true;

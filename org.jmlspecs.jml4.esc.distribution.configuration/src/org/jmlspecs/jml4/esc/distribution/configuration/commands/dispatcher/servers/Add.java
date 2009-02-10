@@ -1,24 +1,26 @@
-package org.jmlspecs.jml4.esc.distribution.configuration.commands.dispatcher;
+package org.jmlspecs.jml4.esc.distribution.configuration.commands.dispatcher.servers;
 
-import org.jmlspecs.jml4.esc.distribution.configuration.FrontCommand;
 import org.jmlspecs.jml4.esc.distribution.configuration.CommandInput;
+import org.jmlspecs.jml4.esc.distribution.configuration.commands.dispatcher.Servers;
 import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.FrontControllerException;
-import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerQueueRegistry;
+import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerRegistry;
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerQueueRegistryException;
 
-public class AddServers extends FrontCommand {
+public class Add extends Servers {
 
 	@Override
 	public void execute(CommandInput arg) throws FrontControllerException {
 		String s = arg.getParameter("server-url");
 		if(s!=null && !s.equals("")) {
 			try {
-				ServerQueueRegistry.addServer(s);
+				ServerRegistry.newServer(s);
 			} catch (ServerQueueRegistryException e) {
 				throw new FrontControllerException(e);
 			}
+			super.execute(arg);
 		}
 		else {
+			super.execute(arg);
 			throw new FrontControllerException("No server-url parameters provided.");
 		}
 	}

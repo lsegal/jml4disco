@@ -15,7 +15,8 @@ public class FrontController {
 		String command = commandInput.getCommandName();
 		
 		try {
-			String commandpath = bundle.getString("command-path"); 
+			String commandpath = bundle.getString("command-path");
+			System.out.println(commandpath+"."+command);
 			Class commandClass = Class.forName(commandpath+"."+command);
 			
 			if(FrontCommand.class.isAssignableFrom(commandClass)) {

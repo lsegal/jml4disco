@@ -88,7 +88,7 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 	}
 	
 	@Override
-	public Result[] proveVc(int i, VC vc, Map<String, Integer> map) {
+	public Result[] proveVc(int i, VC vc, Map<String, Integer> map, String[] prover) {
 		lastProveTime = System.currentTimeMillis();
 //		pendingRequests++;
 		try {
@@ -111,6 +111,7 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 			if (in != null) {
 				ProveVcServerResult proverServerResult = (ProveVcServerResult) in.readObject();
 				rs = proverServerResult.getResult();
+				prover[0] = proverServerResult.getProver();
 				setProfileInfo(proverServerResult.getServerProfile());
 			}
 			in.close();

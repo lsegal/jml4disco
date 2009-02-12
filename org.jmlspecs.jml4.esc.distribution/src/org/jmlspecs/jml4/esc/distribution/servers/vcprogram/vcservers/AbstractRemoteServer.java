@@ -22,7 +22,7 @@ import org.jmlspecs.jml4.esc.vc.lang.VC;
  */
 public abstract class AbstractRemoteServer implements IServerProfile {
 
-	public abstract Result[] proveVc(int i, VC vc, Map<String, Integer> map);
+	public abstract Result[] proveVc(int i, VC vc, Map<String, Integer> map, String[] prover);
 	public abstract long timeSinceLastProve();
 
 }

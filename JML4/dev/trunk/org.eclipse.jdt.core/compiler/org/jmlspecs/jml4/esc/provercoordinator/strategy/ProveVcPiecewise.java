@@ -123,6 +123,72 @@ public class ProveVcPiecewise implements IProverStrategy {
 		setVcName(simplifyResults, vc.getName());
 		return simplifyResults;
 	}
+	
+	public Result[] proveVc(VC vc, Map map, String[] prover) {
+		if (this.cachedVcs != null && this.cachedVcs.contains(vc))
+			return Result.VALID;
+
+		// DISCO 
+		// try to prove vc with Simplify, if successful, return valid result
+		SimplifyAdapter simplify = new SimplifyAdapter(this.options, this.problemReporter);
+		Result[] simplifyResults = simplify.prove(vc, map);
+		Utils.assertTrue(simplifyResults.length > 0, "length of result array was zero"); //$NON-NLS-1$
+		if (Result.isValid(simplifyResults)) {
+			if (this.cachedVcs != null) this.cachedVcs.add(vc);
+			prover[0] = "simplify";
+			return simplifyResults;
+		}
+
+		Result[] results = null;
+		try {
+			// DISCO null parameters for serialization
+			// try to prove vc with CVC, if successful, return valid result
+			Cvc3Adapter cvc = new Cvc3Adapter(this.options, this.problemReporter);
+			
+			results = cvc.prove(vc, map);
+			if (Result.isValid(results)) {
+				if (this.cachedVcs != null) this.cachedVcs.add(vc);
+				prover[0] = "cvc3";
+				return results;
+			}
+		} catch (RuntimeException e) {
+			if (DEBUG) throw e;
+		}
+
+		try {
+			doingTheNegation = true;
+			VC negated = vc.negateLastImplication();
+			Result[] negatedResults = simplify.prove(negated, map);
+			if (Result.isValid(negatedResults)) {
+				if (this.cachedVcs != null) this.cachedVcs.add(negated);
+				setVcName(simplifyResults, "proved false"); //$NON-NLS-1$
+				prover[0] = "notsimplify";
+				return simplifyResults;
+			}
+		} catch (RuntimeException e) {
+			if (DEBUG) throw e;
+		} finally {
+			doingTheNegation = false;
+		}
+
+		try {
+			// DISCO null parameters for serialization
+			// try to prove vc with Isabelle, if successful, return valid result
+			IsabelleAdapter isabelle = new IsabelleAdapter(this.options, this.problemReporter);
+			
+			results = isabelle.prove(vc, map);
+			if (Result.isValid(results)) {
+				if (this.cachedVcs != null) this.cachedVcs.add(vc);
+				prover[0] = "isabelle";
+				return results;
+			}
+		} catch (RuntimeException e) {
+			if (DEBUG) throw e;
+		}
+		setVcName(simplifyResults, vc.getName());
+		prover[0] = "notproved";
+		return simplifyResults;
+	}
 
 	protected void setVcName(Result[] results, String name) {
 //		Utils.assertTrue(results.length < 2, "there's more than a single result from simplify"); //$NON-NLS-1$

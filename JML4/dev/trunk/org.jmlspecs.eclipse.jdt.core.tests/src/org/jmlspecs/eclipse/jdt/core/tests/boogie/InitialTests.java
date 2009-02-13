@@ -539,7 +539,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// TODO term=LocalDeclaration
+	// term=LocalDeclaration
 	public void test_0298_LocalDeclaration() {
 		compareJavaToBoogie(	
 			// java source
@@ -550,13 +550,13 @@ public class InitialTests extends AbstractRegressionTest {
 			"   }\n" + 
 			"}\n"
 			, 
-			// TODO expected boogie
+			// expected boogie
 			"procedure tests.esc.A.m() {\n" +
 			"	var z : int;\n" +
 			"}\n");
 	}
 
-	// TODO term=LocalDeclaration,Assignment
+	// term=LocalDeclaration,Assignment
 	public void test_0299_LocalDeclarationWithInitialization() {
 		compareJavaToBoogie(	
 			// java source
@@ -567,7 +567,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"   }\n" + 
 			"}\n"
 			, 
-			// TODO expected boogie
+			// expected boogie
 			"procedure tests.esc.A.m() {\n" +
 			"	var z : int;\n" +
 			"	z := 3;\n" +
@@ -591,7 +591,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"   }\n" + 
 			"}\n"
 			, 
-			// TODO expected boogie
+			// expected boogie
 			"procedure tests.esc.A.m(x: int, y: int) returns (__result__ : java.lang.String) {\n" +
 			"	var z : int;\n" +
 			"	z := 3;\n" +

@@ -97,6 +97,7 @@ import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
 import org.jmlspecs.jml4.ast.JmlClause;
 import org.jmlspecs.jml4.ast.JmlEnsuresClause;
 import org.jmlspecs.jml4.ast.JmlFieldDeclaration;
+import org.jmlspecs.jml4.ast.JmlLocalDeclaration;
 import org.jmlspecs.jml4.ast.JmlLoopAnnotations;
 import org.jmlspecs.jml4.ast.JmlLoopInvariant;
 import org.jmlspecs.jml4.ast.JmlLoopVariant;
@@ -624,6 +625,18 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// priority=3 group=decl
 	public boolean visit(LocalDeclaration term, BlockScope scope) {
+		debug(term, scope);
+		return false;
+	}
+	
+	// priority=3 group=decl
+	public boolean visit(JmlLocalDeclaration term, BlockScope scope) {
+		debug(term, scope);
+		String name = new String(term.name);
+		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
+		term.type.traverse(this, scope);
+		appendLine(STMT_END);
+		
 		if (term.initialization != null) {
 			Assignment a = 
 				new Assignment(new SingleNameReference(term.name, term.sourceStart), 
@@ -631,15 +644,6 @@ public class BoogieVisitor extends ASTVisitor {
 			a.traverse(this, scope);
 			appendLine(STMT_END);
 		}
-		return false;
-	}
-	
-	public boolean visit(BoogieLocalDeclaration term, BlockScope scope) {
-		debug(term, scope);
-		String name = new String(term.name);
-		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
-		term.type.traverse(this, scope);
-		appendLine(STMT_END);
 		return false;
 	}
 	

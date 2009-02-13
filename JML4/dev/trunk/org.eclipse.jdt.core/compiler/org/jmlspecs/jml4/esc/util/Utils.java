@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Set;
 
@@ -83,7 +84,7 @@ public class Utils {
     	for(int i = 0; i < cache.length; i++)
     	cache[i] = new Integer(i);
     }
-	public static void writeToFile(String filename, String isabelleString) {
+	public static void writeToFile(String filename, String contents) {
 		FileWriter out = null;
 		try {
 			File file = new File(filename);
@@ -92,7 +93,7 @@ public class Utils {
 				dir.mkdirs();
 			}
 			out = new FileWriter(filename);
-			out.write(isabelleString);
+			out.write(contents);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -132,7 +133,30 @@ public class Utils {
 		File file = new File(filename);
 		file.delete();
 	}
-	
+	public static void deleteFile(File dir, String filename) {
+		File file = new File(dir, filename);
+		file.delete();
+	}
+
+	public static void deleteFiles(String directory, String extension) {
+		File dir = new File(directory);
+		if (!dir.isDirectory())
+			return;
+		final String extensionLower = extension.toLowerCase();
+		FilenameFilter filter = new FilenameFilter() {
+			public boolean accept(File filterDirectory, String name) {
+			      if (new File(filterDirectory, name).isDirectory()) {
+			         return false;
+			      }
+			      return name.toLowerCase().endsWith(extensionLower);
+			}
+		};
+		String[] toDelete = dir.list(filter);
+		for (int i = 0; i < toDelete.length; i++) {
+			deleteFile(dir, toDelete[i]);
+		}
+	}
+
 	public static String win2unixFileName(String filename) {
 		String unixFilename = filename.replace('\\', '/');
 		// Strip off drive letter, "C:"

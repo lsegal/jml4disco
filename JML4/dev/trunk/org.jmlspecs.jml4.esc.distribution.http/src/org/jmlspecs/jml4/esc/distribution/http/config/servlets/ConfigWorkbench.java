@@ -13,8 +13,6 @@ import org.jmlspecs.jml4.esc.distribution.configuration.FrontController;
 import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.CommandNotFoundException;
 import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.FrontControllerException;
 
-import com.sun.xml.internal.fastinfoset.util.StringArray;
-
 /**
  * Servlet implementation class Workbench
  */
@@ -65,20 +63,18 @@ public class ConfigWorkbench extends HttpServlet {
 				}
 
 				String[] split = in.split("\\/");
-				
-				split[split.length-1] = split[split.length-1].substring(0,1).toUpperCase()+split[split.length-1].substring(1);
-				
-				command = split[0];
-				for(int i=1; i<split.length; i++) {
-					command += "."+split[i];
-				}
-				
-				System.out.println("Command is "+command);
-				
-				HttpRequestCommandInput commandInput = new HttpRequestCommandInput(request, command);
-				FrontController.main(commandInput);
-				out = "Executed command successfully";
+				if(split.length==1) {
+					command  = split[0];
+					
+					HttpRequestCommandInput commandInput = new HttpRequestCommandInput(request, command);
+					FrontController.main(commandInput);
+					out = "Executed command successfully";
 					 
+				}
+				else {
+					response.setStatus(404);
+					return;
+				}
 
 		} catch(CommandNotFoundException e) {
 			response.setStatus(404);
@@ -91,7 +87,6 @@ public class ConfigWorkbench extends HttpServlet {
 		
 		try {
 			String path = "/WEB-INF/config-workbench/"+in+"."+request.getMethod().toLowerCase()+".jsp";
-			System.out.println("PATH IS: "+path);
 			String filename = getServletConfig().getServletContext().getRealPath(path);
 			File f = new File(filename); 
 			if(f.exists()) {

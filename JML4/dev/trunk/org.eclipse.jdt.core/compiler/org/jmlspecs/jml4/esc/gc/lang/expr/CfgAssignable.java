@@ -4,7 +4,7 @@ import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public abstract class CfgAssignable extends CfgExpression {
 
-	private int incarnation;
+	protected int incarnation;
 
 	public CfgAssignable(int incarnation, TypeBinding type, int sourceStart, int sourceEnd) {
 		super(type, sourceStart, sourceEnd);

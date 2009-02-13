@@ -73,10 +73,11 @@ sub main() {
 
     my $rhInfo;
 
-    #update Parser.java
-    print STDOUT "Updating Parser.java (parser dir) ...";
+    # update JmlParserHelper.java
+    print STDOUT "Updating JmlParserHelper.java (parser dir) ...";
     $rhInfo = {
-	source  => $parserDir . "/Parser.java",
+	# source  => $parserDir . "/Parser.java",
+	source  => $parserDir . "/JmlParserHelper.java",
 	srcpat  => ['^protected\svoid\sconsumeRule\(int', '^\}\s*$'],
 	addpatln=> 0,
 	replace => $grammarDir . "/JavaAction.java",
@@ -84,6 +85,7 @@ sub main() {
 	ssrpre  => '',
 	esrpat  => ['^(\})\s*$', ' '],
 	addpats => undef,
+	arpats  => ['(.*)','1','fixJmlParserHelperLines'], 
     };
     &MRRCNR($rhInfo);
     print STDOUT " done!\n";
@@ -206,6 +208,14 @@ sub MRRCNR($) {
     }
     close(INSRC);
     close(OUT);
+}
+
+sub fixJmlParserHelperLines($) {
+    my ($line)=@ARG;
+
+    $line =~ s/^(\s+)(consume|ignoreExpressionAssignment)/$1_this.$2/;
+    $line =~ s/(THIS|SUPER)_CALL/Parser.$1_CALL/g;
+    return $line;
 }
 
 sub fixTerminalTokens($) {

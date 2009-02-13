@@ -115,20 +115,16 @@ public class JmlQualifiedNameReference extends QualifiedNameReference {
 		super.checkNPE(scope, flowContext, flowInfo, checkString);
 		if (!scope.compilerOptions().useNonNullTypeSystem())
 			return;
-		AbstractVariableDeclaration receiverDecl; 
-		boolean isKnownToBeNonNull;
+		AbstractVariableDeclaration receiverDecl = null; 
+		boolean isKnownToBeNonNull = false;
 		if  ((this.bits & ASTNode.RestrictiveFlagMASK) == Binding.FIELD) {
 			receiverDecl = ((FieldBinding)this.binding).fieldDeclaration;
-			isKnownToBeNonNull = false;
 		} else {
 			LocalVariableBinding localBinding = (LocalVariableBinding)this.binding;
-			receiverDecl = localBinding.declaration;
-			if (flowInfo.isDefinitelyNull(localBinding))
-				isKnownToBeNonNull = false;
-			else if (flowInfo.isDefinitelyNonNull(localBinding))
-				isKnownToBeNonNull = true;
-			else 
-				isKnownToBeNonNull = false;
+			if (localBinding != null) {
+				receiverDecl = localBinding.declaration;
+				isKnownToBeNonNull = flowInfo.isDefinitelyNonNull(localBinding);
+			}
 		}	
 		if (!isKnownToBeNonNull && receiverDecl != null && receiverDecl.type != null && !receiverDecl.type.isDeclaredNonNull()) {
 			scope.problemReporter().attemptToDereferenceNullValue(this);

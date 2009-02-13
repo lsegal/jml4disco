@@ -10,10 +10,13 @@ import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.impl.Constant;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
+import org.jmlspecs.jml4.compiler.JmlConstants;
 import org.jmlspecs.jml4.nonnull.Nullity;
 
 public class JmlFieldDeclaration extends FieldDeclaration {
 
+	private boolean jmlModifiersHaveBeenInit = false;
+	private long jmlModifiers = 0;
 	public /*@nullable*/ JmlDataGroupClause[] dataGroups;
 	public JmlFieldDeclaration() {
 		// for subtypes or conversion
@@ -23,14 +26,32 @@ public class JmlFieldDeclaration extends FieldDeclaration {
 		super(name, sourceStart, sourceEnd);
 	}
 
+	public void resolve(MethodScope initializationScope) {
+		initJmlModifiersFromAnnotations();
+		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.RESOLVE
+			&& this.isModel())
+			return;
+		super.resolve(initializationScope);
+	}
+
+	public void initJmlModifiersFromAnnotations() {
+		jmlModifiers |= JmlModifier.getFromAnnotations(this.annotations);
+		this.jmlModifiersHaveBeenInit = true;
+	}
+
 	public FlowInfo analyseCode(MethodScope initializationScope, FlowContext flowContext, FlowInfo flowInfo) {
+		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_ANALYSIS
+			&& this.isModel()) {
+			return flowInfo;
+		}
+
 		//Set nullity for field through its annotations
 		if (initializationScope.compilerOptions().useNonNullTypeSystem()) {
 			if (this.annotations != null && type!=null) {
 				type.handleAnnotations(this.annotations, initializationScope.problemReporter());
 			}
 		}
-		FlowInfo fromSuper = super.analyseCode(initializationScope, flowContext, flowInfo); 
+		FlowInfo fromSuper = super.analyseCode(initializationScope, flowContext, flowInfo);
 		// TODO: remove the following test once we fix the parser to only use
 		// JML AST Nodes when EnabledJml.
 		if (initializationScope.compilerOptions().useNonNullTypeSystem()) {
@@ -61,6 +82,13 @@ public class JmlFieldDeclaration extends FieldDeclaration {
 			}
 		}
 		return fromSuper;
+	}
+
+	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
+		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_GENERATION
+				&& this.isModel())
+			return;
+		super.generateCode(currentScope, codeStream);
 	}
 
 	protected void generateTestForNullity(BlockScope currentScope, CodeStream codeStream) {
@@ -98,6 +126,12 @@ public class JmlFieldDeclaration extends FieldDeclaration {
 	public StringBuffer print(int indent, StringBuffer output) {
 		super.print(indent, output);
 		return printDataGroups(indent, output);
+	}
+
+	public boolean isModel() {
+		if (!this.jmlModifiersHaveBeenInit)
+			initJmlModifiersFromAnnotations();
+		return JmlModifier.isModel(this.jmlModifiers);
 	}
 
 }

@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v5.5"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.jdt.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.jmlspecs.jml4.esc.distribution"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.jmlspecs.jml4.esc.distribution.configuration"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

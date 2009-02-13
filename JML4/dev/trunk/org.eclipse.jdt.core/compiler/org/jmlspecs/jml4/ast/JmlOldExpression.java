@@ -1,6 +1,7 @@
 package org.jmlspecs.jml4.ast;
 
 import org.eclipse.jdt.core.compiler.CharOperation;
+import org.eclipse.jdt.internal.compiler.ASTVisitor;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.ast.LabeledStatement;
@@ -48,4 +49,14 @@ public class JmlOldExpression extends JmlUnaryExpression {
 		return this.resolvedType;
 	}
 
+	public void traverse(
+			ASTVisitor visitor,
+			BlockScope blockScope) {
+		if (visitor.visit(this, blockScope)) {
+			this.expression.traverse(visitor, blockScope);
+		}
+		visitor.endVisit(this, blockScope);
+	}
+
+	
 }

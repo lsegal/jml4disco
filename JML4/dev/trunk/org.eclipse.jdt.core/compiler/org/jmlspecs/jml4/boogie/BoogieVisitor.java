@@ -52,7 +52,6 @@ import org.eclipse.jdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.jdt.internal.compiler.ast.MarkerAnnotation;
 import org.eclipse.jdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.jdt.internal.compiler.ast.MessageSend;
-import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.NormalAnnotation;
 import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
 import org.eclipse.jdt.internal.compiler.ast.OR_OR_Expression;
@@ -665,8 +664,7 @@ public class BoogieVisitor extends ASTVisitor {
 	}
 
 	// priority=3 group=decl
-	public boolean visit(MethodDeclaration term, ClassScope scope) {
-		JmlMethodDeclaration jmlTerm = (JmlMethodDeclaration)term;
+	public boolean visit(JmlMethodDeclaration term, ClassScope scope) {
 		methodScope = term.scope; // used by #visit(JmlMethodSpecification, ClassScope)
 		
 		debug(term, scope);
@@ -691,8 +689,8 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 		
 		// ensures & requires clause
-		if (jmlTerm.getSpecification() != null) {
-			visit(jmlTerm.getSpecification(), scope);
+		if (term.getSpecification() != null) {
+			visit(term.getSpecification(), scope);
 		}
 		
 		appendLine(" {"); //$NON-NLS-1$

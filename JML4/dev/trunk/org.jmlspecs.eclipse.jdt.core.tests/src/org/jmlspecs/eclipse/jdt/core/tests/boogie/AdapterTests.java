@@ -85,7 +85,7 @@ public class AdapterTests extends AbstractRegressionTest {
 				"");
 	}
 	
-	// term=MethodDeclaration,JmlAssertStatement,Argument
+	// term=JmlMethodDeclaration,JmlAssertStatement,Argument
 	public void test_003_assertParam() {
 		this.runNegativeTest (new String[] {
 				testsPath + "X.java",
@@ -295,8 +295,8 @@ public class AdapterTests extends AbstractRegressionTest {
 				"");
 	}
 	
-	// term=MethodDeclaration
-	public void test_0110_MethodDeclaration_EmptyMethod() {
+	// term=JmlMethodDeclaration
+	public void test_0110_JmlMethodDeclaration_EmptyMethod() {
 		this.runNegativeTest (new String[] {				
 				testsPath + "X.java",
 				"package tests.esc;\n" +
@@ -309,7 +309,7 @@ public class AdapterTests extends AbstractRegressionTest {
 				"");
 	}	
 	
-	// term=MethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement
+	// term=JmlMethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement
 	public void test_0111_MethodDefinition() {
 		this.runNegativeTest (new String[] {				
 				testsPath + "X.java",
@@ -333,7 +333,7 @@ public class AdapterTests extends AbstractRegressionTest {
 				"This assertion might not hold.\n" + 
 				"----------\n");
 	}
-	// term=MethodDeclaration,JmlAssertStatement
+	// term=JmlMethodDeclaration,JmlAssertStatement
 	public void test_0112_DoubleMethodDefinition() {
 		this.runNegativeTest (new String[] {				
 				testsPath + "X.java",

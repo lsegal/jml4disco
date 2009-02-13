@@ -12,18 +12,11 @@ public class BoogieLocalDeclaration extends JmlLocalDeclaration {
 		type = arg.type;
 		declarationSourceStart = arg.declarationSourceStart;
 		declarationSourceEnd = arg.declarationSourceEnd;
+		this.initialization = arg.initialization;
 	}
 	
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
-
-		if (visitor.visit(this, scope)) {
-			if (this.annotations != null) {
-				int annotationsLength = this.annotations.length;
-				for (int i = 0; i < annotationsLength; i++)
-					this.annotations[i].traverse(visitor, scope);
-			}
-			type.traverse(visitor, scope);
-		}
+		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}	
 

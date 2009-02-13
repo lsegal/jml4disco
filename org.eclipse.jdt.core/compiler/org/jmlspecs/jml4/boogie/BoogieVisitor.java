@@ -429,9 +429,9 @@ public class BoogieVisitor extends ASTVisitor {
 		for (int i = 0; i< term.initializations.length ; i++) {
 			term.initializations[i].traverse(this, scope);
 		}
-		append("while "); //$NON-NLS-1
+		append("while "); //$NON-NLS-1$
 		append(term.condition);
-		appendLine (" " + BLOCK_OPEN); 
+		appendLine (" " + BLOCK_OPEN); //$NON-NLS-1$ 
 		output.increaseIndent();
 		if (term.action instanceof Block) {
 			Block block = (Block) term.action;

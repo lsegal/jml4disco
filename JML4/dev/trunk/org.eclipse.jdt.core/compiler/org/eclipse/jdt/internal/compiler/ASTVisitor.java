@@ -139,7 +139,6 @@ import org.jmlspecs.jml4.ast.JmlSingleNameReference;
 import org.jmlspecs.jml4.ast.JmlSingleTypeReference;
 import org.jmlspecs.jml4.ast.JmlWhileStatement;
 import org.jmlspecs.jml4.ast.JmlWildcard;
-import org.jmlspecs.jml4.boogie.BoogieLocalDeclaration;
 
 /** 
  * A visitor for iterating through the parse tree.
@@ -1248,10 +1247,6 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 
-	public boolean visit(BoogieLocalDeclaration localDeclaration, BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	
 	public boolean visit(JmlMessageSend messageSend, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}

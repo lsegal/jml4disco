@@ -123,7 +123,7 @@ public class InitialTests extends AbstractRegressionTest {
 		compareJavaExprToBoogie("2.2456", "2.2456");
 	}
 	
-	// term=MethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement,EqualExpression
+	// term=JmlMethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement,EqualExpression
 	public void testMethodDefinition() {
 		this.compareJavaToBoogie(
 			// java
@@ -193,7 +193,7 @@ public class InitialTests extends AbstractRegressionTest {
 		);
 	}
 
-	// term=MethodDeclaration,JmlAssertStatement,Argument
+	// term=JmlMethodDeclaration,JmlAssertStatement,Argument
 	public void test_003_assertParam() {
 		this.compareJavaToBoogie(
 				//java
@@ -442,8 +442,8 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=MethodDeclaration
-	public void test_0110_MethodDeclaration_EmptyMethod() {
+	// term=JmlMethodDeclaration
+	public void test_0110_JmlMethodDeclaration_EmptyMethod() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +

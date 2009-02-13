@@ -9,7 +9,7 @@ import java.util.List;
  * thrown in JML code.
  */
 // DISCO Serializable
-public class KindOfAssertion implements Serializable{
+public class KindOfAssertion implements Serializable {
 
 	//* a cache of all the kinds, initialized on the first call to all()
 	private static /*@nullable*/ KindOfAssertion[] allCache = null;

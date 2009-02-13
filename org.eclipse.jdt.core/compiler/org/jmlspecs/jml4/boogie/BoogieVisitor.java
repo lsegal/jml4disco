@@ -1,6 +1,5 @@
 package org.jmlspecs.jml4.boogie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
@@ -97,7 +96,6 @@ import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
 import org.jmlspecs.jml4.ast.JmlClause;
 import org.jmlspecs.jml4.ast.JmlEnsuresClause;
 import org.jmlspecs.jml4.ast.JmlFieldDeclaration;
-import org.jmlspecs.jml4.ast.JmlLocalDeclaration;
 import org.jmlspecs.jml4.ast.JmlLoopAnnotations;
 import org.jmlspecs.jml4.ast.JmlLoopInvariant;
 import org.jmlspecs.jml4.ast.JmlLoopVariant;
@@ -432,9 +430,9 @@ public class BoogieVisitor extends ASTVisitor {
 		for (int i = 0; i< term.initializations.length ; i++) {
 			term.initializations[i].traverse(this, scope);
 		}
-		append("while "); //$NON-NLS-1$
+		append("while "); //$NON-NLS-1
 		append(term.condition);
-		appendLine (" " + BLOCK_OPEN); //$NON-NLS-1$
+		appendLine (" " + BLOCK_OPEN); 
 		output.increaseIndent();
 		if (term.action instanceof Block) {
 			Block block = (Block) term.action;
@@ -626,12 +624,6 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=decl
 	public boolean visit(LocalDeclaration term, BlockScope scope) {
 		debug(term, scope);
-		return false;
-	}
-	
-	// priority=3 group=decl
-	public boolean visit(JmlLocalDeclaration term, BlockScope scope) {
-		debug(term, scope);
 		String name = new String(term.name);
 		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
 		term.type.traverse(this, scope);
@@ -674,11 +666,6 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// priority=3 group=decl
 	public boolean visit(MethodDeclaration term, ClassScope scope) {
-		
-		BoogieVariableDeclFinderVisitor varDeclFinder = new BoogieVariableDeclFinderVisitor();
-		varDeclFinder.visit(term, scope);
-		ArrayList locals = varDeclFinder.getDecls(); 
-		
 		JmlMethodDeclaration jmlTerm = (JmlMethodDeclaration)term;
 		methodScope = term.scope; // used by #visit(JmlMethodSpecification, ClassScope)
 		
@@ -688,7 +675,6 @@ public class BoogieVisitor extends ASTVisitor {
 		append(new String(term.binding.declaringClass.readableName()) + "."); //$NON-NLS-1$
 		append(new String(term.selector));
 		append("("); //$NON-NLS-1$
-		
 		if (term.arguments != null) {
 			for (int i = 0; i < term.arguments.length; i++) {
 				term.arguments[i].traverse(this, scope);
@@ -712,14 +698,6 @@ public class BoogieVisitor extends ASTVisitor {
 		appendLine(" {"); //$NON-NLS-1$
 		output.increaseIndent();
 
-		if (locals != null) {
-			for (int i = 0; i < locals.size(); i++) {
-				LocalDeclaration loc = (LocalDeclaration)locals.get(i);
-				BoogieLocalDeclaration lcldecl = new BoogieLocalDeclaration (loc);
-				lcldecl.traverse(this, term.scope);				
-			}
-		}
-		
 		if (term.statements != null) {
 			for (int i = 0; i < term.statements.length; i++) {
 				term.statements[i].traverse(this, term.scope);

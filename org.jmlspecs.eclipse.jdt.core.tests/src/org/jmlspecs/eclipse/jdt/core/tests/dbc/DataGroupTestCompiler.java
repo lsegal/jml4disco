@@ -76,7 +76,9 @@ public class DataGroupTestCompiler extends AbstractRegressionTest {
         this.runNegativeTest( new String[] {
                 "X.java",
                 "public class X {\n"+
-                "   Object o; //@ maps x.y \\into z;\n" +
+                "   Object o1; //@ maps x.y \\into z;\n" +
+                "   Object o2; //@ maps x[*] \\into z;\n" +
+                "   Object o3; //@ maps x[*].y \\into z;\n" +
                 "   public void m(int i) {} \n" +
                 "}\n"
                 },

@@ -6,48 +6,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.MessageFormat;
-import java.util.Map;
 
-import org.eclipse.jdt.core.tests.compiler.regression.AbstractRegressionTest;
-import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
-import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.cvc3.Cvc3Adapter;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleProcessPool;
 import org.jmlspecs.jml4.esc.util.Utils;
 
-public class SanityTests extends AbstractRegressionTest {
+public class SanityTests extends EscTest {
 	public SanityTests(String name) {
 		super(name);
 	}
 
-	// Augment problem detection settings
-	@Override
-	@SuppressWarnings("unchecked")
-	protected Map<String, String> getCompilerOptions() {
-		Map<String, String> options = super.getCompilerOptions();
-
-		options.put(JmlCompilerOptions.OPTION_EnableJml, CompilerOptions.ENABLED);
-		options.put(JmlCompilerOptions.OPTION_EnableJmlEsc, CompilerOptions.ENABLED);
-		options.put(JmlCompilerOptions.OPTION_DefaultNullity, JmlCompilerOptions.NON_NULL);
-		options.put(CompilerOptions.OPTION_ReportNullReference, CompilerOptions.ERROR);
-		options.put(CompilerOptions.OPTION_ReportPotentialNullReference, CompilerOptions.ERROR);
-		options.put(CompilerOptions.OPTION_ReportRedundantNullCheck, CompilerOptions.IGNORE);
-		options.put(JmlCompilerOptions.OPTION_ReportNonNullTypeSystem, CompilerOptions.ERROR);
-		options.put(CompilerOptions.OPTION_ReportRawTypeReference, CompilerOptions.IGNORE);
-		options.put(CompilerOptions.OPTION_ReportUnnecessaryElse, CompilerOptions.IGNORE);
-		options.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.IGNORE);
-		// options.put(JmlCompilerOptions.OPTION_SpecPath,
-		// NullTypeSystemTestCompiler.getSpecPath());
-		options.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
-		options.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
-		options.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
-		return options;
-	}
-
 	public void test_001_EscSanity() {
 		this.runNegativeTest(new String[] { 
-				"test_001_EscSanity.java",
+				testsPath + "test_001_EscSanity.java",
+				"package tests.esc;\n" +
 				"public class test_001_EscSanity {\n" + 
 				"  public void m() {}\n" + 
 				"}\n" 
@@ -110,7 +83,7 @@ public class SanityTests extends AbstractRegressionTest {
 			String wholeFilename = baseFilename + ".thy";
 			Utils.writeToFile(wholeFilename, isabelleString);
 			String USE_THY_CMD = "use_thy \"{0}\";\n"; //$NON-NLS-1$
-			String command = MessageFormat.format(USE_THY_CMD, new String[]{baseFilename});
+			String command = MessageFormat.format(USE_THY_CMD, new Object[]{baseFilename});
 
 			out.write(command.getBytes());
 			InputStream in = p.getInputStream();

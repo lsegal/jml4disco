@@ -3,8 +3,8 @@
 	<name>org.jmlspecs.jml4.esc.distribution.http</name>
 	<comment></comment>
 	<projects>
-		<project>org.eclipse.jdt.core</project>
 		<project>org.jmlspecs.jml4.esc.distribution</project>
+		<project>org.eclipse.jdt.core</project>
 		<project>org.jmlspecs.jml4.esc.distribution.configuration</project>
 	</projects>
 	<buildSpec>

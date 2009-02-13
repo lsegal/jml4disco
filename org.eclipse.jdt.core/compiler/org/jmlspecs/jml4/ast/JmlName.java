@@ -1,9 +1,10 @@
 package org.jmlspecs.jml4.ast;
 
+import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 
 // Really FIXME: rename this to JmlNameOrSuffix
-public class JmlName extends JmlAstNode {
+public class JmlName extends ASTNode {
 
     public static final int SORT_MIN      = 1;
     public static final int SORT_IDENT    = 1;

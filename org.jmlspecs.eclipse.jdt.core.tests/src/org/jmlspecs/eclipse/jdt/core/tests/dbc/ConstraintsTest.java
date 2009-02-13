@@ -8,7 +8,7 @@ import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 public class ConstraintsTest extends AbstractRegressionTest {
 
 	public final String workspace = "..";
-	public final String path2jml4runtime = workspace + "/org.jmlspecs.jml4.runtime/bin";
+	public final String path2jml4annotations = workspace + "/org.jmlspecs.annotation/bin";
 
     public ConstraintsTest(String name) {
         super(name);
@@ -19,7 +19,7 @@ public class ConstraintsTest extends AbstractRegressionTest {
 		final int length = superDefaultClassPaths.length;
 	    String[] defaultClassPaths = new String[length + 1];
         System.arraycopy(superDefaultClassPaths, 0, defaultClassPaths, 0, length);
-        defaultClassPaths[length] = path2jml4runtime;
+        defaultClassPaths[length] = path2jml4annotations;
         return defaultClassPaths;
    }
 

@@ -11,6 +11,7 @@ import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
+import org.jmlspecs.jml4.compiler.JmlConstants;
 import org.jmlspecs.jml4.nonnull.Nullity;
 
 public class JmlReturnStatement extends ReturnStatement {
@@ -57,7 +58,8 @@ public class JmlReturnStatement extends ReturnStatement {
 //	}
 	
 	protected void generateOfPostCondition(BlockScope currentScope, CodeStream codeStream) {
-		if (!currentScope.compilerOptions().jmlRacEnabled)
+		if (!currentScope.compilerOptions().jmlRacEnabled ||
+				JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.CODE_GENERATION)
 			return;
 		generateCheckForNonNull(currentScope, codeStream);
 		

@@ -5,11 +5,12 @@ import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
+import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 
 public class JmlLoopInvariant extends JmlClause {
 
-	public JmlLoopInvariant(String clauseKeyword, boolean isRedundant, Expression pred) {
-		super(clauseKeyword, isRedundant, pred);
+	public JmlLoopInvariant(JmlIdentifier keyword, Expression pred) {
+		super(keyword, pred);
 	}
 
 	public void generateCheck(BlockScope currentScope, CodeStream codeStream) {

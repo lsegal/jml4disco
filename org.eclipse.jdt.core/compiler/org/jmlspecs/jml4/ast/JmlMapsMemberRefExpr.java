@@ -2,6 +2,7 @@ package org.jmlspecs.jml4.ast;
 
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
+/** @deprecated */
 public class JmlMapsMemberRefExpr extends ASTNode {
 
 	public final               char[]    identifier;

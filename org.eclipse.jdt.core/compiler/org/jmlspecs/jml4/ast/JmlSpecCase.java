@@ -3,6 +3,7 @@ package org.jmlspecs.jml4.ast;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.jdt.internal.compiler.flow.FlowContext;
@@ -11,8 +12,10 @@ import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 
-public class JmlSpecCase extends JmlAstNode {
+public class JmlSpecCase extends ASTNode {
 
+	public static final JmlSpecCase EMPTY_SPEC_CASE_ARRAY[] = new JmlSpecCase[0];
+	
     private static final int VALID_MODIFIERS = ExtraCompilerModifiers.AccVisibilityMASK;
 	private static final int LIGHTWEIGHT = 0;
 	private static final int BEHAVIOR = 1;

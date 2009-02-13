@@ -14,6 +14,8 @@ import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 
 public class JmlResultReference extends Expression {
 
+	// FIXME: [chalin] shouldn't this be a subtype of Reference?
+	
 	public JmlResultReference(int sourceStart, int sourceEnd) {
 		super();
 		this.sourceStart = sourceStart;

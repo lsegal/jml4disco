@@ -3,13 +3,13 @@
     <wb-module deploy-name="org.jmlspecs.jml4.esc.distribution.http">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.jmlspecs.jml4.esc.distribution.configuration/org.jmlspecs.jml4.esc.distribution.configuration">
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.jmlspecs.jml4.esc.distribution/org.jmlspecs.jml4.esc.distribution">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.eclipse.jdt.core/org.eclipse.jdt.core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.jmlspecs.jml4.esc.distribution/org.jmlspecs.jml4.esc.distribution">
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.jmlspecs.jml4.esc.distribution.configuration/org.jmlspecs.jml4.esc.distribution.configuration">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path"/>

@@ -3,13 +3,14 @@ package org.jmlspecs.jml4.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.jdt.internal.compiler.flow.FlowContext;
 import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 
-public class JmlSpecCaseHeader extends JmlAstNode {
+public class JmlSpecCaseHeader extends ASTNode {
 
 	public final JmlRequiresClause[] requiresClauses;
 
@@ -45,7 +46,7 @@ public class JmlSpecCaseHeader extends JmlAstNode {
 	public List/*<Expression>*/ getRequiresExpressions() {
 		List/*<Expression>*/ result = new ArrayList/*<Expression>*/();
 		for (int i = 0; i < requiresClauses.length; i++) {
-			result.add(this.requiresClauses[i].pred);
+			result.add(this.requiresClauses[i].expr);
 		}
 		return result;
 	}

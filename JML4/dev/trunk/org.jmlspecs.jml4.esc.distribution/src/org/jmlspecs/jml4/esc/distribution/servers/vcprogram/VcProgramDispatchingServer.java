@@ -30,6 +30,8 @@ public class VcProgramDispatchingServer {
 
 	private static int THREAD_POOL_SIZE = 75; 	// The max number of threads in
 												// the pool
+	private static int THROTTLE_VALUE = 25;		//The number of pending VC's before throttling
+	private static int THROTTLE_TIME = 1000; 	//In milliseconds
 	
 	private static Executor proveVcThreadPool = initProveVcThreadPool();
 
@@ -52,11 +54,27 @@ public class VcProgramDispatchingServer {
 		final Vector<Result> accumulator = new Vector<Result>();
 		final int[] done = new int[1];
 		AbstractRemoteServer server = null;
+		boolean retry = false;
 		// Start Dispatching
 		for (int i = 0; i < vcs.length; i++) {
 			final VC vc = vcs[i];
-
-			server = _servers.peek();
+			
+			do{
+				server = _servers.peek();
+				if(server.getPendingVcs() > THROTTLE_VALUE )  
+				{ 	//This allows for delaying dispatching if the best server available is too
+					// burdened with too many pending VCs
+					retry = true;
+					try {
+						Thread.currentThread().sleep(THROTTLE_TIME);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				else
+					retry = false;
+			} while(retry);
+			
 			System.out.println("\tSending to server " + server.toString());
 			Runnable work = new ProveVcThread(vc, vcProg, i, accumulator, done,	server);
 			proveVcThreadPool.execute(work);

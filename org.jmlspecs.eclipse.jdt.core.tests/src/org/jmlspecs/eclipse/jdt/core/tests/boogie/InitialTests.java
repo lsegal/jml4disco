@@ -538,8 +538,43 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				);
 	}	
+	
+	// TODO term=LocalDeclaration
+	public void test_0298_LocalDeclaration() {
+		compareJavaToBoogie(	
+			// java source
+			"package tests.esc;\n" + 
+			"public class A {\n" +
+			"   public void m() {\n" +
+			"		int z;\n" + 
+			"   }\n" + 
+			"}\n"
+			, 
+			// TODO expected boogie
+			"procedure tests.esc.A.m() {\n" +
+			"	var z : int;\n" +
+			"}\n");
+	}
 
-	// term=IfStatement,Argument,ReturnStatement,StringLiteral,Block,EqualExpression
+	// TODO term=LocalDeclaration,Assignment
+	public void test_0299_LocalDeclarationWithInitialization() {
+		compareJavaToBoogie(	
+			// java source
+			"package tests.esc;\n" + 
+			"public class A {\n" +
+			"   public void m() {\n" +
+			"		int z = 3;\n" + 
+			"   }\n" + 
+			"}\n"
+			, 
+			// TODO expected boogie
+			"procedure tests.esc.A.m() {\n" +
+			"	var z : int;\n" +
+			"	z := 3;\n" +
+			"}\n");
+	}
+
+	// term=IfStatement,Argument,ReturnStatement,StringLiteral,Block,EqualExpression,LocalDeclaration
 	public void test_0300_IfCondition() {
 		compareJavaToBoogie(	
 			// java source

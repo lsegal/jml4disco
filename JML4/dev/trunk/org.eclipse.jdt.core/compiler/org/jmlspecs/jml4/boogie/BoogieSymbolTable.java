@@ -41,12 +41,16 @@ public class BoogieSymbolTable {
 	}
 	
 	public String lookup(String symbol) {
+		return lookup(symbol, currentBlock);
+	}
+
+	public String lookup(String symbol, Block block) {
 		// look through scopes (last to first)
-		for (Block block = currentBlock; block != null; 
-				block = (Block)heirarchy.get(block)) {
+		while (block != null) {
 			Hashtable tab = (Hashtable)scope.get(block);
 			String val = (String)tab.get(symbol);
 			if (val != null) return val;
+			block = (Block)heirarchy.get(block);
 		} 
 		return null;
 	}

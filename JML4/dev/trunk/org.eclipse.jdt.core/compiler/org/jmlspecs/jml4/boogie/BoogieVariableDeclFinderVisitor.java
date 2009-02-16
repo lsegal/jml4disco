@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
 import org.eclipse.jdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
+import org.jmlspecs.jml4.ast.JmlMethodDeclaration;
 
 public class BoogieVariableDeclFinderVisitor extends ASTVisitor {
 
 	ArrayList locals = new ArrayList();
 	
-	public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
+	public boolean visit(JmlMethodDeclaration methodDeclaration, ClassScope scope) {
 		if (methodDeclaration.statements != null) {
 			for(int i=0; i< methodDeclaration.statements.length; i ++) {
 				methodDeclaration.statements[i].traverse(this, methodDeclaration.scope);

@@ -20,12 +20,14 @@ public class BoogieSymbolTable {
 		scope.remove(scope.size() - 1);
 	}
 	
-	public synchronized void addSymbol(String symbol) {
+	public synchronized String addSymbol(String symbol) {
 		Hashtable lastScope = (Hashtable)scope.get(scope.size() - 1);
 		if (lastScope.get(symbol) != null) {
 			throw new IllegalArgumentException("Symbol " + symbol + " already exists"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		lastScope.put(symbol, generateSymbol());
+		String value = generateSymbol();
+		lastScope.put(symbol, value);
+		return value;
 	}
 	
 	public String lookup(String symbol) {

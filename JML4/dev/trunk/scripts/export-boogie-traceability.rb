@@ -83,7 +83,7 @@ class TestTraceability
 
     def html
         <<-eof
-            <a href="/trac/browser/JML4/dev/branches/boogie/#{$tests_path}#{file}#L#{line}"
+            <a href="/trac/browser/JML4/dev/trunk/#{$tests_path}#{file}#L#{line}"
                 style="color:#{color}" title="#{file}: #{name}">#{value}</a>
         eof
     end
@@ -218,6 +218,7 @@ def parse_tests(file)
                 prevline = lines[index - 1]
                 pass = !(prevline =~ /\bTODO\b/)
                 terms = prevline[/term=(\S+)/, 1] 
+                next unless terms
                 terms.split(',').each do |term|
                     out[term] ||= []
                     out[term] << TestTraceability.new(file, index+1, name, pass)

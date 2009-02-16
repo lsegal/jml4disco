@@ -1,5 +1,6 @@
 package org.jmlspecs.eclipse.jdt.core.tests.boogie;
 
+import org.eclipse.jdt.internal.compiler.ast.Block;
 import org.jmlspecs.jml4.boogie.BoogieSymbolTable;
 
 import junit.framework.TestCase;
@@ -28,7 +29,7 @@ public class BoogieSymbolTableTests extends TestCase {
 		BoogieSymbolTable tab = new BoogieSymbolTable();
 		tab.addSymbol("x");
 		assertEquals("a", tab.lookup("x"));
-		tab.enterScope();
+		tab.enterScope(new Block(0));
 		tab.addSymbol("x");
 		assertEquals("b", tab.lookup("x"));
 	}
@@ -37,7 +38,7 @@ public class BoogieSymbolTableTests extends TestCase {
 		BoogieSymbolTable tab = new BoogieSymbolTable();
 		tab.addSymbol("x");
 		assertEquals("a", tab.lookup("x"));
-		tab.enterScope();
+		tab.enterScope(new Block(0));
 		tab.addSymbol("x");
 		assertEquals("b", tab.lookup("x"));
 		tab.exitScope();
@@ -49,7 +50,7 @@ public class BoogieSymbolTableTests extends TestCase {
 		
 		assertEquals(null, tab.lookup("x"));
 
-		tab.enterScope();
+		tab.enterScope(new Block(0));
 		tab.addSymbol("x");
 		tab.exitScope();
 		assertEquals(null, tab.lookup("x"));
@@ -57,10 +58,10 @@ public class BoogieSymbolTableTests extends TestCase {
 	
 	public void testSymbolInHigherScope() {
 		BoogieSymbolTable tab = new BoogieSymbolTable();
-		tab.enterScope();
+		tab.enterScope(new Block(0));
 		tab.addSymbol("x");
-		tab.enterScope();
-		tab.enterScope();
+		tab.enterScope(new Block(0));
+		tab.enterScope(new Block(0));
 		assertEquals("a", tab.lookup("x"));
 	}
 
@@ -78,20 +79,21 @@ public class BoogieSymbolTableTests extends TestCase {
 	}
 	
 	public void testScopeReentry() {
+		Block blk1 = new Block(0);
 		BoogieSymbolTable tab = new BoogieSymbolTable();
-		tab.enterScope();
+		tab.enterScope(blk1);
 		tab.addSymbol("x");
-		tab.exitScope(true); // keep scope
-		tab.enterScope();
+		tab.exitScope();
+		tab.enterScope(blk1);
 		assertEquals("a", tab.lookup("x"));
 	}
 
 	public void testScopeReentryWithScopeRemoval() {
 		BoogieSymbolTable tab = new BoogieSymbolTable();
-		tab.enterScope();
+		tab.enterScope(new Block(0));
 		tab.addSymbol("x");
-		tab.exitScope(false); // don't keep scope
-		tab.enterScope();
+		tab.exitScope(); 
+		tab.enterScope(new Block(0));
 		assertEquals(null, tab.lookup("x"));
 	}
 }

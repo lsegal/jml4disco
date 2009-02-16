@@ -1,38 +1,37 @@
 package org.jmlspecs.jml4.boogie;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
+
+import org.eclipse.jdt.internal.compiler.ast.Block;
 
 public class BoogieSymbolTable {
 	private final static String charmap = "abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
 	private String generatedSymbol = ""; //$NON-NLS-1$
-	private ArrayList scope = new ArrayList();
-	private int scopeIndex = -1;
+	private Hashtable scope = new Hashtable();
+	private Hashtable heirarchy = new Hashtable();
+	private Block currentBlock = null;
 	
 	public BoogieSymbolTable() {
-		enterScope();
+		enterScope(new Block(0));
 	}
 	
-	public void enterScope() {
-		scopeIndex++;
-		if (scopeIndex >= scope.size()) {
-			scope.add(new Hashtable());
+	public void enterScope(Block block) {
+		if (currentBlock != null) { 
+			heirarchy.put(block, currentBlock);
 		}
-	}
-	
-	public void exitScope(boolean ignoreRemoveScope) {
-		if (!ignoreRemoveScope) {
-			scope.remove(scopeIndex);
+		
+		currentBlock = block;
+		if (scope.get(currentBlock) == null) {
+			scope.put(block, new Hashtable());
 		}
-		scopeIndex--;
 	}
 	
 	public void exitScope() {
-		exitScope(false);
+		currentBlock = (Block)heirarchy.get(currentBlock);
 	}
 	
 	public synchronized String addSymbol(String symbol) {
-		Hashtable lastScope = (Hashtable)scope.get(scopeIndex);
+		Hashtable lastScope = (Hashtable)scope.get(currentBlock);
 		if (lastScope.get(symbol) != null) {
 			throw new IllegalArgumentException("Symbol " + symbol + " already exists"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -43,11 +42,12 @@ public class BoogieSymbolTable {
 	
 	public String lookup(String symbol) {
 		// look through scopes (last to first)
-		for (int i = scopeIndex; i >= 0; i--) {
-			Hashtable tab = (Hashtable)scope.get(i);
+		for (Block block = currentBlock; block != null; 
+				block = (Block)heirarchy.get(block)) {
+			Hashtable tab = (Hashtable)scope.get(block);
 			String val = (String)tab.get(symbol);
 			if (val != null) return val;
-		}
+		} 
 		return null;
 	}
 	

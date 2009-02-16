@@ -96,4 +96,16 @@ public class BoogieSymbolTableTests extends TestCase {
 		tab.enterScope(new Block(0));
 		assertEquals(null, tab.lookup("x"));
 	}
+	
+	public void testLookupInDifferentBlock() {
+		Block blk1 = new Block(0);
+		Block blk2 = new Block(0);
+		BoogieSymbolTable tab = new BoogieSymbolTable();
+		tab.enterScope(blk1);
+		tab.enterScope(blk2);
+		tab.addSymbol("x");
+		tab.exitScope();
+		assertEquals("a", tab.lookup("x", blk2));
+		assertEquals(null, tab.lookup("x", blk1));
+	}
 }

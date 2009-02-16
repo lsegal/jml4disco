@@ -937,7 +937,14 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				""			
+				"procedure tests.esc.U.m1() {\n" +
+				"	var a : int;\n" +
+				"	var b : int;\n" +
+				"	a := a + 1;\n" +
+				"	a := a + 1;\n" +
+				"	b := b - 1;\n" +
+				"	b := b - 1;\n" +
+				"}\n"			
 				);
 	}
 	
@@ -959,7 +966,14 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				""			
+				"procedure tests.esc.U.m1() {\n" +
+				"	var a : int;\n" +
+				"	var b : int;\n" +
+				"	a := a + 1;\n" +
+				"	a := a + 1;\n" +
+				"	b := b - 1;\n" +
+				"	b := b - 1;\n" +
+				"}\n"			
 				);
 	}	
 	

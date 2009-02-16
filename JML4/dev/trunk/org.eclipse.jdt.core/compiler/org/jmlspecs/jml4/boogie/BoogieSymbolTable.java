@@ -7,21 +7,32 @@ public class BoogieSymbolTable {
 	private final static String charmap = "abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
 	private String generatedSymbol = ""; //$NON-NLS-1$
 	private ArrayList scope = new ArrayList();
+	private int scopeIndex = -1;
 	
 	public BoogieSymbolTable() {
 		enterScope();
 	}
 	
 	public void enterScope() {
-		scope.add(new Hashtable());
+		scopeIndex++;
+		if (scopeIndex >= scope.size()) {
+			scope.add(new Hashtable());
+		}
+	}
+	
+	public void exitScope(boolean ignoreRemoveScope) {
+		if (!ignoreRemoveScope) {
+			scope.remove(scopeIndex);
+		}
+		scopeIndex--;
 	}
 	
 	public void exitScope() {
-		scope.remove(scope.size() - 1);
+		exitScope(false);
 	}
 	
 	public synchronized String addSymbol(String symbol) {
-		Hashtable lastScope = (Hashtable)scope.get(scope.size() - 1);
+		Hashtable lastScope = (Hashtable)scope.get(scopeIndex);
 		if (lastScope.get(symbol) != null) {
 			throw new IllegalArgumentException("Symbol " + symbol + " already exists"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -32,7 +43,7 @@ public class BoogieSymbolTable {
 	
 	public String lookup(String symbol) {
 		// look through scopes (last to first)
-		for (int i = scope.size() - 1; i >= 0; i--) {
+		for (int i = scopeIndex; i >= 0; i--) {
 			Hashtable tab = (Hashtable)scope.get(i);
 			String val = (String)tab.get(symbol);
 			if (val != null) return val;

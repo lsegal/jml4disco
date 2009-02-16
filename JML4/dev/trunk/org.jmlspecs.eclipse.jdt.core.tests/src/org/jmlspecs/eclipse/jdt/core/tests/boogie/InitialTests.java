@@ -538,6 +538,27 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				);
 	}	
+	// term=LocalDeclaration
+	public void test_0297_LocalDeclaration_multiVarName_diffScope() {
+		compareJavaToBoogie(	
+			// java source
+			"package tests.esc;\n" + 
+			"public class A {\n" +
+			"   public void m() {\n" +
+			"		int z = 9;\n" +
+			"		int y;\n" +
+			"		if(true) {\n" +
+			" 			int z = 12;\n" +
+			"		}\n" +			
+			"		if(true) { \n" +
+			" 			int y = 5;\n" +
+			"		}\n" +
+			"   }\n" + 
+			"}\n"
+			, 
+			// TODO expected boogie
+			"");
+	}
 	
 	// term=LocalDeclaration
 	public void test_0298_LocalDeclaration() {

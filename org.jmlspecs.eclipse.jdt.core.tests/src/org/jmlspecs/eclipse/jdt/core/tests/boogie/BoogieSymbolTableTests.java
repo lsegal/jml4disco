@@ -76,4 +76,22 @@ public class BoogieSymbolTableTests extends TestCase {
 		assertEquals("ba", tab.lookup("test2"));
 		assertEquals("ba", tab.lookup("test2"));
 	}
+	
+	public void testScopeReentry() {
+		BoogieSymbolTable tab = new BoogieSymbolTable();
+		tab.enterScope();
+		tab.addSymbol("x");
+		tab.exitScope(true); // keep scope
+		tab.enterScope();
+		assertEquals("a", tab.lookup("x"));
+	}
+
+	public void testScopeReentryWithScopeRemoval() {
+		BoogieSymbolTable tab = new BoogieSymbolTable();
+		tab.enterScope();
+		tab.addSymbol("x");
+		tab.exitScope(false); // don't keep scope
+		tab.enterScope();
+		assertEquals(null, tab.lookup("x"));
+	}
 }

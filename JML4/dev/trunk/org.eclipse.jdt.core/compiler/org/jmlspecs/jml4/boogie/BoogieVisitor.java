@@ -70,6 +70,7 @@ import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
 import org.eclipse.jdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.jdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.jdt.internal.compiler.ast.Statement;
 import org.eclipse.jdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.jdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.jdt.internal.compiler.ast.SuperReference;
@@ -144,6 +145,19 @@ public class BoogieVisitor extends ASTVisitor {
 				+ term.sourceStart + (scope != null ? (" from scope " //$NON-NLS-1$
 				+ scope.getClass().getSimpleName())
 						: " from class scope")); //$NON-NLS-1$
+	}
+
+	/**
+	 * Converts a statement to a block to traverse it with braces
+	 * @param term the statement to convert into a block
+	 * @return the original block if term is a Block, 
+	 * 	otherwise a new Block with one statement term. 
+	 */
+	private Block toBlock(Statement term) {
+		if (term instanceof Block) return (Block) term;
+		Block blk = new Block(0);
+		blk.statements = new Statement[]{term};
+		return blk;
 	}
 
 	// TODO priority=2 group=expr
@@ -460,28 +474,15 @@ public class BoogieVisitor extends ASTVisitor {
 		append("if ("); //$NON-NLS-1$
 		term.condition.traverse(this, scope);
 		append(") "); //$NON-NLS-1$
-		if (term.thenStatement!= null)
-			if (!(term.thenStatement instanceof Block )) {
-				output.increaseIndent();
-				appendLine(BLOCK_OPEN); 
-			}							
-			term.thenStatement.traverse(this, scope);
-			if (!(term.thenStatement instanceof Block )) {				
-				output.decreaseIndent();
-				appendLine(BLOCK_CLOSE);
-			}			
-		if (term.elseStatement != null) {
-			append("else "); //$NON-NLS-1$
-			if (!(term.elseStatement instanceof Block )) {				
-				appendLine(BLOCK_OPEN);
-				output.increaseIndent();
-			}			
-			term.elseStatement.traverse(this, scope);
-			if (!(term.elseStatement instanceof Block )) {
-				output.decreaseIndent();
-				appendLine(BLOCK_CLOSE);
-			}		
+		
+		if (term.thenStatement != null) {
+			toBlock(term.thenStatement).traverse(this, scope);
 		}
+		if (term.elseStatement != null) {
+			append("else ");  //$NON-NLS-1$
+			toBlock(term.elseStatement).traverse(this, scope);
+		}
+
 		return false;
 	}
 

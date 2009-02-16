@@ -205,8 +205,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(b: bool) {\n" +
-				"	assert b;\n" +
+				"procedure tests.esc.X.m(a: bool) {\n" +
+				"	assert a;\n" +
 				"}\n" 			
 				);
 	}	
@@ -546,18 +546,28 @@ public class InitialTests extends AbstractRegressionTest {
 			"public class A {\n" +
 			"   public void m() {\n" +
 			"		int z = 9;\n" +
-			"		int y;\n" +
 			"		if(true) {\n" +
 			" 			int z = 12;\n" +
 			"		}\n" +			
 			"		if(true) { \n" +
-			" 			int y = 5;\n" +
+			" 			int z = 5;\n" +
 			"		}\n" +
 			"   }\n" + 
 			"}\n"
 			, 
-			// TODO expected boogie
-			"");
+			// expected boogie
+			"procedure tests.esc.A.m() {\n" +
+			"	var a : int;\n" +
+			"	var b : int;\n" +
+			"	var c : int;\n" +
+			"	a := 9;\n" +
+			"	if (true) {\n" +
+			"		b := 12;\n" +
+			"	}\n" +
+			"	if (true) {\n" +
+			"		c := 5;\n" +
+			"	}\n" +
+			"}\n");
 	}
 	
 	// term=LocalDeclaration
@@ -573,7 +583,7 @@ public class InitialTests extends AbstractRegressionTest {
 			, 
 			// expected boogie
 			"procedure tests.esc.A.m() {\n" +
-			"	var z : int;\n" +
+			"	var a : int;\n" +
 			"}\n");
 	}
 
@@ -590,8 +600,8 @@ public class InitialTests extends AbstractRegressionTest {
 			, 
 			// expected boogie
 			"procedure tests.esc.A.m() {\n" +
-			"	var z : int;\n" +
-			"	z := 3;\n" +
+			"	var a : int;\n" +
+			"	a := 3;\n" +
 			"}\n");
 	}
 
@@ -613,10 +623,10 @@ public class InitialTests extends AbstractRegressionTest {
 			"}\n"
 			, 
 			// expected boogie
-			"procedure tests.esc.A.m(x: int, y: int) returns (__result__ : java.lang.String) {\n" +
-			"	var z : int;\n" +
-			"	z := 3;\n" +
-			"	if (x == 1) {\n" +
+			"procedure tests.esc.A.m(a: int, b: int) returns (__result__ : java.lang.String) {\n" +
+			"	var c : int;\n" +
+			"	c := 3;\n" +
+			"	if (a == 1) {\n" +
 			"		__result__ := string_lit_97;\n" +
 			"		return;\n" +
 			"	}\n" +
@@ -840,7 +850,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=ForStatement,Block
+	// term=ForStatement,Block,BinaryExpression
 	public void test_500_for() {		
 		this.compareJavaToBoogie(
 				//java
@@ -860,19 +870,19 @@ public class InitialTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.U.m1() {\n" +
-				"	var x : int;\n" +
-				"	x := 0;\n" +
-				"	while (x < 10) {\n" +
+				"	var a : int;\n" +
+				"	a := 0;\n" +
+				"	while (a < 10) {\n" +
 				"		assert true;\n" +
-				"		x := x + 1;\n" +
+				"		a := a + 1;\n" +
 				"	}\n" +
 				"}\n" +
 				"procedure tests.esc.U.m2() {\n" +
-				"	var x : int;\n" +
-				"	x := 10;\n" +
-				"	while (x > 0) {\n" +
+				"	var a : int;\n" +
+				"	a := 10;\n" +
+				"	while (a > 0) {\n" +
 				"		assert true;\n" +
-				"		x := x - 1;\n" +
+				"		a := a - 1;\n" +
 				"	}\n" +
 				"}\n"
 				);
@@ -895,15 +905,15 @@ public class InitialTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.U.m1() {\n" +
-				"	var i : int;\n" +
-				"	var j : int;\n" +
+				"	var a : int;\n" +
+				"	var b : int;\n" +
 				"	assert true;\n" +
-				"	i := 1;\n" +
-				"	j := 10;\n" +
-				"	while (i < j) {\n" +
+				"	a := 1;\n" +
+				"	b := 10;\n" +
+				"	while (a < b) {\n" +
 				"		assert true;\n" +
-				"		i := i + 1;\n" +
-				"		j := j + 1;\n" +
+				"		a := a + 1;\n" +
+				"		b := b + 1;\n" +
 				"	}\n" +
 				"}\n"
 				);
@@ -967,10 +977,10 @@ public class InitialTests extends AbstractRegressionTest {
 				,				
 				// expected boogie
 				"procedure tests.esc.X.m1() {\n" +
-				"	var x : int;\n" +
-				"	var y : int;\n" +
-				"	x := 2;\n" +
-				"	y := 1;\n" +
+				"	var a : int;\n" +
+				"	var b : int;\n" +
+				"	a := 2;\n" +
+				"	b := 1;\n" +
 				"}\n"
 				);
 	}	
@@ -992,22 +1002,22 @@ public class InitialTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.X.m() {\n" +
-				"	var i : int;\n" +
-				"	var x : int;\n" +
 				"	var a : int;\n" +
-				"	var s : int;\n" +
+				"	var b : int;\n" +
+				"	var c : int;\n" +
 				"	var d : int;\n" +
-				"	var q : int;\n" +
-				"	var w : int;\n" +
 				"	var e : int;\n" +
-				"	var y : int;\n" +
-				"	var u : int;\n" +
-				"	var o : int;\n" +
-				"	i := 0;\n" +
-				"	e := 0;\n" +
-				"	y := 10;\n" +
-				"	u := 20;\n" +
-				"	o := 30;\n" +
+				"	var f : int;\n" +
+				"	var g : int;\n" +
+				"	var h : int;\n" +
+				"	var i : int;\n" +
+				"	var j : int;\n" +
+				"	var k : int;\n" +
+				"	a := 0;\n" +
+				"	h := 0;\n" +
+				"	i := 10;\n" +
+				"	j := 20;\n" +
+				"	k := 30;\n" +
 				"}\n"
 				);
 	}

@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 public class BoogieSymbolTableTests extends TestCase {
 	public void testSymbolAddition() {
 		BoogieSymbolTable tab = new BoogieSymbolTable();
-		tab.addSymbol("x");
+		assertEquals("a", tab.addSymbol("x"));
 		assertEquals("a", tab.lookup("x"));
 	}
 
@@ -68,11 +68,12 @@ public class BoogieSymbolTableTests extends TestCase {
 		BoogieSymbolTable tab = new BoogieSymbolTable();
 		
 		for (int i = 0; i < 26; i++) tab.addSymbol("x" + i);
-		tab.addSymbol("test");
+		assertEquals("aa", tab.addSymbol("test"));
 		assertEquals("aa", tab.lookup("test"));
 		
 		for (int i = 0; i < 25; i++) tab.addSymbol("y" + i);
 		tab.addSymbol("test2");
+		assertEquals("ba", tab.lookup("test2"));
 		assertEquals("ba", tab.lookup("test2"));
 	}
 }

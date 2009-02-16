@@ -888,7 +888,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=ForStatement,Block
+	// term=ForStatement,Block,BinaryExpression
 	public void test_500_for_multi_initialization() {
 
 		this.compareJavaToBoogie(

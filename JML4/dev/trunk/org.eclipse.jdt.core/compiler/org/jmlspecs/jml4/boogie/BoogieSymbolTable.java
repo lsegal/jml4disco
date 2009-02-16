@@ -15,6 +15,10 @@ public class BoogieSymbolTable {
 		enterScope(new Block(0));
 	}
 	
+	public Block getCurrentBlock() {
+		return currentBlock;
+	}
+	
 	public void enterScope(Block block) {
 		if (currentBlock != null) { 
 			heirarchy.put(block, currentBlock);

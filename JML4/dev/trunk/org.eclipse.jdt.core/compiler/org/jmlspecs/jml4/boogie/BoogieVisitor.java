@@ -115,6 +115,8 @@ public class BoogieVisitor extends ASTVisitor {
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
 	private static final String STMT_END = ";"; //$NON-NLS-1$
 	
+	private BoogieSymbolTable symbolTable;
+	
 	public BoogieVisitor(BoogieSource output) {
 		this.output = output;
 	}
@@ -185,7 +187,8 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(Argument term, BlockScope scope) {
 		debug(term, scope);
 
-		append(new String(term.name) + ": "); //$NON-NLS-1$
+		String sym = symbolTable.addSymbol(new String(term.name));
+		append(sym + ": "); //$NON-NLS-1$
 		return true;
 	}
 
@@ -193,7 +196,8 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(Argument term, ClassScope scope) {
 		debug(term, scope);
 
-		append(new String(term.name) + ": "); //$NON-NLS-1$
+		String sym = symbolTable.addSymbol(new String(term.name));
+		append(sym + ": "); //$NON-NLS-1$
 		return true;
 	}
 
@@ -257,10 +261,64 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 
-	// TODO priority=2 group=expr
+	// priority=2 group=expr
 	public boolean visit(BinaryExpression term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		term.left.traverse(this, scope);
+
+		String out = ""; //$NON-NLS-1$
+		switch ((term.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) {
+			case OperatorIds.PLUS :
+				out = "+"; //$NON-NLS-1$
+				break;
+			case OperatorIds.MINUS :
+				out = "-"; //$NON-NLS-1$
+				break;
+			case OperatorIds.MULTIPLY :
+				out = "*"; //$NON-NLS-1$
+				break;
+			case OperatorIds.DIVIDE :
+				out = "/"; //$NON-NLS-1$
+				break;
+			case OperatorIds.REMAINDER :
+				out = "%"; //$NON-NLS-1$
+				break;
+			case OperatorIds.AND :
+				out = "&"; //$NON-NLS-1$
+				break;
+			case OperatorIds.OR :
+				out = "|"; //$NON-NLS-1$
+				break;
+			case OperatorIds.XOR :
+				break;
+			case OperatorIds.LEFT_SHIFT :
+				break;
+			case OperatorIds.RIGHT_SHIFT :
+				break;
+			case OperatorIds.UNSIGNED_RIGHT_SHIFT :
+				break;
+			case OperatorIds.GREATER :
+				out = ">"; //$NON-NLS-1$
+				break;
+			case OperatorIds.GREATER_EQUAL :
+				out = ">="; //$NON-NLS-1$
+				break;
+			case OperatorIds.LESS :
+				out = "<"; //$NON-NLS-1$
+				break;
+			case OperatorIds.LESS_EQUAL :
+				out = "<="; //$NON-NLS-1$
+				break;
+			case OperatorIds.JML_IMPLIES:
+				out = "=>"; //$NON-NLS-1$ 
+				break;
+			case OperatorIds.JML_REV_IMPLIES:
+				out = "=<"; //$NON-NLS-1$
+				break;
+		}
+		append(" " + out + " "); //$NON-NLS-1$ //$NON-NLS-2$
+		term.right.traverse(this, scope);
+		return false;
 	}
 
 	// priority=3 group=stmt
@@ -268,12 +326,16 @@ public class BoogieVisitor extends ASTVisitor {
 		debug(term, scope);
 		appendLine(BLOCK_OPEN);
 		output.increaseIndent();
+		if (symbolTable != null) 
+			symbolTable.enterScope(term);
 		return true;
 	}
 
 	public void endVisit(Block term, BlockScope scope) {
 		output.decreaseIndent();
 		appendLine(BLOCK_CLOSE);
+		if (symbolTable != null) 
+			symbolTable.exitScope();
 	}
 
 	// priority=3 group=stmt
@@ -444,25 +506,28 @@ public class BoogieVisitor extends ASTVisitor {
 		for (int i = 0; i< term.initializations.length ; i++) {
 			term.initializations[i].traverse(this, scope);
 		}
-		append("while "); //$NON-NLS-1$
-		append(term.condition);
-		appendLine (" " + BLOCK_OPEN); //$NON-NLS-1$ 
-		output.increaseIndent();
+		
+		Block blk = new Block(0);
+		int len = 1;
 		if (term.action instanceof Block) {
-			Block block = (Block) term.action;
-			for (int i = 0; i < block.statements.length; i++) {
-				block.statements[i].traverse(this, scope);
+			len = ((Block)term.action).statements.length;
+		}
+		blk.statements = new Statement[len + term.increments.length];
+		for (int i = 0; i < len; i++) {
+			if (term.action instanceof Block) {
+				blk.statements[i] = ((Block)term.action).statements[i];
 			}
-		} else { 
-			term.action.traverse(this, scope);
+			else {
+				blk.statements[i] = term.action;
+			}
 		}
-		for (int i = 0; i< term.increments.length ; i++) {
-			term.increments[i].traverse(this, scope);
+		for (int i = 0; i < term.increments.length; i++) {
+			blk.statements[i+len] = term.increments[i];
 		}
 		
-		output.decreaseIndent();
-		appendLine(BLOCK_CLOSE);
-		
+		WhileStatement w = new WhileStatement(term.condition, 
+				blk, term.sourceStart, term.sourceEnd);
+		w.traverse(this, scope);
 		
 		return false;
 	}
@@ -662,7 +727,7 @@ public class BoogieVisitor extends ASTVisitor {
 
 	/**
 	 * Appends the proper boogie source and also finds all declarations using the {@link BoogieVariableDeclFinderVisitor}
-	 * to generate a list of local declarations to then visit using the {@link #addLocalDeclaration(LocalDeclaration, BlockScope)}
+	 * to generate a list of local declarations to then visit using the {@link #addLocalDeclaration(LocalDeclaration, BlockScope, Block)}
 	 * method.
 	 */
 	// priority=3 group=decl
@@ -671,9 +736,7 @@ public class BoogieVisitor extends ASTVisitor {
 		
 		debug(term, scope);
 		
-		BoogieVariableDeclFinderVisitor varDeclFinder = new BoogieVariableDeclFinderVisitor();
-		varDeclFinder.visit(term, scope);
-		ArrayList locals = varDeclFinder.getDecls(); 
+		symbolTable = new BoogieSymbolTable();
 
 		append("procedure "); //$NON-NLS-1$
 		append(new String(term.binding.declaringClass.readableName()) + "."); //$NON-NLS-1$
@@ -702,22 +765,28 @@ public class BoogieVisitor extends ASTVisitor {
 		appendLine(" {"); //$NON-NLS-1$
 		output.increaseIndent();
 
+		BoogieVariableDeclFinderVisitor varDeclFinder = new BoogieVariableDeclFinderVisitor(symbolTable);
+		varDeclFinder.visit(term, scope);
+		ArrayList locals = varDeclFinder.getDecls(); 
 		if (locals != null) {
 			for (int i = 0; i < locals.size(); i++) {
-				LocalDeclaration loc = (LocalDeclaration)locals.get(i);
-				addLocalDeclaration(loc, term.scope);				
+				Object[] data = (Object[])locals.get(i);
+				LocalDeclaration loc = (LocalDeclaration)data[0];
+				Block blk = (Block)data[1];
+				addLocalDeclaration(loc, term.scope, blk);				
 			}
 		}
 		
 		if (term.statements != null) {
 			for (int i = 0; i < term.statements.length; i++) {
 				term.statements[i].traverse(this, term.scope);
-				//appendLine(";"); //$NON-NLS-1$
 			}
 		}
 
 		output.decreaseIndent();
 		appendLine("}"); //$NON-NLS-1$
+		
+		symbolTable = null;
 
 		return false;
 	}
@@ -726,10 +795,8 @@ public class BoogieVisitor extends ASTVisitor {
 	 * Used by the {@link #visit(JmlMethodDeclaration, ClassScope)} to add
 	 * variable declarations to the top of the procedure 
 	 */
-	// priority=3 group=decl
-	private void addLocalDeclaration(LocalDeclaration term, BlockScope scope){
-		debug(term, scope);
-		String name = new String(term.name);
+	private void addLocalDeclaration(LocalDeclaration term, BlockScope scope, Block block) {
+		String name = symbolTable.lookup(new String(term.name), block);
 		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
 		term.type.traverse(this, scope);
 		appendLine(STMT_END);
@@ -898,21 +965,22 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// priority=3 group=expr
 	public boolean visit(SingleNameReference term, BlockScope scope) {
-		append(new String(term.token));
+		debug(term, scope);
+		append(symbolTable.lookup(new String(term.token)));
 		return true;
 	}
 
 	// priority=3 group=expr
 	public boolean visit(SingleNameReference term, ClassScope scope) {
 		debug(term, scope);
-		append(new String(term.token));
+		append(symbolTable.lookup(new String(term.token)));
 		return true;
 	}
 
 	// priority=3 group=expr
 	public boolean visit(SingleTypeReference term, BlockScope scope) {
 		debug(term, scope);
-		// TODO print passified variable name
+		
 		if (term.resolvedType == TypeBinding.BOOLEAN) {
 			append("bool"); //$NON-NLS-1$
 		}
@@ -1043,17 +1111,7 @@ public class BoogieVisitor extends ASTVisitor {
 		append("while ("); //$NON-NLS-1$
 		term.condition.traverse(this, scope);
 		append(") "); //$NON-NLS-1$
-		if (!(term.action instanceof Block)){
-			appendLine(BLOCK_OPEN);
-			output.increaseIndent();			
-		}
-		
-		term.action.traverse(this, scope);
-		
-		if (!(term.action instanceof Block)){
-			output.decreaseIndent();				
-			appendLine(BLOCK_CLOSE);
-		}		
+		toBlock(term.action).traverse(this, scope);
 		return false;
 	}
 

@@ -96,7 +96,6 @@ import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
 import org.jmlspecs.jml4.ast.JmlClause;
 import org.jmlspecs.jml4.ast.JmlEnsuresClause;
 import org.jmlspecs.jml4.ast.JmlFieldDeclaration;
-import org.jmlspecs.jml4.ast.JmlLocalDeclaration;
 import org.jmlspecs.jml4.ast.JmlLoopAnnotations;
 import org.jmlspecs.jml4.ast.JmlLoopInvariant;
 import org.jmlspecs.jml4.ast.JmlLoopVariant;
@@ -559,16 +558,6 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 	
-	// priority=3 group=decl
-	public boolean visit(JmlLocalDeclaration term, BlockScope scope){
-		debug(term, scope);
-		String name = new String(term.name);
-		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
-		term.type.traverse(this, scope);
-		appendLine(STMT_END);
-		return false;
-	}
-	
 	// priority=0 group=jml
 	public boolean visit(JmlLoopAnnotations term, BlockScope scope) {
 		debug(term, scope);
@@ -670,6 +659,11 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
+	/**
+	 * Appends the proper boogie source and also finds all declarations using the {@link BoogieVariableDeclFinderVisitor}
+	 * to generate a list of local declarations to then visit using the {@link #addLocalDeclaration(LocalDeclaration, BlockScope)}
+	 * method.
+	 */
 	// priority=3 group=decl
 	public boolean visit(JmlMethodDeclaration term, ClassScope scope) {
 		methodScope = term.scope; // used by #visit(JmlMethodSpecification, ClassScope)
@@ -709,8 +703,8 @@ public class BoogieVisitor extends ASTVisitor {
 
 		if (locals != null) {
 			for (int i = 0; i < locals.size(); i++) {
-				JmlLocalDeclaration loc = (JmlLocalDeclaration)locals.get(i);
-				visit(loc, term.scope);				
+				LocalDeclaration loc = (LocalDeclaration)locals.get(i);
+				addLocalDeclaration(loc, term.scope);				
 			}
 		}
 		
@@ -725,6 +719,19 @@ public class BoogieVisitor extends ASTVisitor {
 		appendLine("}"); //$NON-NLS-1$
 
 		return false;
+	}
+
+	/**
+	 * Used by the {@link #visit(JmlMethodDeclaration, ClassScope)} to add
+	 * variable declarations to the top of the procedure 
+	 */
+	// priority=3 group=decl
+	private void addLocalDeclaration(LocalDeclaration term, BlockScope scope){
+		debug(term, scope);
+		String name = new String(term.name);
+		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
+		term.type.traverse(this, scope);
+		appendLine(STMT_END);
 	}
 
 	// priority=0 group=decl

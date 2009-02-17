@@ -19,8 +19,10 @@ import org.jmlspecs.jml4.esc.vc.lang.VcProgram;
 public class ProveVcDistributed implements IProverStrategy {
 	private CompilerOptions options;
 	private ProblemReporter problemReporter;
-	
-	public ProveVcDistributed(CompilerOptions options, ProblemReporter problemReporter) {
+	private String dispatercherUrl = null;
+
+	public ProveVcDistributed(CompilerOptions options,
+			ProblemReporter problemReporter) {
 		super();
 		this.options = options;
 		this.problemReporter = problemReporter;
@@ -41,34 +43,32 @@ public class ProveVcDistributed implements IProverStrategy {
 		return "[ProveVcDistributed: (Simplify, CVC3, Isabelle)]"; //$NON-NLS-1$
 	}
 
-	private Result[] proveRemotely (VcProgram vcProg) {
+	private Result[] proveRemotely(VcProgram vcProg) {
 		try {
-			//URL CONNECTION SETUP
+			// URL CONNECTION SETUP
 			//URL url = new URL("http://localhost:8080/EscWeb/EscWebServlet"); //$NON-NLS-1$
 			//URL url = new URL("http://localhost:8080/ProverCoordinator/ProverCoordinator"); //$NON-NLS-1$
 
 			URLConnection conn = getUrlConnection(getUrlString("whole"));
-			ObjectOutputStream out = new ObjectOutputStream(conn.getOutputStream());
-			//write objects
+			ObjectOutputStream out = new ObjectOutputStream(conn
+					.getOutputStream());
+			// write objects
 			out.writeObject(vcProg);
 			out.flush();
 			out.close();
-			//read response
+			// read response
 			ObjectInputStream in = null;
 			in = new ObjectInputStream(conn.getInputStream());
 			Result[] rs = null;
 			if (in != null) {
-				rs = (Result[]) in.readObject();			
+				rs = (Result[]) in.readObject();
 			}
 			System.out.println("back");
 			return rs;
-			
 
-		}
-		catch ( MalformedURLException ex ) {
+		} catch (MalformedURLException ex) {
 			// a real program would need to handle this exception
-		}
-		catch ( IOException ex ) {
+		} catch (IOException ex) {
 			// a real program would need to handle this exception
 			System.out.println(ex);
 		} catch (ClassNotFoundException e) {
@@ -77,48 +77,52 @@ public class ProveVcDistributed implements IProverStrategy {
 		}
 		return null;
 	}
-	
+
 	private String getUrlString(String key) {
-	    // Read properties file.
-	    Properties properties = new Properties();
-	    try {
-	    	File file = new File(options.jmlEscDistributedPropertiesFile);
-	    	System.out.println(file.getAbsolutePath());
-	        properties.load(new FileInputStream(file));
-	        return (String) properties.get(key);
-	        
-	    } catch (IOException e) {
-	    	e.printStackTrace();
-	    	return null;
-	    }
-	    
+		// Read properties file.
+		if (dispatercherUrl == null) {
+			Properties properties = new Properties();
+			try {
+				File file = new File(options.jmlEscDistributedPropertiesFile);
+				FileInputStream  s = new FileInputStream(file);
+				System.out.println(file.getAbsolutePath());
+				properties.load(s);
+				dispatercherUrl = (String) properties.get(key);
+				s.close();
+				return dispatercherUrl;
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			} 
+		}
+		return dispatercherUrl;
+
 	}
-	
-	public static URLConnection getUrlConnection (String strUrl) {
+
+	public static URLConnection getUrlConnection(String strUrl) {
 		URL url = null;
 		try {
-			url = new URL (strUrl);
-			String contentType = "application/x-java-serialized-object";   //$NON-NLS-1$
-	        URLConnection conn;
-	        conn = url.openConnection();
-			conn.setDoInput(true); 
+			url = new URL(strUrl);
+			String contentType = "application/x-java-serialized-object"; //$NON-NLS-1$
+			URLConnection conn;
+			conn = url.openConnection();
+			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setUseCaches(false);  
+			conn.setUseCaches(false);
 			conn.setDefaultUseCaches(false);
-			conn.setRequestProperty("Content-Type", contentType);  //$NON-NLS-1$
+			conn.setRequestProperty("Content-Type", contentType); //$NON-NLS-1$
 			return conn;
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}		
-		
-		
+		}
+
 	}
-	
+
 }

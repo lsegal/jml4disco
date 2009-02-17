@@ -936,7 +936,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	}\n" +					
 				"}\n" 
 				,
-				//expected boogie
+				//expected boogie		
 				"procedure tests.esc.U.m1() {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
@@ -965,7 +965,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	}\n" +					
 				"}\n" 
 				,
-				//expected boogie
+				//expected boogie			
 				"procedure tests.esc.U.m1() {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
@@ -1098,8 +1098,61 @@ public class InitialTests extends AbstractRegressionTest {
 				"   }\n" + 
 				"}\n" 
 				,
-				//TODO expected Boogie
-				""
+				//expected Boogie
+				"procedure tests.esc.X.m1() {\n" +
+				"	assert (42 == 42);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m2() {\n" +
+				"	assert (42 == 43);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m3() {\n" +
+				"	assert (42 != 42);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m4() {\n" +
+				"	assert (42 != 43);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m5() {\n" +
+				"	assert (42 < 42);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m6() {\n" +
+				"	assert (42 < 43);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m7() {\n" +
+				"	assert (42 > 42);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m8() {\n" +
+				"	assert (42 > 43);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m9() {\n" +
+				"	assert (43 <= 42);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m10() {\n" +
+				"	assert (42 <= 42);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m11() {\n" +
+				"	assert (42 <= 43);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m12() {\n" +
+				"	assert (42 >= 43);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m13() {\n" +
+				"	assert (42 >= 42);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m14() {\n" +
+				"	assert (43 >= 42);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m15() {\n" +
+				"	assert ((42 >= 42) == true);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m16() {\n" +
+				"	assert ((42 >= 42) == false);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m17() {\n" +
+				"	assert ((43 >= 42) == true);\n" +
+				"}\n" +
+				"procedure tests.esc.X.m18() {\n" +
+				"	assert ((43 >= 42) == false);\n" +
+				"}\n"
 				);
 	}
 	
@@ -1123,6 +1176,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"   public void m5() {\n" + 
 				"      //@ assert 5 % 2 == 1;\n" + 
 				"   }\n" + 
+				"   public void m6() {\n" + 
+				"      //@ assert (5 + 2) * 3 == 21;\n" + 
+				"   }\n" + 
 				"   public void m1b() {\n" + 
 				"      //@ assert 5 + 2 != 7;\n" + 
 				"   }\n" + 
@@ -1137,11 +1193,51 @@ public class InitialTests extends AbstractRegressionTest {
 				"   }\n" + 
 				"   public void m5b() {\n" + 
 				"      //@ assert 5 % 2 != 1;\n" + 
+				"   }\n" +
+				"   public void m6() {\n" + 
+				"      //@ assert (5 + 2) * 3 != 22;\n" + 
 				"   }\n" + 
 				"}\n"
 				, 
-				// TODO expected boogie
-				""
+				//expected boogie
+				//"axiom (∀ x : int, y: int • {x % y} {x /y} x%y == x - x/y *y);\n" +
+				//"axiom (∀x:int,y:int•{x%y}(0<y⇒0<=x%y∧x%y<y)∧(y<0⇒y<x%y∧x%y<=0));\n" +
+				"procedure tests.esc.R.m1() {\n" +
+				"	assert ((5 + 2) == 7);\n" +
+				"}\n" +
+				"procedure tests.esc.R.m2() {\n" +
+				"	assert ((5 - 2) == 3);\n" +
+				"}\n" + 
+				"procedure tests.esc.R.m3() {\n" +
+				"	assert ((5 * 2) == 10);\n" +
+				"}\n" +
+				"procedure tests.esc.R.m4() {\n" +
+				"	assert ((4 / 2) == 2);\n" +
+				"}\n" + 
+				"procedure tests.esc.R.m5() {\n" +
+				"	assert ((5 % 2) == 1);\n" +
+				"}\n" +
+				"procedure tests.esc.R.m6() {\n" +
+				"	assert (((5 + 2) * 3) == 21);\n" +
+				"}\n" +
+				"procedure tests.esc.R.m1b() {\n" +
+				"	assert ((5 + 2) != 7);\n" +
+				"}\n" +
+				"procedure tests.esc.R.m2b() {\n" +
+				"	assert ((5 - 2) != 3);\n" +
+				"}\n" +
+				"procedure tests.esc.R.m3b() {\n" +
+				"	assert ((5 * 2) != 10);\n" +
+				"}\n" +
+				"procedure tests.esc.R.m4b() {\n" +
+				"	assert ((4 / 2) != 2);\n" +
+				"}\n" +
+				"procedure tests.esc.R.m5b() {\n" +
+				"	assert ((5 % 2) != 1);\n" +
+				"}\n" +
+				"procedure tests.esc.R.m6b() {\n" +
+				"	assert (((5 + 2) * 3) == 22);\n" +
+				"}\n"
 				);			
 		}
 
@@ -1204,8 +1300,19 @@ public class InitialTests extends AbstractRegressionTest {
 				"   }\n" + 
 				"}\n" 
 				,
-				//TODO expected boogie
-				""
+				//expected boogie
+				"procedure tests.esc.U.m1() {\n" +
+				"	assert (true => true);\n" +
+				"}\n" +
+				"procedure tests.esc.U.m2() {\n" +
+				"	assert (true => false);\n" +
+				"}\n" +
+				"procedure tests.esc.U.m3() {\n" +
+				"	assert (false => true);\n" +
+				"}\n" +
+				"procedure tests.esc.U.m4() {\n" +
+				"	assert (false => false);\n" +
+				"}\n"
 				);
 	}
 }

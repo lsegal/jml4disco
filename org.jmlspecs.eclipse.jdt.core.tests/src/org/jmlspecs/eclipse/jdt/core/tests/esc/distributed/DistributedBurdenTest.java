@@ -5,8 +5,6 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
-import org.jmlspecs.eclipse.jdt.core.tests.esc.WhileTests;
-
 /**
  * In order to run this test, you must first comment out the method call to
  * assertUniqueScenario(String) in createPerformanceMeter(String)
@@ -17,7 +15,7 @@ import org.jmlspecs.eclipse.jdt.core.tests.esc.WhileTests;
 public class DistributedBurdenTest extends TestCase {
 
 
-	private final int NB_OF_LOOPS = 20;
+	private final int NB_OF_LOOPS = 3;
 
 	public DistributedBurdenTest(String name) {
 		super(name);
@@ -52,7 +50,9 @@ public class DistributedBurdenTest extends TestCase {
 	{
 		TestSuite suite = new TestSuite("Suite");
 		//suite.addTestSuite(BigEscTests.class);
-		suite.addTestSuite(WhileTests.class);
+		suite.addTestSuite(BigEscTests.class);
+		suite.addTestSuite(DistributedWhileTests.class);
+		suite.addTestSuite(BigWhileTests.class);
 		//suite.addTestSuite(SanityTests.class);
 		//suite.addTestSuite(DistributedWhileTests.class);
 		return suite;		

@@ -443,9 +443,11 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(EqualExpression term, BlockScope scope) {
 		debug(term, scope);
 
+		append("("); //$NON-NLS-1$
 		term.left.traverse(this, scope);
 		append(" == "); //$NON-NLS-1$
 		term.right.traverse(this, scope);
+		append(")"); //$NON-NLS-1$
 
 		return false;
 	}
@@ -690,10 +692,16 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=decl
 	public boolean visit(LocalDeclaration term, BlockScope scope) {
 		debug(term, scope);
-		if (term.initialization != null) {
+		Expression init = term.initialization;
+		if (init == null && term.type.resolveType(scope) == TypeBinding.INT) {
+			init = new IntLiteral(new char[]{'0'}, 
+					term.sourceStart, term.sourceEnd);
+		}
+		
+		if (init != null) {
 			Assignment a = 
 				new Assignment(new SingleNameReference(term.name, term.sourceStart), 
-						term.initialization, term.sourceEnd);
+						init, term.sourceEnd);
 			a.traverse(this, scope);
 			appendLine(STMT_END);
 		}

@@ -144,7 +144,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"procedure tests.esc.A.m() {\n" +
 			"	assert false;\n" +
 			"}\n" +
-			"procedure tests.esc.A.n() returns (__result__ : int) ensures __result__ == 42; {\n" +
+			"procedure tests.esc.A.n() returns (__result__ : int) ensures (__result__ == 42); {\n" +
 			"	assert true;\n" +
 			"	__result__ := 42;\n" +
 			"	return;\n" +
@@ -584,6 +584,7 @@ public class InitialTests extends AbstractRegressionTest {
 			// expected boogie
 			"procedure tests.esc.A.m() {\n" +
 			"	var a : int;\n" +
+			"	a := 0;\n" +
 			"}\n");
 	}
 
@@ -626,7 +627,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"procedure tests.esc.A.m(a: int, b: int) returns (__result__ : java.lang.String) {\n" +
 			"	var c : int;\n" +
 			"	c := 3;\n" +
-			"	if (a == 1) {\n" +
+			"	if ((a == 1)) {\n" +
 			"		__result__ := string_lit_97;\n" +
 			"		return;\n" +
 			"	}\n" +
@@ -720,12 +721,12 @@ public class InitialTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.U.m1() {\n" +
-				"	while (true == true) {\n" +
+				"	while ((true == true)) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
 				"}\n" +
 				"procedure tests.esc.U.m2() {\n" +
-				"	while (true == true) {\n" +
+				"	while ((true == true)) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
 				"}\n" 				
@@ -919,7 +920,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=PostfixExpression
+	// term=PostfixExpression,LocalDeclaration
 	public void test_600_postFixExpression() {
 		
 		this.compareJavaToBoogie(
@@ -940,15 +941,17 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.U.m1() {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
+				"	a := 0;\n" +
 				"	a := a + 1;\n" +
 				"	a := a + 1;\n" +
+				"	b := 0;\n" +
 				"	b := b - 1;\n" +
 				"	b := b - 1;\n" +
 				"}\n"			
 				);
 	}
 	
-	// term=PrefixExpression
+	// term=PrefixExpression,LocalDeclaration
 	public void test_601_preFixExpression() {
 		
 		this.compareJavaToBoogie(
@@ -969,8 +972,10 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.U.m1() {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
+				"	a := 0;\n" +
 				"	a := a + 1;\n" +
 				"	a := a + 1;\n" +
+				"	b := 0;\n" +
 				"	b := b - 1;\n" +
 				"	b := b - 1;\n" +
 				"}\n"			
@@ -1028,6 +1033,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	var j : int;\n" +
 				"	var k : int;\n" +
 				"	a := 0;\n" +
+				"	b := 0;\n" +
+				"	c := 0;\n" +
+				"	d := 0;\n" +
+				"	e := 0;\n" +
+				"	f := 0;\n" +
+				"	g := 0;\n" +
 				"	h := 0;\n" +
 				"	i := 10;\n" +
 				"	j := 20;\n" +

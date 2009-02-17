@@ -873,7 +873,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.U.m1() {\n" +
 				"	var a : int;\n" +
 				"	a := 0;\n" +
-				"	while (a < 10) {\n" +
+				"	while ((a < 10)) {\n" +
 				"		assert true;\n" +
 				"		a := a + 1;\n" +
 				"	}\n" +
@@ -881,7 +881,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.U.m2() {\n" +
 				"	var a : int;\n" +
 				"	a := 10;\n" +
-				"	while (a > 0) {\n" +
+				"	while ((a > 0)) {\n" +
 				"		assert true;\n" +
 				"		a := a - 1;\n" +
 				"	}\n" +
@@ -911,7 +911,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert true;\n" +
 				"	a := 1;\n" +
 				"	b := 10;\n" +
-				"	while (a < b) {\n" +
+				"	while ((a < b)) {\n" +
 				"		assert true;\n" +
 				"		a := a + 1;\n" +
 				"		b := b + 1;\n" +
@@ -1205,7 +1205,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"   public void m5b() {\n" + 
 				"      //@ assert 5 % 2 != 1;\n" + 
 				"   }\n" +
-				"   public void m6() {\n" + 
+				"   public void m6b() {\n" + 
 				"      //@ assert (5 + 2) * 3 != 22;\n" + 
 				"   }\n" + 
 				"}\n"
@@ -1247,7 +1247,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert ((5 % 2) != 1);\n" +
 				"}\n" +
 				"procedure tests.esc.R.m6b() {\n" +
-				"	assert (((5 + 2) * 3) == 22);\n" +
+				"	assert (((5 + 2) * 3) != 22);\n" +
 				"}\n"
 				);			
 		}

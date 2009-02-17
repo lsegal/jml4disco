@@ -264,6 +264,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=2 group=expr
 	public boolean visit(BinaryExpression term, BlockScope scope) {
 		debug(term, scope);
+		append("(");  //$NON-NLS-1$
 		term.left.traverse(this, scope);
 
 		String out = ""; //$NON-NLS-1$
@@ -318,6 +319,7 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 		append(" " + out + " "); //$NON-NLS-1$ //$NON-NLS-2$
 		term.right.traverse(this, scope);
+		append(")");  //$NON-NLS-1$
 		return false;
 	}
 
@@ -445,7 +447,20 @@ public class BoogieVisitor extends ASTVisitor {
 
 		append("("); //$NON-NLS-1$
 		term.left.traverse(this, scope);
-		append(" == "); //$NON-NLS-1$
+		
+		String out = ""; //$NON-NLS-1$
+		switch ((term.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) {
+			case OperatorIds.EQUAL_EQUAL:
+				out = "=="; //$NON-NLS-1$
+				break;
+			case OperatorIds.NOT_EQUAL:
+				out = "!="; //$NON-NLS-1$
+				break;
+			case OperatorIds.JML_EQUIV:
+				out = "<=>"; //$NON-NLS-1$
+				break;
+		}
+		append(" " + out + " "); //$NON-NLS-1$ //$NON-NLS-2$
 		term.right.traverse(this, scope);
 		append(")"); //$NON-NLS-1$
 

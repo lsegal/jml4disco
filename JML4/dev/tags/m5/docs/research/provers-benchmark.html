@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Provers Benchmark</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="PreliminaryBenchmark">Preliminary Benchmark</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#Introduction">Introduction</a></li><li class="active">
+<a href="#BenchmarkEnvironment">Benchmark Environment</a></li><li class="active">
+<a href="#BenchmarkSettings">Benchmark Settings</a></li><li class="active">
+<a href="#BenchmarkResult">Benchmark Result</a><ol><li class="active"><a href="#Proversperformance">Prover's performance</a></li><li class="active">
+<a href="#ProvingPerformance">Proving Performance</a></li><li class="active">
+<a href="#SizeofVCProgramandVcs">Size of VC Program and Vcs</a></li></ol></li></ol></div>
+
+</p>
+<h2 id="Introduction">Introduction</h2>
+<p>
+This section provides preliminary prover benchmarking results.  The goal is to determine the average performance of each prover that is used in JML4 including Simplify, CVC3 and Isabelle.
+</p>
+<h2 id="BenchmarkEnvironment">Benchmark Environment</h2>
+<table class="wiki">
+<tr><td> <strong> SOEN 490 H-837 Lab Computer </strong> 
+</td></tr><tr><td> <strong> Processor </strong> </td><td> Intel Core 2 Duo E6300 1.86GHz 
+</td></tr><tr><td> <strong> FSB </strong> </td><td> 1066 MHz 
+</td></tr><tr><td> <strong> L2 Cache </strong> </td><td> 2MB 
+</td></tr><tr><td> <strong> Memory </strong> </td><td> 2GB, 667 MHz 
+</td></tr><tr><td> <strong> OS </strong> </td><td> Fedora 9 
+</td></tr><tr><td> <strong> IDE </strong> </td><td> Eclipse Ganymede 
+</td></tr></table>
+<h2 id="BenchmarkSettings">Benchmark Settings</h2>
+<table class="wiki">
+<tr><td> <strong> Benchmark Tool </strong> </td><td> Eclipse TPTP, Manual Code, Eclipse Memory Analyzer 
+</td></tr><tr><td> <strong> Provers </strong> </td><td> Simplify, CVC3, Negation Simplify, Isabelle 
+</td></tr><tr><td> <strong> Benchmark </strong> </td><td> Method Execution times (target only vc proving methods), Memory Allocation of VCs 
+</td></tr><tr><td> <strong> Filter </strong> </td><td> Profile only classes under org.jmlspecs.jml4.esc.provercoordinator.prover.* package 
+</td></tr><tr><td> <strong> VCs Caching </strong> </td><td> Clear before profiling 
+</td></tr></table>
+<h2 id="BenchmarkResult">Benchmark Result</h2>
+<h3 id="Proversperformance">Prover's performance</h3>
+<table class="wiki">
+<tr><td> </td><td> <strong> Simplify </strong> </td><td> <strong> CVC3 </strong> </td><td> <strong> Negation Simplify </strong> </td><td> <strong> Isabelle </strong> 
+</td></tr><tr><td> <strong> Success Rate </strong> </td><td> 82.13% </td><td> 32.34% </td><td> 19.15% </td><td> 85.53 
+</td></tr><tr><td> <strong> Avg Proving time (sec) </strong> </td><td> 0.0618 </td><td> 0.01867 </td><td> 0.0692 </td><td> 2.3544
+</td></tr></table>
+<font color="red">
+* All Tests will go through all four provers: Simplify, CVC3, Neg. Simplify and Isabelle regardless of the result given from each prover. (In order to achieve this, ProveVCPiecewise.java is modified)
+</font>
+<h3 id="ProvingPerformance">Proving Performance</h3>
+<table class="wiki">
+<tr><td> </td><td> </td><td> <strong> Proving Time (secs) </strong> 
+</td></tr><tr><td> </td><td> <strong> WhileTests </strong> </td><td> <strong> BigWhileTest </strong> 
+</td></tr><tr><td> <strong> Local </strong> </td><td> 51.691 </td><td> 35.095 
+</td></tr><tr><td> <strong> Distributed (Round Robin) </strong> </td><td> 42.832 </td><td> 28.805 
+</td></tr><tr><td> <strong> Distributed (Improved Adapters) </strong> </td><td> 28 ~ 30 </td><td> 7 ~ 9 
+</td></tr><tr><td> <strong> Distributed (load balancing) </strong> </td><td> TBD </td><td> TBD 
+</td></tr></table>
+<p>
+<strong>NOTE</strong> The distributed environment is as follow:
+</p>
+<ul><li>4 Servers: hopkins, hubel, houssay, horvitz (dedicated to prove VCs)
+</li><li>4 Servers running standalone tomcat without opening eclipse.
+</li><li>1 client: jacob which also acts as dispatcher to dispatch VCs to all provers machines.
+</li></ul><h3 id="SizeofVCProgramandVcs">Size of VC Program and Vcs</h3>
+<p>
+The memory size of VC and VCProgram is taken from <strong> WhileTests.java </strong>
+</p>
+<table>
+<tr width="10">
+<th align="left">Package</th>
+<th align="left">Total Instances</th>
+<th align="left">Live Instances</th>
+<th align="left">&lt;Total Size (bytes)</th>
+<th align="left">Active Size (bytes)</th>
+<th align="left">Collected</th>
+</tr>
+<td align="left">org.jmlspecs.jml4.esc.vc.lang</td><td align="left">14571</td><td align="left">1487</td><td align="left">841208</td><td align="left">92144</td><td align="left">13084</td>
+
+<tr bgcolor="#ffffbb">
+<td align="left">    VcLogicalExpression</td><td align="left">    6202</td><td align="left">    131</td><td align="left">    396928</td><td align="left">    8384</td><td align="left">    6071</td>
+</tr>
+<tr>
+<td align="left">    VcVariable</td><td align="left">    1927</td><td align="left">    496</td><td align="left">    123328</td><td align="left">    31744</td><td align="left">    1431</td>
+</tr>
+<tr bgcolor="#ffffbb">
+<td align="left">    VcAnd</td><td align="left">    1524</td><td align="left">    158</td><td align="left">    97536</td><td align="left">    10112</td><td align="left">    1366</td>
+</tr>
+<tr>
+<td align="left">    VcBooleanConstant</td><td align="left">    806</td><td align="left">    83</td><td align="left">    51584</td><td align="left">    5312</td><td align="left">    723</td>
+</tr>
+<tr bgcolor="#ffffbb">
+<td align="left">    VcRelativeExpression</td><td align="left">    571</td><td align="left">    196</td><td align="left">    36544</td><td align="left">    12544</td><td align="left">    375</td>
+</tr>
+<tr>
+<td align="left">    VcVarDecl</td><td align="left">    531</td><td align="left">    41</td><td align="left">    33984</td><td align="left">    2624</td><td align="left">    490</td>
+</tr>
+<tr bgcolor="#ffffbb">
+<td align="left">    VC[]</td><td align="left">    1348</td><td align="left">    11</td><td align="left">    28536</td><td align="left">    392</td><td align="left">    1337</td>
+</tr>
+<tr>
+<td align="left">    VcIntegerConstant</td><td align="left">    391</td><td align="left">    123</td><td align="left">    21896</td><td align="left">    6888</td><td align="left">    268</td>
+</tr>
+<tr bgcolor="#ffffbb">
+<td align="left">    VcAndNary</td><td align="left">    309</td><td align="left">    22</td><td align="left">    17304</td><td align="left">    1232</td><td align="left">    287</td>
+</tr>
+<tr>
+<td align="left">    VcArithExpression</td><td align="left">    264</td><td align="left">    178</td><td align="left">    16896</td><td align="left">    11392</td><td align="left">    86</td>
+</tr>
+<tr bgcolor="#ffffbb">
+<td align="left">    VcVarDecl[]</td><td align="left">    488</td><td align="left">    11</td><td align="left">    7808</td><td align="left">    176</td><td align="left">    477</td>
+</tr>
+<tr>
+<td align="left">    VcNot</td><td align="left">    118</td><td align="left">    14</td><td align="left">    6608</td><td align="left">    784</td><td align="left">    104</td>
+</tr>
+<tr bgcolor="#ffffbb">
+<td align="left">    VcProgram</td><td align="left">    74</td><td align="left">    6</td><td align="left">    1776</td><td align="left">    144</td><td align="left">    68</td>
+</tr>
+<tr>
+<td align="left">    VcOperator</td><td align="left">    14</td><td align="left">    14</td><td align="left">    224</td><td align="left">    224</td><td align="left">    0</td>
+</tr>
+<tr bgcolor="#ffffbb">
+<td align="left">    VcConditionalExpression</td><td align="left">    3</td><td align="left">    3</td><td align="left">    192</td><td align="left">    192</td><td align="left">    0</td>
+</tr>
+<tr>
+<td align="left">    VcOr</td><td align="left">    1</td><td align="left">    0</td><td align="left">    64</td><td align="left">    0</td><td align="left">    1</td>
+</tr>
+</table>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

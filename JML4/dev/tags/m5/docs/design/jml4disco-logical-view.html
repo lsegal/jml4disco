@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Jml4Disco-Logical View</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="JML4Disco:ADistributedMulti-ThreadedVerificationofJavaPrograms">JML4Disco: A Distributed, Multi-Threaded Verification of Java Programs</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#DistributedComponents">Distributed Components</a><ol><li class="active"><a href="#TheProve-VCProgramServletTheDispatcher">The Prove-VCProgram Servlet (The Dispatcher)</a><ol><li class="active"><a href="#High-LevelDesign">High-Level Design</a></li><li class="active">
+<a href="#ClassDiagram">Class Diagram</a></li><li class="active">
+<a href="#TheClassesDispatcherServer">The Classes (Dispatcher Server)</a></li><li class="active">
+<a href="#InteractionDiagram">Interaction Diagram</a></li><li class="active">
+<a href="#SignificantChanges">Significant Changes</a></li><li class="active">
+<a href="#RelevantComponents">Relevant Components</a></li></ol></li><li class="active"><a href="#Dispatcher-LoadBalancing">Dispatcher - Load Balancing</a><ol><li class="active"><a href="#InteractionDiagram:RemoteProveVcServerimplementationRemoteProveVcTomCatServer">Interaction Diagram: <tt>RemoteProveVcServer</tt> implementation  &hellip;</a></li><li class="active">
+<a href="#RelevantComponents1">Relevant Components</a></li></ol></li><li class="active"><a href="#TheProver-Server">The Prover-Server</a><ol><li class="active"><a href="#InteractionDiagram1">Interaction Diagram</a></li><li class="active">
+<a href="#RelevantComponents2">Relevant Components</a></li></ol></li><li class="active"><a href="#TheSimplifyandIsabelleAdapters">The Simplify and Isabelle Adapters</a><ol><li class="active"><a href="#InteractionDiagram2">Interaction Diagram</a></li><li class="active">
+<a href="#RelevantComponents3">Relevant Components</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#BoogieComponents">Boogie Components</a><ol><li class="active"><a href="#InteractionDiagram3">Interaction Diagram</a></li><li class="active">
+<a href="#ClassDiagram1">Class Diagram</a></li><li class="active">
+<a href="#ClassDescriptions">Class Descriptions</a><ol><li class="active"><a href="#Boogie">Boogie</a></li><li class="active">
+<a href="#BoogieAdapter">BoogieAdapter</a></li><li class="active">
+<a href="#BoogieParser">BoogieParser</a></li><li class="active">
+<a href="#BoogieVisitor">BoogieVisitor</a></li><li class="active">
+<a href="#BoogieSource">BoogieSource</a></li><li class="active">
+<a href="#BoogieSourcePoint">BoogieSourcePoint</a></li><li class="active">
+<a href="#BoogieSymbolTable">BoogieSymbolTable</a></li><li class="active">
+<a href="#BoogieVariableDeclFinderVisitor">BoogieVariableDeclFinderVisitor</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#ConfigurationInterfaceComponents">Configuration Interface Components</a><ol><li class="active"><ol><li class="active"><a href="#ServerConfigurationInterfaces">Server Configuration Interfaces</a></li><li class="active">
+<a href="#DispatcherServersWeb-BasedConfigurationInterface">Dispatcher Server's Web-Based  Configuration Interface</a></li><li class="active">
+<a href="#ProverServersWeb-BasedConfigurationInterface">Prover Server's Web-Based Configuration Interface</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#SimplifyandIsabelleProcessPool">Simplify and Isabelle Process Pool</a><ol><li class="active"><a href="#ClassDiagram2">Class Diagram</a></li><li class="active">
+<a href="#InteractionDiagram4">Interaction Diagram</a></li></ol></li></li></ol></div>
+
+</p>
+<h2 id="DistributedComponents">Distributed Components</h2>
+<h3 id="TheProve-VCProgramServletTheDispatcher">The Prove-VCProgram Servlet (The Dispatcher)</h3>
+<p>
+This Servlet is a remote server which receives a VCProgram object via HTTP POST request, breaks it up into individual VCs and proceeds to dispatch these individual VCs to prover-servers.
+</p>
+<h4 id="High-LevelDesign">High-Level Design</h4>
+<p>
+The Dispatcher is layered as follows: in the topmost layer, the presentation layer, Java Servlets serve to marshall and demarshall the information in Http messages passed from Client or Prover-Server to Dispatcher. In the layer just below, the application layer, are classes relevant to the logic of distributing program verification.
+Beneath the application layer is the Domain layer, which contains classes pertinent to the verification itself. The following is a simple (deliberately incomplete) diagram to convey the layers with some of the more relevant classes they contain shown, followed by a more complete, intricate class diagram.
+<a href="/trac/attachment/wiki/Jml4Disco-LogicalView/Layers.png" style="padding:0; border:none"><img src="images/Layers.png" /></a>
+</p>
+<h4 id="ClassDiagram">Class Diagram</h4>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-LogicalView/ClassDiagram_DistributedLoadBalancing.png" style="padding:0; border:none"><img title="Class Diagram for distributed VCs load balancing" src="images/ClassDiagram_DistributedLoadBalancing.png" alt="Class Diagram for distributed VCs load balancing" /></a>
+</p>
+<h4 id="TheClassesDispatcherServer">The Classes (Dispatcher Server)</h4>
+<p>
+The following classes are used in the implementation of the Dispatcher.
+</p>
+<ul><li><span class="underline"><tt>VcProgram &lt;servlet&gt;</tt> -</span> This class is essentially responsible for de-marshalling messages received from a Client. As a servlet, it receives messages from a Client in the form of Http requests, which include Java-Serialized <tt>VcProgram</tt> objects. These <tt>VcProgram</tt> objects are then passed to the <tt>VcProgramDispatchingServer.</tt>
+</li><li><span class="underline"><tt>VcProgramDispatchingServer &lt;metaclass&gt;</tt> -</span> While another class is exclusively responsible for de-marshalling <tt>VcPrograms</tt> objects received in a message, this class serves as a Facade to the rest of the Dispatching functionality.
+</li><li><span class="underline"><tt>AbstractRemoteServer</tt> -</span> The <tt>AbstractRemoteServer</tt> provides some basic functionality and describes the interface for classes which will represent the protocol details involved in sending a message to a remote ProveVc Server.
+</li><li><span class="underline"><tt>RemoteTomCatServer</tt> -</span> An implementation of abstract class <tt>AbstractRemoteServer</tt>, <tt>RemoteTomCatServer</tt> sends a Vc object to a remote server using HTTP protocol, expecting that remote server to be running Apache TomCat. At the end of Milestone 4, this is the only existing implementation of <tt>AbstractRemoteServer</tt>.
+</li><li><span class="underline"><tt>ServerQueue</tt> -</span> This implementation of Java standard interface <tt>java.util.Queue</tt> encapsulates the logic behind load balancing. The Dispatcher only sees a queue which gives it the instance of <tt>AbstractRemoteServer</tt> most capable of receiving and responding to a message.
+</li><li><span class="underline"><tt>ServerQueueFactory</tt> -</span> In the event that the implementation of <tt>ServerQueue</tt> changes, the <tt>ServerQueueFactory</tt> reduces coupling.
+</li><li><span class="underline"><tt>ServerComparator</tt> -</span> This class contributes to how the <tt>ServerQueue</tt> class chooses the instance of <tt>AbstractRemoteServer</tt> most capable of receiving and responding to a message.
+</li><li><span class="underline"><tt>IServerProfile</tt> -</span> Instances of <tt>AbstractRemoteServer</tt> receive <tt>IServerProfile</tt> objects as part of the responses they get from the remote machines they communicate with.
+</li><li><span class="underline"><tt>ProveVc &lt;servlet&gt;</tt> -</span> This class is essentially responsible for de-marshalling messages received from a Dispatcher. As a servlet, it receives messages from a Dispatcher in the form of Http requests, which include Java-Serialized <tt>Vc</tt> objects. These <tt>Vc</tt> objects are then passed to the <tt>ProveVcServer.</tt>
+</li><li><span class="underline"><tt>ProveVcServer &lt;metaclass&gt;</tt> -</span> While another class is exclusively responsible for de-marshalling <tt>Vc</tt> objects received in a message, this class serves as a Facade to the rest of the proving functionality.
+</li></ul><h4 id="InteractionDiagram">Interaction Diagram</h4>
+<h4 id="SignificantChanges">Significant Changes</h4>
+<p>
+While still based on the <a href="/trac/wiki/FirstPrototype" class="wiki">original prototype</a>, the latest implementation has been heavily refactored to incorporate a more scalable and maintainable design.
+</p>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-LogicalView/InteractionDiagram-DistributedProverStrategyImplementation-ProveVCProgram-Servlet.png" style="padding:0; border:none"><img src="images/InteractionDiagram-DistributedProverStrategyImplementation-ProveVCProgram-Servlet.png" /></a>
+</p>
+<h4 id="RelevantComponents">Relevant Components</h4>
+<ul><li><span class="underline"><tt>prVcProg:ProveVcProgram</tt> -</span> Servlet which recieves a <tt>VCProgram</tt> via an HTTP POST request and dispatches that <tt>VCProgram</tt>'s VCs to be proven concurrently by remote provers.
+</li><li><span class="underline"><tt>HttpServletRequest</tt> -</span> Instance of Apache TomCat interface <tt>javax.servlet.http.HttpServletRequest</tt>.
+</li><li><span class="underline"><tt>HttpServletResponse</tt> -</span> Instance of Apache TomCat interface <tt>javax.servlet.http.HttpServletResponse</tt>.
+</li><li><span class="underline"><tt>reqIn:ObjectInputStream</tt> -</span> Standard Java class <tt>java.io.ObjectInputStream</tt> which - within the scope of this example - reads from the <tt>InputStream</tt> provided by the <tt>HttpServletRequest</tt> object. The data is read out of an HTTP POST request, sent by the client.
+</li><li><span class="underline"><tt>respOut:ObjectOutputStream</tt> -</span> Standard Java class <tt>java.io.ObjectOutputStream</tt> which - in the scope of this example - writes to the <tt>OutputStream</tt> provided by the <tt>HttpServletResponse</tt> object. The data written to the <tt>OutputStream</tt> will eventually be written to an HTTP response.
+</li><li><span class="underline"><tt>ProveVcProgramServer</tt> -</span> A 'Static class' meant to act as a facade to Prove-Vc-functionality, so as to separate proving logic from communication and marshaling/de-marshaling.
+</li><li><span class="underline"><tt>RemoteProveVcServerQueueFactory</tt> -</span> Since <tt>RemoteProveVcServerQueue</tt> is an abstract class so as to make the load balancing logic transparent, the factory allows us to instantiate the queues without strong coupling.
+</li><li><span class="underline"><tt>RemoteProveVcServerQueue</tt> -</span> An abstract class which will control load balancing logic. This class is abstract; concrete implementations will depend on the protocol being used to connect to a given Prove Vc Server. (see below)
+</li><li><span class="underline"><tt>ProveVcThread</tt> -</span> Not a <tt>Thread</tt> at all but an implementation of runnable, which contains encapsulates the logic for sending a Prove Vc Server a request asynchronously.
+</li><li><span class="underline"><tt>ThreadPool</tt> -</span> In the implementation there is no class 'ThreadPool.' Someone should change the diagram to make this object lifeline be an instanec of class <tt>java.util.concurrent.Executor</tt> named 'ThreadPool' for clarity.
+</li></ul><h3 id="Dispatcher-LoadBalancing">Dispatcher - Load Balancing</h3>
+<p>
+Class <tt>ServerQueue</tt> encapsulates the load balancing. At the moment, it inherits the implementation of a <tt>java.util.PriorityQueue</tt>, though not the interface, via delegation; an instance of <tt>ServerQueue</tt> contains instance variable <tt>queue</tt> of type <tt>java.util.PriorityQueue</tt> to which it delegates most of its method calls. <br />
+The second instance variable of class <tt>ServerQueue</tt> is of type <tt>ServerComparator</tt> and is used by the <tt>java.util.PriorityQueue</tt> to ascertain the order in which <tt>AbstractRemoteServer</tt> objects should be in the queue. <br />
+At the end of Milestone 4, the load balancing is still very buggy, but difficult to test as the tests are being solved at high speeds despite poor load balancing. Before load balancing is perfected, we will need to write computationally heavier System Tests than those which have been provided to us.
+</p>
+<h4 id="InteractionDiagram:RemoteProveVcServerimplementationRemoteProveVcTomCatServer">Interaction Diagram: <tt>RemoteProveVcServer</tt> implementation <tt>RemoteProveVcTomCatServer</tt></h4>
+<p>
+Coupling has been reduced by abstracting away the logic to connect to remote Prove VC Servers into <tt>RemoteProveVcServer</tt> (an abstract class) objects. In the event that future implementations don't use TomCat / Servlet implementations, changing from one platform to another should be easier. The following is an interaction diagram representing what happens when the Thread Pool executes a <tt>ProveVcThread</tt> using a <tt>RemoteProveVcTomCatServer</tt> implementation, sending an HTTP request to a remote machine, including a Vc.
+<a href="/trac/attachment/wiki/Jml4Disco-LogicalView/InteractionDiagram-DistributedProverStrategyImplementation-RemoteProveVcTomCatServer.png" style="padding:0; border:none"><img src="images/InteractionDiagram-DistributedProverStrategyImplementation-RemoteProveVcTomCatServer.png" /></a>
+</p>
+<h4 id="RelevantComponents1">Relevant Components</h4>
+<ul><li><span class="underline"><tt>ProveVcThread</tt> -</span> Not a <tt>Thread</tt> at all but an implementation of runnable, which contains encapsulates the logic for sending a Prove Vc Server a request asynchronously.
+</li><li><span class="underline"><tt>servReqIn:ObjectOutputStream</tt> -</span> Standard Java class <tt>java.io.ObjectOutputStream</tt> which - in the scope of this example - writes to the <tt>OutputStream</tt> provided by the <tt>URLConnection</tt> object. When this <tt>ObjectOutputStream</tt> is closed, the data written to the <tt>OutputStream</tt> is written to an HTTP POST request.
+</li><li><span class="underline"><tt>URLConnection</tt> -</span> Standard Java class <tt>java.net.URLConnection</tt> that represent a communications link between the application and a URL, or in this instance, the remote VCProgram-Prover-Servlet <tt>ProveVCProgram</tt>.
+</li><li><span class="underline"><tt>servRespIn:ObjectInputStream</tt> -</span> Standard Java class <tt>java.io.ObjectInputStream</tt> which - within the scope of this example - reads from the <tt>InputStream</tt> provided by the <tt>URLConnection</tt> object. The data is read out of an HTTP POST request, sent by the remote Prove-VCProgram Servlet <tt>ProveVCProgram</tt>.
+</li><li><span class="underline"><tt>ProveVC</tt> -</span> This Servlet recieves a <tt>VC</tt> via an HTTP POST request and proves it using ESC4, JML4's static verification component.
+</li></ul><h3 id="TheProver-Server">The Prover-Server</h3>
+<p>
+The Prover-Server is a remote server which receives a VC object via HTTP POST request and proves it. (..) 
+</p>
+<h4 id="InteractionDiagram1">Interaction Diagram</h4>
+<p>
+Minor changes; refactored so that the 'de-marshaling' of VCs from the Http Request remains in the Servlet while proving logic remains in a separate object, in the event that we move away from TomCat implementations.
+</p>
+<h4 id="RelevantComponents2">Relevant Components</h4>
+<p>
+...
+</p>
+<h3 id="TheSimplifyandIsabelleAdapters">The Simplify and Isabelle Adapters</h3>
+<p>
+The adapters are objects that provide bridges between java jvm and theorem prover which are external processes.  The adapters deal with the actual communication with the provers' process.  In this milestone, the team has decided to change the internal behavior of SimplifyAdapter and IsabelleAdapter to avoid unnecessary creation/deletion of process every time the adapters are being called.  This change will improve significantly the performance of proving.
+</p>
+<h4 id="InteractionDiagram2">Interaction Diagram</h4>
+<p>
+The below diagram shows the general behavior of creating new prover's process and how to maintain process' life in a long run.  Note that the behavior shown in the diagram also applied to SimplifyAdapter.
+</p>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-LogicalView/InteractionDiagram-SpawnningOneProcessForSimplifyAndIsabelle.png" style="padding:0; border:none"><img title="upload updated interaction diagram for isabelleAdapter" src="images/InteractionDiagram-SpawnningOneProcessForSimplifyAndIsabelle.png" alt="upload updated interaction diagram for isabelleAdapter" /></a>
+</p>
+<h4 id="RelevantComponents3">Relevant Components</h4>
+<ul><li>org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapter
+</li><li>org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter
+</li></ul><h2 id="BoogieComponents">Boogie Components</h2>
+<h3 id="InteractionDiagram3">Interaction Diagram</h3>
+<p>
+The following diagram shows the general behavior of the boogieVisitor. This diagram keeps a certain level of abstraction and will be broken down in later diagrams.
+</p>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-LogicalView/boogieVisitor.gif" style="padding:0; border:none"><img title="boogieVisitor" src="images/boogieVisitor.gif" alt="boogieVisitor" /></a>
+</p>
+<h3 id="ClassDiagram1">Class Diagram</h3>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-LogicalView/ClassDiagram_Boogie_SymbolTable_DeclFinder.png" style="padding:0; border:none"><img title="new boogie class diagram M5" src="images/ClassDiagram_Boogie_SymbolTable_DeclFinder.png" alt="new boogie class diagram M5" /></a>
+</p>
+<h3 id="ClassDescriptions">Class Descriptions</h3>
+<h4 id="Boogie">Boogie</h4>
+<p>
+The Boogie object is a default compiler extension that enables the Java code to be passed through Boogie. For this to happen, there are two compiler options which must 
+be enabled:
+</p>
+<ul><li> jmlBoogieEnabled set to true
+</li><li> jmlEscProverStrategy: "JML4BOOGIE"
+</li></ul><p>
+Boogie's preCodeGeneration method is called by Eclipse's compilation mechanism before Java bytecode is generated for output. When the function is called, it passes down the compiler object as well as the compilation unit (the unit is the root AST node of a Java source file to parse) to the BoogieAdapter through the process function. 
+</p>
+<h4 id="BoogieAdapter">BoogieAdapter</h4>
+<p>
+The Boogie adapter is responsible for instantiating a BoogieSource object (which holds boogie source). The adapter translates from java to Boogie by calling the boogieVisitor visit function and passing the BoogieSource object to it. The adapter is then responsible for writing the source to a temporary Boogie .bpl source file and executing it through the boogie runtime. 
+</p>
+<h4 id="BoogieParser">BoogieParser</h4>
+<p>
+For now, there is a parser function called parseResult which resides in the boogie adapter. Error messages (results) from Boogie, return a column and row of where the mistake has occured. The parser is responsible parsing that msg and creating a BoogieSourcePoint. With the source point, it then uses the bougieSource getTermAtPoint function to map back to a particular AST node where the error originated from. Using the AST node the parser is now able to return an error msg to the problem reporter with the nth term where it occured. In the future, the Boogie Parser will be taken out of the Boogie Adapter.
+</p>
+<h4 id="BoogieVisitor">BoogieVisitor</h4>
+<p>
+The Boogie visitor has all the node traversal methods. It uses the visitor pattern since when the the visitor's static visit method gets called by the adapter, it gets dynamically dispatched to the proper visit method. When a specific node is visited, the BoogieOutput passed from the adapter is appended with the newly generated boogie source. 
+</p>
+<h4 id="BoogieSource">BoogieSource</h4>
+<p>
+The BoogieSource object is responsible for holding boogie source code which will in tern be written to a temporary file and passed to Boogie runtime by the adapter. The object also holds a table called boogieTable which maps BoogieSourcePoints to particular AST nodes. It is necessary to have this mapping so that when boogie returns an error message with a particular BoogieSourcePoint ( a column and a row in the boogie source) we can map backwards to a particular AST node. This mapping occurs whenever Boogie source is appended. 
+</p>
+<h4 id="BoogieSourcePoint">BoogieSourcePoint</h4>
+<p>
+A Boogie Source Point holds a row and column. It also has a compare method. It primarily used by the BoogieSource object to map points in boogie to AST nodes. 
+</p>
+<h4 id="BoogieSymbolTable">BoogieSymbolTable</h4>
+<p>
+The BoogieSymbolTable class is used to map all local variable declarations to unique, scope independent symbol names. This is necessary because Boogie has only two scopes, global scope and local scope (procedure local). In addition to this limitation, all local declarations must be declared at the beginning of any procedure implementation before any other statements. A problematic scenario that illustrates the need for this component is as follows:
+</p>
+<pre class="wiki">    public void method() {
+        int x = 2;
+        if (true) {
+            int x = 10; 
+        }
+    }
+</pre><p>
+Without symbol passification, Boogie would be generated as:
+</p>
+<pre class="wiki">    procedure method() {
+        var x : int;
+        var x : int;
+        x := 2;
+        if (true) {
+            x := 10;
+        }
+    }
+</pre><p>
+To solve this problem, symbols are uniquely generated starting from the symbol 'a', 'b', ..., 'z', 'aa', and so forth. The correctly generated Boogie using variable passification would be:
+</p>
+<pre class="wiki">    procedure method() {
+        var a : int;
+        var b : int;
+        a := 2;
+        if (true) {
+            b := 10;
+        }
+    }
+</pre><h4 id="BoogieVariableDeclFinderVisitor">BoogieVariableDeclFinderVisitor</h4>
+<p>
+The BoogieVariableDeclFinderVisitor class is used to group all local variable declarations in a method and emit them at the top of a MethodDeclaration before any statements are printed to the buffer. These variables are first passified using the BoogieSymbolTable described above. 
+</p>
+<h2 id="ConfigurationInterfaceComponents">Configuration Interface Components</h2>
+<h4 id="ServerConfigurationInterfaces">Server Configuration Interfaces</h4>
+<p>
+Two new features will be added to the distributed component in the form of configuration interfaces for the server machines, meant to be used by an administrator. The implementation used will be a web application, implemented using Servlets running on a TomCat web server. As such, while the communication between remote machines during program verification may someday be able to move away from using Http to communicate, Dispatcher and Prover servers will always have to be deployed on web servers which include some Java web container, such as Apache TomCat.
+</p>
+<h4 id="DispatcherServersWeb-BasedConfigurationInterface">Dispatcher Server's Web-Based  Configuration Interface</h4>
+<p>
+A layered architecture will be used to develop the configuration interface. In the very top layer, Java Server Pages will render as views, and Java Servlets will receive Http requests and interface with the layer just below, the application layer. In the application layer there will be an interface-independent implementation of a Front Controller, as well as class definitions for Command objects. Below this layer will be the existing JML4Disco classes which will be configured.
+</p>
+<h4 id="ProverServersWeb-BasedConfigurationInterface">Prover Server's Web-Based Configuration Interface</h4>
+<p>
+The design proposed for the Prover Server's Configuration Interface will be identical to that of the Dispatcher's. As such, classes and types common to both implementations should be reused.
+</p>
+<h2 id="SimplifyandIsabelleProcessPool">Simplify and Isabelle Process Pool</h2>
+<p>
+From the previous milestone, we were able to improve significantly the performance of proving by limiting only one process per theorem prover.  However, this does not take advantage of the full potential of multi-core systems.  Hence, during this milestone, we will aiming to generate more processes for each theorem prover (specifically for Simplify and Isabelle ESC4) in a controlled way. The following class diagram shows the changes of the Isabelle and Simplify adapters as well as new classes necessary to implement this 'process pool' concept.
+</p>
+<h3 id="ClassDiagram2">Class Diagram</h3>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-LogicalView/ClassDiagram_ProcessPool.png" style="padding:0; border:none"><img title="Process Pool Class diagram" src="images/ClassDiagram_ProcessPool.png" alt="Process Pool Class diagram" /></a>
+</p>
+<p>
+Whenever, the adapter needs a process, it asks for a idle process by calling ProcessPool object's getFreeProcess() method.  Similarly, once the adapter is no longer needed for the holding process, it release it by calling releaseProcess(Process p) method.
+</p>
+<p>
+ProcessPool object store a list of a given prover's processes.  The available processes is created on the fly (as needed) until the number of created processes hits the maximum threshold.  By default, the number of process allowed is the number of core on the host machine * 2.  
+</p>
+<h3 id="InteractionDiagram4">Interaction Diagram</h3>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-LogicalView/Sequence_Diagram_Prover_Process_Pool.png" style="padding:0; border:none"><img title="sequence diagram for process pool" src="images/Sequence_Diagram_Prover_Process_Pool.png" alt="sequence diagram for process pool" /></a>
+</p>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

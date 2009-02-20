@@ -1,0 +1,309 @@
+\documentclass{llncs}
+\title{Adapting the Java Modeling Language for Java 5 Annotations}
+\author{Kristina B. Taylor\inst{1} \and Johannes Rieken\inst{2} \and Gary T. Leavens\inst{3}}
+\institute{\setcounter{footnote}{0}
+           Iowa State University, Ames IA 50011, USA\footnote{Master's thesis\cite{Taylor08}}
+      \and IBM Rational Zurich Research Lab, 8001 Zurich, Switzerland\footnote{Master's thesis at the University of Oldenburg, Germany\cite{Rieken07}}
+      \and University of Central Florida, Orlando FL 32816, USA}
+
+% cross referencing
+\usepackage[bookmarks=false]{hyperref}
+\usepackage{varioref}
+\newcommand{\figref}[1]{Figure~\vref{#1}}
+\newcommand{\fignref}[1]{Figure~\ref{#1}}
+\newcommand{\secref}[1]{Section~\vref{#1}}
+\newcommand{\secnref}[1]{Section~\ref{#1}}
+
+\usepackage{listings}
+\usepackage{graphicx}
+% When making a new version of figures, please make both eps and pdf files
+\input{jml-listings}
+\lstset{language=Java, basicstyle=\small\ttfamily, commentstyle=\ttfamily, showstringspaces=false}
+\lstdefinelanguage[JML5]{Java}[JML]{Java}%
+       {keywordsprefix=@}
+
+\begin{document}
+
+\include{tr-cover}
+
+\maketitle
+
+\begin{abstract}
+
+The Java Modeling Language (JML) is a formal specification language for Java that allows to express intended behavior through assertions. Currently, users must embed these assertions in Java comments, which complicates parsing and hinders tool support, leading to poor usability. This paper describes a set of proposed Java 5 annotations which reflect current JML assertions and provides for better tool support.  We consider three alternative designs for such annotations and explain why the chosen design is preferred.  This syntax is designed to support both a design-by-contract subset of JML, and to be extensible to the full language.  We demonstrate that by building two tools: Modern Jass, which provides almost-native support for design by contract, and a prototype that works with a much larger set of JML. 
+
+\end{abstract}
+
+\section{Introduction}
+
+The Java Modeling Language (JML) is a specification language for Java that uses Java comments to express its assertions throughout the body of the code.  This technique allows assertions to appear anywhere throughout the code but requires quite a bit of preprocessing and does not provide any native code completion support in integrated development environments (IDEs) such as Eclipse.  Since JML's inception, the designers of Java have added new language constructs called \textit{annotations} to provide language metadata alongside the Java language \cite{Gosling-etal05a}.  We decided to investigate whether there was a way to express JML assertions using these annotations.
+
+Loosely speaking, Java 5 annotations are type-safe comments. Their definition is similar to the interface type and they can be used to add arbitrary metadata to Java statements such as types, fields, methods, method parameters, and local variables. To define an annotation the \lstinline[language={[JML5]Java}]{interface} keyword, preceded by the \lstinline!@!-sign, must be used. An annotation body can specify attributes to allow varying instances of that annotation. \fignref{fig-AnnotationExample} shows the declaration and instantiation of a possible requires-assertion.
+
+\begin{figure}[ht]
+\begin{lstlisting}[language={[JML]Java}]
+public @interface Requires {
+  String assertion();
+}
+
+/* ... */
+
+@Requires(assertion = "amount > 0")
+abstract int doWithDraw(int amount);
+\end{lstlisting}
+\caption{Declaration and exemplary use of an annotation}
+\label{fig-AnnotationExample}
+\end{figure}
+
+The declaration of the annotation shows one attribute, named \textit{assertion}, of the string type. Attributes allow all primitive types, the \textit{class} and \textit{enum} type, other annotations, and arrays as their data type. Annotating the \textit{doWithDraw} method is done by stating the annotation, preceded by the \lstinline!@!-sign, and assigning a value to the attribute.
+
+In order to motivate the use Java 5 annotations to specify behavior, consider an example of the current JML syntax in \figref{fig-BaseExample}, inspired by one in the JML Reference Manual \cite{Leavens-etal07}:
+
+\begin{figure}[ht]
+\begin{lstlisting}[language={[JML]Java}]
+public abstract class IntList {
+
+  //@ public model non_null int [] elements;
+
+  //@ ensures \result == elements.length;
+  public abstract /*@ pure @*/ int size();
+        
+  /*@ signals (IndexOutOfBoundsException e) 
+    @         index < 0 || index >= elements.length;
+    @*/
+  public abstract /*@ pure @*/ int elementAt(int index) 
+    throws IndexOutOfBoundsException;
+
+}
+\end{lstlisting}
+\caption{Base Example}
+\label{fig-BaseExample}
+\end{figure}
+
+Notice that the assertions in \figref{fig-BaseExample} must appear both in \lstinline!//! or \lstinline!/*! style comments and these comments must start with an at-sign (\lstinline!@!) as their first character.  These special comments are recognized by and processed by JML's tools.  This could be confusing to new JML users who are familiar with the \texttt{@Identifier} syntax for Java annotations.  This example could be translated into Java 5 annotations in several ways, from an all-encompassing annotation to many smaller annotations.  Several criteria were considered when judging how usable these annotations were to the users and designers:
+
+\begin{description}
+
+\item[Consistency]
+
+Annotations may appear in several places, and they must be written the same way in each place.
+
+\item[Readability]
+
+Annotations must appear without too much syntax around them so that readers can clearly find and easily read the predicate.
+
+\item[Usability]
+
+Annotations must be flexible in how they are used: intuitive and straightforward for new users while being fully expressive for veteran users.
+
+\item[Extensibility]
+
+Annotations must be able to be extended without disrupting the current syntax.
+
+\end{description}
+
+Thus, in this paper, we aim to answer two questions:
+
+\begin{itemize}
+
+\item Is there a way to write design-by-contract annotations such that they are consistent, readable, usable, and extensible?
+
+\item Is it possible that multiple design-by-contract implementation languages can successfully use a subset of these annotations as a language?
+
+\end{itemize}
+
+The rest of the paper explores related projects, explains the three approaches in more detail, and evaluates them using the criteria above.
+
+\section{Related Work}
+
+Both JSR 305 \cite{SunJSR30506} and JSR 308 \cite{SunJSR30807} discuss the idea of simple Java annotation code checking constructs, by suggesting such annotations as \lstinline[language={[JML5]Java}]{@NonNull}, \lstinline[language={[JML5]Java}]{@Nullity}, and \lstinline[language={[JML5]Java}]{@Pure}.  JSR 308 aims to allow Java annotations in more places (specifically, type expressions), and JSR 305 aims to create a standard set of annotations to assist code checking tools.  However, neither of these propose adding annotations for design-by-contract clauses such as \lstinline[language={[JML5]Java}]{ensures}.
+
+XVP \cite{Royer-Alagic-Dillon07} uses Java 5 annotations to manage assertions in a declarative form.  While it improves on JML by representing assertions using reflection, it only defines two annotations (\lstinline[language={[JML5]Java}]{@Constraint} and \lstinline[language={[JML5]Java}]{@Pure}).  The authors explain that this is to allow for any constraint language to be substituted in place of JML.  However, this makes the constraints difficult to read; it is hard to find the starts and ends of separate clauses without clear string formatting.
+
+Contract4J \cite{Wampler06} goes further by splitting the contracts into three annotations: \lstinline[language={[JML5]Java}]{@Pre} (preconditions), \lstinline[language={[JML5]Java}]{@Post} (postconditions), and \lstinline[language={[JML5]Java}]{@Invar} (invariants).  However, its expression language is not as expressive as JML, as there are no mechanisms to denote \lstinline[language={[JML5]Java}]{assignable}, \lstinline[language={[JML5]Java}]{pure}, or \lstinline[language={[JML5]Java}]{model} constructs.
+
+OVal with AspectJ \cite{Thomschke07} defines many annotations similar to JML, such as \lstinline[language={[JML5]Java}]{@NonNull} and the purity indicator \lstinline[language={[JML5]Java}]{@IsInvariant}.  It allows the user to select the expression language inside of the annotations from five different expression languages (BeanShell, Groovy, JavaScript, MVEL, and OGNL) and also comes with a translator from Enterprise JavaBeans 3.0 (EJB3) to OVal annotations, allowing users to put constraints on database objects.  Again, while the annotations and expressions as a whole cover more than Contract4J, they are not as expressive as JML, leaving out full \lstinline[language={[JML5]Java}]{assignable} support and \lstinline[language={[JML5]Java}]{model} constructs altogether.
+
+\section{Three Approaches}
+
+This section discusses three different approaches to embedding a specification language in Java annotations.
+
+\subsection{The Single Annotation}
+
+One extreme technique is to just put all of the assertion inside one grand annotation.  As mentioned previously, XVP takes this approach by using the encompassing \lstinline[language={[JML5]Java}]{@Constraint} annotation to hold the entirety of a JML expression\footnote{To avoid confusion with JML's \lstinline[language={[JML5]Java}]{constraint} keyword, this chapter will use \lstinline[language={[JML5]Java}]{@JML} as a replacement for \lstinline[language={[JML5]Java}]{@Constraint}}.  An example is given in \figref{fig-SingleAnnotationExample}.
+
+\begin{figure}[ht]
+\begin{lstlisting}[language={[JML5]Java}]
+@JML("public model non_null int [] elements;")
+public abstract class IntList {
+
+  @JML("ensures #result == elements.length;")
+  public abstract @JML("pure") int size();
+        
+  @JML("signals (IndexOutOfBoundsException e)"
+             + "index < 0 || index >= elements.length;")
+  public abstract @JML("pure") int elementAt(int index) 
+    throws IndexOutOfBoundsException;
+
+}
+\end{lstlisting}
+\caption{Single Annotation Example}
+\label{fig-SingleAnnotationExample}
+\end{figure}
+
+\subsection{The Parameter Annotation}
+
+The other extreme technique is to separate every single part of the annotation into its parts inside of the annotation.  This was the original design of the JML annotations, but later analysis will show that going fully by this philosophy causes problems.  The same example in the previous section is modified for this approach in \fignref{fig-ParameterAnnotationExample}.
+
+\begin{figure}[ht]
+\begin{lstlisting}[language={[JML5]Java}]
+@Model(visibility = Visibility.PUBLIC, nonnull = true, 
+       value = "int [] elements;")
+public abstract class IntList {
+
+  @Ensures("#result == elements.length;")
+  public abstract @Pure int size();
+        
+  @Signals(type = "IndexOutOfBoundsException", ident = "e",
+           value = "index < 0 || index >= elements.length;")
+  public abstract @Pure int elementAt(int index) 
+    throws IndexOutOfBoundsException;
+
+}     
+\end{lstlisting}
+\caption{Parameter Annotation Example}
+\label{fig-ParameterAnnotationExample}
+\end{figure}
+
+\subsection{The Clausal Annotation}
+
+Since the two previous techniques are opposite of each other, it makes sense to try to compromise between them.  The driving design decision behind this approach is to give as much work to the current parser as possible without losing the type of the assertion.  This means that every clause that can occur by itself has an annotation with that name and retains that structure throughout all expressions, even within strings.  Again, the same example in previous sections is modified for this approach in \figref{fig-ClausalAnnotationExample}.
+
+\begin{figure}[ht]
+\begin{lstlisting}[language={[JML5]Java}]
+@Model("public @NonNull int [] elements;")
+public abstract class IntList {
+
+  @Ensures("#result == elements.length;")
+  public abstract @Pure int size();
+        
+  @Signals("(IndexOutOfBoundsException e)"
+         + "index < 0 || index >= elements.length;")
+  public abstract @Pure int elementAt(int index) 
+    throws IndexOutOfBoundsException;
+
+}     
+\end{lstlisting}
+\caption{Clausal Annotation Example}
+\label{fig-ClausalAnnotationExample}
+\end{figure}
+
+\section{Discussion}
+
+Now we evaluate each approach based on the criteria stated above.
+
+\subsection{Consistency}
+
+The single annotation approach is the most consistent of the three, since the annotation encompasses the entire grammar.  This becomes slightly less consistent when using syntactic sugar like \lstinline[language={[JML5]Java}]{@Pure}, since there are now two ways of specifying a single \lstinline[language={[JML5]Java}]{pure} assertion on a method.  The clausal approach is slightly less consistent than the single annotation approach, especially when it comes to more advanced features of the language, such as a specification case\footnote{For more information on the decisions on the specification case design, see Kristina Taylor's masters thesis \cite{Taylor08}}.  However, since the clausal approach requires that the content inside the strings is the same and thus does not split up assertions, it is much more consistent than the parameter approach.
+
+\subsection{Readability}
+
+The clausal approach is the most readable of the three, since it strikes a compromise between the two extreme approaches.  The single annotation approach obfuscates the assertion meaning by forcing the reader to read past \lstinline[language={[JML5]Java}]{@JML(..)} to figure out the actual assertion type.  The parameter approach separates every component of the predicate into different pieces in the annotation, eliminating the sentence-like structure of the JML expressions.  The \lstinline[language={[JML5]Java}]{signals} clause in the example illustrates this point well, since it translates into
+
+\begin{lstlisting}[language={[JML5]Java}]
+@Signals(type = "IndexOutOfBoundsException", ident = "e", 
+         value = "index < 0 || index >= elements.length;")
+\end{lstlisting}
+
+This translation becomes even more complicated for modifiers that turn into their own language constructs, such as \lstinline[language={[JML5]Java}]{model}.  The parameter approach transforms the \lstinline[language={[JML5]Java}]{model} statement into
+
+\begin{lstlisting}[language={[JML5]Java}]
+@Model(visibility = Visibility.PUBLIC, nonnull = true, 
+       value = "int [] elements;")
+\end{lstlisting}
+
+\noindent It is unreasonable to create fields for all of the other modifiers that can attach to \lstinline[language={[JML5]Java}]{model} since even slight language redesigns would require changes in this annotation.
+
+The clausal approach strikes a nice balance between the two, specifying the type of the assertion while not splitting the predicate into pieces.  In this approach \lstinline[language={[JML5]Java}]{signals} becomes
+
+\begin{lstlisting}[language={[JML5]Java}]
+@Signals("(IndexOutOfBoundsException e)"
+       + "index < 0 || index >= elements.length;")
+\end{lstlisting}
+
+\noindent while \lstinline[language={[JML5]Java}]{model} turns into
+
+\begin{lstlisting}[language={[JML5]Java}]
+@Model("public @NonNull int [] elements;")
+\end{lstlisting}
+
+\noindent a much shorter and more compact annotation.
+
+\subsection{Usability}
+
+The single annotation approach may be more usable by JML veterans, but it does not guide new users on the different elements of the annotations.  The parameter approach is the most usable, as it lists in its specification the elements of the annotation, their types, and whether or not they are required.  For example, the \lstinline[language={[JML5]Java}]{@Signals} clause shows the user that while merely a type of exception is required, the user can also specify an identifier and a predicate.  The clausal approach only specifies the type of the annotation and nothing about the inner syntax, so it is only slightly more usable than the single annotation approach.
+
+\subsection{Extensibility}
+
+The single annotation and clausal approaches are the most extensible, since most or all of the language extensions are handled by the parser.  Thus, the parser continues to be responsible for the error checking, while the hand-written code only checks the type of the annotation and feeds all relevant information back to the parser.  In the parameter approach, a language change requires adding a new annotation component as well as new hand-written code to feed it to the parser, increasing the workload for the tool programmers and the possibility for errors.
+
+\subsection{Summary}
+
+Using these criteria, we conclude that the single annotation approach is not helpful to new users and that the parameter annotation approach is too complicated.  Thus, the clausal annotation approach seems the best compromise to us.  In addition, since the clausal annotation forwards much of the work to the parser, it allows different projects, such as the Modern Jass project, to use the basic JML language while implementing their own language enhancements and expression grammars.
+
+\section{Tool Integration}
+
+This section discusses how we have experimented with this design by giving an overview of two tools that use it: Modern Jass and JML5.
+
+\subsection{Modern Jass}
+Modern Jass is about enabling formal specifications without the cost of custom development tools like pre-processors. To achieve this only Java features and standardized programming interfaces were to be used. The components from which Modern Jass is build, reflect the main requirements a specification tool has to fulfill. Those are to:
+\begin{itemize}
+\item provide a way to write down specifications, 
+\item validate specifications, so they can be evaluated without failure, and 
+\item enforce that the specified behavior holds at runtime, and emit an event in case it does not.
+\end{itemize}
+These requirements can be implemented using native Java programming interfaces, integrating seamlessly into every build process, being easy to use, and independent of a development tool. To do this, Modern Jass uses Java 5 annotations \cite{Gosling-etal05a},  the Annotation Processing and Compiler API \cite{Darcy:2006:JSR269,Gafter:2002:JSR199}, and the Bytecode Instrumentation API \cite{Sun:Instrument}.
+
+The following lays out the workings of Modern Jass in detail.  The behavior of a program is specified using a set of Java 5 annotations, like the JMLAnnotations. Currently, Modern Jass \textit{understands} a subset of the JMLAnnotations which contains the heavyweight specification case, invariants, and model variables as well as lightweight specifications like the \lstinline[language={[JML5]Java}]{@Requires}, \lstinline[language={[JML5]Java}]{@Ensures}, and \lstinline[language={[JML5]Java}]{@NonNull} annotations. Before expounding on the Modern Jass annotation processor and bytecode instrumenter, the corresponding programming interfaces are to be introduced.
+
+The Annotation Processing API emerged from JSR 269 and was added to the Java platform in its sixth major release (Java 6). It enables third party developers to provide compiler plugins, called annotation processors, to discover and validate the use of annotations. Access to all annotations and a signature AST is provided, and an annotation processor can issue an error or warning if an annotation is not used as expected. For example, if a specification refers to a variable which is out of scope, the annotation processor will create a compile error. Those errors will appear like \textit{ordinary} compile errors, hence, be familiar to most programmers. Having a framework to process annotations, raises the question how invalid annotation values can be detected? \figref{fig-ModernJassInvalidAnnotation} shows a simple specification which requires an index to be positive. However, the specification is faulty, as it refers to the variable \textit{i\textbf{m}dex} instead of \textit{index}\footnote{Note that the Java compiler will not detect such errors as it just checks the syntax (proper use of the string data type in this case) and not the actual semantics of the annotation (referring to a method parameter).}.
+\begin{figure}[ht]
+\begin{lstlisting}[language={[JML5]Java}]
+  @Requires("imdex >= 0")    // wrong!
+  public abstract int elementAt(int index)
+    throws ArrayIndexOutOfBoundsException;
+\end{lstlisting}
+\caption{A faulty specification (referring to an invalid variable).}
+\label{fig-ModernJassInvalidAnnotation}
+\end{figure}
+A part of specification-validation is to detect such errors and report them to the end-user. Instead of having a parser and code analyzer Modern Jass delegates this task to the compiler using the Java Compiler API. This API (added via JSR 199 to Java 6), allows one to program
+
+The last requirement is to enforce the specification during runtime. This requires a bytecode representation of the specified behavior that can be executed during program execution. To accomplish this, the Java Compiler API is used to produce bytecode for runtime checking. When successfully compiling specification code, bytecode is generated. This bytecode is used by a Java Instrumentation Agent and gets inserted, at runtime, while the corresponding classes are loading into the Java virtual machine. 
+
+Summarizing, it can be said that using Java 5 annotation to specify the behavior of programs establishes a new way how specification tools can be written. It allows for a much more native tool implementation which lowers the burden for novice users, pleases veterans, and does not depend on a compiler implementation, build-process, or IDE.
+\subsection{JML5}
+
+While Modern Jass uses a subset of the annotation syntax described above, JML5 uses all of its features.  JML5 is based on the current JML compiler, JML2, and so represents a different route to implementing annotation-based specification languages. In JML2, abstract syntax trees (ASTs) are made up of classes representing Java constructs (such as methods or fields) mixed in with JML constructs (such as requires and ensures).  JML5 works with these custom ASTs without using the Annotation Processing API, and instead extends the JML2 parser and tree walkers.  The presence of visitor methods in all of the necessary JML2 classes made this process easy since it allows a single visitor class to walk through each element of the AST.  
+
+Parsing in JML5 happens in several phases.  First, the compiler parses the code just like Java code, ignoring the content inside of the strings of any JML annotation it encounters.  Second, it goes back to parse the strings and inserts them into the previously created AST.  In order to create these ASTs from the strings in the annotations, we used a custom ANTLR parser-generator \cite{Parr-Quong95} to create the parsing code for us.  Every annotation (such as \lstinline[language={[JML5]Java}]{@Requires} or \lstinline[language={[JML5]Java}]{@Ensures}) has a method in the parser, making it easy to call directly from the visitor class.  So, for example, adding a \lstinline[language={[JML5]Java}]{requires} clause to a method in the JML AST involves first calling the parser to get the AST for the clause, and then adding the resulting \lstinline[language={[JML5]Java}]{JmlRequiresClause} to the set of clauses in the \lstinline[language={[JML5]Java}]{JmlMethodDeclaration} container node.
+
+\section{Conclusion}
+
+In the introduction, we introduced two questions which this paper would hopefully answer:
+
+\begin{itemize}
+
+\item Is there a way to write design-by-contract annotations such that they are consistent, readable, usable, and extensible?
+
+\item Is it possible that multiple design-by-contract implementation languages can successfully use a subset of these annotations as a language?
+
+\end{itemize}
+
+We have demonstrated that the clausal annotation approach is consistent, readable, usable, and extensible, making it the best choice for our new syntax.  We have also demonstrated two tools, Modern Jass and JML, that use this syntax, showing that multiple design-by-contract tools based on Java can agree on a single annotation structure.  Adoption of this structure by other Java-based tools would make it easier to switch from one tool to another and immediately understand the language between two tools.  
+
+This opens up several avenues for future work.  One is to expand the above set of annotations to include all of the features of both JML and Modern Jass.  Another is to include other design-by-contract languages for Java in this effort, making the above language even more standard for the community.  Collaborations like these are necessary in order to come up with a standard design-by-contract syntax for Java and make formal methods for languages more accessible and easier to use for a wider audience.
+
+\bibliographystyle{splncs}
+\bibliography{sources}
+
+\end{document}

@@ -1,0 +1,25 @@
+package org.jmlspecs.jml4.esc.provercoordinator.prover;
+
+import java.util.Map;
+
+import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
+import org.jmlspecs.jml4.esc.result.lang.Result;
+import org.jmlspecs.jml4.esc.vc.lang.VC;
+
+public abstract class ProverAdapter {
+
+	// DISCO CompierlerOptions and ProblemReporter set to null to allow serialization 
+	public static final String VALID = "Valid."; //$NON-NLS-1$
+	protected transient final CompilerOptions options;
+	protected transient final ProblemReporter problemReporter;
+	protected ProcessPool processPool;
+
+	public ProverAdapter(CompilerOptions options, ProblemReporter problemReporter) {
+		this.options = options;
+		this.problemReporter = problemReporter;
+	}
+
+	public abstract Result[] prove(VC vc, Map incarnations);
+
+}

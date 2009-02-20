@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Caching Strategies</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="CachingStrategies"><strong>Caching Strategies</strong></h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.FirstImplementation">1. First Implementation</a><ol><li class="active"><a href="#a1.1WhyMySQL">1.1 Why MySQL</a></li><li class="active">
+<a href="#a1.2Whyonthedispatcher">1.2 Why on the dispatcher?</a></li><li class="active">
+<a href="#a1.3WhyalltheVCs">1.3 Why all the VC's?</a></li><li class="active">
+<a href="#a1.4Considerations">1.4 Considerations</a></li></ol><li class="active"><a href="#References">References</a></li></li></ol></div>
+
+</p>
+<h2 id="a1.FirstImplementation">1. First Implementation</h2>
+<p>
+Our initial caching strategy will be a simplistic one. The cache will be located on the dispatching machine, as opposed to the prover machines. We will be caching all VC's, using a MySQL database. Each VC will be checked against the cache prior to being dispatched. All VC's that return from the prover's will be cached, the pertinent information being the VC, the result of the proof, and the prover that returned it. 
+</p>
+<p>
+For this to be implemented, the following need to be done:
+</p>
+<ul><li>Every machine that will be running as a dispatcher will need to have a MySQL server installed and configured.
+</li><li>A database will need to be created in each server. This database will almost certainly be a single table detailing the pertinent information.
+</li><li>The code for proving VC's will need to be altered to check for the cache prior to dispatching.
+</li><li>The code that handles the results of proven VC's will need to cache results that return. 
+</li></ul><h3 id="a1.1WhyMySQL">1.1 Why MySQL</h3>
+<p>
+The JML4 "Disco" team is familiar with MySQL technology, thus it is a low risk item. It is not a RAM based storage system, and thus it will be saved in the event of electrical failures. It is a technology that has been created with the intent of being able to quickly located stored information. 
+</p>
+<p>
+The alternatives that we examined were a file based cache, and a java process that would run continuously.
+</p>
+<p>
+The file based cache would require that we perform indexing once the number of records became large. Since no one on the team has experience in indexing files, it was determined that for caching individual VC's, this would not be a wise decision.
+</p>
+<p>
+A Java process would be faster that the MySQL implementation, however due to the infinite nature of VC's, and the very real limitations of memory, it was decided that unless the dispatching machines were specifically designated for this purpose, they would lack the necessary memory. Another issue is that until the caching becomes distributed, an electrical failure would obliterate the cache.
+</p>
+<h3 id="a1.2Whyonthedispatcher">1.2 Why on the dispatcher?</h3>
+<p>
+There are two alternative locations for the cache. One location would be a centralized cache server, and the second location would be replicated cache's on each of the prover machines.
+</p>
+<p>
+Both options are more complicated than the option we have chosen, thus one reason for the decision we have made is simplicity.
+</p>
+<p>
+A cache server is almost equivalent to the choice we have made, although if in the future we choose to only cache particular results, for instance only caching VC's that run through isabelle, then a cache server would have an advantage over the current choice.
+</p>
+<p>
+Replicated cache's on the prover servers would be the ideal choice, however it is a fairly risky undertaking, and thus it is a recommendation for future improvements.
+</p>
+<h3 id="a1.3WhyalltheVCs">1.3 Why all the VC's?</h3>
+<p>
+Since we are caching on the dispatcher, and the only times the dispatcher interacts with the VC's are before they are dispatched and after the VC's are proved, the only time we can check the VC against the cache is before we dispatch the VC. Since we will be checking all VC's against the cache, cache access time is incurred in the proving of each VC. It follows that caching all VC's will increase the frequency with which the searches return a result, and thus will reduce the proving time.
+</p>
+<h3 id="a1.4Considerations">1.4 Considerations</h3>
+<p>
+As the number of records in our database increases, search time might be a factor. If we discover this to be a large enough issue, then indexing the database is one possible solution. Indexing is a tool that bundled into MySQL and it speeds up searches considerably. While a database is being indexed, it is unavailable for searching and inserting, so a copy would need to exist. 
+</p>
+<p>
+Copying the database would double the amount of hard disk space that it takes. Since there are an infinite number of VC's, the database can become immense. If that ever becomes an issue, we would need to remove records and only keep those records that would be most beneficial. A well known problem with programs that run across multiple systems is the lack of a common clock<a href="/trac/changeset/1" title="" class="changeset">[1]</a>. This problem means that there is no way to accurately gauge how long it takes to prove a VC, and it follows that the only useful information we have about a VC is which prover was able to prove it. Caching this information would allow us to remove the records that are the least useful to cache, such as those that are easily proved by simplify.
+</p>
+<h2 id="References">References</h2>
+<p>
+<a href="/trac/changeset/1" title="" class="changeset">[1]</a> <a href="http://en.wikipedia.org/wiki/Clock_synchronization" class="ext-link"><span class="icon">http://en.wikipedia.org/wiki/Clock_synchronization</span></a>
+</p>
+</div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

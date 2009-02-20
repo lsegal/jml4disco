@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>JML4 Commit 2008-12-16</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+
+<body>
+<h2>JML4 Commit Notes - 2008-12-16</h2>
+<hr />
+<h2>WHAT is in commit <a href="http://jmlspecs.svn.sourceforge.net/viewvc/jmlspecs?view=rev&revision=1173">1173</a>?</h2>
+<p>Essentially added parsing (no resolution) support for method specification forall and old variable declarations.</p>
+<h2>DETAILS</h2>
+<p>Selected details:</p>
+<ul><li>Scanner updated to recognize &quot;forall&quot; and &quot;old&quot;.</li>
+  <li>java.g: added appropriate production rules. Note that in defining the spec var declarations, use is made of the JDT LocalVariableDeclarationStatement production rule (seemed much better than duplicating all that code). This required adding a JmlParserHelper boolean field processingSpecVarDecls which is true precisely when spec var decls are expected. This allows us to have the method consumeEnterVariable() construction local declarations rather than fields. </li>
+  <li> JmlSpecCaseBody: added two fields of type JmlLocalDeclaration[] to hold forall and old spec var decls.</li>
+  <li>JmlConstants.ENABLE_SPEC_MERGE constant added to allow spec merging to be disabled programatically.</li>
+  <li>DbcTestCompiler: added test_0042_spec_variables() and test_0043_result_as_array(). The latter currently fails, though I will be working on that next. </li>
+</ul>
+</body>
+</html>

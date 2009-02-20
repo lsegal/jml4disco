@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="org.eclipse.jdt.core">
+        <wb-resource deploy-path="/" source-path="/antadapter"/>
+        <wb-resource deploy-path="/" source-path="/batch"/>
+        <wb-resource deploy-path="/" source-path="/codeassist"/>
+        <wb-resource deploy-path="/" source-path="/compiler"/>
+        <wb-resource deploy-path="/" source-path="/dom"/>
+        <wb-resource deploy-path="/" source-path="/eval"/>
+        <wb-resource deploy-path="/" source-path="/formatter"/>
+        <wb-resource deploy-path="/" source-path="/model"/>
+        <wb-resource deploy-path="/" source-path="/search"/>
+    </wb-module>
+</project-modules>

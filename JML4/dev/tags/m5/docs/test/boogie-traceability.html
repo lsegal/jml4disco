@@ -1,0 +1,1217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Boogie Traceability</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="BoogieTraceability">Boogie Traceability</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.Traceability">1. Traceability</a></li></ol></div>
+
+</p>
+<h2 id="a1.Traceability">1. Traceability</h2>
+<ul><li>The following <tt>ASTNode</tt> elements are considered for implementation. 
+</li><li>Each one should trace to one or more test cases. 
+</li><li>All high priority items are marked in red (unless completed). 
+</li><li>Legend can be found below.
+</li></ul>            <table border="1" cellpadding="3" style="border-collapse:collapse">
+                <tr>
+                    <th align="left" style="font-weight:bold"></th>
+                    <th align="left" style="font-weight:bold">Node Type</th>
+                    <th align="left" style="font-weight:bold">Scope</th>
+                    <th align="left" style="font-weight:bold">Completed</th>
+                    <th align="left" style="font-weight:bold">Priority</th>
+                    <th align="left" style="font-weight:bold">Test Traceability</th>
+                </tr>
+
+                            <tr>
+                <th align="left" colspan="6" style="font-weight:bold">
+                    Statements
+                </th>
+            </tr>
+                            <tr style="background-color:#bea">
+                    <td align="left">1</td>
+                    <th align="left">Block</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L609" title="InitialTests.java: test_0300_IfCondition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L705" title="InitialTests.java: test_350_while()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L736" title="InitialTests.java: test_0370_Break_withlabel()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L767" title="InitialTests.java: test_0371_Break()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L790" title="InitialTests.java: test_400_do()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L825" title="InitialTests.java: test_401_do_multiline()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L854" title="InitialTests.java: test_500_for()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L892" title="InitialTests.java: test_500_for_multi_initialization()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">2</td>
+                    <th align="left">BreakStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L480" title="AdapterTests.java: test_0370_Break_withlabel()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L501" title="AdapterTests.java: test_0371_Break()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">3</td>
+                    <th align="left">CaseStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">4</td>
+                    <th align="left">ContinueStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">5</td>
+                    <th align="left">DoStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L790" title="InitialTests.java: test_400_do()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L825" title="InitialTests.java: test_401_do_multiline()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">6</td>
+                    <th align="left">EmptyStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">7</td>
+                    <th align="left">ForeachStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">8</td>
+                    <th align="left">ForStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L854" title="InitialTests.java: test_500_for()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L892" title="InitialTests.java: test_500_for_multi_initialization()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">9</td>
+                    <th align="left">IfStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L429" title="AdapterTests.java: test_0300_IfCondition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L449" title="AdapterTests.java: test_0301_IfCondition_noBlock()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">10</td>
+                    <th align="left">LabeledStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L480" title="AdapterTests.java: test_0370_Break_withlabel()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">11</td>
+                    <th align="left">SwitchStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">12</td>
+                    <th align="left">SynchronizedStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#999; font-style:italic">
+                     <td align="left">13</td>
+                     <td align="left"><em>ThrowStatement</em></td>
+                     <td align="left"><em>method</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+                <tr style="color:#999; font-style:italic">
+                     <td align="left">14</td>
+                     <td align="left"><em>TryStatement</em></td>
+                     <td align="left"><em>method</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">15</td>
+                    <th align="left">WhileStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L464" title="AdapterTests.java: test_350_while()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L480" title="AdapterTests.java: test_0370_Break_withlabel()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L501" title="AdapterTests.java: test_0371_Break()" style="color:#006">P</a>
+</td>
+                </tr>
+
+
+            <tr>
+                <th align="left" colspan="6" style="font-weight:bold">
+                    Expressions
+                </th>
+            </tr>
+                            <tr>
+                    <td align="left">16</td>
+                    <th align="left">AllocationExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">17</td>
+                    <th align="left">AND_AND_Expression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L127" title="AdapterTests.java: test_006_assert_sequence_and_or()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L146" title="AdapterTests.java: test_007_assert_sequence_or_and()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">18</td>
+                    <th align="left">Argument</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L89" title="AdapterTests.java: test_003_assertParam()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L313" title="AdapterTests.java: test_0111_MethodDefinition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L429" title="AdapterTests.java: test_0300_IfCondition()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">19</td>
+                    <th align="left">Argument</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L89" title="AdapterTests.java: test_003_assertParam()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L313" title="AdapterTests.java: test_0111_MethodDefinition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L429" title="AdapterTests.java: test_0300_IfCondition()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">20</td>
+                    <th align="left">ArrayAllocationExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">21</td>
+                    <th align="left">ArrayInitializer</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">22</td>
+                    <th align="left">Assignment</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L591" title="InitialTests.java: test_0299_LocalDeclarationWithInitialization()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L1003" title="InitialTests.java: test_1000_int_localdeclaration()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">23</td>
+                    <th align="left">BinaryExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left">MED</td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L854" title="InitialTests.java: test_500_for()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L892" title="InitialTests.java: test_500_for_multi_initialization()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">24</td>
+                    <th align="left">CastExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">25</td>
+                    <th align="left">Clinit</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">26</td>
+                    <th align="left">CompoundAssignment</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00; background-color:#ffa">
+                    <td align="left">27</td>
+                    <th align="left">ConditionalExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L661" title="InitialTests.java: test_0302_IfCondition_ternary()" style="color:#f00; font-weight:bold">F</a>
+</td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">28</td>
+                    <th align="left">EqualExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L518" title="AdapterTests.java: test_0400_postconditionFails()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L543" title="AdapterTests.java: test_0400_MultipleFailures()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">29</td>
+                    <th align="left">ExplicitConstructorCall</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">30</td>
+                    <th align="left">InstanceOfExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">31</td>
+                    <th align="left">MemberValuePair</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">32</td>
+                    <th align="left">MessageSend</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">33</td>
+                    <th align="left">OR_OR_Expression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L108" title="AdapterTests.java: test_004_assert_sequence_and()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L127" title="AdapterTests.java: test_006_assert_sequence_and_or()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L146" title="AdapterTests.java: test_007_assert_sequence_or_and()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">34</td>
+                    <th align="left">ParameterizedQualifiedTypeReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">35</td>
+                    <th align="left">ParameterizedQualifiedTypeReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">36</td>
+                    <th align="left">ParameterizedSingleTypeReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">37</td>
+                    <th align="left">ParameterizedSingleTypeReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">38</td>
+                    <th align="left">PostfixExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left">MED</td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L923" title="InitialTests.java: test_600_postFixExpression()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">39</td>
+                    <th align="left">PrefixExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L952" title="InitialTests.java: test_601_preFixExpression()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#006">
+                    <td align="left">40</td>
+                    <th align="left">QualifiedAllocationExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><em>REVISE</em></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#006">
+                    <td align="left">41</td>
+                    <th align="left">QualifiedNameReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><em>REVISE</em></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#006">
+                    <td align="left">42</td>
+                    <th align="left">QualifiedNameReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><em>REVISE</em></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">43</td>
+                    <th align="left">QualifiedSuperReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">44</td>
+                    <th align="left">QualifiedSuperReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">45</td>
+                    <th align="left">QualifiedThisReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">46</td>
+                    <th align="left">QualifiedThisReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">47</td>
+                    <th align="left">QualifiedTypeReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">48</td>
+                    <th align="left">QualifiedTypeReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">49</td>
+                    <th align="left">ReturnStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L313" title="AdapterTests.java: test_0111_MethodDefinition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L429" title="AdapterTests.java: test_0300_IfCondition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L518" title="AdapterTests.java: test_0400_postconditionFails()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L543" title="AdapterTests.java: test_0400_MultipleFailures()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#999; font-style:italic">
+                     <td align="left">50</td>
+                     <td align="left"><em>SingleMemberAnnotation</em></td>
+                     <td align="left"><em>method</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">51</td>
+                    <th align="left">SingleNameReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">52</td>
+                    <th align="left">SingleNameReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">53</td>
+                    <th align="left">SingleTypeReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L1003" title="InitialTests.java: test_1000_int_localdeclaration()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">54</td>
+                    <th align="left">SingleTypeReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L1003" title="InitialTests.java: test_1000_int_localdeclaration()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">55</td>
+                    <th align="left">SuperReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">56</td>
+                    <th align="left">ThisReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">57</td>
+                    <th align="left">ThisReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">58</td>
+                    <th align="left">TypeParameter</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">59</td>
+                    <th align="left">TypeParameter</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">60</td>
+                    <th align="left">UnaryExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+
+            <tr>
+                <th align="left" colspan="6" style="font-weight:bold">
+                    Fields
+                </th>
+            </tr>
+                            <tr style="color:#f00">
+                    <td align="left">61</td>
+                    <th align="left">FieldDeclaration</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">62</td>
+                    <th align="left">FieldReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">63</td>
+                    <th align="left">FieldReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+
+            <tr>
+                <th align="left" colspan="6" style="font-weight:bold">
+                    Declarations
+                </th>
+            </tr>
+                            <tr style="color:#999; font-style:italic">
+                     <td align="left">64</td>
+                     <td align="left"><em>AnnotationMethodDeclaration</em></td>
+                     <td align="left"><em>class</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">65</td>
+                    <th align="left">CompilationUnitDeclaration</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">66</td>
+                    <th align="left">ConstructorDeclaration</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">67</td>
+                    <th align="left">LocalDeclaration</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L542" title="InitialTests.java: test_0297_LocalDeclaration_multiVarName_diffScope()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L574" title="InitialTests.java: test_0298_LocalDeclaration()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L591" title="InitialTests.java: test_0299_LocalDeclarationWithInitialization()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L609" title="InitialTests.java: test_0300_IfCondition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L1003" title="InitialTests.java: test_1000_int_localdeclaration()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#999; font-style:italic">
+                     <td align="left">68</td>
+                     <td align="left"><em>MarkerAnnotation</em></td>
+                     <td align="left"><em>method</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">69</td>
+                    <th align="left">JmlMethodDeclaration</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L89" title="AdapterTests.java: test_003_assertParam()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L299" title="AdapterTests.java: test_0110_JmlMethodDeclaration_EmptyMethod()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L313" title="AdapterTests.java: test_0111_MethodDefinition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L337" title="AdapterTests.java: test_0112_DoubleMethodDefinition()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#999; font-style:italic">
+                     <td align="left">70</td>
+                     <td align="left"><em>NormalAnnotation</em></td>
+                     <td align="left"><em>method</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+                <tr>
+                    <td align="left">71</td>
+                    <th align="left">TypeDeclaration</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">72</td>
+                    <th align="left">TypeDeclaration</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">73</td>
+                    <th align="left">TypeDeclaration</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+
+            <tr>
+                <th align="left" colspan="6" style="font-weight:bold">
+                    Literals
+                </th>
+            </tr>
+                            <tr>
+                    <td align="left">74</td>
+                    <th align="left">CharLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">75</td>
+                    <th align="left">ClassLiteralAccess</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">76</td>
+                    <th align="left">DoubleLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L122" title="InitialTests.java: testDoubleLiteral()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">77</td>
+                    <th align="left">ExtendedStringLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">78</td>
+                    <th align="left">FalseLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L107" title="InitialTests.java: testFalseLiteral()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">79</td>
+                    <th align="left">FloatLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">80</td>
+                    <th align="left">IntLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L518" title="AdapterTests.java: test_0400_postconditionFails()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L543" title="AdapterTests.java: test_0400_MultipleFailures()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">81</td>
+                    <th align="left">LongLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">82</td>
+                    <th align="left">NullLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">83</td>
+                    <th align="left">StringLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left">MED</td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L429" title="AdapterTests.java: test_0300_IfCondition()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">84</td>
+                    <th align="left">StringLiteralConcatenation</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">85</td>
+                    <th align="left">TrueLiteral</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/InitialTests.java#L112" title="InitialTests.java: testTrueLiteral()" style="color:#006">P</a>
+</td>
+                </tr>
+
+
+            <tr>
+                <th align="left" colspan="6" style="font-weight:bold">
+                    JML
+                </th>
+            </tr>
+                            <tr style="background-color:#bea">
+                    <td align="left">86</td>
+                    <th align="left">JmlAssertStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L57" title="AdapterTests.java: test_001_assertFalse()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L75" title="AdapterTests.java: test_002_assertTrue()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L89" title="AdapterTests.java: test_003_assertParam()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L108" title="AdapterTests.java: test_004_assert_sequence_and()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L127" title="AdapterTests.java: test_006_assert_sequence_and_or()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L146" title="AdapterTests.java: test_007_assert_sequence_or_and()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L164" title="AdapterTests.java: test_008_assert_sequence_tt()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L179" title="AdapterTests.java: test_009_assert_sequence_tf()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L199" title="AdapterTests.java: test_007_assert_sequence_ft()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L219" title="AdapterTests.java: test_008_assert_sequence_ff()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L313" title="AdapterTests.java: test_0111_MethodDefinition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L337" title="AdapterTests.java: test_0112_DoubleMethodDefinition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L363" title="AdapterTests.java: test_0200_sequence_assume_assert_tt()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L543" title="AdapterTests.java: test_0400_MultipleFailures()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#006">
+                    <td align="left">87</td>
+                    <th align="left">JmlAssignment</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><em>REVISE</em></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">88</td>
+                    <th align="left">JmlAssumeStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L271" title="AdapterTests.java: test_0100_assumeFalse()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L285" title="AdapterTests.java: test_0101_assumeTrue()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L363" title="AdapterTests.java: test_0200_sequence_assume_assert_tt()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L378" title="AdapterTests.java: test_0201_sequence_assume_assert_ff()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L393" title="AdapterTests.java: test_0202_sequence_assume_assert_ft()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L414" title="AdapterTests.java: test_0203_sequence_assume_assert_tf()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#006">
+                    <td align="left">89</td>
+                    <th align="left">JmlCastExpressionWithoutType</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><em>REVISE</em></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#006">
+                    <td align="left">90</td>
+                    <th align="left">JmlClause</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><em>REVISE</em></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">91</td>
+                    <th align="left">JmlEnsuresClause</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#006">
+                    <td align="left">92</td>
+                    <th align="left">JmlFieldDeclaration</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><em>REVISE</em></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#999; font-style:italic">
+                     <td align="left">93</td>
+                     <td align="left"><em>JmlLoopAnnotations</em></td>
+                     <td align="left"><em>method</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">94</td>
+                    <th align="left">JmlLoopInvariant</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">95</td>
+                    <th align="left">JmlLoopVariant</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">96</td>
+                    <th align="left">JmlMethodSpecification</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L313" title="AdapterTests.java: test_0111_MethodDefinition()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L518" title="AdapterTests.java: test_0400_postconditionFails()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L543" title="AdapterTests.java: test_0400_MultipleFailures()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr>
+                    <td align="left">97</td>
+                    <th align="left">JmlOldExpression</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#f00">
+                    <td align="left">98</td>
+                    <th align="left">JmlRequiresClause</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="background-color:#bea">
+                    <td align="left">99</td>
+                    <th align="left">JmlResultReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong>X</strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L313" title="AdapterTests.java: test_0111_MethodDefinition()" style="color:#006">P</a>
+</td>
+                </tr>
+
+
+            <tr>
+                <th align="left" colspan="6" style="font-weight:bold">
+                    Arrays
+                </th>
+            </tr>
+                            <tr>
+                    <td align="left">100</td>
+                    <th align="left">ArrayQualifiedTypeReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">101</td>
+                    <th align="left">ArrayQualifiedTypeReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">102</td>
+                    <th align="left">ArrayReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">103</td>
+                    <th align="left">ArrayTypeReference</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr>
+                    <td align="left">104</td>
+                    <th align="left">ArrayTypeReference</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">MED</td>
+                    <td align="left"></td>
+                </tr>
+
+
+            <tr>
+                <th align="left" colspan="6" style="font-weight:bold">
+                    Javadoc
+                </th>
+            </tr>
+            
+
+            <tr>
+                <th align="left" colspan="6" style="font-weight:bold">
+                    Miscellaneous
+                </th>
+            </tr>
+                            <tr style="color:#f00">
+                    <td align="left">105</td>
+                    <th align="left">AssertStatement</th>
+                    <td align="left">method</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left"><strong>HIGH</strong></td>
+                    <td align="left">            <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L239" title="AdapterTests.java: test_009_JavaAssertFalse()" style="color:#006">P</a>
+,             <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/boogie/AdapterTests.java#L257" title="AdapterTests.java: test_010_JavaAssertTrue()" style="color:#006">P</a>
+</td>
+                </tr>
+
+                <tr style="color:#999; font-style:italic">
+                     <td align="left">106</td>
+                     <td align="left"><em>ImportReference</em></td>
+                     <td align="left"><em>class</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+                <tr>
+                    <td align="left">107</td>
+                    <th align="left">Initializer</th>
+                    <td align="left">class</td>
+                    <td align="center"><strong></strong></td>
+                    <td align="left">LOW</td>
+                    <td align="left"></td>
+                </tr>
+
+                <tr style="color:#999; font-style:italic">
+                     <td align="left">108</td>
+                     <td align="left"><em>Wildcard</em></td>
+                     <td align="left"><em>method</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+                <tr style="color:#999; font-style:italic">
+                     <td align="left">109</td>
+                     <td align="left"><em>Wildcard</em></td>
+                     <td align="left"><em>class</em></td>
+                     <td></td>
+                     <td align="left"><em>IGNORED</em></td>
+                     <td></td>
+                 </tr>
+
+
+            </table>
+<p>
+Legend:
+</p>
+<table class="wiki">
+<tr><td><strong>Scope</strong></td><td>
+</td></tr><tr><td>method</td><td>Node is exists inside a Java method declaration
+</td></tr><tr><td>class</td><td>Node is directly defined in a class body (above a method)
+</td></tr><tr><td><strong>Priority</strong></td><td>
+</td></tr><tr><td>IGNORED</td><td>No plans for implementation
+</td></tr><tr><td>LOW</td><td>Low priority element
+</td></tr><tr><td>MED</td><td>Medium priority element
+</td></tr><tr><td>HIGH</td><td>High priority element
+</td></tr><tr><td>REVISE</td><td>Priority cannot adequately be judged, please review
+</td></tr><tr><td><strong>Tests</strong></td><td>
+</td></tr><tr><td>P</td><td>Test passed (click link for actual test source)
+</td></tr><tr><td>F</td><td>Test failed (click link for actual test source)
+</td></tr></table>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

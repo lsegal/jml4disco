@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Process Documentation</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="ProcessDocumentation">Process Documentation</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a0.RevisionHistory">0. Revision History</a></li><li class="active">
+<a href="#a1.Introduction">1. Introduction</a></li><li class="active">
+<a href="#a2.TracProtocols">2. Trac Protocols</a><ol><li class="active"><a href="#a2.1UpdatingtheWiki">2.1 Updating the Wiki</a></li><li class="active">
+<a href="#a2.2Managingticketsandmilestones">2.2 Managing tickets and milestones</a></li><li class="active">
+<a href="#a2.3TicketClosingandReviewProcess">2.3 Ticket Closing and Review Process</a></li></ol></li><li class="active"><a href="#a3.SubversionProtocols">3. Subversion Protocols</a><ol><li class="active"><a href="#a3.1Checkingoutsourcecode">3.1 Checking out source code</a></li><li class="active">
+<a href="#a3.2Checkinginsourcecode">3.2 Checking in source code</a></li><li class="active">
+<a href="#a3.3Mergingfilesandhandlingcollisions">3.3 Merging files and handling collisions</a></li></ol></li><li class="active"><a href="#a4.CodeandTestingProtocols">4. Code and Testing Protocols</a><ol><li class="active"><a href="#a4.1Sourcecodeetiquetteandformattingrules">4.1 Source code etiquette and formatting rules</a></li><li class="active">
+<a href="#a4.2Managingunittests">4.2 Managing unit tests</a></li></ol><li class="active"><a href="#AppendixA:Glossary">Appendix A: Glossary</a></li></li></ol></div>
+
+</p>
+<h2 id="a0.RevisionHistory">0. Revision History</h2>
+<ul><li><strong>Oct. 03 2008, l_sega</strong> Importing of process documentation from older project. <i>The Subversion and code handling processes currently only represent a loose guideline since they have not yet been discussed by the team.</i>
+</li></ul><h2 id="a1.Introduction">1. Introduction</h2>
+<p>
+This page describes the process upheld by the developers and maintainers of this project. Specifically this document describes protocols followed by those using the Trac project management system and the Subversion versioning management system in addition to rules about code formatting and testing.
+</p>
+<p>
+<i>All of these guidelines are subject to change should they hinder the team's efficiency or performance. Please contact a <strong>Project Manager</strong> (PM) or <strong>Activity Manager</strong> (AM) if you have an issue with a guideline described below.</i>
+</p>
+<h2 id="a2.TracProtocols">2. Trac Protocols</h2>
+<h3 id="a2.1UpdatingtheWiki">2.1 Updating the Wiki</h3>
+<p>
+All team members are given full permission to add or modify any page on the Wiki, as long as they adhere to the following guidelines:
+</p>
+<ul><li>Only add content that is relevant to the project scope.
+</li><li>Only modify content that is under your responsibility, unless you are correcting or improving the document without modifying its original intent.
+</li><li>Add a descriptive comment (located in the change information section of a modify page form) for every change made.
+</li><li>All changes related to open tickets must be reviewed by the ticket reviewer before closing the ticket in question.
+</li></ul><p>
+In addition to these guidelines, communication should be made between members to ensure that no two people are working on the same page at a given time. While documents can be merged after concurrent changes are made, this is a generally complicated process that should be avoided with proper communication.
+</p>
+<h3 id="a2.2Managingticketsandmilestones">2.2 Managing tickets and milestones</h3>
+<p>
+Tickets that contribute to a milestone must be opened by the respective activity category leader. Leaders are indicated on the Resource / Activity table in the Project Plan. Team members have permission to add information to any ticket. Tickets may be re-opened by the reporter, the assignee, or the reviewer. <strong>Tickets must be reviewed and closed by the reviewer.</strong>
+</p>
+<p>
+Tickets that do not contribute to a milestone, as well as milestones themselves, are to be created by the PM or AM.
+</p>
+<p>
+A team member can contact a manager or activity leader to request that a ticket be re-assigned to another member.
+</p>
+<h3 id="a2.3TicketClosingandReviewProcess">2.3 Ticket Closing and Review Process</h3>
+<p>
+When a user is finished doing work on a ticket and is ready to have it reviewed, he should mark the ticket as "Ready for review" (in the ticket's properties) and wait for the reviewer to review the ticket and work done. 
+</p>
+<p>
+If a reviewer is satisfied with the work, he will be responsible for closing the ticket, marking it as <strong>fixed</strong> (or whichever action is most relevant to the ticket) and setting the "Completion date" field. If a reviewer believes the work is not satisfactory, he should unset the "Ready for review" status (in ticket properties) and then contact the owner to make the necessary adjustments. In this secondary case, the owner will make the changes and the scenario will be restarted from the beginning.
+</p>
+<p>
+Please note that it is the reviewers responsibility to close the tickets, not the owner's. However, after the ticket has been closed the owner must go back and set their "Effort" in person days in the ticket.
+</p>
+<h2 id="a3.SubversionProtocols">3. Subversion Protocols</h2>
+<h3 id="a3.1Checkingoutsourcecode">3.1 Checking out source code</h3>
+<p>
+All members can check out any source code they wish. All code submitted to the repository should be visible and modifiable by all members. 
+</p>
+<h3 id="a3.2Checkinginsourcecode">3.2 Checking in source code</h3>
+<p>
+All members should please follow the Subversion conventions when submitting code to the repository:
+</p>
+<ul><li>All project code specific to the latest build should reside in <tt>trunk/</tt>
+</li><li>All code under experimental stage should be moved to <tt>branches/</tt> with a directory name describing the feature the project is implementing. Moving should only be done with the <tt>svn copy</tt> command.
+</li><li>When code is ready for a milestone or release it should be copied with <tt>svn copy</tt> to <tt>tags/</tt> with the sub-directory name representing its final version number (or symbolic release name). <i>Only PM's or AM's should be responsible for this operation.</i>
+</li><li>No member should ever commit code to <tt>tags/</tt>. The only way code should ever be added to the <tt>tags/</tt> directory is via the <tt>svn copy</tt> command.
+</li><li>Members should only check in files that are atomically complete. In other words, the member has finished making a change that can exist independently on its own. In terms of source code, this means not committing code unless it passes all unit tests and will not break the current build in the repository. This guideline is less strict for data files, but every committer should remember that Subversion should not be used as temporary disk storage-- but storage for completed items.
+</li><li>Every commit should attach a descriptive message specifying the changes made to the codebase. 
+</li><li>Each message should also attach a ticket id to reference which ticket this code is meant for. 
+</li><li>Except for maintenance commits (fixing broken directory structures or missing files), all commits should reference a valid ticket id, or they probably do not belong to the <tt>trunk/</tt> codebase. 
+</li><li>A commit message should have the following syntax (Trac will automatically format the message accordingly, please see <a href="/trac/wiki/WikiFormatting" class="wiki">WikiFormatting</a> on how to link to tickets):
+<pre class="wiki">Added error messages to the login screen. (See ticket #438)
+</pre></li><li>If multiple files are modified referencing multiple tickets, it would be best to perform two separate commits for each set of files and reference them individually, though the following message syntax is also permissable:
+<pre class="wiki">- Fixed user upload form to allow files over 2MB. (See ticket #95)
+- Fixed name validation in user registration to be more lenient about input (See ticket #80)
+</pre></li><li>All changes related to open tickets must be reviewed by the ticket reviewer before closing the ticket in question.
+</li></ul><p>
+In addition to these Subversion conventions, users should be aware of filename conventions used in the project. Filenames and directories should attempt to follow UNIX naming conventions. That is, files and directories should avoid the use of spaces, and, to a lesser extent, non-alphanumeric characters (<tt>[^A-Za-z0-9_]</tt>). Files and directories should also be in lowercase except for files that must abide by Java's naming conventions, such as <tt>.java</tt> and <tt>.class</tt> files.
+</p>
+<p>
+Please remember not to commit any sensitive data to the repository such as personal passwords or trade secrets, as this data cannot be [easily] removed after a commit. Refer to the <a href="http://dotnot.org/blog/archives/2005/12/30/ignore-a-file-in-subversion-svn-ignore/" class="ext-link"><span class="icon">svn ignore</span></a> functionality to ignore files of this type from being committed to the repository. This includes setting an <tt>svn ignore</tt> on files such as the <tt>.project</tt> file in the eclipse directory, as other users may have different project settings that may collide with yours. You can ignore the <tt>.project</tt> file by typing (in a terminal window inside your local trunk directory):
+</p>
+<pre class="wiki"> svn propset svn:ignore .project .
+</pre><p>
+Do the same to any other files that require specific changes to suit your development environment.
+</p>
+<h3 id="a3.3Mergingfilesandhandlingcollisions">3.3 Merging files and handling collisions</h3>
+<p>
+In the case of a merging issue in Subversion, team members should communicate amongst themselves to resolve the collision in question. If the merge is trivial, one member can perform it alone, as long as it does not break the build, but the member should notify the other member of the change.
+</p>
+<h2 id="a4.CodeandTestingProtocols">4. Code and Testing Protocols</h2>
+<h3 id="a4.1Sourcecodeetiquetteandformattingrules">4.1 Source code etiquette and formatting rules</h3>
+<p>
+Java Code should follow standard Eclipse Java formatting rules (in Eclipse press SHIFT-CTRL-F to format the code). To summarize the rules:
+</p>
+<ul><li>Code should be indented with 4 spaces (space indentation, not tabs)
+</li><li>Opening braces should reside on the same line as the method or block. Example:
+<pre class="wiki">public static void main(String[] args) {
+    return 0;
+}
+</pre></li><li>All methods should be commented with Javadoc compatible comments. Please brush up on your Javadoc abilities.
+</li><li>One line comments should use //. Multi-line comments should use /* */
+</li></ul><p>
+Please do not commit uncommented code. Procrastination in commenting will only perpetuate a documentation problem in the project. Keep in mind that you are writing code for others, not yourself. Think of each stakeholder every time you commit your code.
+</p>
+<h3 id="a4.2Managingunittests">4.2 Managing unit tests</h3>
+<p>
+Please follow the following guidelines when dealing with testing during the implementation phase:
+</p>
+<ul><li>All written code should come with at least one extra unit test added to the test base. 
+</li><li>All tests should pass before committing code.
+</li><li>Do not commit code unless a test has been written for it.
+</li><li>Make sure that the tests are as legible as the application logic it tests. An incorrect test is just as useless as no tests at all.
+</li></ul><h2 id="AppendixA:Glossary">Appendix A: Glossary</h2>
+<p>
+<strong>Project Manager (PM)</strong>: A manager managing the entire team in the project.
+</p>
+<p>
+<strong>Activity Manager (AM)</strong>: A manager managing a specific subset of activities for a milestone.
+</p>
+</div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

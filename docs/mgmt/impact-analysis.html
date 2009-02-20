@@ -25,6 +25,26 @@
    
    <div class="wikipage">
     <div id="searchable"><h1 id="ImpactAnalysis">Impact Analysis</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#Introduction">Introduction</a><ol><li class="active"><a href="#ImplicationsoftheProposedChange">Implications of the Proposed Change</a></li><li class="active">
+<a href="#SystemElementsAffectedbytheProposedChange">System Elements Affected by the Proposed Change</a></li></ol><li class="active"><a href="#Milestone1">Milestone 1</a></li><li class="active">
+<a href="#Milestone2">Milestone 2</a></li></li><li class="active">
+<a href="#Milestone3">Milestone 3</a><ol><li class="active"><a href="#ProposedChanges">Proposed Changes</a></li><li class="active">
+<a href="#ImplicationResults">Implication &amp; Results</a></li><li class="active">
+<a href="#SecondPrototype">Second Prototype</a></li></ol></li><li class="active"><a href="#Milestone4">Milestone 4</a><ol><li class="active"><a href="#ProposedChanges1">Proposed Changes</a></li><li class="active">
+<a href="#ImplicationResults1">Implication &amp; Results</a></li><li class="active">
+<a href="#Boogie">Boogie</a><ol><li class="active"><a href="#Impactedexistingelements">Impacted existing elements</a></li><li class="active">
+<a href="#Newelements">New elements</a></li></ol></li><li class="active"><a href="#Serialization">Serialization</a><ol><li class="active"><a href="#ChangesElicitation">Changes Elicitation</a></li><li class="active">
+<a href="#ChangesImpactAnalysis">Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#IsabelleandSimplifyAdapter">Isabelle and Simplify Adapter</a><ol><li class="active"><a href="#ChangesElicitation1">Changes Elicitation</a></li><li class="active">
+<a href="#ChangesImpactAnalysis1">Changes Impact Analysis</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#Milestone5">Milestone 5</a><ol><li class="active"><a href="#VcCache">VcCache</a><ol><li class="active"><a href="#ChangesElicitation2">Changes Elicitation</a></li><li class="active">
+<a href="#ChangesImpactAnalysis2">Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#ProverProcessPool">Prover Process Pool</a><ol><li class="active"><a href="#ChangesElicitation3">Changes Elicitation</a></li><li class="active">
+<a href="#ChangesImpactAnalysis3">Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#BurdenTesting">Burden Testing</a><ol><li class="active"><a href="#ChangesElicitation4">Changes Elicitation</a></li><li class="active">
+<a href="#ChangesImpactAnalysis4">Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#MergeWithNewerSourceForgeJMLJava4">Merge With Newer SourceForge JML Java 4</a><ol><li class="active"><a href="#ChangesElicitation5">Changes Elicitation</a></li><li class="active">
+<a href="#ChangesImpactAnalysis5">Changes Impact Analysis</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#References">References</a></li></li></ol></div>
+
+</p>
 <h2 id="Introduction">Introduction</h2>
 <p>
 This document will cover the changes the JML4 Disco project may bring to the overall JML4 Project. We will consider the risks involved, changes in the overall quality, performance and requirements as well as the consequence to any change proposed. the  The following is a check-list of things to consider when performing our impact analysis.
@@ -325,6 +345,82 @@ Cons:
 The changes are very promising.  Based on the BigWhileTest, with the original provers' adapter, the test runs ~28 secs over 4 servers whereas with the new adapters, the same test runs 7 to 9 secs. <a href="/trac/wiki/ProversBenchmark" class="wiki">see section Proving Performance</a>
 </p>
 </blockquote>
+<h2 id="Milestone5">Milestone 5</h2>
+<h3 id="VcCache">VcCache</h3>
+<h4 id="ChangesElicitation2">Changes Elicitation</h4>
+<p>
+In an effort to increase the speed at which VcPrograms are proved by the proving servers, caching of already proven Vc's has been proposed. This will eliminate the proving time for Vc's that exist in the cache, thus reducing the proving servers load. 
+</p>
+<h4 id="ChangesImpactAnalysis2">Changes Impact Analysis</h4>
+<p>
+The impact to the current distributed server is minimal. The VcCache is a stand alone component, and the current system will interface with that component. The VcCache will not have the ability to modify any component of the distribution server, thus the only impact it will have will be dictated by the server itself. The proving server will now be required to return the prover which proved the VC so as to accommodate the caching.
+</p>
+<p>
+The JML4 core class ProveVcPiecewise has now had a method overloaded so as to be able to return to the proving server the prover that was able to prove the VC. The behaviour of this overloaded method is identical to the original, and so other server technologies which used the previous core will be able to use this core without any impact.
+</p>
+<h3 id="ProverProcessPool">Prover Process Pool</h3>
+<p>
+In order to maximize the power of multiple cores, we plan to implement the process pool concept for each prover.  
+</p>
+<h4 id="ChangesElicitation3">Changes Elicitation</h4>
+<p>
+Few new classes will be created
+</p>
+<blockquote>
+<table class="wiki">
+<tr><td> <strong>Details list of classes changed/created</strong> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.ProcessPool 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleProcessPool 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyProcessPool 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapater 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter 
+</td></tr></table>
+</blockquote>
+<ul><li>ProcessPool models the each prover process pool.  The ProcessPool holds a queue of a given prover's process that is free to be used.  This is an abstract class.
+</li></ul><h4 id="ChangesImpactAnalysis3">Changes Impact Analysis</h4>
+<blockquote>
+<p>
+These changes will slightly affect Isabelle and Simplify adapters.  We add another layer of abstraction on generating/maintaining process using process pool concept.  The existing getProverProcess() method in adapter will be removed.  This change affects 2 tests as they have a dependency on getProverProcess() method.  Other than that, there will have minimum impact on the existing core.
+</p>
+</blockquote>
+<h3 id="BurdenTesting">Burden Testing</h3>
+<p>
+In order to allow any test extending AbstractRegressionTest to be rerun several times consecutively in a loop (providing the main means of heavily burdening the system), a call to a method in the PerformanceMeterFactory class must be suppressed. The method is only called once, and from within the same class. The method, AssertUniqueScenario(String scenario) seems to only add any created scenarios to a private HashSet to which there are no accessors or mutators. However, the method throws an IllegalArgumentException if the scenario is not unique, which may be caught by any tests/classes using the PerformanceMeterFactory (and there are many). This means, that if those classes use the exception for control flow, there may be repercussions.
+</p>
+<p>
+A throttling mechanism was added to the VcProgramDispatching class to pause dispatching for small amounts of time if the best server available has too many pending VCs. The delay time as well as the pending vc threshold should be configurable from the Configuration pages being created in milestone 5 
+</p>
+<h4 id="ChangesElicitation4">Changes Elicitation</h4>
+<p>
+Few new classes will be created
+</p>
+<blockquote>
+<table class="wiki">
+<tr><td> <strong>Details list of classes changed/created</strong> 
+</td></tr><tr><td> <a href="/trac/browser/JML4/dev/trunk/org.eclipse.test.performance/src/org/eclipse/test/internal/performance/PerformanceMeterFactory.java" class="source">org.eclipse.test.internal.performance/PerformanceMeterFactory</a> 
+</td></tr></table>
+</blockquote>
+<h4 id="ChangesImpactAnalysis4">Changes Impact Analysis</h4>
+<h3 id="MergeWithNewerSourceForgeJMLJava4">Merge With Newer SourceForge JML Java 4</h3>
+<p>
+The week of February 10th, the current version of JMLJava4 was initially taken from sourceforge and merged with Disco's current trunk in a branch. Both the distributed and boogie teams then evaluated the consistancy of that branch with respect to their respective features.
+</p>
+<h4 id="ChangesElicitation5">Changes Elicitation</h4>
+<p>
+For the distributed team, there is fairly low impact.
+</p>
+<blockquote>
+<table class="wiki">
+<tr><td> <strong>Details list of classes changed/created</strong> </td><td> <strong>Brief problem description</strong>
+</td></tr><tr><td> org.jmlspecs.jml4.esc.gc.lang/KindOfassertion </td><td> Needs serialization 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.vc.lang/VcTypeBinding </td><td> Does not exist in sourceforge.... may have been <br /> created solely for the original distribution prototype
+</td></tr><tr><td> org.jmlspecs.jml4.esc.vc.lang/VC.java </td><td> Has an association with VcTypeBinding 
+</td></tr></table>
+</blockquote>
+<p>
+The existence of VcTypeBinding must be investigated: it may be an unnecessary change leftover from the original round-robin distribution prototype. 
+</p>
+<h4 id="ChangesImpactAnalysis5">Changes Impact Analysis</h4>
 <h2 id="References">References</h2>
 <p>
 1. Process Impact -- Process Goodies to Support Software Development <a href="http://www.processimpact.com/goodies.shtml" class="ext-link"><span class="icon">http://www.processimpact.com/goodies.shtml</span></a>

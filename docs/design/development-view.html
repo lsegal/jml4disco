@@ -125,9 +125,33 @@ a new section was added under the org.eclipse.jdt.core/compiler/org/jmlspecs/jml
 Distributed 
 ---------------------------------------------
 Content to come
-</pre></div>
+</pre><h2 id="Milestone4">Milestone 4</h2>
+<p>
+The Distributed Multi-Threaded Program Verifier component of JML4Disco is split into various layers, as described in the accompanying architecture document covering the <a href="/trac/wiki/Jml4Disco-LogicalView#High-LevelDesign" class="wiki">Logical View</a>. In terms of development, each layer is its own Eclipse Java Project, as follows:
+</p>
+<ul><li>The topmost layer (the presentation layer) which is responsible for communication via Http protocol is currently contained in the project <tt>org.jmlspecs.jml4.esc.distributedServlets</tt>. It contains only the implementation of Servlets, and should be renamed to <tt>org.jmlspecs.jml4.esc.distribution.http</tt>.
+</li></ul><p>
+<a href="/trac/attachment/wiki/DevelopmentView/org.jmlspecs.jml4.esc.distribution.http.png" style="padding:0; border:none"><img src="images/org.jmlspecs.jml4.esc.distribution.http.png" /></a>
+</p>
+<ul><li>The application layer controls all logic relevant to the task of distributing program verification, and utilizing resources on remote machines. The classes of the application layer are found in the project <tt>org.jmlspecs.jml4.esc.distribution</tt>.
+</li></ul><p>
+<a href="/trac/attachment/wiki/DevelopmentView/org.jmlspecs.jml4.esc.distribution.png" style="padding:0; border:none"><img src="images/org.jmlspecs.jml4.esc.distribution.png" /></a>
+</p>
+<ul><li>The layers below are relevant to the logic on verification, and consist essentially of all other projects which were contained in JML4 before the beginning of the JML4Disco project.
+</li></ul><h2 id="Milestone5">Milestone 5</h2>
+<p>
+Development will begin this milestone on web-based configuration interfaces for JML4Disco servers used in distributed program verification. The intent is for the creation of new Eclipse Projects to represent separate layers of the two new components: (one for each type of server, Dispatcher and Prover)
+</p>
+<ul><li>Two web project which will contain Servlets meant to serve as a presentation layer, bridging the gap between Http requests/responses and the underlying interface-independent configuration system.
+</li><li>An application layer project, which will contain implementations of Front Controllers and Commands being executed. So as to be able to reuse Front Controller and Command implementations, this project should be shared and contain Commands meant to configure either a Dispatcher or Prover machine, and the presentation layer should be responsible for ensuring that irrelevant Commands are inaccessible. (for example, on a Dispatcher there would be no need to configure settings for logical provers, and likewise on a Prover Server there would be no need to allow access to Commands to add or remove remote servers with which to communicate)
+<ul><li>It may be beneficial to use an existing web library (such as SoenEA) instead of developing the Front Controller and Command classes from scratch.
+</li></ul></li><li>The domain logic layer beneath these would consist of the existing JML4Disco projects, in particular the <tt>org.jmlspecs.jml4.esc.distribution</tt> which would contain most of the configurable settings.
+</li></ul></div>
    </div>
    
+    
+    
+  
   
    
   

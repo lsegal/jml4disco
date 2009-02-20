@@ -28,7 +28,8 @@
 <p>
 <div class="wiki-toc">
 <h4>Table of Contents</h4>
-<ol><li class="active"><a href="#Milestone4:">Milestone 4:</a><ol><li class="active"><a href="#OverviewofActivities">Overview of Activities</a></li><li class="active">
+<ol><li class="active"><a href="#Milestone5:">Milestone 5:</a></li><li class="active">
+<a href="#Milestone4:">Milestone 4:</a><ol><li class="active"><a href="#OverviewofActivities">Overview of Activities</a></li><li class="active">
 <a href="#EffortSummary4Aand4B">Effort Summary (4A and 4B)</a></li></ol></li><li class="active"><a href="#Milestone3:">Milestone 3:</a><ol><li class="active"><a href="#ManagerSummary">Manager Summary</a></li><li class="active">
 <a href="#OverviewofActivities1">Overview of Activities</a></li><li class="active">
 <a href="#EffortSummary3Aand3B">Effort Summary (3A and 3B)</a></li></ol></li><li class="active"><a href="#Milestone2:September22ndtoOctober3rd2008">Milestone 2: September 22nd to October 3rd, 2008</a><ol><li class="active"><a href="#ManagerSummary1">Manager Summary</a></li><li class="active">
@@ -37,9 +38,38 @@
 <a href="#EffortSummary1">Effort Summary</a></li></ol></li></li></ol></div>
 
 </p>
+<h2 id="Milestone5:">Milestone 5:</h2>
+<p>
+There have been several problems with the system Tests made available to the developers of the Distribution component, and after encountering and documenting inconsistent behavior concretely, we confronted our primary stakeholder about these problems. After some time and help, we were finally able to discover that the integration of the original Esc4Web prototype with the core code had resulted in a test class (<tt>ProverStrategy_Timings</tt>) was being used in the place of a proper implementation (<tt>ProverStrategy</tt>) and was causing both significant performance slowdowns, as well as invalid results.
+Despite attempts last milestone to improve load balancing techniques, the Distribution component developers have hit a roadblock in that performance is too fast for the current tests. As such, even when the load balancing fails, performance does not seem to suffer.
+</p>
+<p>
+There have also been some issues with the Boogie development that have been addressed and tackled. Boogie only allows for variables to be declared at the top of the procedure. Take for instance the following simple method A() in java:
+</p>
+<pre class="wiki">public void A() {
+	int x;
+	x = 3+1;
+        int y = x;	
+}
+ 
+</pre><p>
+We  need to have variables <strong>x</strong> and <strong>y</strong> declared at the very top of the boogie procedure before being used in the code. The code would translate to the following boogie:
+</p>
+<pre class="wiki">procedure A() {
+	var x : int;
+	var y : int;
+	x := 3+1;
+	y := x;
+}
+</pre><p>
+This in turn creates a <strong>second problem</strong>, because we cannot just insert into an existing boogie because of the existing <strong> mapping</strong> we have from java to boogie. Our solution was to create a special visitor which is called by the method declaration visitor which will do a first-pass on the method and delcare the variables at the top before translating the rest of the method to boogie. 
+</p>
 <h2 id="Milestone4:">Milestone 4:</h2>
 <p>
-It is safe to say that in Milestone 4, progress has finally been made. Performance has greatly been improved through our ability to improve the implementation of the Isabelle adapter. Improvements have also been made in coming up with a load balancing strategy for the distributed discharging of VCs although timing tests will have to be done early in the next milestone to determine whether these changes are actually necessary. Boogie has also been effectively plugged in the system as a prover and a boogie strategy is on it's way of being developed. Tests for checking for the validity of our translations from AST to Boogie will continue concurrently with adapter tests ensuring that boogie does in fact return the expected results. In the next milestone, we will look into detail on how to handle the results given from boogie. We will also look into other facets of the UI such as a web configuration interface for the prover servers, and handling compiler settings within the eclipse IDE. The team manager remains Carl whereas Richard will now take the role of sub-team leader for the distributed team.
+It is safe to say that in Milestone 4, progress has finally been made. Performance has greatly been improved through our ability to improve the implementation of the Isabelle adapter. Improvements have also been made in coming up with a load balancing strategy for the distributed discharging of VCs although timing tests will have to be done early in the next milestone to determine whether these changes are actually necessary. Boogie has also been effectively plugged in the system as a prover and a boogie strategy is on it's way of being developed. Tests for checking for the validity of our translations from AST to Boogie will continue concurrently with adapter tests ensuring that boogie does in fact return the expected results. In the next milestone, we will look into detail on how to handle the results given from boogie. We will also look into other facets of the UI such as a web configuration interface for the prover servers, and handling compiler settings within the eclipse IDE. The team manager remains Carl whereas the decision has been made for Richard will be taking on the role of sub-team leader for the distributed team as of Milestone 5.
+</p>
+<p>
+The Second Prototype which was developed in Milestone 3 will not be continued for Milestone 4. It has been discovered to bug-ridden, and the design is not adequately encapsulated for it to be really scalable/maintainable. We have, however, learned a little more about the limitations and requirements of the underlying technologies we are using for distributed program verification. Part of the paradigm we were using was the idea of the Dispatcher keeping queues of Vcs to be sent to remote machines. This concept, however, proved to either not contribute significantly, or - in some experimental implementations - was in fact a significant slow down, since a <a href="/trac/wiki/TomCat" class="missing wiki" rel="nofollow">TomCat?</a> server is always ready to accept more requests.
 </p>
 <h3 id="OverviewofActivities">Overview of Activities</h3>
 <ul><li><a href="/trac/ticket/23" title="Use Case Model Diagram &amp; template (closed)" class="closed ticket">#23</a>        Use Case Model Diagram &amp; template
@@ -65,7 +95,7 @@ It is safe to say that in Milestone 4, progress has finally been made. Performan
 </li><li><a href="/trac/ticket/75" title="Meeting Monday 15th: Plans for 4A &amp; Role assignements (closed)" class="closed ticket">#75</a>        Meeting Monday 15th: Plans for 4A &amp; Role assignements
 </li><li><a href="/trac/ticket/93" title="Document Design Decisions for Boogie (closed)" class="closed ticket">#93</a>        Document Design Decisions for Boogie
 </li><li><a href="/trac/ticket/111" title="Usernames and passwords on all machines (closed)" class="closed ticket">#111</a>        Usernames and passwords on all machines
-</li><li><a href="/trac/ticket/113" title="Export Documents and Tag them as M4 (new)" class="new ticket">#113</a>        Clean up of documentation and &amp; html exporting
+</li><li><a href="/trac/ticket/113" title="Export Documents and Tag them as M4 (closed)" class="closed ticket">#113</a>        Clean up of documentation and &amp; html exporting
 </li><li><a href="/trac/ticket/91" title="Activity Plan for 4B  - Boogie Team (closed)" class="closed ticket">#91</a>        Activity Plan for 4B - Boogie Team
 </li><li><a href="/trac/ticket/98" title="Write adapter tests for high priority nodes (closed)" class="closed ticket">#98</a>        Write adapter tests for high priority nodes
 </li><li><a href="/trac/ticket/121" title="SVN Merge of boogie branches with trunk (closed)" class="closed ticket">#121</a>        SVN Merge of boogie branches with trunk
@@ -117,7 +147,7 @@ It is safe to say that in Milestone 4, progress has finally been made. Performan
 </td></tr><tr><td>c_kara</td><td>1.6
 </td></tr><tr><td>c_sheu</td><td>2.3
 </td></tr><tr><td>j_fora</td><td>0.75
-</td></tr><tr><td>l_sega</td><td>3.65
+</td></tr><tr><td>l_sega</td><td>3.75
 </td></tr><tr><td>leveda</td><td>3.65
 </td></tr><tr><td>n_grigo</td><td>3.75
 </td></tr><tr><td>r_leguen</td><td>2.8

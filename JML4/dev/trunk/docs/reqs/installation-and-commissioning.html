@@ -36,16 +36,18 @@
 <a href="#a3.1.2FullInstallRecompile">3.1.2 Full Install (Recompile)</a><ol><li class="active"><a href="#a3.1.2.1RecompileIsabelle">3.1.2.1 Recompile Isabelle</a></li><li class="active">
 <a href="#a3.1.2.2RecompileESC4">3.1.2.2 Recompile ESC4</a></li><li class="active">
 <a href="#a3.1.2.3RecompileSimplify">3.1.2.3 Recompile Simplify</a></li><li class="active">
-<a href="#a3.1.2.4RecompileCVC3">3.1.2.4 Recompile CVC3</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#a3.2CheckingoutJML4SourceCode">3.2 Checking out JML4 Source Code</a></li><li class="active">
+<a href="#a3.1.2.4RecompileCVC3">3.1.2.4 Recompile CVC3</a></li><li class="active">
+<a href="#a3.1.2.5InstallBoogieunderLinux">3.1.2.5 Install Boogie under Linux</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#a3.2CheckingoutJML4SourceCode">3.2 Checking out JML4 Source Code</a></li><li class="active">
 <a href="#a3.3RunningTests">3.3 Running Tests</a></li></li></ol></li></li></ol></div>
 
 </p>
 <h2 id="a0.RevisionHistory">0. Revision History</h2>
-<ul><li><strong>October 29, 2008; l_sega</strong> Initial draft
+<ul><li><strong>February 19, 2008; l_sega</strong> Add information for Boogie install
+</li><li><strong>October 29, 2008; l_sega</strong> Initial draft
 </li></ul><h2 id="a1.Introduction">1. Introduction</h2>
 <h3 id="a1.1Purpose">1.1 Purpose</h3>
 <p>
-The purpose of this document is to describe the installation and running procedures for the <a href="http://jmlspecs.sourceforge.net" class="ext-link"><span class="icon">JML4</span></a> project for the <a href="http://eclipse.org" class="ext-link"><span class="icon">Eclipse IDE</span></a>, as well as all of its dependencies (<a href="http://www.cl.cam.ac.uk/research/hvg/Isabelle/" class="ext-link"><span class="icon">Isabelle</span></a>, <a href="http://www.cs.nyu.edu/acsys/cvc3/" class="ext-link"><span class="icon">CVC3</span></a>, <a href="http://kindsoftware.com/products/opensource/Simplify/" class="ext-link"><span class="icon">Simplify</span></a>). The documentation should also describe checking out of the source code using <a href="http://subversion.tigris.org" class="ext-link"><span class="icon">Subversion</span></a>.
+The purpose of this document is to describe the installation and running procedures for the <a href="http://jmlspecs.sourceforge.net" class="ext-link"><span class="icon">JML4</span></a> project for the <a href="http://eclipse.org" class="ext-link"><span class="icon">Eclipse IDE</span></a>, as well as all of its dependencies (<a href="http://www.cl.cam.ac.uk/research/hvg/Isabelle/" class="ext-link"><span class="icon">Isabelle</span></a>, <a href="http://www.cs.nyu.edu/acsys/cvc3/" class="ext-link"><span class="icon">CVC3</span></a>, <a href="http://kindsoftware.com/products/opensource/Simplify/" class="ext-link"><span class="icon">Simplify</span></a>, <a href="http://research.microsoft.com/boogie" class="ext-link"><span class="icon">Boogie</span></a>). The documentation should also describe checking out of the source code using <a href="http://subversion.tigris.org" class="ext-link"><span class="icon">Subversion</span></a>.
 </p>
 <h3 id="a1.2IntendedAudience">1.2 Intended Audience</h3>
 <p>
@@ -62,6 +64,7 @@ Currently, this document is not yet aimed at users who wish to install JML4 as a
 </li><li><a href="http://eclipse.org/pde" class="ext-link"><span class="icon">Eclipse PDE</span></a> plugin for Eclipse
 </li><li><a href="http://subclipse.tigris.org/" class="ext-link"><span class="icon">Subclipse</span></a> plugin for Eclipse
 </li><li><a href="http://www.eclipse.org/tptp" class="ext-link"><span class="icon">TPTP</span></a> plugin for Eclipse ***
+</li><li><a href="http://winehq.org" class="ext-link"><span class="icon">Wine</span></a> Windows emulator for Linux (if testing Boogie under Windows)
 </li></ul><p>
 <i>** Note: Eclipse 3.4 is incompatible with the XULRunner 1.9 distributed with Fedora Core 9, please upgrade or uninstall it before proceeding (<tt>yum remove xulrunner</tt>)</i>
 </p>
@@ -150,9 +153,26 @@ Download and build the CVC3 program from source available <a href="http://www.cs
 </pre><p>
 Alternatively instead of doing a <tt>make install</tt> you can copy the cvc3 binary from <tt>bin/cvc3</tt> to the <tt>/usr/local/jml4</tt> directory.
 </p>
-<h3 id="a3.2CheckingoutJML4SourceCode">3.2 Checking out JML4 Source Code</h3>
+<h5 id="a3.1.2.5InstallBoogieunderLinux">3.1.2.5 Install Boogie under Linux</h5>
 <p>
-The repository location is: <i><a href="svn+ssh://lstu01.encs.concordia.ca/svn_rep/JML4/dev/trunk" class="ext-link"><span class="icon">svn+ssh://lstu01.encs.concordia.ca/svn_rep/JML4/dev/trunk</span></a></i>
+If you wish to use the Boogie source under Linux, you must acquire the Boogie binaries from <a href="http://research.microsoft.com/boogie" class="ext-link"><span class="icon">Microsoft.com</span></a> (a copy of Boogie is also distributed as part of the quick install tarball). You must then install <a href="http://winehq.org" class="ext-link"><span class="icon">Wine</span></a> and <tt>cabextract</tt> (needed to install .NET). Under Fedora, type:
+</p>
+<pre class="wiki">    yum install wine cabextract
+</pre><p>
+Under Ubuntu 8.x, type use the command <tt>apt get install wine cabextract</tt>.
+</p>
+<p>
+You must then install the .NET binaries from Microsoft using the <tt>winetricks</tt> tool. Type the following:
+</p>
+<pre class="wiki">    wget http://www.kegel.com/wine/winetricks
+    sh winetricks dotnet20
+</pre><p>
+Follow the installation procedure. You should then be able to test Boogie by typing <tt>boogie</tt> in a terminal, which should give the following output:
+</p>
+<pre class="wiki">    *** Error: No input files were specified.
+</pre><h3 id="a3.2CheckingoutJML4SourceCode">3.2 Checking out JML4 Source Code</h3>
+<p>
+The repository location is: <i><a href="svn+ssh://stu01.encs.concordia.ca/svn_rep/JML4/dev/trunk" class="ext-link"><span class="icon">svn+ssh://stu01.encs.concordia.ca/svn_rep/JML4/dev/trunk</span></a></i>
 </p>
 <p>
 Use Subclipse to checkout the above URL into an empty workspace to create the project. Make sure to enter valid user credentials, as the repository does not permit anonymous logins.

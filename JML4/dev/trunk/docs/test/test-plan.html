@@ -33,7 +33,8 @@
 <a href="#a2.2SystemLevelTests">2.2 System Level Tests</a></li><li class="active">
 <a href="#a2.3TestingtheBoogieComponent">2.3 Testing the Boogie Component</a><ol><li class="active"><a href="#a2.3.1JavatoBoogieTranslation">2.3.1 Java to Boogie Translation</a></li><li class="active">
 <a href="#a2.3.2TestingThroughBoogieRuntime">2.3.2 Testing Through Boogie Runtime</a></li><li class="active">
-<a href="#a2.3.3TraceabilitytoFeatures">2.3.3 Traceability to Features</a></li></ol><li class="active"><a href="#a2.5TestingofDistributedDispatchingofVCs">2.5 Testing of Distributed Dispatching of VCs</a></li></li></ol></li><li class="active"><a href="#a3.TestingStrategies">3. Testing Strategies</a><ol><li class="active"><a href="#a3.1TestDrivenDesignTDD">3.1 Test Driven Design (TDD)</a></li></ol><li class="active"><a href="#a4.QualityAssurance">4. Quality Assurance</a><ol><li class="active"><a href="#a4.1TestEntryCriteria">4.1 Test Entry Criteria</a></li><li class="active">
+<a href="#a2.3.3TraceabilitytoFeatures">2.3.3 Traceability to Features</a></li></ol></li><li class="active"><a href="#a2.4TestingofDistributedDispatchingofVCs">2.4 Testing of Distributed Dispatching of VCs</a><ol><li class="active"><a href="#a2.4.1BasicSystem-LevelTests:TheDistributedWhileTests">2.4.1 Basic System-Level Tests: The Distributed While Tests</a></li><li class="active">
+<a href="#a2.4.2TestingLoadBalancingMechanisms">2.4.2 Testing Load Balancing Mechanisms</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a3.TestingStrategies">3. Testing Strategies</a><ol><li class="active"><a href="#a3.1TestDrivenDesignTDD">3.1 Test Driven Design (TDD)</a></li></ol><li class="active"><a href="#a4.QualityAssurance">4. Quality Assurance</a><ol><li class="active"><a href="#a4.1TestEntryCriteria">4.1 Test Entry Criteria</a></li><li class="active">
 <a href="#a4.2TestSuiteExitCriteria">4.2 Test Suite Exit Criteria</a></li><li class="active">
 <a href="#a4.3SuspensionandResumptionCriteria">4.3 Suspension and Resumption Criteria</a></li></ol></li></li></ol></div>
 
@@ -51,7 +52,13 @@ Developers will be responsible for writing JUnit test cases for classes and modu
 </p>
 <h3 id="a2.2SystemLevelTests">2.2 System Level Tests</h3>
 <p>
-Testing of the JML4 Boogie project as a whole will be done using JUnit. The purpose and goal of these tests is to detect an failures in the implementation of the overall features of the system as a whole.
+Testing of the Boogie component of the JML4 Disco project as a whole will be done using JUnit. The purpose and goal of these tests is to detect an failures in the implementation of the overall features of the system as a whole and to also evaluate the system's performance to ensure it meets requirements.
+</p>
+<p>
+The system tests are those provided at the start of the project by the client, Perry James, found in at the location <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc" class="source">source:JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc</a> in the repository.
+</p>
+<p>
+The two most relevant system-level tests being used are the <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/WhileTests.java" class="source">WhileTests</a> - which are used to determine if the system is functioning properly - and the <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/distributed/BigWhileTests.java" class="source">BigWhileTests</a> - which allow for more effective timing of the system's performance.
 </p>
 <h3 id="a2.3TestingtheBoogieComponent">2.3 Testing the Boogie Component</h3>
 <p>
@@ -69,10 +76,35 @@ If translation succeeds and syntax is valid, semantic testing must be done in or
 <p>
 The <a href="/trac/wiki/BoogieTraceability" class="wiki">BoogieTraceability</a> document shows progress of each subfeature in the Boogie component. Each subfeature traces to the specific tests in both translation and runtime testing and their latest pass or fail state. This traceability matrix is maintained by a Ruby script located at <a href="/trac/browser/JML4/dev/trunk/scripts/export-boogie-traceability.rb" class="source">source:/JML4/dev/trunk/scripts/export-boogie-traceability.rb</a> which parses metadata from the Java source files.
 </p>
-<h3 id="a2.5TestingofDistributedDispatchingofVCs">2.5 Testing of Distributed Dispatching of VCs</h3>
+<h3 id="a2.4TestingofDistributedDispatchingofVCs">2.4 Testing of Distributed Dispatching of VCs</h3>
 <p>
-Tests start as soon as first design decisions are made. Since time and resources are
-limited, testing will be delimited by the requirements baseline.
+The setup for testing the Distributed Program Verification component of JML4 Disco is a client machine which runs one of the JUnit tests described below. These tests are hard coded to use Distributed Program Verification, discarding any other configurations.
+</p>
+<p>
+As of the end of Milestone 4 a configuration file, '<tt>distributedProverUrls.properties</tt>' must be present - still on the client-side - for the Distributed Program Verification to run properly. Its contents must include the URL to send a message to a dispatcher machine via HTTP:
+</p>
+<pre class="wiki">
+!-- distributed program verification config file
+whole = http://192.168.255.255:8080/org.jmlspecs.jml4.esc.distribution.http/ProveVcProgram
+
+</pre><h4 id="a2.4.1BasicSystem-LevelTests:TheDistributedWhileTests">2.4.1 Basic System-Level Tests: The Distributed While Tests</h4>
+<p>
+Early prototypes and implementations of a distributed solution were tested using minor tweaks to some standard Esc4 tests. The original 
+<a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/WhileTests.java" class="source">WhileTests.java</a> was the basis for the <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/distributed/DistributedWhileTests.java" class="source">DistributedWhileTests</a> which run the WhileTests utilizing resources on a remote machine. Another test, the 
+<a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/BigWhileTests.java" class="source">BigWhileTests</a> were given to the development team specifically to test distributed program verification.
+</p>
+<h4 id="a2.4.2TestingLoadBalancingMechanisms">2.4.2 Testing Load Balancing Mechanisms</h4>
+<p>
+It was also the hope in Milestone 4 that these tests could also effectively be used to test the usefulness of various load balancing mechanisms for the distribution of Vcs over multiple remote machines during program verification. However, as of the end of Milestone 4, the speed at which the distributed program verification takes place has quickly out-stepping the usefulness of the tests in that the tests are now being resolved much too quickly to be of any use in gauging the effectiveness of a load balancing mechanism.
+</p>
+<p>
+The new proposed test suite for Milestone 5 will consist of a number of valid tests taken from the ESCJava2 project and be combined with some of the pre-existing ESCJava4 tests in order to create "The Slow, Long Test" which will adequately burden the ProveVC servers and the dispatcher for extended periods of time, allowing for more effective  measurement of the usefulness and efficiency of the current load balancing algorithm. The "Slow, Long Test", or "Burden Test" will be a single .java file primarily generated by a small Perl script and then manually tweaked to accommodate any particularities of the current ESCjava4.
+</p>
+<p>
+The actual Burden Test, however, was altered as the ESCJava2 tests contained too may features that were not appropriate for ESCjava4 and the tests themselves offered no particularly increased proving difficulty. Instead the burden test was implemented by adding some existing tests to a suite and the repeatedly testing the suite in a loop. At first, this fuctionality was being blocked: since all the pre-existing test inherit from <a href="/trac/browser/JML4/dev/trunk/org.eclipse.jdt.core.tests.compiler/src/org/eclipse/jdt/core/tests/compiler/regression/AbstractRegressionTest.java" class="source">AbstractRegressionTest</a> , which in turn instanciates <a href="/trac/browser/JML4/dev/trunk/org.eclipse.test.performance/src/org/eclipse/test/internal/performance/PerformanceMeterFactory.java" class="source">PerformanceMeterFactory</a> which, when created will call its private assertUniqueScenario() method. This method throws an IllegalArgumentException when the same test, or suite of tests, is run multiple times in a test. A second problem that was encountered was that some tests (most notably some Quantifier Tests) will kill the Simplify process despite the fact that it should remain alive. When it does so, it will result in a Linux Exit Code 134.
+</p>
+<p>
+Looping over a suite composed of pre-existing tests in this manner gives extra control over how many VCs we are creating as well was how much time the burden test takes (by simply changing the duration of the loop). Unfortunately, this test will not help in testing the efficiency of any caching solutions since the same tests are used over and over again. Therefore a second burden test is necessary: the test will substitute all of the variables in the BigWhileTest's test string with parameters so that if the test were called in a loop, variable names could be altered which would create new VC's (even though they are  logically the same). Therefore every loop will produce new VCs to be cached, which will provide ample test data.
 </p>
 <h2 id="a3.TestingStrategies">3. Testing Strategies</h2>
 <h3 id="a3.1TestDrivenDesignTDD">3.1 Test Driven Design (TDD)</h3>
@@ -94,6 +126,8 @@ The test suite is considered to be complete once all tests have passed successfu
 <h3 id="a4.3SuspensionandResumptionCriteria">4.3 Suspension and Resumption Criteria</h3>
 <p>
 A test suite may be suspended if there are not enough resources to be devoted to it.
+</p>
+<p>
      
 </p>
 </div>

@@ -38,7 +38,9 @@
 <a href="#a4.1Accuracy">4.1 Accuracy</a></li></ol><li class="active"><a href="#a5.0Performance">5.0 Performance</a></li></li><li class="active">
 <a href="#a6.0Supportability">6.0 Supportability</a><ol><li class="active"><a href="#a6.1Configurability">6.1 Configurability</a></li><li class="active">
 <a href="#a6.2Scalability">6.2 Scalability</a></li></ol></li><li class="active"><a href="#a7.0Constraints">7.0 Constraints</a><ol><li class="active"><a href="#a7.1DesignConstraints">7.1 Design Constraints</a></li><li class="active">
-<a href="#a7.2ImplementationConstraints">7.2 Implementation Constraints</a></li></ol><li class="active"><a href="#a8.0DocumentationRequirements">8.0 Documentation Requirements</a></li><li class="active">
+<a href="#a7.2ImplementationConstraints">7.2 Implementation Constraints</a></li><li class="active">
+<a href="#a7.3PhysicalConstraints">7.3 Physical Constraints</a><ol><li class="active"><a href="#a7.3.1TheDispatcherServer">7.3.1 The Dispatcher Server</a></li><li class="active">
+<a href="#a7.3.2TheProverServer">7.3.2 The Prover Server</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#a8.0DocumentationRequirements">8.0 Documentation Requirements</a></li><li class="active">
 <a href="#a9.0PurchasedComponents">9.0 Purchased Components</a></li><li class="active">
 <a href="#a10.0Open-SourceComponents">10.0 Open-Source Components</a></li></li><li class="active">
 <a href="#a11.0Interfaces">11.0 Interfaces</a><ol><li class="active"><a href="#a11.1UserInterfaces">11.1 User Interfaces</a></li><li class="active">
@@ -125,6 +127,18 @@ JML4 Disco is constrained to using Microsoft's state-of-the-art Boogie program v
 <p>
 Since JML4 Disco is an evolution of JML4, JML4 Disco must be implemented in Java.
 Given that the Boogie program verifier's source code is not available, in order to interface with the Boogie program verifier, JML4 must be able to translate JML-annotated java files into Boogie code, which will be fed into the Boogie program verifier.
+</p>
+<h3 id="a7.3PhysicalConstraints">7.3 Physical Constraints</h3>
+<p>
+The distributed program verification needs to be done by two remote machines:
+</p>
+<h4 id="a7.3.1TheDispatcherServer">7.3.1 The Dispatcher Server</h4>
+<p>
+The Dispatcher Server is a JML4Disco Server, which received messages from a client. These messages include <tt>VcProgram</tt> objects, which in turn are broken down buy the Dispatcher into <tt>Vcs</tt>. These <tt>Vcs</tt> are then sent to other servers - Prover Servers - to be proven in parallel.
+</p>
+<h4 id="a7.3.2TheProverServer">7.3.2 The Prover Server</h4>
+<p>
+In addition to having JML4Disco installations, Prover Servers have various Theorem Provers such as Isabelle - sometimes customized for use with JML4. A Prover Server accepts a message from a Dispatcher Server, which includes a <tt>Vc</tt> object. It returns the results of using various provers to verify the <tt>Vcs</tt>.
 </p>
 <h2 id="a8.0DocumentationRequirements">8.0 Documentation Requirements</h2>
 <p>

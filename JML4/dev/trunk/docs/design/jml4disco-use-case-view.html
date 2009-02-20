@@ -217,7 +217,7 @@
 </li><li>Primary actor toggles which elements he/she wants to test for (ex. Statements, Expressions, Fields, Declarations.. etc)
 </li><li>System registers changes and presents them to primary actor.
 </li></ol><h2 id="AdminUseCases">Admin Use Cases</h2>
-<h3 id="UseCase10:InitialServerSetup"><strong>Use Case 10: Initial Server Setup</strong></h3>
+<h3 id="UseCase10:InitialServerSetup-Dispatcher"><strong>Use Case 10: Initial Server Setup - Dispatcher</strong></h3>
 <h4 id="Properties:10"><strong>Properties:</strong></h4>
 <p>
 <strong>Primary Actor:</strong> Admin<br />
@@ -229,30 +229,23 @@
 <ol><li>System is accessible
 </li><li>Primary actor currently has access to a user interface for system configuration.
 </li></ol><h4 id="MainSuccessScenario:10"><strong>Main Success Scenario:</strong></h4>
-<ol><li>Primary actor specifies if this machine should serve as a dispatcher server or a prover server.
-</li><li>Primary actor specifies various configuration information necessary for the server machine to function as a prover server.
+<ol><li>Primary actor provides information for connecting to prover servers.
 </li></ol><h4 id="Extensions:6"><strong>Extensions:</strong></h4>
 <blockquote>
 <p>
-1.a. Primary actor specified the machine is a dispatcher machine.
+1.a Server information is invalid.
 </p>
 <blockquote>
 <p>
-1.a.1 Primary actor provides information for connecting to prover servers.
-</p>
-<blockquote>
-<p>
-1.a.1.a. Server information is invalid.
-1.a.1.a.1 The system returns an error message.
+1.a.1 The system returns an error message.
 </p>
 </blockquote>
-</blockquote>
 <p>
-2.a. Some configuration information is invalid or inapplicable.
+1.b. Some configuration information is invalid or inapplicable.
 </p>
 <blockquote>
 <p>
-2.a.1. The system returns an error message.
+1.b.1. The system returns an error message.
 </p>
 </blockquote>
 </blockquote>
@@ -428,6 +421,62 @@
 </li><li>Primary Actor submits the server(s) from the list that they desire to stop caching on
 </li><li>The System confirms that caching has been disabled for the selected servers
 </li></ol><h4 id="Extensions:11"><strong>Extensions:</strong></h4>
+<h3 id="UseCase16:InitialServerSetup-ProverServer"><strong>Use Case 16: Initial Server Setup - Prover Server</strong></h3>
+<h4 id="Properties:16"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Admin<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> A server machine will be prepared for its resources to be utilized remotely so as to prove Vcs.<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:16"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Primary actor currently has access to a user interface for system configuration.
+</li></ol><h4 id="MainSuccessScenario:16"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor provides configuration information for various prover programs installed on the machine.
+</li></ol><h4 id="Extensions:12"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+1.a. Some configuration information is invalid or inapplicable.
+</p>
+<blockquote>
+<p>
+1.a.1. The system returns an error message.
+</p>
+</blockquote>
+<p>
+1.b. A prover application is not installed properly.
+</p>
+<blockquote>
+<p>
+1.b.1. The system returns an error message.
+</p>
+</blockquote>
+</blockquote>
+<h3 id="UseCase17:ConfigureServerSetup-ProverServer"><strong>Use Case 17: Configure Server Setup - Prover Server</strong></h3>
+<h4 id="Properties:17"><strong>Properties:</strong></h4>
+<p>
+<strong>Primary Actor:</strong> Admin<br />
+<strong>Level:</strong> User-goal<br />
+<strong>Success Guarantee:</strong> A server machine will be prepared for its resources to be utilized remotely so as to prove Vcs, controlled by configuration settings.<br />
+<strong>Minimal Guarantee:</strong> ---<br />
+</p>
+<h4 id="Preconditions:17"><strong>Preconditions:</strong></h4>
+<ol><li>System is accessible
+</li><li>Primary actor currently has access to a user interface for system configuration.
+</li></ol><h4 id="MainSuccessScenario:17"><strong>Main Success Scenario:</strong></h4>
+<ol><li>Primary actor provides configuration information for various prover programs. installed on the machine.
+</li></ol><h4 id="Extensions:13"><strong>Extensions:</strong></h4>
+<blockquote>
+<p>
+1.a. Some configuration information is invalid or inapplicable.
+</p>
+<blockquote>
+<p>
+1.a.1. The system returns an error message.
+</p>
+</blockquote>
+</blockquote>
 </div>
    </div>
    

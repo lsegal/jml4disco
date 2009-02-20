@@ -28,17 +28,20 @@
 <p>
 <div class="wiki-toc">
 <h4>Table of Contents</h4>
-<ol><li class="active"><a href="#Milestone5:">Milestone 5:</a></li><li class="active">
-<a href="#Milestone4:">Milestone 4:</a><ol><li class="active"><a href="#OverviewofActivities">Overview of Activities</a></li><li class="active">
-<a href="#EffortSummary4Aand4B">Effort Summary (4A and 4B)</a></li></ol></li><li class="active"><a href="#Milestone3:">Milestone 3:</a><ol><li class="active"><a href="#ManagerSummary">Manager Summary</a></li><li class="active">
+<ol><li class="active"><a href="#Milestone5:">Milestone 5:</a><ol><li class="active"><a href="#ManagerSummary">Manager Summary</a></li><li class="active">
+<a href="#OverviewofActivities">Overview of Activities</a></li><li class="active">
+<a href="#EffortSummary5Aand5B">Effort Summary (5A and 5B)</a></li></ol></li><li class="active"><a href="#Milestone4:">Milestone 4:</a><ol><li class="active"><a href="#ManagerSummary1">Manager Summary</a></li><li class="active">
 <a href="#OverviewofActivities1">Overview of Activities</a></li><li class="active">
-<a href="#EffortSummary3Aand3B">Effort Summary (3A and 3B)</a></li></ol></li><li class="active"><a href="#Milestone2:September22ndtoOctober3rd2008">Milestone 2: September 22nd to October 3rd, 2008</a><ol><li class="active"><a href="#ManagerSummary1">Manager Summary</a></li><li class="active">
+<a href="#EffortSummary4Aand4B">Effort Summary (4A and 4B)</a></li></ol></li><li class="active"><a href="#Milestone3:">Milestone 3:</a><ol><li class="active"><a href="#ManagerSummary2">Manager Summary</a></li><li class="active">
 <a href="#OverviewofActivities2">Overview of Activities</a></li><li class="active">
-<a href="#EffortSummary">Effort Summary</a></li></ol><li class="active"><a href="#Milestone1:September22ndtoOctober3rd2008">Milestone 1: September 22nd to October 3rd, 2008</a><ol><li class="active"><a href="#OverviewofActivities3">Overview of Activities</a></li><li class="active">
+<a href="#EffortSummary3Aand3B">Effort Summary (3A and 3B)</a></li></ol></li><li class="active"><a href="#Milestone2:September22ndtoOctober3rd2008">Milestone 2: September 22nd to October 3rd, 2008</a><ol><li class="active"><a href="#ManagerSummary3">Manager Summary</a></li><li class="active">
+<a href="#OverviewofActivities3">Overview of Activities</a></li><li class="active">
+<a href="#EffortSummary">Effort Summary</a></li></ol><li class="active"><a href="#Milestone1:September22ndtoOctober3rd2008">Milestone 1: September 22nd to October 3rd, 2008</a><ol><li class="active"><a href="#OverviewofActivities4">Overview of Activities</a></li><li class="active">
 <a href="#EffortSummary1">Effort Summary</a></li></ol></li></li></ol></div>
 
 </p>
 <h2 id="Milestone5:">Milestone 5:</h2>
+<h3 id="ManagerSummary">Manager Summary</h3>
 <p>
 There have been several problems with the system Tests made available to the developers of the Distribution component, and after encountering and documenting inconsistent behavior concretely, we confronted our primary stakeholder about these problems. After some time and help, we were finally able to discover that the integration of the original Esc4Web prototype with the core code had resulted in a test class (<tt>ProverStrategy_Timings</tt>) was being used in the place of a proper implementation (<tt>ProverStrategy</tt>) and was causing both significant performance slowdowns, as well as invalid results.
 Despite attempts last milestone to improve load balancing techniques, the Distribution component developers have hit a roadblock in that performance is too fast for the current tests. As such, even when the load balancing fails, performance does not seem to suffer.
@@ -63,15 +66,99 @@ We  need to have variables <strong>x</strong> and <strong>y</strong> declared at
 }
 </pre><p>
 This in turn creates a <strong>second problem</strong>, because we cannot just insert into an existing boogie because of the existing <strong> mapping</strong> we have from java to boogie. Our solution was to create a special visitor which is called by the method declaration visitor which will do a first-pass on the method and delcare the variables at the top before translating the rest of the method to boogie. 
+We have also fixed the issue of local variables. Variables names in java will first be stored in a <strong>symbol table</strong> and will be appended accordingly before going to boogie.  The  BoogieSymbolTable class is used to map all local variable declarations to unique, scope independent symbol names. For more details see the <a href="/trac/wiki/Jml4Disco-LogicalView" class="wiki">Logical View</a>
+</p>
+<h3 id="OverviewofActivities">Overview of Activities</h3>
+<ul><li><a href="/trac/ticket/129" title="Implement High Priority Boogie Visitor methods (closed)" class="closed ticket">#129</a>        Implement High Priority Boogie Visitor methods
+</li><li><a href="/trac/ticket/130" title="Complete Boogie Adapter Tests for High Priority AST Nodes (new)" class="new ticket">#130</a>        Complete Boogie Adapter Tests for High Priority AST Nodes
+</li><li><a href="/trac/ticket/141" title="Propose and Design Configuration Interface for Servers (new)" class="new ticket">#141</a>        Propose and Design Configuration Interface for Servers
+</li><li><a href="/trac/ticket/142" title="Implement Configuration Interface for Severs (new)" class="new ticket">#142</a>        Implement Configuration Interface for Severs
+</li><li><a href="/trac/ticket/151" title="Implement More Complete Caching Solution (new)" class="new ticket">#151</a>        Implement More Complete Caching Solution
+</li><li><a href="/trac/ticket/138" title="Propse and Design Caching Solution (closed)" class="closed ticket">#138</a>        Propse and Design Caching Solution
+</li><li><a href="/trac/ticket/125" title="Update I&amp;C with Boogie Installation (closed)" class="closed ticket">#125</a>        Update I&amp;C with Boogie Installation
+</li><li><a href="/trac/ticket/146" title="Debug, Tweak and Perfect the Load Balancing (closed)" class="closed ticket">#146</a>        Debug, Tweak and Perfect the Load Balancing
+</li><li><a href="/trac/ticket/128" title="Write Boogie Translation Tests for High Priority AST Nodes (closed)" class="closed ticket">#128</a>        Write Boogie Translation Tests for High Priority AST Nodes
+</li><li><a href="/trac/ticket/134" title="Propose Throttle the Dispatcher (closed)" class="closed ticket">#134</a>        Propose Throttle the Dispatcher
+</li><li><a href="/trac/ticket/144" title="Run the Slow, Long Test (closed)" class="closed ticket">#144</a>        Run the Slow, Long Test
+</li><li><a href="/trac/ticket/127" title="maintain html page (closed)" class="closed ticket">#127</a>        maintain html page
+</li><li><a href="/trac/ticket/145" title="Write a Lab Report on the Results from the Long, Slow Test (closed)" class="closed ticket">#145</a>        Write a Lab Report on the Results from the Long, Slow Test
+</li><li><a href="/trac/ticket/137" title="Write &#34;The Slow, Long Test&#34; (closed)" class="closed ticket">#137</a>        Write "The Slow, Long Test"
+</li><li><a href="/trac/ticket/135" title="Plan Construction of &#34;The Long, Slow Test&#34; (closed)" class="closed ticket">#135</a>        Plan Construction of "The Long, Slow Test"
+</li><li><a href="/trac/ticket/139" title="Run Tests of Original ESC4 Web (including old core) and new (closed)" class="closed ticket">#139</a>        Run Tests of Original ESC4 Web (including old core) and new
+</li><li><a href="/trac/ticket/154" title="SVN Merge with sourceforge code (closed)" class="closed ticket">#154</a>        SVN Merge with sourceforge code
+</li><li><a href="/trac/ticket/149" title="Write the Impact Analysis Document (closed)" class="closed ticket">#149</a>        Write the Impact Analysis Document
+</li><li><a href="/trac/ticket/133" title="Implement Isabelle Adapter Changes (closed)" class="closed ticket">#133</a>        Implement Isabelle Adapter Changes
+</li><li><a href="/trac/ticket/132" title="Propose and Design Isabelle Adapter Changes (closed)" class="closed ticket">#132</a>        Propose and Design Isabelle Adapter Changes
+</li><li><a href="/trac/ticket/131" title="Boogie Sequence Diagram (closed)" class="closed ticket">#131</a>        Boogie Sequence Diagram
+</li><li><a href="/trac/ticket/152" title="Big ESC test suite (closed)" class="closed ticket">#152</a>        Big ESC test suite
+</li><li><a href="/trac/ticket/153" title="Boogie Design and Refactoring Meeting (closed)" class="closed ticket">#153</a>        Boogie Design and Refactoring Meeting
+</li><li><a href="/trac/ticket/140" title="Fill in Details in Use Case Model (closed)" class="closed ticket">#140</a>        Fill in Details in Use Case Model
+</li><li><a href="/trac/ticket/124" title="Activity Planning Milestone 5A (closed)" class="closed ticket">#124</a>        Activity Planning Milestone 5A
+</li><li><a href="/trac/ticket/126" title="Initialize the html page w/template (closed)" class="closed ticket">#126</a>        Initialize the html page w/template
+</li><li><a href="/trac/ticket/136" title="Determine Usable ESC/Java2 Tests Based on the Scope of ESC4 (closed)" class="closed ticket">#136</a>        Determine Usable ESC/Java2 Tests Based on the Scope of ESC4
+</li><li><a href="/trac/ticket/148" title="Meet with Doctor Constantinides (closed)" class="closed ticket">#148</a>        Meet with Doctor Constantinides
+</li><li><a href="/trac/ticket/147" title="Meet with Doctor Chalin (closed)" class="closed ticket">#147</a>        Meet with Doctor Chalin
+</li><li><a href="/trac/ticket/150" title="Meeting Minutes from Perry Meeting on Jan 26th (closed)" class="closed ticket">#150</a>        Meeting Minutes from Perry Meeting on Jan 26th
+</li><li><a href="/trac/ticket/143" title="SRS Needs to Reflect Physical Server Setup Reqs (closed)" class="closed ticket">#143</a>        SRS Needs to Reflect Physical Server Setup Reqs
+</li><li><a href="/trac/ticket/160" title="Add a sequence diagram explaning the behaviour of boogiepoints &amp;  ... (new)" class="new ticket">#160</a>        Add a sequence diagram explaning the behaviour of boogiepoints &amp; boogiesource
+</li><li><a href="/trac/ticket/162" title="Write the lab report (closed)" class="closed ticket">#162</a>        Write the lab report
+</li><li><a href="/trac/ticket/166" title="Diff the sourceforge code and our code (assigned)" class="assigned ticket">#166</a>        Diff the sourceforge code and our code
+</li><li><a href="/trac/ticket/167" title="List unecessary differences between sourceforge project and ours (new)" class="new ticket">#167</a>        List unecessary differences between sourceforge project and ours
+</li><li><a href="/trac/ticket/168" title="Research RAM disks (closed)" class="closed ticket">#168</a>        Research RAM disks
+</li><li><a href="/trac/ticket/174" title="Status Report (closed)" class="closed ticket">#174</a>        Status Report
+</li><li><a href="/trac/ticket/175" title="write initial tests (closed)" class="closed ticket">#175</a>        write initial tests
+</li><li><a href="/trac/ticket/176" title="setup workspace (Boogie adapter tests should pass) (closed)" class="closed ticket">#176</a>        setup workspace (Boogie adapter tests should pass)
+</li><li><a href="/trac/ticket/155" title="Activity Planning Milestone 5B (closed)" class="closed ticket">#155</a>        Activity Planning Milestone 5B
+</li><li><a href="/trac/ticket/165" title="Research how to write directly to an Isabelle Process (closed)" class="closed ticket">#165</a>        Research how to write directly to an Isabelle Process
+</li><li><a href="/trac/ticket/171" title="Create Process View draft for Distributed Project (closed)" class="closed ticket">#171</a>        Create Process View draft for Distributed Project
+</li><li><a href="/trac/ticket/177" title="Document changes to code to include sybol table (closed)" class="closed ticket">#177</a>        Document changes to code to include sybol table
+</li><li><a href="/trac/ticket/159" title="Update the Class diagram in logical view (closed)" class="closed ticket">#159</a>        Update the Class diagram in logical view
+</li><li><a href="/trac/ticket/172" title="Create Deployment View draft for Distributed project (closed)" class="closed ticket">#172</a>        Create Deployment View draft for Distributed project
+</li><li><a href="/trac/ticket/161" title="Benchmark tests with more machines for Lab Report (closed)" class="closed ticket">#161</a>        Benchmark tests with more machines for Lab Report
+</li><li><a href="/trac/ticket/158" title="Symbol Table (closed)" class="closed ticket">#158</a>        Symbol Table
+</li><li><a href="/trac/ticket/173" title="Refactor BoogieVisitor (closed)" class="closed ticket">#173</a>        Refactor <a href="/trac/wiki/BoogieVisitor" class="missing wiki" rel="nofollow">BoogieVisitor?</a>
+</li><li><a href="/trac/ticket/157" title="Create a &#34;declaration finder&#34; visitor (closed)" class="closed ticket">#157</a>        Create a "declaration finder" visitor
+</li><li><a href="/trac/ticket/169" title="Document changes to core made for caching (closed)" class="closed ticket">#169</a>        Document changes to core made for caching
+</li><li><a href="/trac/ticket/170" title="Check if Loren's merged-with-sourceforge code breaks distro (closed)" class="closed ticket">#170</a>        Check if Loren's merged-with-sourceforge code breaks distro
+</li><li><a href="/trac/ticket/163" title="Time Adapters (closed)" class="closed ticket">#163</a>        Time Adapters
+</li><li><a href="/trac/ticket/164" title="Update Test Plan (closed)" class="closed ticket">#164</a>        Update Test Plan
+</li><li><a href="/trac/ticket/156" title="Finish Boogie AST and create BoogieAST Visitor (closed)" class="closed ticket">#156</a>        Finish Boogie AST and create BoogieAST Visitor
+</li></ul><h3 id="EffortSummary5Aand5B">Effort Summary (5A and 5B)</h3>
+<p>
+<strong> 5A </strong>
+</p><table class="wiki">
+<tr><td><strong>Owner</strong></td><td><strong>Actual Effort</strong>
+</td></tr><tr><td>c_kara</td><td>0.852
+</td></tr><tr><td>c_sheu</td><td>3.95
+</td></tr><tr><td>j_fora</td><td>5.3
+</td></tr><tr><td>l_sega</td><td>1.05
+</td></tr><tr><td>leveda</td><td>2.25
+</td></tr><tr><td>n_grigo</td><td>4.7
+</td></tr><tr><td>r_leguen</td><td>2.702
+</td></tr></table>
+<p>
+<strong> 5B </strong>
+</p><table class="wiki">
+<tr><td><strong>Owner</strong></td><td><strong>Actual Effort</strong>
+</td></tr><tr><td>c_kara</td><td>2.35
+</td></tr><tr><td>c_sheu</td><td>1.05
+</td></tr><tr><td>j_fora</td><td>2.6
+</td></tr><tr><td>l_sega</td><td>1.7
+</td></tr><tr><td>leveda</td><td>1.8
+</td></tr><tr><td>n_grigo</td><td>1.5
+</td></tr><tr><td>r_leguen</td><td>0.35
+</td></tr></table>
+<p>
 </p>
 <h2 id="Milestone4:">Milestone 4:</h2>
+<h3 id="ManagerSummary1">Manager Summary</h3>
 <p>
 It is safe to say that in Milestone 4, progress has finally been made. Performance has greatly been improved through our ability to improve the implementation of the Isabelle adapter. Improvements have also been made in coming up with a load balancing strategy for the distributed discharging of VCs although timing tests will have to be done early in the next milestone to determine whether these changes are actually necessary. Boogie has also been effectively plugged in the system as a prover and a boogie strategy is on it's way of being developed. Tests for checking for the validity of our translations from AST to Boogie will continue concurrently with adapter tests ensuring that boogie does in fact return the expected results. In the next milestone, we will look into detail on how to handle the results given from boogie. We will also look into other facets of the UI such as a web configuration interface for the prover servers, and handling compiler settings within the eclipse IDE. The team manager remains Carl whereas the decision has been made for Richard will be taking on the role of sub-team leader for the distributed team as of Milestone 5.
 </p>
 <p>
 The Second Prototype which was developed in Milestone 3 will not be continued for Milestone 4. It has been discovered to bug-ridden, and the design is not adequately encapsulated for it to be really scalable/maintainable. We have, however, learned a little more about the limitations and requirements of the underlying technologies we are using for distributed program verification. Part of the paradigm we were using was the idea of the Dispatcher keeping queues of Vcs to be sent to remote machines. This concept, however, proved to either not contribute significantly, or - in some experimental implementations - was in fact a significant slow down, since a <a href="/trac/wiki/TomCat" class="missing wiki" rel="nofollow">TomCat?</a> server is always ready to accept more requests.
 </p>
-<h3 id="OverviewofActivities">Overview of Activities</h3>
+<h3 id="OverviewofActivities1">Overview of Activities</h3>
 <ul><li><a href="/trac/ticket/23" title="Use Case Model Diagram &amp; template (closed)" class="closed ticket">#23</a>        Use Case Model Diagram &amp; template
 </li><li><a href="/trac/ticket/88" title="Find a usable UDP module (closed)" class="closed ticket">#88</a>        Find a usable UDP module
 </li><li><a href="/trac/ticket/84" title="Investigate the Isabelle and Simplify adapters to prevent spawning new  ... (closed)" class="closed ticket">#84</a>        Investigate the Isabelle and Simplify adapters to prevent spawning new processes
@@ -155,11 +242,11 @@ The Second Prototype which was developed in Milestone 3 will not be continued fo
 <p>
 </p>
 <h2 id="Milestone3:">Milestone 3:</h2>
-<h3 id="ManagerSummary">Manager Summary</h3>
+<h3 id="ManagerSummary2">Manager Summary</h3>
 <p>
 With the final issues with the workspaces resolved we began implementation and testing in this milestone. We have decided to split the team into two sub groups. One group lead by Nicholas is in charge of the implementation and the documentation of distributed strategies. The other sub-group began working with Boogie. We are using TDD to achieve our goal of translating JML4 decorated Java to Boogie. We have begun writing tests which test the validity of these translations as well as the implementations in the code that they test. On the distributed end, we have begun a basic load balancing strategy to accelerate proving times over a network of servers. The team manager remains Carl, with Leveda as second in command. Nicholas was also appointed sub-team leader for the distributed team.
 </p>
-<h3 id="OverviewofActivities1">Overview of Activities</h3>
+<h3 id="OverviewofActivities2">Overview of Activities</h3>
 <ul><li><a href="/trac/ticket/63" title="Process View (Concerning Distributed) (closed)" class="closed ticket">#63</a>        Process View (Concerning Distributed)
 </li><li><a href="/trac/ticket/60" title="Implement the Dispatcher and Server Processes (closed)" class="closed ticket">#60</a>        Implement the Dispatcher and Server Processes
 </li><li><a href="/trac/ticket/70" title="Implementation of BoogieVisitor &amp; Corresponding Test Environement (closed)" class="closed ticket">#70</a>        Implementation of <a href="/trac/wiki/BoogieVisitor" class="missing wiki" rel="nofollow">BoogieVisitor?</a> &amp; Corresponding Test Environement
@@ -219,11 +306,11 @@ With the final issues with the workspaces resolved we began implementation and t
 <p>
 </p>
 <h2 id="Milestone2:September22ndtoOctober3rd2008">Milestone 2: September 22nd to October 3rd, 2008</h2>
-<h3 id="ManagerSummary1">Manager Summary</h3>
+<h3 id="ManagerSummary3">Manager Summary</h3>
 <p>
 In this milestone we managed to finally setup our workspace. There are still some minor issues but all in all, I think we will be ready implement some of our plans in M3. We hit many bumps with our installation of provers and of the environment. The operating system on which our computers would run had bugs, the eclipse environment would not run, and problems occurred during the installation of the provers as well. There were also issues with the network drive disk quota not only in terms of memory but with the # of files as well and we are still faced with those same issues with our allocated machine. We also faced issues in terms of connectivity as we have no internet for the computers allocated to us. Last but not least, we managed to install TPTP, a profiling tool for Java which runs within Eclipse. This Milestone was really dedicated to exploring what our options are and setting up the workspace with the tools that were provided to us. We have also switched Management from Richard to Carl. Second in command will remain Leveda. 
 </p>
-<h3 id="OverviewofActivities2">Overview of Activities</h3>
+<h3 id="OverviewofActivities3">Overview of Activities</h3>
 <ul><li><a href="/trac/ticket/32" title="Team Ressource Management (closed)" class="closed ticket">#32</a>: Management: Team Ressource Management (n_grigo) 
 </li><li><a href="/trac/ticket/14" title="Trac won't let me make Milestone II tickets (closed)" class="closed ticket">#14</a>: Management: Trac won't let me make Milestone II tickets (l_sega) 
 </li><li><a href="/trac/ticket/25" title="Setup weekly room reservation (closed)" class="closed ticket">#25</a>: Management: Setup weekly room reservation (c_kara) 
@@ -262,7 +349,7 @@ In this milestone we managed to finally setup our workspace. There are still som
 <p>
 </p>
 <h2 id="Milestone1:September22ndtoOctober3rd2008">Milestone 1: September 22nd to October 3rd, 2008</h2>
-<h3 id="OverviewofActivities3">Overview of Activities</h3>
+<h3 id="OverviewofActivities4">Overview of Activities</h3>
 <ul><li>Assignment of leadership roles and division of responsibilities.
 </li><li>Chose project; wrote proposal. (<a href="/trac/ticket/7" title="Proposal (closed)" class="closed ticket">ticket:7</a>)
 </li><li>Modification of Trac so as to optimize productivity (<a href="/trac/ticket/1" title="Trac Setup (closed)" class="closed ticket">ticket:1</a>)

@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>JML4 Commit 2008-12-08</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+
+<body>
+<h2>JML4 Commit Notes - 2008-12-18</h2>
+<h2>WHAT is in this commit? </h2>
+<p>Summary:</p>
+<ul>
+  <li>Implemented proper and robust scanning of JML annotations even during error recovery. </li>
+  <li>Bug fix: proper handling of JML modifiers. </li>
+</ul>
+<p>This commit makes JML4's handling of <a href="http://www.eecs.ucf.edu/%7Eleavens/JML/jmlrefman/jmlrefman_4.html#SEC29">JML annotations</a> more accurate and more robust (relative to Eclipse's all so important parser recovery techniques). </p>
+<p>Prior to this commit, JML4 would be a bit lax about JML annotation markers (<code>/*@ ... @*/</code>); paying attention the the start but not necessarily the end of a JML annotation. Hence, non-JML text, i.e. regular Java, could be placed within JML annotation markers and the parser would not notice.</p>
+<p>This commit also ensures that Java comments nested within JML annotations (which are also Java comments) are properly handled -- specifically, that at the end of the nested Java comment, we fall back into the &quot;JML annotation&quot; mode.</p>
+<p>As a slight deviation from the official JML syntax, we are temporarily allowing for support of nested JML annotations. This allows us to support JML4-only syntax more easily.</p>
+<blockquote>
+  <pre>//@ public model String ss[/*#@non_null*/] ...</pre>
+</blockquote>
+<p>As for the bug fix. </p>
+<h2>DESIGN</h2>
+<p>The most challenging aspect of this commit was supporting robust error recovery within the parser. When a syntax error occurs, the Eclipse Parser reparses the text repeatedly, trying to extract as much useful information as possible (e.g. by skipping some parts of the text, like method bodies, if necessary). Repeated parsing is done with the one and only scanner. At each reparse attempt, the scanner's start position and current position are reset. Of course, this causes problems when a syntax error occurs within a JML annotation. In this case, we need to pay particular attention as to whether the scanner postion is reset to a point in the source that falls within the JML annotation or before it. The given technique might not be perfect but it generally yields good results.</p>
+<p>The Scanner now has a new fields:</p>
+<blockquote>
+  <pre>private JmlScannerAnnotationState jmlAnnotationState;
+
+
+	/** Marks the position of the last JML annotation processed<br />	 * by the scanner. Note that is marks the position of the<br />	 * first character inside the annotation; i.e. after the, e.g.,<br />	 * '/*@', '//+@', etc. markers. */<br />private int lastJmlAnnotationPosition;<br />
+private int lastJmlClauseExpressionPosition;<br />
+</pre>
+</blockquote>
+<p>This field of type <code>JmlScannerAnnotationState</code> let's us know if the scanner's current position is: (1) in normal Java text; (2) in a JML annotation without being in a nested comment; (3) in a Java comment within a JML annotation, or finally (4) in a JML annotation nested within another.</p>
+<p>The two position fields are necessary to allow for decent parsing error recovery. They are used by the parser when it calls <code>resetJmlRelatedAttributes(int pos)</code>.</p>
+<h2>DETAILS</h2>
+<p>Parser.java:</p>
+<ul>
+  <li>Resetting of the scanner <code>jmlAnnotationState</code> during recovery is done within the <code>moveRecoveryCheckpoint()</code> method. </li>
+  <li>The method <code>parse(MethodDeclaration md, CompilationUnitDeclaration unit)</code> is used to parse method bodies after the class has been diet parsed. This method is even used for model methods for which the body is contained within JML annotations. When the scanner is set to scan the method body, we need to know whether the start of the body is contained within a single or a multi-line JML annotation. For now <strong>we assume</strong> it is a multi-line annotation since this information is not stored while the method header is parsed.</li>
+  <li> <code>consumeJmlModifierAsModifier()</code>: mapping from a JML modifier lexeme to a <code>TypeReference</code> is now done in <code>JmlModifier.identToTypeRef()</code>.</li>
+</ul>
+<p>Scanner.java:</p>
+<ul>
+  <li>Relocated some JML4-specific declarations to the end of the file (this simplifies merging of Eclipse.org deltas).</li>
+  <li> Replaced various fields (e.g. <code>inJmlComment</code>) by <code>jmlAnnotationState</code>. Replaced use of old fields by appropriate calls to methods over <code>jmlAnnotationState</code> such as <code>endOfSingleLineComment()</code>.</li>
+  <li><code>resetTo(...)</code> and <code>setSource(...)</code> also now appropriately reset the JML annotation state. </li>
+  <li><code>processJmlAnnotationMarkers()</code> and its helper <code>setInJmlAnnotationAndConsumeExtraAtChars()</code> are the key methods for this feature.</li>
+</ul>
+<p>JmlModifier.java: added <code>identToTypeRef()</code> -- code refactored from <code>consumeJmlModifierAsModifier()</code>.</p>
+<p>WhileTests.java, NullTypeSystemTestCompiler.java had invalid JML syntax (e.g. nested JML line annotations). These have been fixed. </p>
+<hr />
+<h2>JmlScannerAnnotationState</h2>
+<p>This is a helper class for the scanner. It helps manage which state the scanner is in relative to JML annotations and nested Java comments within JML annotations.</p>
+<p>From the perspective of this class, the scanner is in one of the following states: (1) Not within a JML annotation. (2) Within a JML annotation but not within a nested Java comment. (3) Within a Java comment nested within a JML annotation. and (although this is beyond what is normally permitted by JML syntax) (4) Within a JML annotation nested within a JML annotation.</p>
+<p>We allow (4) for now because it is a convenient means of supporting JML4-only syntax while allowing the overall source to remain JML2 compatible. E.g.</p>
+<blockquote>
+  <pre>//@ public int array_of_int[/*#@non_null*/];</pre>
+</blockquote>
+<p> Case 3 can take various forms such as:</p>
+<blockquote>
+  <pre>//@ // Java comment within JML annotation. 
+//@ /* Java comment within JML annotation. */ 
+/*@ // Java comment within JML annotation.
+  @...
+  @ */</pre>
+</blockquote>
+<hr />
+<p>&nbsp; </p>
+</body>
+</html>

@@ -12,7 +12,9 @@ import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 
 public class JmlSpecCaseBody extends ASTNode {
-	
+
+	public static final JmlLocalDeclaration NoLocalDeclarations[] = new JmlLocalDeclaration[0];
+
 	public final /*@nullable*/ JmlSpecCaseHeader header;
 	public final /*@nullable*/ JmlSpecCaseRest rest;
 	private JmlLocalDeclaration[] forallVars;
@@ -71,5 +73,12 @@ public class JmlSpecCaseBody extends ASTNode {
 		if (this.rest != null)
 			result.addAll(this.rest.getEnsuresExpressions());
 		return result;
+	}
+	public JmlLocalDeclaration[] getForallVars() {
+		return forallVars;
+	}
+
+	public JmlLocalDeclaration[] getOldVars() {
+		return oldVars;
 	}
 }

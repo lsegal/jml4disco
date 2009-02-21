@@ -861,7 +861,7 @@ public class JmlParserHelper implements TerminalTokens, OperatorIds {
 		Assert_isTrue(_this.astLengthStack[_this.astLengthPtr] == 1, "JmlMethodDeclaration astLength == 1"); //$NON-NLS-1$
 		_this.astLengthPtr--;
 		// _this.astStack : JmlMethodSpecification 
-		md.specification = (JmlMethodSpecification) _this.astStack[_this.astPtr--];
+		md.setSpecification((JmlMethodSpecification) _this.astStack[_this.astPtr--]);
 		_this.astLengthPtr--;
 		_this.pushOnAstStack(md);
 	}
@@ -1688,7 +1688,7 @@ public class JmlParserHelper implements TerminalTokens, OperatorIds {
 		this.defaultNullityAnnotationPushed = false;
 	}
 
-	private static boolean warning_marker_for_consume = true;
+	// private static boolean warning_marker_for_consume = true;
 	
 	// No user servicable parts below this line.
 protected void consumeRule(int act) {

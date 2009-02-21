@@ -1,7 +1,0 @@
-
-public class X0016 {
-	/*@non_null*/ String toNonNullStr();
-	/*@nullable*/ String toNullableStr();
-	/*@non_null*/ char[] toCharArray();
-	void m(/*@non_null*/ char[] cc);
-}

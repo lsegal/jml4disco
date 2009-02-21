@@ -12,6 +12,7 @@ import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 
 public class JmlSpecCaseHeader extends ASTNode {
 
+	public final static JmlRequiresClause[] NoRequiresClauses = new JmlRequiresClause[0];
 	public final JmlRequiresClause[] requiresClauses;
 
 	public JmlSpecCaseHeader(JmlRequiresClause[] requires) {

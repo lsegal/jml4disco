@@ -15,9 +15,9 @@ import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 
 public class JmlMethodSpecification extends ASTNode {
 
-	public final JmlSpecCase[] specCases;	// main spec cases
-	public final JmlSpecCase[] redundantSpecCases;
-	public final boolean       isExtending;
+	private JmlSpecCase[] specCases;	// main spec cases
+	private JmlSpecCase[] redundantSpecCases;
+	public final boolean isExtending;
 
 	public JmlMethodSpecification(JmlSpecCase[] specCases, JmlSpecCase[] impliedSpecCases, boolean isExtending) {
 		this.specCases = specCases;
@@ -84,7 +84,6 @@ public class JmlMethodSpecification extends ASTNode {
 		}
 	}
 
-
 	// FIXME: make me work with more than very lightweight contracts
 	public Expression getPrecondition() {
 		List pres = new ArrayList();
@@ -103,6 +102,22 @@ public class JmlMethodSpecification extends ASTNode {
 		}
 		Expression result = JmlAstUtils.conjoin(pres);
 		return result;
+	}
+
+	public JmlSpecCase[] getSpecCases() {
+		return specCases;
+	}
+
+	public void setSpecCases(JmlSpecCase[] specCases) {
+		this.specCases = specCases;
+	}
+
+	public JmlSpecCase[] getRedundantSpecCases() {
+		return redundantSpecCases;
+	}
+
+	public void setRedundantSpecCases(JmlSpecCase[] redundantSpecCases) {
+		this.redundantSpecCases = redundantSpecCases;
 	}
 
 }

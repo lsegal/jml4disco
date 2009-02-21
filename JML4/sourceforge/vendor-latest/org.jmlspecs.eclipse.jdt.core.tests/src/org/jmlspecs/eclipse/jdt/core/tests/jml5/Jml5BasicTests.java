@@ -97,21 +97,52 @@ public class Jml5BasicTests extends AbstractRegressionTest {
                 },
                 "");
     }
-    public void test_0002_lightweightMethodContract() {
+    public void test_0002a_lightweightMethodContractOk() {
         this.runNegativeTest( new String[] {
-                "X.java",
-				"import org.jmlspecs.annotation.*;\n" +
-                "public class X {\n"+
-                "   @Requires(\"true\")\n" +
-                "   @Assignable(\"\\nothing\")\n" +
-                "   @Ensures(redundantly = true, value = \"true\")\n" +
-                "   @Signals(\"(Exception e) true\")\n" +
-                "	public void m(int i) { i++; }\n" +
-                "}\n"
-                },
-                "");
+        		"X.java",
+        		"import org.jmlspecs.annotation.*;\n" +
+        		"public class X {\n"+
+        		"   @Requires(\"true\")\n" +
+        		"   @Assignable(\"\\nothing\")\n" +
+        		"   @Ensures(redundantly = true, value = \"true\")\n" +
+        		"   @Signals(\"(Exception e) true\")\n" +
+        		"	public void m(int i) { i++; }\n" +
+        		"}\n"
+        },
+		"");
     }
-    public void test_0003_methodContract() {
+    public void test_0002b_lightweightMethodContractOk() {
+        this.runNegativeTest( new String[] {
+        		"X.java",
+        		"import org.jmlspecs.annotation.*;\n" +
+        		"public class X {\n"+
+        		"   @Requires(\"true\")\n" +
+        		"   @Assignable(\"\\nothing\")\n" +
+        		"   @Ensures(redundantly = true, value = \"true\")\n" +
+        		"   @Signals(\"(Exception e) true\")\n" +
+        		"	public void m(int i) { i++; }\n" +
+        		"}\n"
+        },
+		"");
+    }
+    public void test_0003_lightweightMethodContractErr() {
+	    this.runNegativeTest( new String[] {
+	    		"X.java",
+	    		"import org.jmlspecs.annotation.*;\n" +
+	    		"public class X {\n"+
+	    		"   @Requires(\"true + 1\")\n" +
+	    		"	public void m(int i) { i++; }\n" +
+	    		"}\n"
+	    },
+		"----------\n" + 
+		"1. ERROR in X.java (at line 1)\n" + 
+		"	@Requires(\"true + 1\")\n" + 
+		"	           ^^^^^^^^\n" + 
+		"The operator + is undefined for the argument type(s) boolean, int\n" + 
+		"----------\n");
+	}
+
+	public void test_0005_methodContract() {
     	// FIXME: this test will eventually fail once we start doing static checking ...
         this.runNegativeTest( new String[] {
                 "X.java",

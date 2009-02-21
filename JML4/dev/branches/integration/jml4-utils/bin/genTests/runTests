@@ -1,3 +1,0 @@
-#!/bin/bash
-./genTest tests/A.java
-./genTest tests/B.java

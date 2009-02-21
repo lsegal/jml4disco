@@ -664,10 +664,10 @@ public class BoogieVisitor extends ASTVisitor {
 		debug(term, scope);
 
 		// TODO ensures
-		for (int i = 0; i < term.specCases.length; i++) {
+		for (int i = 0; i < term.getSpecCases().length; i++) {
 			append(" "); //$NON-NLS-1$
 			append("ensures ", term); //$NON-NLS-1$
-			List exprs = term.specCases[i].getEnsuresExpressions();
+			List exprs = term.getSpecCases()[i].getEnsuresExpressions();
 			for (int j = 0; j < exprs.size(); j++) {
 				Expression expr = (Expression)exprs.get(j);
 				expr.traverse(this, methodScope);

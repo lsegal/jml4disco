@@ -10115,8 +10115,8 @@ public void parse(MethodDeclaration md, CompilationUnitDeclaration unit) {
 	this.scanner.resetTo(md.bodyStart, md.bodyEnd);
 	// reset the scanner to parser from { down to }
 	// <jml-start id="model-methods"/>
-	// About to parse model method body.
 	if (md.isModel()) {
+		// About to parse model method body.
 		// Assume body is within a multiline JML annotation.
 		this.scanner.startJmlAnnotation(false);
 	}

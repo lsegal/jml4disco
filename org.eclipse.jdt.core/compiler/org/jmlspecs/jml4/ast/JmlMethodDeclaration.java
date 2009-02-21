@@ -1,11 +1,20 @@
 package org.jmlspecs.jml4.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jdt.core.compiler.CharOperation;
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
 import org.eclipse.jdt.internal.compiler.ClassFile;
 import org.eclipse.jdt.internal.compiler.CompilationResult;
+import org.eclipse.jdt.internal.compiler.Compiler;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.Annotation;
 import org.eclipse.jdt.internal.compiler.ast.Argument;
+import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.Expression;
+import org.eclipse.jdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 import org.eclipse.jdt.internal.compiler.codegen.CodeStream;
@@ -14,12 +23,15 @@ import org.eclipse.jdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.jdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.jdt.internal.compiler.lookup.LookupEnvironment;
 import org.eclipse.jdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.jdt.internal.compiler.parser.Parser;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.jmlspecs.jml4.compiler.JmlConstants;
+import org.jmlspecs.jml4.compiler.parser.JmlIdentifier;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 import org.jmlspecs.jml4.nonnull.Nullity;
 
@@ -27,7 +39,8 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 	
 	public static final boolean DEBUG = false;
 	public static final boolean DEBUG_NULLITY_OF_OVERRIDES = false;
-	public JmlMethodSpecification specification;
+	// FIXME: specification should be private with clients using the getter.
+	public /*@nullable*/ JmlMethodSpecification specification;
 	public JmlLocalDeclaration resultValue;
 	private boolean jmlModifiersHaveBeenInit = false;
 	private long jmlModifiers = 0;
@@ -41,6 +54,7 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 	public void resolve(ClassScope upperScope) {
 		initJmlModifiersFromAnnotations();
 		super.resolve(upperScope);
+		annotation2specs(upperScope);
 		if (JmlConstants.LAST_PROCESSING_STAGE < JmlConstants.RESOLVE)
 			return;
 
@@ -55,6 +69,74 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 		this.specification.resolve(this.scope);
 	}
 
+	// Shouldn't be here, but for this proof of concept it will do
+	private char[] JML_REQUIRES = "Requires".toCharArray(); //$NON-NLS-1$
+	private	char[][] JML_REQUIRES_ANNOTATION = {JML_ORG, JMLSPECS, JML_ANNOTATION, JML_REQUIRES};
+
+	/**
+	 * Scan this method's Java annotations and build up, a JML method spec from
+	 * them if present.
+	 * 
+	 * For now we only support the @Requires clause.
+	 */
+	//$ requires that this have been at least super.resolved.
+	private void annotation2specs(ClassScope _scope) {
+		if (this.annotations == null)
+			return;
+		LookupEnvironment env = _scope.environment();
+		if(env == null)
+			return;
+		if(!(env.typeRequestor instanceof Compiler))
+			return;
+		Parser parser = ((Compiler)env.typeRequestor).parser;
+		if (parser == null)
+			return;
+		CompilationUnitDeclaration unit = env.unitBeingCompleted;
+
+		// Actually, any given method can have at most on @Requires annotation
+		// hence the following list will be of size 0 or 1.
+		List reqClauseList = new ArrayList();
+		for (int i = 0; i < this.annotations.length; i++) {
+			Annotation anno = this.annotations[i];
+			if (anno.resolvedType == null || !(anno.resolvedType instanceof ReferenceBinding))
+				continue;
+			char[][] qualifiedAnnotationTypeName = ((ReferenceBinding)anno.resolvedType).compoundName;
+			if (!CharOperation.equals(qualifiedAnnotationTypeName, JML_REQUIRES_ANNOTATION))
+				continue;
+			char[] clauseKeyword = qualifiedAnnotationTypeName[qualifiedAnnotationTypeName.length-1];
+			// FIXME: ... this has some hard coded values and is somewhat specific to @Requires
+			int exprStart = anno.sourceStart + clauseKeyword.length + 3;
+			// int exprLength = anno.declarationSourceEnd - exprStart - 1;
+			long pos = (((long) anno.sourceStart) << 32) + (anno.sourceStart + clauseKeyword.length - 1);
+			int id = 0; //FIXME: TokenNameRequiresOrSynonym;
+			
+			MemberValuePair[] mvps = anno.memberValuePairs();
+			Expression value = mvps[0].value;
+			char[] v = value.constant.stringValue().toCharArray();
+			boolean isRedundant = false; // FIXME: read this from mvp
+			JmlIdentifier keyword = new JmlIdentifier(clauseKeyword, isRedundant, id, pos);
+			
+			Expression expr = parser.parseExpression(v , 0, v.length, unit);
+			// FIXME: we would actually have to traverse the expressions structure to adjust the positions
+			// ... but we'll only do the top-level for now.
+			expr.sourceStart += exprStart;
+			expr.sourceEnd += exprStart;
+			
+			JmlRequiresClause req = new JmlRequiresClause(keyword, expr);
+			reqClauseList.add(req);
+		}
+		JmlSpecCaseHeader sch = new JmlSpecCaseHeader((JmlRequiresClause[]) reqClauseList.toArray(JmlSpecCaseHeader.NoRequiresClauses));
+		JmlSpecCaseBody scb = new JmlSpecCaseBody(JmlSpecCaseBody.NoLocalDeclarations, JmlSpecCaseBody.NoLocalDeclarations, sch, null);
+		JmlSpecCase specCase = new JmlSpecCase(scb);
+		JmlSpecCase[] specCases = new JmlSpecCase[] { specCase };
+		// FIXME: consider adding rather than replacing ...
+		if (this.specification == null) {
+			boolean isExtending = false;
+			this.setSpecification(new JmlMethodSpecification(specCases, JmlSpecCase.EMPTY_SPEC_CASE_ARRAY, isExtending));
+		} else {
+			this.specification.setSpecCases(specCases);
+		}
+	}
 	public void initJmlModifiersFromAnnotations() {
 		jmlModifiers |= JmlModifier.getFromAnnotations(this.annotations);
 		this.jmlModifiersHaveBeenInit = true;
@@ -379,5 +461,9 @@ public class JmlMethodDeclaration extends MethodDeclaration implements JmlAbstra
 
 	public JmlMethodSpecification getSpecification() {
 		return this.specification;
+	}
+
+	public void setSpecification(JmlMethodSpecification specification) {
+		this.specification = specification;
 	}
 }

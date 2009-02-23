@@ -953,7 +953,6 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=PrefixExpression,LocalDeclaration
 	public void test_601_preFixExpression() {
-		
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -982,9 +981,8 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=PrefixExpression,PostFixExpression,LocalDeclaration
+	// TODO term=PrefixExpression,PostFixExpression,LocalDeclaration
 	public void test_602_pre_post_FixExpression() {
-		
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -1020,6 +1018,53 @@ public class InitialTests extends AbstractRegressionTest {
 				"	a := 2;\n" +
 				"	b := 1;\n" +
 				"}\n"
+				);
+	}
+	
+	//TODO term=FieldDeclaration,SingleNameReference,Assignment
+	public void test_800_FieldDeclaration() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class X {\n" +
+				" 	int i;\n" +
+				" 	boolean b;\n" +
+				"	public void m() {\n" +
+				"		i = 1;\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"type Object;\n" +
+				"var tests.esc.X.i : [Object] int;\n" +
+				"var tests.esc.X.b : [Object] boolean;\n" +
+				"procedure tests.esc.X.m() {\n" +
+				"	tests.esc.X.i := 1;\n" +
+				"}\n"
+				);
+	}	
+
+	//TODO term=FieldDeclaration,SingleNameReference,Assignment
+	public void test_801_Static_FieldDeclaration() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class X {\n" +
+				" 	static int i = 1;\n" +
+				"	static int x = i;\n" +
+				"	static int z;\n" +
+				"}\n" 
+				,
+				//TODO  expected boogie
+				"var tests.esc.X.i : int;\n" +				
+				"var tests.esc.X.x : int;\n" +
+				"var tests.esc.X.z : int;\n" +
+				"procedure tests.esc.X_defaultInit() {\n" +
+				"	tests.esc.X.i := 1;\n" +
+				"	tests.esc.X.x := tests.esc.X.i;\n" +
+				"   tests.esc.X.z := 0;\n" +
+				"}\n" +
+				"call tests.esc.X_defaultInit();\n"
 				);
 	}
 	
@@ -1066,6 +1111,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
+	
 	// TODO term=IntLiteral,EqualExpression
 	public void test_1000_int_eq() {
 		this.compareJavaToBoogie(

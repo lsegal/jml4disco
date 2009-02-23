@@ -1425,4 +1425,30 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				);
 	}
+
+	// TODO term=MessageSend
+	public void test_2003_messageSend(){
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class M {\n" +
+				"	public static void m() {\n" +
+				"		N.n();\n" +
+				"	}\n" +
+				"}\n" +
+				"public class N {\n" +
+				"	public static void n() {\n" +
+				"		//@ assert true;\n" +
+				"	}\n" +
+				"}\n"
+				,
+				//expected boogie
+				"procedure tests.esc.M.m() {\n" +
+				"	call tests.esc.N.n();\n" +
+				"}\n" +
+				"procedure tests.esc.N.n() {\n" +
+				"	assert true;\n" +
+				"}\n"
+				);
+	}
 }

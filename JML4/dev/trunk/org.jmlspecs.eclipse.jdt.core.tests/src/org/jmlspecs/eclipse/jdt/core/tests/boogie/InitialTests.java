@@ -982,15 +982,34 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=
+	// term=PrefixExpression,PostFixExpression,LocalDeclaration
+	public void test_602_pre_post_FixExpression() {
+		
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class U {\n" + 
+				"   public void m1() {\n" +
+				"		int i = 5;\n" +
+				"		int x = 0;" +
+				"		x = i ++;\n" +
+				"	}\n" +					
+				"}\n" 
+				,
+				//TODO expected boogie			
+				""			
+				);
+	}
+	
+	// term=Assignment,SingleTypeReference,IntLiteral,JmlLocalDeclaration,LocalDeclaration
 	public void test_700_localVarDecl_order() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class X {\n" +
 				"   public void m1() {\n" +
 				"		int x = 2;\n" +
-				"       int y = 1;\n" + 
+				"       int y = 1;\n" +
 				"   }\n" + 				
 				"}\n"
 				,				
@@ -1002,7 +1021,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	b := 1;\n" +
 				"}\n"
 				);
-	}	
+	}
 	
 	// term=LocalDeclaration,SingleTypeReference,Assignment,IntLiteral
 	public void test_1000_int_localdeclaration() {

@@ -28,8 +28,9 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 
 	private IServerProfile profileInfo;
 	private URL url;
+	private long lastProveTime;
 	
-	private int pendingRequests;
+//	private int pendingRequests;
 	
 	public RemoteTomCatServer(String _url) throws MalformedURLException{
 		url = new URL (_url);
@@ -87,8 +88,9 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 	}
 	
 	@Override
-	public Result[] proveVc(int i, VC vc, Map<String, Integer> map) {
-		pendingRequests++;
+	public Result[] proveVc(int i, VC vc, Map<String, Integer> map, String[] prover) {
+		lastProveTime = System.currentTimeMillis();
+//		pendingRequests++;
 		try {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoInput(true); 
@@ -109,12 +111,13 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 			if (in != null) {
 				ProveVcServerResult proverServerResult = (ProveVcServerResult) in.readObject();
 				rs = proverServerResult.getResult();
+				prover[0] = proverServerResult.getProver();
 				setProfileInfo(proverServerResult.getServerProfile());
 			}
 			in.close();
 			conn.disconnect();
 			System.out.println("back_from_proveVc__");
-			pendingRequests--;
+//			pendingRequests--;
 			
 			return rs;
 		}
@@ -131,7 +134,7 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		pendingRequests--;
+//		pendingRequests--;
 		return null;
 	}
 	
@@ -162,12 +165,12 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 	@Override
 	public int getPendingVcs() {
 		int pendingVcs = profileInfo.getPendingVcs();
-		if(pendingVcs==0) {
+/*		if(pendingVcs==0) {
 			return pendingRequests;
 		}
-		else {
+		else {*/
 			return pendingVcs;
-		}
+//		}
 	}
 
 	@Override
@@ -187,5 +190,10 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 
 	public String toString() {
 		return "Remote ProveVC Tomcat Server: "+url;
+	}
+
+	@Override
+	public long timeSinceLastProve() {
+		return lastProveTime;
 	}
 }

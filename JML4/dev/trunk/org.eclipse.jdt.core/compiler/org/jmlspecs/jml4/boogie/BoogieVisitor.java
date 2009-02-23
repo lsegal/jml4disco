@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
 import org.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+import org.eclipse.jdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Argument;
@@ -88,7 +89,9 @@ import org.eclipse.jdt.internal.compiler.ast.Wildcard;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
+import org.eclipse.jdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.jmlspecs.jml4.ast.JmlAssertStatement;
 import org.jmlspecs.jml4.ast.JmlAssignment;
@@ -114,6 +117,7 @@ public class BoogieVisitor extends ASTVisitor {
 	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
 	private static final String STMT_END = ";"; //$NON-NLS-1$
+	private static final String OBJECT_TYPE_NAME = "Object"; //$NON-NLS-1$
 	
 	private BoogieSymbolTable symbolTable;
 	
@@ -155,13 +159,32 @@ public class BoogieVisitor extends ASTVisitor {
 	 * @return the original block if term is a Block, 
 	 * 	otherwise a new Block with one statement term. 
 	 */
-	private Block toBlock(Statement term) {
-		if (term instanceof Block) return (Block) term;
+	private Block toBlock(Statement term, BlockScope scope) {
+		if (term instanceof Block) { 
+			((Block)term).scope = scope;
+			return (Block)term;
+		}
 		Block blk = new Block(0);
 		blk.statements = new Statement[]{term};
+		blk.scope = scope; 
 		return blk;
 	}
 
+	private void variableInitialization(AbstractVariableDeclaration term, BlockScope scope) {
+		Expression init = term.initialization;
+		if (init == null && term.type.resolveType(scope) == TypeBinding.INT) {
+			init = new IntLiteral(new char[]{'0'}, 
+					term.sourceStart, term.sourceEnd);
+		}
+		
+		if (init != null) {
+			Assignment a = 
+				new Assignment(new SingleNameReference(term.name, term.sourceStart), 
+						init, term.sourceEnd);
+			a.traverse(this, scope);
+		}
+	}
+	
 	// TODO priority=2 group=expr
 	public boolean visit(AllocationExpression term, BlockScope scope) {
 		debug(term, scope);
@@ -259,6 +282,10 @@ public class BoogieVisitor extends ASTVisitor {
 		append(" := "); //$NON-NLS-1$
 		term.expression.traverse(this, scope);
 		return false;
+	}
+	
+	public void endVisit(Assignment term, BlockScope scope) {
+		appendLine (STMT_END);		
 	}
 
 	// priority=2 group=expr
@@ -489,7 +516,20 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=3 group=field
 	public boolean visit(FieldDeclaration term, MethodScope scope) {
 		debug(term, scope);
-		return true;
+		if (term.isStatic()) 
+			appendLine("type " + OBJECT_TYPE_NAME + STMT_END); //$NON-NLS-1$
+		
+		append("var "); //$NON-NLS-1$
+		append(new String(term.binding.declaringClass.readableName()) + "."); //$NON-NLS-1$		
+		append(new String(term.name) + " : "); //$NON-NLS-1$
+		if (!term.isStatic())
+			append("[" + OBJECT_TYPE_NAME + "] "); //$NON-NLS-1$ //$NON-NLS-2$
+		term.type.traverse(this, scope);
+		appendLine(STMT_END);
+		// FIXME this will not work, Boogie requires that all assignments are done in a procedure
+		if (term.isStatic())
+			variableInitialization(term, scope);
+		return false;
 	}
 
 	// TODO priority=3 group=field
@@ -558,11 +598,12 @@ public class BoogieVisitor extends ASTVisitor {
 		append(") "); //$NON-NLS-1$
 		
 		if (term.thenStatement != null) {
-			toBlock(term.thenStatement).traverse(this, scope);
+			Block b = toBlock(term.thenStatement, scope);
+			toBlock(term.thenStatement, scope).traverse(this, scope);
 		}
 		if (term.elseStatement != null) {
 			append("else ");  //$NON-NLS-1$
-			toBlock(term.elseStatement).traverse(this, scope);
+			toBlock(term.elseStatement, scope).traverse(this, scope);
 		}
 
 		return false;
@@ -707,19 +748,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=decl
 	public boolean visit(LocalDeclaration term, BlockScope scope) {
 		debug(term, scope);
-		Expression init = term.initialization;
-		if (init == null && term.type.resolveType(scope) == TypeBinding.INT) {
-			init = new IntLiteral(new char[]{'0'}, 
-					term.sourceStart, term.sourceEnd);
-		}
-		
-		if (init != null) {
-			Assignment a = 
-				new Assignment(new SingleNameReference(term.name, term.sourceStart), 
-						init, term.sourceEnd);
-			a.traverse(this, scope);
-			appendLine(STMT_END);
-		}
+		variableInitialization(term, scope);
 		return false;
 	}
 	
@@ -974,7 +1003,6 @@ public class BoogieVisitor extends ASTVisitor {
 						term.expression, term.sourceEnd);
 			m.traverse(this, scope);
 		}
-		appendLine(STMT_END);
 		append("return", term.expression); //$NON-NLS-1$
 		appendLine(STMT_END); 
 		return false;
@@ -989,7 +1017,15 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=expr
 	public boolean visit(SingleNameReference term, BlockScope scope) {
 		debug(term, scope);
-		append(symbolTable.lookup(new String(term.token)));
+		String termName = new String(term.token);
+		SourceTypeBinding classBinding = scope.classScope().referenceType().binding;
+		FieldBinding fieldBind = scope.classScope().findField(classBinding, term.token, null, true);
+		
+		if (fieldBind != null) {
+			append(new String(classBinding.readableName()) + "." + termName); //$NON-NLS-1$
+		}else {
+			append(symbolTable.lookup(new String(term.token)));
+		}
 		return true;
 	}
 
@@ -1134,7 +1170,7 @@ public class BoogieVisitor extends ASTVisitor {
 		append("while ("); //$NON-NLS-1$
 		term.condition.traverse(this, scope);
 		append(") "); //$NON-NLS-1$
-		toBlock(term.action).traverse(this, scope);
+		toBlock(term.action, scope).traverse(this, scope);
 		return false;
 	}
 

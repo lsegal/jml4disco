@@ -67,7 +67,7 @@ public class BoogieSource {
 	 * @param o the object to output to the buffer ({@link #toString()} is called on the object)
 	 * @param linePointTerm used to map the current position in the Boogie source to a Java AST node
 	 * 		in order to map a position in a Boogie source file to a Java source file (during problem reporting).
-	 * 		If this valid is null, no mapping will be done at the current position.
+	 * 		If this object is null, no mapping will be done at the current position.
 	 */
 	public void append(Object o, ASTNode linePointTerm) {
 		if (newLine && indent > 0) {

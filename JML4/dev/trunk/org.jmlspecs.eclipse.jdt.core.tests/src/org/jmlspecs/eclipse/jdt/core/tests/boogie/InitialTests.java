@@ -1346,6 +1346,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
+	// TODO term=MessageSend
 	public void test_2000_messageSend(){
 		this.compareJavaToBoogie(
 				//java
@@ -1373,6 +1374,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
+	// TODO term=MessageSend
 	public void test_2001_messageSend(){
 		this.compareJavaToBoogie(
 				//java
@@ -1396,6 +1398,30 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.M.m2(a: int) returns (__result__ : int) {\n" +
 				"	__result__ := a;\n" +
 				"	return;\n" +
+				"}\n"
+				);
+	}
+	
+	// TODO term=MessageSend
+	public void test_2002_messageSend(){
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class M {\n" +
+				"	public void m1() {\n" +
+				"		m2();\n" +
+				"	}\n" +
+				"	public void m2() {\n" +
+				"		//@ assert true;\n" +
+				"	}\n" +
+				"}\n"
+				,
+				//expected boogie
+				"procedure tests.esc.M.m1() {\n" +
+				"	call tests.esc.M.m2();\n" +
+				"}\n" +
+				"procedure tests.esc.M.m2() {\n" +
+				"	assert true;\n" +
 				"}\n"
 				);
 	}

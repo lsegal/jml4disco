@@ -1326,4 +1326,58 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				);
 	}
+	
+	public void test_2000_messageSend(){
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class M {\n" +
+				"	public void m1() {\n" +
+				"		int c = m2();\n" +
+				"		//@ assert c == 4;\n" +
+				"	}\n" +
+				"	public int m2() {\n" +
+				"		return 4;\n" +
+				"	}\n" +
+				"}\n"
+				,
+				//expected boogie
+				"procedure tests.esc.M.m1() {\n" +
+				"	var a : int;\n" +
+				"	call a := tests.esc.M.m2();\n" +
+				"	assert (a == 4);\n" +
+				"}\n" +
+				"procedure tests.esc.M.m2() returns (__result__ : int) {\n" +
+				"	__result__ := 4;\n" +
+				"	return;\n" +
+				"}\n"
+				);
+	}
+	
+	public void test_2001_messageSend(){
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class M {\n" +
+				"	public void m1() {\n" +
+				"		int c = m2(5);\n" +
+				"		//@ assert c == 5;\n" +
+				"	}\n" +
+				"	public int m2(int a) {\n" +
+				"		return a;\n" +
+				"	}\n" +
+				"}\n"
+				,
+				//expected boogie
+				"procedure tests.esc.M.m1() {\n" +
+				"	var a : int;\n" +
+				"	call a := tests.esc.M.m2(5);\n" +
+				"	assert (a == 5);\n" +
+				"}\n" +
+				"procedure tests.esc.M.m2(a: int) returns (__result__ : int) {\n" +
+				"	__result__ := a;\n" +
+				"	return;\n" +
+				"}\n"
+				);
+	}
 }

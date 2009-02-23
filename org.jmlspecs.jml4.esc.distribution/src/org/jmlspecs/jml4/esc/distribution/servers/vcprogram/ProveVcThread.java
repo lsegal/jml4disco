@@ -44,19 +44,36 @@ public class ProveVcThread implements Runnable {
 		vc.setName(vcProg.methodIndicator + "_" + (count + 1)); //$NON-NLS-1$
 		if (Esc.GEN_STATS)
 			System.out
-					.println("ESC4\tProveVcProgram\tpiece\tstart\t" + vc.getName() + "\t" + Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
-		Result[] results = server.proveVc(count, vc, vcProg.incarnations);
-		if (!Result.isValid(results)) {
-			for (int j = 0; j < results.length; j++) {
-				accumulator.add(results[j]);
+			.println("ESC4\tProveVcProgram\tpiece\tstart\t" + vc.getName() + "\t" + Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
+		String[] prover = new String[1]; 
+		Result[] results = VcCache.get(vc); 
+		if(results == null){ 
+			results = server.proveVc(count, vc, vcProg.incarnations, prover); 
+			if (!Result.isValid(results)) { 
+				for (int j = 0; j < results.length; j++) { 
+					accumulator.add(results[j]); 
+				} 
+				//ADDED FOR CACHING 
+				VcCache.add(vc, results, prover[0]); 
+				//DONE WITH THE ADD 
+			} 
+			else{ 
+				VcCache.add(vc, Result.VALID, prover[0]); 
+			} 
+		} 
+		else{ 
+			if (!Result.isValid(results)) { 
+				for (int j = 0; j < results.length; j++) { 
+					accumulator.add(results[j]); 
+				} 
+				synchronized (done) {
+					done[0]++;
+					done.notify();
+				}
+				if (Esc.GEN_STATS)
+					System.out
+					.println("ESC4\tProveVcProgram\tpiece\tend\t" + vc.getName() + "\t" + Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
-		synchronized (done) {
-			done[0]++;
-			done.notify();
-		}
-		if (Esc.GEN_STATS)
-			System.out
-					.println("ESC4\tProveVcProgram\tpiece\tend\t" + vc.getName() + "\t" + Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

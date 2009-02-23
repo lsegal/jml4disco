@@ -91,7 +91,6 @@ import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.jdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
-import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.jmlspecs.jml4.ast.JmlAssertStatement;
 import org.jmlspecs.jml4.ast.JmlAssignment;
@@ -278,6 +277,9 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=expr
 	public boolean visit(Assignment term, BlockScope scope) {
 		debug(term, scope);
+		if (term.expression instanceof MessageSend) {
+			append("call "); //$NON-NLS-1$
+		}
 		term.lhs.traverse(this, scope);
 		append(" := "); //$NON-NLS-1$
 		term.expression.traverse(this, scope);
@@ -598,7 +600,6 @@ public class BoogieVisitor extends ASTVisitor {
 		append(") "); //$NON-NLS-1$
 		
 		if (term.thenStatement != null) {
-			Block b = toBlock(term.thenStatement, scope);
 			toBlock(term.thenStatement, scope).traverse(this, scope);
 		}
 		if (term.elseStatement != null) {
@@ -774,7 +775,33 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=2 group=expr
 	public boolean visit(MessageSend term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		
+		if (term.statementEnd != -1) {
+			append("call "); //$NON-NLS-1$
+			append("", term); //$NON-NLS-1$
+		}
+		
+		if (term.receiver instanceof ThisReference) {
+			append(new String(scope.classScope().referenceType().binding.readableName()));
+		}
+		else {
+			term.receiver.traverse(this, scope);
+		}
+		
+		append("." + new String(term.selector)); //$NON-NLS-1$
+		append("("); //$NON-NLS-1$
+		if (term.arguments != null) {
+			for (int i = 0; i < term.arguments.length; i++) {
+				term.arguments[i].traverse(this, scope);
+				if (i < term.arguments.length - 1) append(", "); //$NON-NLS-1$
+			}
+		}
+		append(")"); //$NON-NLS-1$
+		return false;
+	}
+	
+	public void endVisit(MessageSend term, BlockScope scope) {
+		if (term.statementEnd != -1) appendLine(STMT_END);
 	}
 
 	/**
@@ -1018,13 +1045,25 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(SingleNameReference term, BlockScope scope) {
 		debug(term, scope);
 		String termName = new String(term.token);
-		SourceTypeBinding classBinding = scope.classScope().referenceType().binding;
-		FieldBinding fieldBind = scope.classScope().findField(classBinding, term.token, null, true);
 		
+		// First look in symbol table if there is one (local vars)
+		if (symbolTable != null) {
+			String symName = symbolTable.lookup(termName);
+			if (symName != null) {
+				append(symName);
+				return true;
+			} 
+		}
+
+		// Look for field or resolve type fully
+		TypeBinding classBinding = scope.classScope().referenceType().binding;
+		FieldBinding fieldBind = scope.classScope().findField(classBinding, term.token, null, true);
+
 		if (fieldBind != null) {
 			append(new String(classBinding.readableName()) + "." + termName); //$NON-NLS-1$
-		}else {
-			append(symbolTable.lookup(new String(term.token)));
+		}
+		else {
+			append(new String(scope.getType(term.token).readableName()));
 		}
 		return true;
 	}

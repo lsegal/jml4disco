@@ -1393,7 +1393,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 	
 	// TODO term=MessageSend
-	public void test_2000_messageSend(){
+	public void test_2000_messageSend() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -1421,7 +1421,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 	
 	// TODO term=MessageSend
-	public void test_2001_messageSend(){
+	public void test_2001_messageSend() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -1449,7 +1449,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 	
 	// TODO term=MessageSend
-	public void test_2002_messageSend(){
+	public void test_2002_messageSend() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -1473,7 +1473,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 
 	// TODO term=MessageSend
-	public void test_2003_messageSend(){
+	public void test_2003_messageSend() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +

@@ -11,6 +11,7 @@ import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
 import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+import org.jmlspecs.jml4.boogie.BoogieSource;
 import org.jmlspecs.jml4.boogie.BoogieVisitor;
 import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.PostProcessor;
@@ -85,6 +86,7 @@ public class InitialTests extends AbstractRegressionTest {
 	protected void compareJavaToBoogie(String java, String boogie) {
 		CompilationUnitDeclaration unit = compileToAst(java);
 		String results = BoogieVisitor.visit(unit).getResults();
+		boogie = BoogieSource.getHeaders() + boogie;
 		assertEquals(boogie, results);
 	}
 

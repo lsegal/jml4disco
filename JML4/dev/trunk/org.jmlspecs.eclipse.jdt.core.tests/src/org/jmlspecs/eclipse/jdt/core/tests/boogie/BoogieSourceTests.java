@@ -21,7 +21,8 @@ public class BoogieSourceTests extends TestCase{
 		assertTrue(b.getResults().equals(BoogieSource.getHeaders()));
 		String prepend = "This will now be prepended";
 		b.preprend(prepend);
-		assertTrue(b.getResults().equals(prepend+"\n"+BoogieSource.getHeaders()));
+		System.out.println(b.getResults());
+		assertTrue(b.getResults().equals(BoogieSource.getHeaders()+prepend+"\n"));
 		
 		String toBeAppended = "true";
 		b.append(toBeAppended, new TrueLiteral(0, 4));

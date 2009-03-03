@@ -55,7 +55,7 @@ public class BoogieSource {
 	}
 
 	private void prependAll() {
-		implBody.insert(0, prepends.toString());
+		implBody.insert(getHeaders().length(), prepends.toString());
 		prepends = new StringBuffer();
 		adjustSourcePoints();
 	}

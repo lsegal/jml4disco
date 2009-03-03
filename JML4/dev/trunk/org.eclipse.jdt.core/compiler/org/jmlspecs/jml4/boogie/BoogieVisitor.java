@@ -137,6 +137,8 @@ public class BoogieVisitor extends ASTVisitor {
 	public void appendLine(Object o) { output.appendLine(o); }
 	
 	public void append(Object o) { output.append(o); }
+	
+	public void prepend(Object o) {	output.preprend(o);	}
 
 	public void append(Object o, ASTNode linePointTerm) {
 		output.append(o, linePointTerm);

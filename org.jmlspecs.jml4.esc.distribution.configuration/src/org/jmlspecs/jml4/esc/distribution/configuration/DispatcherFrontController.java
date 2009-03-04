@@ -1,21 +1,16 @@
 package org.jmlspecs.jml4.esc.distribution.configuration;
 
-import java.util.ResourceBundle;
-
 import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.CommandNotFoundException;
 import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.FrontControllerException;
 
-public class FrontController {
-
-	private static final String PROPERTIES_FILE = "jml4-disco-config";
-	private static ResourceBundle bundle = initResourceBundle();
+public class DispatcherFrontController {
 	
 	public static void main(CommandInput commandInput) throws FrontControllerException, CommandNotFoundException {
 		
 		String command = commandInput.getCommandName();
 		
 		try {
-			String commandpath = bundle.getString("command-path"); 
+			String commandpath = "org.jmlspecs.jml4.esc.distribution.configuration.commands.dispatcher"; 
 			Class commandClass = Class.forName(commandpath+"."+command);
 			
 			if(FrontCommand.class.isAssignableFrom(commandClass)) {
@@ -35,11 +30,6 @@ public class FrontController {
 			throw new RuntimeException("Failed to execute command "+command+".", e);
 		}
 		
-	}
-	
-	private static ResourceBundle initResourceBundle() {
-		ResourceBundle props = ResourceBundle.getBundle(PROPERTIES_FILE);
-		return props;
 	}
 	
 }

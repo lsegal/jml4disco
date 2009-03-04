@@ -189,7 +189,7 @@ public class RemoteTomCatServer extends AbstractRemoteServer{
 	}
 
 	public String toString() {
-		return "Remote ProveVC Tomcat Server: "+url;
+		return "RemoteTomCatServer:"+url;
 	}
 
 	@Override

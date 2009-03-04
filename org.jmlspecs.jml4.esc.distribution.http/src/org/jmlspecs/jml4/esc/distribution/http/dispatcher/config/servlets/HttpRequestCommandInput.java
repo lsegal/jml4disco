@@ -1,4 +1,4 @@
-package org.jmlspecs.jml4.esc.distribution.http.config.servlets;
+package org.jmlspecs.jml4.esc.distribution.http.dispatcher.config.servlets;
 
 import java.util.Map;
 

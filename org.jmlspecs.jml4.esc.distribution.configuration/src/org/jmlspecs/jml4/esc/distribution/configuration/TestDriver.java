@@ -65,7 +65,7 @@ public class TestDriver {
 					}
 					
 				};
-				FrontController.main(c);
+				DispatcherFrontController.main(c);
 			} catch (FrontControllerException e) {
 				// TODO Auto-generated catch block
 				System.out.println(e.getMessage());

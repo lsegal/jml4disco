@@ -66,14 +66,15 @@ public class ProveVcThread implements Runnable {
 				for (int j = 0; j < results.length; j++) { 
 					accumulator.add(results[j]); 
 				} 
-				synchronized (done) {
-					done[0]++;
-					done.notify();
-				}
-				if (Esc.GEN_STATS)
-					System.out
-					.println("ESC4\tProveVcProgram\tpiece\tend\t" + vc.getName() + "\t" + Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
+		synchronized (done) {
+			done[0]++;
+			done.notify();
+		}
+		if (Esc.GEN_STATS)
+			System.out
+			.println("ESC4\tProveVcProgram\tpiece\tend\t" + vc.getName() + "\t" + Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
+
 	}
 }

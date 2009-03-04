@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.jmlspecs.jml4.esc.distribution.http.dispatcher</name>
+	<name>org.jmlspecs.jml4.esc.distribution.http.prover</name>
 	<comment></comment>
 	<projects>
-		<project>org.jmlspecs.jml4.esc.distribution</project>
 		<project>org.eclipse.jdt.core</project>
+		<project>org.jmlspecs.jml4.esc.distribution</project>
 		<project>org.jmlspecs.jml4.esc.distribution.configuration</project>
 	</projects>
 	<buildSpec>

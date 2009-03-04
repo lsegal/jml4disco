@@ -69,4 +69,13 @@ public final class ServerQueueRegistry {
 			throw new ServerQueueRegistryException("Unable to add server '"+serverInfo+"'", e);
 		}
 	}
+	
+	public static void removeServer(String serverIdentifier) {
+		for(Object s:getRemoteProveVcServerQueueInstance().toArray()) {
+			if(serverIdentifier.equals(s.toString())) {
+				getRemoteProveVcServerQueueInstance().remove(s);
+				return;
+			}
+		}
+	}
 }

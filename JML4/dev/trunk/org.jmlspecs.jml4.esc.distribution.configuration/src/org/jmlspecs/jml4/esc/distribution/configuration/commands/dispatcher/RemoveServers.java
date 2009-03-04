@@ -4,20 +4,18 @@ import org.jmlspecs.jml4.esc.distribution.configuration.FrontCommand;
 import org.jmlspecs.jml4.esc.distribution.configuration.CommandInput;
 import org.jmlspecs.jml4.esc.distribution.configuration.exceptions.FrontControllerException;
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerQueueRegistry;
-import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.ServerQueueRegistryException;
 
-public class AddServers extends FrontCommand {
+public class RemoveServers extends FrontCommand {
 
 	@Override
 	public void execute(CommandInput arg) throws FrontControllerException {
-		String s = arg.getParameter("server-url");
+		String s = arg.getParameter("server-name");
 		if(s!=null && !s.equals("")) {
-			try {
-				ServerQueueRegistry.addServer(s);
-			} catch (ServerQueueRegistryException e) {
-				throw new FrontControllerException(e);
-			}
+			ServerQueueRegistry.removeServer(s);
 		}
+
+		arg.setAttribute("servers", ServerQueueRegistry.getRemoteProveVcServerQueueInstance().toArray());
+		
 	}
 
 	

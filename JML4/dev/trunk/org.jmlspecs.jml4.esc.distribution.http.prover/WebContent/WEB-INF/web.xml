@@ -5,10 +5,10 @@
 		<description>
 		</description>
 		<display-name>
-		ProveVcProgram</display-name>
-		<servlet-name>ProveVcProgram</servlet-name>
+		ProveVc</display-name>
+		<servlet-name>ProveVc</servlet-name>
 		<servlet-class>
-		org.jmlspecs.jml4.esc.distribution.http.dispatcher.ProveVcProgram</servlet-class>
+		org.jmlspecs.jml4.esc.distribution.http.prover.ProveVc</servlet-class>
 	</servlet>
 	<servlet>
 		<description>
@@ -17,11 +17,11 @@
 		Workbench</display-name>
 		<servlet-name>ConfigWorkbench</servlet-name>
 		<servlet-class>
-		org.jmlspecs.jml4.esc.distribution.http.dispatcher.config.servlets.ConfigWorkbench</servlet-class>
+		org.jmlspecs.jml4.esc.distribution.http.prover.config.servlets.ConfigWorkbench</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>ProveVcProgram</servlet-name>
-		<url-pattern>/dispatcher</url-pattern>
+		<servlet-name>ProveVc</servlet-name>
+		<url-pattern>/prover</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ConfigWorkbench</servlet-name>

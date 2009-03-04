@@ -1,8 +1,9 @@
-package org.jmlspecs.jml4.esc.distribution.http.servlets;
+package org.jmlspecs.jml4.esc.distribution.http.dispatcher;
+
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream; 
-import java.util.Map;
+import java.io.ObjectOutputStream;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -11,18 +12,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jmlspecs.jml4.esc.Esc;
-import org.jmlspecs.jml4.esc.distribution.servers.vc.ProveVcServer;
-import org.jmlspecs.jml4.esc.distribution.servers.vc.ProveVcServerResult;
-import org.jmlspecs.jml4.esc.vc.lang.VC;
+import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.VcProgramDispatchingServer;
+import org.jmlspecs.jml4.esc.result.lang.Result;
+import org.jmlspecs.jml4.esc.vc.lang.VcProgram;
 
 /**
- * Servlet implementation class ProveVc
+ * Servlet implementation class ProveVcProgram
  */
-public class ProveVc extends HttpServlet {
+public class ProveVcProgram extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	public synchronized void init(ServletConfig config) throws ServletException {
-	    super.init(config);  
+	public static final int NUMBER_OF_THREADS = 64;
+       
+	public void init(ServletConfig config) throws ServletException {
+	    super.init(config);
 	}   
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
@@ -30,28 +32,27 @@ public class ProveVc extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
 	}
-	private static int id = (int)(Math.random() * 10000);
 	
-   @SuppressWarnings("unchecked")
-    protected void processRequest (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+	private static int id = (int)(Math.random() * 10000);
+   protected void processRequest (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+	   
+	   System.out.println("DickieESC4Web processRequest");
 	   
 	   Esc.GEN_STATS = false;
-	   
 		String contentType = "application/x-java-serialized-object";  
-
-		ProveVcServerResult result = null;
+		response.setContentType(contentType);
+		
+		Result[] result = Result.EMPTY;
 		ObjectInputStream in = null;
-		VC vc = null;
-		Map<String, Integer> map;
+		VcProgram vcProg;
 		try {
 			if (request.getContentLength() != -1) {
 				in = new ObjectInputStream(request.getInputStream());
-				vc = (VC) in.readObject();
-				map = (Map<String, Integer>) in.readObject();
-				result = ProveVcServer.prove(vc, map);
-			} 
+				vcProg = (VcProgram) in.readObject();
+				result = VcProgramDispatchingServer.proveVcProgram(vcProg);
+			}			
 
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -60,5 +61,8 @@ public class ProveVc extends HttpServlet {
 		out.writeObject(result);
 		out.flush();
 		out.close();
-   	}
+		
+		System.out.println("DONE DickieESC4Web processRequest");
+
+	}
 }

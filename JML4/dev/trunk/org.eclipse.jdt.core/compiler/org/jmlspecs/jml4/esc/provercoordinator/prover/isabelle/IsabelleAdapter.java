@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.text.MessageFormat;
 import java.util.Map;
 
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
@@ -20,13 +19,13 @@ import org.jmlspecs.jml4.util.Logger;
 public class IsabelleAdapter extends ProverAdapter {
 
 	private static final String THEORY_EXTENSION = ".thy"; //$NON-NLS-1$
-	private static final String USE_THY_CMD = "use_thy \"{0}\";\n"; //$NON-NLS-1$
 	private static final boolean DEBUG = false;
 	private static final String ISABELLE_VALID_1 = "\nlemma\n  main:"; //$NON-NLS-1$
 	private static final String ISABELLE_VALID_2 = "\nlemma main: "; //$NON-NLS-1$
 	private static final String OOPS = "  oops"; //$NON-NLS-1$
-	private static final String EOF_1 = "val it = () : unit"; //$NON-NLS-1$
-	private static final String EOF_2 = "Exception"; //$NON-NLS-1$
+	private static final String VALID_EOF_1 = "  main:"; //$NON-NLS-1$
+	private static final String VALID_EOF_2 = "lemma main:"; //$NON-NLS-1$
+	private static final String ERROR = "*** Failed to finish proof (after successful terminal method)"; //$NON-NLS-1$
 
 	public IsabelleAdapter(CompilerOptions options,
 			ProblemReporter problemReporter) {
@@ -57,9 +56,10 @@ public class IsabelleAdapter extends ProverAdapter {
 				// we've trying proving this before and failed.
 				// else fall through an try OUA theory ...
 			} else {
-				Utils.writeToFile(theoryFilePath, isabelleTheoryAsString);
+				//Utils.writeToFile(theoryFilePath, isabelleTheoryAsString);
 			}
-			results = prove(theoryFilePathWithoutExt, i == 0);
+			results = prove(isabelleTheoryAsString, i == 0);
+			
 			// Return either if the VC was proven, or
 			// a user supplied proof was given (even if the user
 			// supplied proof did not succeed.
@@ -77,7 +77,7 @@ public class IsabelleAdapter extends ProverAdapter {
 		return results;
 	}
 
-	private Result[] prove(String theoryFilePathWithoutExt, boolean isOuaEsc) {
+	private Result[] prove(String theoryString, boolean isOuaEsc) {
 		Process process = processPool.getFreeProcess();
 		if (process == null) {
 			// FIXME: recover use of problemReporter
@@ -87,38 +87,42 @@ public class IsabelleAdapter extends ProverAdapter {
 			return new Result[0];
 		}
 
-		String theoryFilePath = theoryFilePathWithoutExt + THEORY_EXTENSION;
 		StringBuffer buffer = new StringBuffer();
 		try {
 			// Isabelle argument to uss_thy command needs to be in Unix format.
-			String unixFilename = Utils
-					.win2unixFileName(theoryFilePathWithoutExt);
-			String command = MessageFormat.format(USE_THY_CMD,
-					new String[] { unixFilename });
 			OutputStream out = process.getOutputStream();
-			out.write(command.getBytes());
+			out.write(theoryString.getBytes());
 			out.flush();
 			InputStream in = process.getInputStream();
 			BufferedReader bIn = new BufferedReader(new InputStreamReader(in));
 			String line = bIn.readLine();
-			while (!(line.equals(EOF_1) || line.endsWith(OOPS) || line
-					.startsWith(EOF_2))) {
+			while (!(line.contains(VALID_EOF_1) || line.startsWith(VALID_EOF_2) || line
+					.startsWith(ERROR))) {
 				buffer.append(line + "\n"); //$NON-NLS-1$
 				line = bIn.readLine();
 			}
 			buffer.append(line + "\n");
+			
 			// read all data unread in the inputstream buffer
 			byte[] response = new byte[in.available()];
-			int i = in.read(response);
-
-			processPool.releaseProcess(process);
+			in.read(response);
 
 			if (DEBUG)
 				Logger.print(buffer.toString());
 			Result[] result = formatResult(buffer.toString());
-			if (!isOuaEsc && Result.isValid(result))
-				Utils.deleteFile(theoryFilePath);
-
+			
+			//if the isabelle cannot prove it, we have to restore the state of the
+			//process in order to reuse it.  To do so, we fetch the undo; command.
+			if(result == Result.EMPTY) {
+				String undo = "undo;"; //$NON-NLS-1$
+				out.write(undo.getBytes());
+				out.flush();
+				response = new byte[in.available()];
+				in.read(response);
+			} 
+			
+			processPool.releaseProcess(process);
+				
 			return result;
 
 		} catch (IOException e) {

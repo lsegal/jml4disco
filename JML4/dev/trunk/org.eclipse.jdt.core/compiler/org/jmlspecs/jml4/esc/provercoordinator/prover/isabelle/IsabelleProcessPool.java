@@ -13,7 +13,7 @@ import org.jmlspecs.jml4.util.Logger;
 public class IsabelleProcessPool extends ProcessPool {
 
 	private static IsabelleProcessPool self;
-	private static final String ISABELLE_CMD = "isabelle ESC4"; //$NON-NLS-1$
+	private static final String ISABELLE_CMD = "isabelle -I ESC4"; //$NON-NLS-1$
 	private static final String OS_NAME_KEY = "os.name"; //$NON-NLS-1$
 	private static final String OS_LINUX = "Linux"; //$NON-NLS-1$
 	private static final boolean DEBUG = false;

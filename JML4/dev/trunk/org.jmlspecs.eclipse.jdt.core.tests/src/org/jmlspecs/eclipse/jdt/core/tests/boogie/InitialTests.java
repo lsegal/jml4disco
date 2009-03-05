@@ -1579,7 +1579,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 
 	// TODO term=MessageSend
-	public void test_2003_messageSend() {
+	public void test_2003_messageSendStatic() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -1600,6 +1600,39 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" +
 				"procedure tests.esc.N.n() {\n" +
 				"	assert true;\n" +
+				"}\n"
+				);
+	}
+	
+	// TODO term=MessageSend
+	public void test_2004_messageSendOnReceiver() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class M {\n" +
+				"	public static void m(N x) {" +
+				"		x.o();\n" +
+				"		int y = x.n(3);\n" +
+				"	}\n" +
+				"}\n" +
+				"public class N {\n" +
+				"	public int n(int x) {\n" +
+				"		return x;\n" +
+				"	}\n" +
+				"	public void o() { }\n" +
+				"}\n"
+				,
+				//expected boogie
+				"procedure tests.esc.M.m(a: tests.esc.N) {\n" +
+				"	var b : int;\n" +
+				"	call tests.esc.N.o(a);\n" +
+				"	call b := tests.esc.N.n(a, 3);\n" +
+				"}\n" +
+				"procedure tests.esc.N.n(this : tests.esc.N, a: int) returns (__result__ : int) {\n" +
+				"	__result__ := a;\n" +
+				"	return;\n" +
+				"}\n" +
+				"procedure tests.esc.N.o(this : tests.esc.N) {\n" +
 				"}\n"
 				);
 	}

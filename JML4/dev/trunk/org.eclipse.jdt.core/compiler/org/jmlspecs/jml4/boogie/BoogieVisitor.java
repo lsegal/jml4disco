@@ -1,6 +1,8 @@
 package org.jmlspecs.jml4.boogie;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
@@ -113,6 +115,7 @@ public class BoogieVisitor extends ASTVisitor {
 	private static final boolean DEBUG = true;
 	private BlockScope methodScope;
 	private BoogieSource output;
+	private Hashtable typeList = new Hashtable();
 	
 	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
@@ -185,6 +188,20 @@ public class BoogieVisitor extends ASTVisitor {
 						init, term.sourceEnd);
 			a.traverse(this, scope);
 		}
+	}
+	
+	private void declareType(String type) {
+		typeList.put(type, new Integer(1));
+	}
+	
+	private void emitTypes() {
+		StringBuffer outBuf = new StringBuffer();
+		Enumeration e = typeList.keys();
+		while (e.hasMoreElements()) {
+			String key = (String)e.nextElement();
+			outBuf.append("type " + key + ";\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		prepend(outBuf.toString());
 	}
 	
 	// TODO priority=2 group=expr
@@ -419,6 +436,10 @@ public class BoogieVisitor extends ASTVisitor {
 		// implemented
 		return true;
 	}
+	
+	public void endVisit(CompilationUnitDeclaration term, CompilationUnitScope scope) {
+		emitTypes();
+	}
 
 	// TODO priority=2 group=expr
 	public boolean visit(CompoundAssignment term, BlockScope scope) {
@@ -521,8 +542,6 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=3 group=field
 	public boolean visit(FieldDeclaration term, MethodScope scope) {
 		debug(term, scope);
-		if (term.isStatic()) 
-			appendLine("type " + OBJECT_TYPE_NAME + STMT_END); //$NON-NLS-1$
 		
 		append("var "); //$NON-NLS-1$
 		append(new String(term.binding.declaringClass.readableName()) + "."); //$NON-NLS-1$		
@@ -797,10 +816,15 @@ public class BoogieVisitor extends ASTVisitor {
 		else {
 			term.receiver.traverse(this, scope);
 		}
-		
+
 		append("." + new String(term.selector)); //$NON-NLS-1$
 		append("("); //$NON-NLS-1$
+		if (term.receiver instanceof ThisReference) {
+			append("this");  //$NON-NLS-1$
+		}
+
 		if (term.arguments != null) {
+			append(", "); //$NON-NLS-1$
 			for (int i = 0; i < term.arguments.length; i++) {
 				term.arguments[i].traverse(this, scope);
 				if (i < term.arguments.length - 1) append(", "); //$NON-NLS-1$
@@ -827,11 +851,16 @@ public class BoogieVisitor extends ASTVisitor {
 		
 		symbolTable = new BoogieSymbolTable();
 
+		String cls = new String(term.binding.declaringClass.readableName());
 		append("procedure "); //$NON-NLS-1$
-		append(new String(term.binding.declaringClass.readableName()) + "."); //$NON-NLS-1$
+		append(cls + "."); //$NON-NLS-1$
 		append(new String(term.selector));
 		append("("); //$NON-NLS-1$
+		if (!term.isStatic()) {
+			append("this : " + cls); //$NON-NLS-1$
+		}
 		if (term.arguments != null) {
+			if (!term.isStatic()) append(", ");  //$NON-NLS-1$
 			for (int i = 0; i < term.arguments.length; i++) {
 				term.arguments[i].traverse(this, scope);
 				if (i < term.arguments.length - 1) {
@@ -1088,13 +1117,18 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=expr
 	public boolean visit(SingleTypeReference term, BlockScope scope) {
 		debug(term, scope);
-
-		if (term.resolvedType == TypeBinding.BOOLEAN ||term.token.equals(TypeConstants.BOOLEAN)) {
+		
+		if (term.resolvedType == TypeBinding.BOOLEAN || term.token.equals(TypeConstants.BOOLEAN)) {
 			append("bool"); //$NON-NLS-1$
+			return true;
 		}
-		else {
-			append(new String(term.token));
+		
+		if (term.resolvedType != null && term.resolvedType.isBaseType()) {
+			declareType(new String(term.resolvedType.readableName()));
 		}
+		
+		append(new String(term.token));
+		
 		return true;
 	}
 
@@ -1179,6 +1213,7 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// TODO priority=2 group=decl
 	public boolean visit(TypeDeclaration term, BlockScope scope) {
+		declareType(new String(term.binding.readableName()));
 		debug(term, scope);
 		return true;
 	}
@@ -1186,12 +1221,14 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=2 group=decl
 	public boolean visit(TypeDeclaration term, ClassScope scope) {
 		debug(term, scope);
+		declareType(new String(term.binding.readableName()));
 		return true;
 	}
 
 	// TODO priority=2 group=decl
 	public boolean visit(TypeDeclaration term, CompilationUnitScope scope) {
 		debug(term, scope);
+		declareType(new String(term.binding.readableName()));
 		return true;
 	}
 

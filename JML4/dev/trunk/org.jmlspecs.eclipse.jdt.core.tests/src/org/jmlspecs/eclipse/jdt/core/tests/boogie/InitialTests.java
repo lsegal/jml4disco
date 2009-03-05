@@ -85,8 +85,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	protected void compareJavaToBoogie(String java, String boogie) {
 		CompilationUnitDeclaration unit = compileToAst(java);
-		String results = BoogieVisitor.visit(unit).getResults();
-		boogie = BoogieSource.getHeaders() + boogie;
+		BoogieSource source = BoogieVisitor.visit(unit);
+		String prepends = source.getPrepends();
+		String results = source.getResults();
+		boogie = BoogieSource.getHeaders() + prepends + boogie;
 		assertEquals(boogie, results);
 	}
 
@@ -143,10 +145,10 @@ public class InitialTests extends AbstractRegressionTest {
 			"}\n"
 			,
 			// expected boogie
-			"procedure tests.esc.A.m() {\n" +
+			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 			"	assert false;\n" +
 			"}\n" +
-			"procedure tests.esc.A.n() returns (__result__ : int) ensures (__result__ == 42); {\n" +
+			"procedure tests.esc.A.n(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 42); {\n" +
 			"	assert true;\n" +
 			"	__result__ := 42;\n" +
 			"	return;\n" +
@@ -171,7 +173,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assert false;\n" +
 				"}\n" 		
 		);
@@ -189,7 +191,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assert true;\n" +
 				"}\n" 		
 		);
@@ -207,7 +209,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(a: bool) {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X, a: bool) {\n" +
 				"	assert a;\n" +
 				"}\n" 			
 				);
@@ -225,7 +227,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"		
 				,
 				// expected boogie
-				"procedure tests.esc.X.m1() {\n" +
+				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
 				"	assert false && false;\n" +
 				"}\n"
 				
@@ -244,7 +246,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,				
 				// expected boogie
-				"procedure tests.esc.X.m1() {\n" +
+				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
 				"	assert (false || false);\n" +
 				"}\n"
 				);
@@ -262,7 +264,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.X.m1() {\n" +
+				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
 				"	assert false && (false || false);\n" +
 				"}\n"				
 				);
@@ -280,7 +282,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.X.m1() {\n" +
+				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
 				"	assert (false || false) && false;\n" +
 				"}\n"
 				);
@@ -299,7 +301,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assert true;\n" +
 				"	assert true;\n" +				
 				"}\n"
@@ -319,7 +321,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assert true;\n" +
 				"	assert false;\n" +				
 				"}\n"
@@ -339,7 +341,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assert false;\n" +
 				"	assert true;\n" +				
 				"}\n"
@@ -359,7 +361,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assert false;\n" +
 				"	assert false;\n" +				
 				"}\n"
@@ -379,7 +381,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assert false;\n" +
 				"	assert false;\n" +
 				"}\n" 		
@@ -398,7 +400,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assert true;\n" +
 				"}\n" 		
 		);
@@ -420,7 +422,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assume false;\n" +
 				"}\n" 				
 				);
@@ -438,7 +440,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assume true;\n" +
 				"}\n" 				
 				);
@@ -456,7 +458,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"}\n"
 				);
 	}
@@ -524,7 +526,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assume true;\n" +
 				"	assert true;\n" +
 				"}\n"
@@ -544,7 +546,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assume false;\n" +
 				"	assert false;\n" +
 				"}\n"
@@ -564,7 +566,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assume false;\n" +
 				"	assert true;\n" +
 				"}\n"
@@ -584,7 +586,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	assume true;\n" +
 				"	assert false;\n" +
 				"}\n"
@@ -608,7 +610,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"}\n"
 			,
 			// TODO expected boogie
-			"procedure tests.esc.A.m5() {\n" +
+			"procedure tests.esc.A.m5(this : tests.esc.A) {\n" +
 			"	var a : int;\n" +
 			"	var b : int;\n" +
 			"	a := 3;\n" +
@@ -636,7 +638,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"}\n"
 			, 
 			// expected boogie
-			"procedure tests.esc.A.m() {\n" +
+			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 			"	var a : int;\n" +
 			"	var b : int;\n" +
 			"	var c : int;\n" +
@@ -663,7 +665,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"}\n"
 			, 
 			// expected boogie
-			"procedure tests.esc.A.m() {\n" +
+			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 			"	var a : int;\n" +
 			"	var b : bool;\n" +
 			"	a := 0;\n" +
@@ -683,7 +685,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"}\n"
 			, 
 			// expected boogie
-			"procedure tests.esc.A.m() {\n" +
+			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 			"	var a : int;\n" +
 			"	var b : bool;\n" +
 			"	a := 3;\n" +
@@ -709,7 +711,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"}\n"
 			, 
 			// expected boogie
-			"procedure tests.esc.A.m(a: int, b: int) returns (__result__ : java.lang.String) {\n" +
+			"procedure tests.esc.A.m(this : tests.esc.A, a: int, b: int) returns (__result__ : java.lang.String) {\n" +
 			"	var c : int;\n" +
 			"	c := 3;\n" +
 			"	if ((a == 1)) {\n" +
@@ -736,7 +738,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	if (true) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
@@ -799,7 +801,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	var a : bool;\n" +
 				"	a := true;\n" +
 				"	assert !a;\n" +
@@ -824,12 +826,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	while ((true == true)) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
 				"}\n" +
-				"procedure tests.esc.U.m2() {\n" +
+				"procedure tests.esc.U.m2(this : tests.esc.U) {\n" +
 				"	while ((true == true)) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
@@ -856,7 +858,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	blah:\n" +
 				"	while (true) {\n" +
 				"		assert true;\n" +
@@ -883,7 +885,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	while (true) {\n" +
 				"		assert true;\n" +
 				"		break;\n" +
@@ -910,13 +912,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	assert true;\n" +
 				"	while (true) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
 				"}\n" +
-				"procedure tests.esc.U.m2() {\n" +
+				"procedure tests.esc.U.m2(this : tests.esc.U) {\n" +
 				"	assert true;\n" +
 				"	while (true) {\n" +
 				"		assert true;\n" +
@@ -942,7 +944,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	assert true;\n" +
 				"	assert false;\n" +
 				"	assert true;\n" +
@@ -974,7 +976,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	var a : int;\n" +
 				"	a := 0;\n" +
 				"	while ((a < 10)) {\n" +
@@ -982,7 +984,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"		a := a + 1;\n" +
 				"	}\n" +
 				"}\n" +
-				"procedure tests.esc.U.m2() {\n" +
+				"procedure tests.esc.U.m2(this : tests.esc.U) {\n" +
 				"	var a : int;\n" +
 				"	a := 10;\n" +
 				"	while ((a > 0)) {\n" +
@@ -1009,7 +1011,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	assert true;\n" +
@@ -1042,7 +1044,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie		
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	a := 0;\n" +
@@ -1072,7 +1074,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie			
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	a := 0;\n" +
@@ -1116,7 +1118,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,				
 				// expected boogie
-				"procedure tests.esc.X.m1() {\n" +
+				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	a := 2;\n" +
@@ -1141,12 +1143,12 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"type Object;\n" +
 				"var tests.esc.X.i : [Object] int;\n" +
-				"var tests.esc.X.b : [Object] bool;\n" +
+				"var tests.esc.X.b : [Object] boolean;\n" +
 				"procedure tests.esc.X.m() {\n" +
 				"	tests.esc.X.i := 1;\n" +
 				"}\n"
 				);
-	}	
+	}
 
 	//TODO term=FieldDeclaration,SingleNameReference,Assignment
 	public void test_801_Static_FieldDeclaration() {
@@ -1188,7 +1190,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m() {\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	var c : int;\n" +
@@ -1279,58 +1281,58 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected Boogie
-				"procedure tests.esc.X.m1() {\n" +
+				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
 				"	assert (42 == 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m2() {\n" +
+				"procedure tests.esc.X.m2(this : tests.esc.X) {\n" +
 				"	assert (42 == 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m3() {\n" +
+				"procedure tests.esc.X.m3(this : tests.esc.X) {\n" +
 				"	assert (42 != 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m4() {\n" +
+				"procedure tests.esc.X.m4(this : tests.esc.X) {\n" +
 				"	assert (42 != 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m5() {\n" +
+				"procedure tests.esc.X.m5(this : tests.esc.X) {\n" +
 				"	assert (42 < 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m6() {\n" +
+				"procedure tests.esc.X.m6(this : tests.esc.X) {\n" +
 				"	assert (42 < 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m7() {\n" +
+				"procedure tests.esc.X.m7(this : tests.esc.X) {\n" +
 				"	assert (42 > 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m8() {\n" +
+				"procedure tests.esc.X.m8(this : tests.esc.X) {\n" +
 				"	assert (42 > 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m9() {\n" +
+				"procedure tests.esc.X.m9(this : tests.esc.X) {\n" +
 				"	assert (43 <= 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m10() {\n" +
+				"procedure tests.esc.X.m10(this : tests.esc.X) {\n" +
 				"	assert (42 <= 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m11() {\n" +
+				"procedure tests.esc.X.m11(this : tests.esc.X) {\n" +
 				"	assert (42 <= 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m12() {\n" +
+				"procedure tests.esc.X.m12(this : tests.esc.X) {\n" +
 				"	assert (42 >= 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m13() {\n" +
+				"procedure tests.esc.X.m13(this : tests.esc.X) {\n" +
 				"	assert (42 >= 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m14() {\n" +
+				"procedure tests.esc.X.m14(this : tests.esc.X) {\n" +
 				"	assert (43 >= 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m15() {\n" +
+				"procedure tests.esc.X.m15(this : tests.esc.X) {\n" +
 				"	assert ((42 >= 42) == true);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m16() {\n" +
+				"procedure tests.esc.X.m16(this : tests.esc.X) {\n" +
 				"	assert ((42 >= 42) == false);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m17() {\n" +
+				"procedure tests.esc.X.m17(this : tests.esc.X) {\n" +
 				"	assert ((43 >= 42) == true);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m18() {\n" +
+				"procedure tests.esc.X.m18(this : tests.esc.X) {\n" +
 				"	assert ((43 >= 42) == false);\n" +
 				"}\n"
 				);
@@ -1382,40 +1384,40 @@ public class InitialTests extends AbstractRegressionTest {
 				//expected boogie
 				//"axiom (∀ x : int, y: int • {x % y} {x /y} x%y == x - x/y *y);\n" +
 				//"axiom (∀x:int,y:int•{x%y}(0<y⇒0<=x%y∧x%y<y)∧(y<0⇒y<x%y∧x%y<=0));\n" +
-				"procedure tests.esc.R.m1() {\n" +
+				"procedure tests.esc.R.m1(this : tests.esc.R) {\n" +
 				"	assert ((5 + 2) == 7);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m2() {\n" +
+				"procedure tests.esc.R.m2(this : tests.esc.R) {\n" +
 				"	assert ((5 - 2) == 3);\n" +
 				"}\n" + 
-				"procedure tests.esc.R.m3() {\n" +
+				"procedure tests.esc.R.m3(this : tests.esc.R) {\n" +
 				"	assert ((5 * 2) == 10);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m4() {\n" +
+				"procedure tests.esc.R.m4(this : tests.esc.R) {\n" +
 				"	assert ((4 / 2) == 2);\n" +
 				"}\n" + 
-				"procedure tests.esc.R.m5() {\n" +
+				"procedure tests.esc.R.m5(this : tests.esc.R) {\n" +
 				"	assert ((5 % 2) == 1);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m6() {\n" +
+				"procedure tests.esc.R.m6(this : tests.esc.R) {\n" +
 				"	assert (((5 + 2) * 3) == 21);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m1b() {\n" +
+				"procedure tests.esc.R.m1b(this : tests.esc.R) {\n" +
 				"	assert ((5 + 2) != 7);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m2b() {\n" +
+				"procedure tests.esc.R.m2b(this : tests.esc.R) {\n" +
 				"	assert ((5 - 2) != 3);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m3b() {\n" +
+				"procedure tests.esc.R.m3b(this : tests.esc.R) {\n" +
 				"	assert ((5 * 2) != 10);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m4b() {\n" +
+				"procedure tests.esc.R.m4b(this : tests.esc.R) {\n" +
 				"	assert ((4 / 2) != 2);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m5b() {\n" +
+				"procedure tests.esc.R.m5b(this : tests.esc.R) {\n" +
 				"	assert ((5 % 2) != 1);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m6b() {\n" +
+				"procedure tests.esc.R.m6b(this : tests.esc.R) {\n" +
 				"	assert (((5 + 2) * 3) != 22);\n" +
 				"}\n"
 				);			
@@ -1481,16 +1483,16 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1() {\n" +
+				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	assert (true => true);\n" +
 				"}\n" +
-				"procedure tests.esc.U.m2() {\n" +
+				"procedure tests.esc.U.m2(this : tests.esc.U) {\n" +
 				"	assert (true => false);\n" +
 				"}\n" +
-				"procedure tests.esc.U.m3() {\n" +
+				"procedure tests.esc.U.m3(this : tests.esc.U) {\n" +
 				"	assert (false => true);\n" +
 				"}\n" +
-				"procedure tests.esc.U.m4() {\n" +
+				"procedure tests.esc.U.m4(this : tests.esc.U) {\n" +
 				"	assert (false => false);\n" +
 				"}\n"
 				);
@@ -1512,12 +1514,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.M.m1() {\n" +
+				"procedure tests.esc.M.m1(this : tests.esc.M) {\n" +
 				"	var a : int;\n" +
-				"	call a := tests.esc.M.m2();\n" +
+				"	call a := tests.esc.M.m2(this);\n" +
 				"	assert (a == 4);\n" +
 				"}\n" +
-				"procedure tests.esc.M.m2() returns (__result__ : int) {\n" +
+				"procedure tests.esc.M.m2(this : tests.esc.M) returns (__result__ : int) {\n" +
 				"	__result__ := 4;\n" +
 				"	return;\n" +
 				"}\n"
@@ -1540,12 +1542,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.M.m1() {\n" +
+				"procedure tests.esc.M.m1(this : tests.esc.M) {\n" +
 				"	var a : int;\n" +
-				"	call a := tests.esc.M.m2(5);\n" +
+				"	call a := tests.esc.M.m2(this, 5);\n" +
 				"	assert (a == 5);\n" +
 				"}\n" +
-				"procedure tests.esc.M.m2(a: int) returns (__result__ : int) {\n" +
+				"procedure tests.esc.M.m2(this : tests.esc.M, a: int) returns (__result__ : int) {\n" +
 				"	__result__ := a;\n" +
 				"	return;\n" +
 				"}\n"
@@ -1567,10 +1569,10 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.M.m1() {\n" +
-				"	call tests.esc.M.m2();\n" +
+				"procedure tests.esc.M.m1(this : tests.esc.M) {\n" +
+				"	call tests.esc.M.m2(this);\n" +
 				"}\n" +
-				"procedure tests.esc.M.m2() {\n" +
+				"procedure tests.esc.M.m2(this : tests.esc.M) {\n" +
 				"	assert true;\n" +
 				"}\n"
 				);

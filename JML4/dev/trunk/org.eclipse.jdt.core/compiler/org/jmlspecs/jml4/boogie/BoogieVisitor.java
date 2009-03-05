@@ -92,6 +92,7 @@ import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.jdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 import org.jmlspecs.jml4.ast.JmlAssertStatement;
 import org.jmlspecs.jml4.ast.JmlAssignment;
 import org.jmlspecs.jml4.ast.JmlAssumeStatement;
@@ -710,15 +711,15 @@ public class BoogieVisitor extends ASTVisitor {
 		// TODO ensures
 		for (int i = 0; i < term.getSpecCases().length; i++) {
 			append(" "); //$NON-NLS-1$
-			append("requires ", term); //$NON-NLS-1$
-			List exprs = term.getSpecCases()[i].getRequiresExpressions();
-			for (int j = 0; j < exprs.size(); j++) {
-				Expression expr = (Expression)exprs.get(j);
-				expr.traverse(this, methodScope);
-			}
-			append(STMT_END + " "); //$NON-NLS-1$
+//			append("requires ", term); //$NON-NLS-1$
+//			List exprs = term.getSpecCases()[i].getRequiresExpressions();
+//			for (int j = 0; j < exprs.size(); j++) {
+//				Expression expr = (Expression)exprs.get(j);
+//				expr.traverse(this, methodScope);
+//			}
+//			append(STMT_END + " "); //$NON-NLS-1$
 			append("ensures ", term); //$NON-NLS-1$
-			exprs = term.getSpecCases()[i].getEnsuresExpressions();
+			List exprs = term.getSpecCases()[i].getEnsuresExpressions();
 			for (int j = 0; j < exprs.size(); j++) {
 				Expression expr = (Expression)exprs.get(j);
 				expr.traverse(this, methodScope);
@@ -1087,8 +1088,8 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=expr
 	public boolean visit(SingleTypeReference term, BlockScope scope) {
 		debug(term, scope);
-		
-		if (term.resolvedType == TypeBinding.BOOLEAN) {
+
+		if (term.resolvedType == TypeBinding.BOOLEAN ||term.token.equals(TypeConstants.BOOLEAN)) {
 			append("bool"); //$NON-NLS-1$
 		}
 		else {
@@ -1209,6 +1210,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=3 group=expr
 	public boolean visit(UnaryExpression term, BlockScope scope) {
 		debug(term, scope);
+		append (term.operatorToString());
 		return true;
 	}
 

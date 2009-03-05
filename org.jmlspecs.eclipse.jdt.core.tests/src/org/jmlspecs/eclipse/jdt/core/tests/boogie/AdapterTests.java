@@ -361,6 +361,46 @@ public class AdapterTests extends AbstractRegressionTest {
 				"----------\n");
 	}
 	
+	//TODO term=JmlMethodDeclaration,JmlAssertStatement,JmlMethodSpecification
+	public void test_0113_MethodDefinition_EnsuresRequires() {
+		this.runNegativeTest (new String[] {				
+				testsPath + "X.java",
+				"package tests.esc;\n" +
+				"public class X {\n" +
+				"   //@ ensures \\result == 42;\n" + 
+				"	public int m1() {\n" +
+				"		//@ assert true;\n" +
+				"		return 42;\n" +
+				"	}\n" + 
+				"	" +
+				"   //@ requires n >= 0;\n" + 
+				"	public int m2(int n) {\n" +
+				"		//@ assert true;\n" +
+				"      if (n == 0)\n" +
+		        "         return 1;\n" +
+		        "	   return 10;\n"+
+				"	}\n" +  
+				"   //@ requires n >= 0;\n" + 				
+				"   //@ ensures \\result == 42;\n" + 
+				"	public int m3() {\n" +
+				"		//@ assert true;\n" +
+				"      if (n == 0)\n" +
+		        "         return 42;\n" +
+				"		return 42;\n" +
+				"	}\n" + 		
+				"   //@ requires n >= 0;\n" + 				
+				"   //@ ensures \\result == 42;\n" + 
+				"	public int m4() {\n" +
+				"		//@ assert true;\n" +
+				"      if (n == 0)\n" +
+		        "         return 1;\n" +
+				"		return 42;\n" +
+				"	}\n" + 					
+				"}\n"	
+				},
+				//TODO 
+				"");
+	}
 	// term=JmlAssumeStatement,JmlAssertStatement
 	public void test_0200_sequence_assume_assert_tt() {
 		this.runNegativeTest (new String[] {				

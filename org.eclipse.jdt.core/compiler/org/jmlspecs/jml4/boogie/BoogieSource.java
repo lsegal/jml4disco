@@ -26,6 +26,16 @@ public class BoogieSource {
 		implBody.append(getHeaders());
 		sourcePoint.row += headersOffset;
 	}
+	
+	/**
+	 * Returns data which will be prepended to Boogie source upon call to 
+	 * {@link #getResults()}.
+	 * 
+	 * @return the text to be prepended to a resulting Boogie source string
+	 */
+	public String getPrepends() {
+		return prepends.toString();
+	}
 
 	/**
 	 * Returns the Boogie source code that was parsed by AST traversal.
@@ -94,15 +104,14 @@ public class BoogieSource {
 		append(o, null);
 	}
 
-	public void prepend(String o) {
-		//Ensures that everything that is prepended is on it's own line
-		//And counts the number of lines that have been prepended.
-		if(o.length() == 0)
-			return;
-		if (o.charAt(o.length()-1) != '\n')
-			o = o + "\n";
-		String[] num = o.split("\\n");
-		prepends.insert(0, o);
+	public void prepend(String string) {
+		// Ensures that everything that is prepended is on it's own line
+		// And counts the number of lines that have been prepended.
+		if (string.length() == 0) return;
+		if (string.charAt(string.length() - 1) != '\n')
+			string += "\n"; //$NON-NLS-1$
+		String[] num = string.split("\\n"); //$NON-NLS-1$
+		prepends.insert(0, string);
 		prependsOffset += num.length;
 	}
 

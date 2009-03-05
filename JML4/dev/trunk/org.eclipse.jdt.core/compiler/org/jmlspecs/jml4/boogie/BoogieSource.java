@@ -94,12 +94,14 @@ public class BoogieSource {
 		append(o, null);
 	}
 
-	public void preprend(Object o) {
-		// Ensures that everything that is prepended is on it's own line
-		// And counts the number of lines that have been prepended.
-		if (((String) o).charAt(((String) o).length() - 1) != '\n')
-			o = ((String) o) + "\n"; //$NON-NLS-1$
-		String[] num = ((String) o).split("\\n"); //$NON-NLS-1$
+	public void preprend(String o) {
+		//Ensures that everything that is prepended is on it's own line
+		//And counts the number of lines that have been prepended.
+		if(o.length() == 0)
+			return;
+		if (o.charAt(o.length()-1) != '\n')
+			o = o + "\n";
+		String[] num = o.split("\\n");
 		prepends.insert(0, o);
 		prependsOffset += num.length;
 	}

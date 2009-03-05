@@ -424,7 +424,7 @@ public class IsabelleVisitor extends ProverVisitor {
 		String lemma = vc.accept(this);
 		result.append("theory " + this.theoryName + "\nimports ESC4\nbegin\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		result.append("\nlemma main: \"" + lemma + "\" \n" + this.proof + "\n"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-		result.append("\nend\n"); //$NON-NLS-1$
+		result.append("\nend;\n"); //$NON-NLS-1$
 		return result.toString().replace('@', ISABELLE_SEP).replace('$', ISABELLE_SEP);
 	}
 

@@ -94,7 +94,7 @@ public class BoogieSource {
 		append(o, null);
 	}
 
-	public void preprend(String o) {
+	public void prepend(String o) {
 		//Ensures that everything that is prepended is on it's own line
 		//And counts the number of lines that have been prepended.
 		if(o.length() == 0)

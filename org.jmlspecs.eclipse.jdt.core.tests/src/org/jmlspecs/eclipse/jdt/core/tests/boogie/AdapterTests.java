@@ -467,6 +467,54 @@ public class AdapterTests extends AbstractRegressionTest {
 				"");
 	}	
 	
+	//TODO term=Block,JmlLocalDeclaration
+	public void test_296_LocalDeclaration_Blocks() {
+		this.runNegativeTest(new String[] {
+			testsPath + "X.java",
+			"package tests.esc;\n" +
+			"public class X {\n" +
+			"   public void m5() {\n" +
+			"       { int n=3;\n" +
+			"         //@ assert n==3;\n" +
+			"       }\n" +
+			"       { int n=4;\n" +
+			"         //@ assert n!=3;\n" +
+			"       }\n" +
+			"   }\n"+
+			"}"
+			},
+			//TODO
+			"ERROR");
+			
+	}
+	
+	//TODO term=LocalDeclaration
+	public void test_297_LocalDeclaration() {	
+	this.runNegativeTest(new String[] {
+			testsPath + "X.java",
+			"package tests.esc;\n" +
+			"public class X {\n" +
+			"   public void m1() {\n" + 
+			"      boolean b = true;\n" + 
+			"      //@ assert b;\n" + 
+			"   }\n" + 
+			"   public void m2() {\n" +
+			"      boolean b = true;\n" + 
+			"      //@ assert !b;\n" +
+			"   }\n" +
+			"   public void m3() {\n" +
+			"      int n=3;\n" +
+			"      //@ assert n<4;\n" +
+			"   }\n" +
+			"   public void m4() {\n" +
+			"      int n=3;\n" +
+			"      //@ assert n<0;\n" +
+			"   }\n" +
+			"}\n" 
+			},			
+			"blah");
+	}	
+	
 	// term=IfStatement,Argument,ReturnStatement,StringLiteral
 	public void test_0300_IfCondition() {
 		this.runNegativeTest (new String[] {				

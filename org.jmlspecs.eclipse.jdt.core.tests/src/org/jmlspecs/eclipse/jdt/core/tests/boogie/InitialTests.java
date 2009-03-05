@@ -482,7 +482,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	}\n" +  
 				"   //@ requires n >= 0;\n" + 				
 				"   //@ ensures \\result == 42;\n" + 
-				"	public int m3() {\n" +
+				"	public int m3(int n) {\n" +
 				"		//@ assert true;\n" +
 				"      if (n == 0)\n" +
 		        "         return 42;\n" +
@@ -490,20 +490,20 @@ public class InitialTests extends AbstractRegressionTest {
 				"	}\n" + 		
 				"   //@ requires n >= 0;\n" + 				
 				"   //@ ensures \\result == 42;\n" + 
-				"	public int m4() {\n" +
+				"	public int m4(int n) {\n" +
 				"		//@ assert true;\n" +
 				"      if (n == 0)\n" +
 		        "         return 1;\n" +
 				"		return 42;\n" +
-				"	}\n" + 
-				"   //@ ensures \\result == 42;\n" + 
-				"   //@ requires n >= 0;\n" + 				
-				"	public int m3() {\n" +
-				"		//@ assert true;\n" +
-				"      if (n == 0)\n" +
-		        "         return 42;\n" +
-				"		return 42;\n" +
-				"	}\n" + 				
+				"	}\n" +			
+//				"   //@ ensures \\result == 42;\n" + 
+//				"   //@ requires n >= 0;\n" + 				
+//				"	public int m5(int n) {\n" +
+//				"		//@ assert true;\n" +
+//				"      if (n == 0)\n" +
+//		        "         return 42;\n" +
+//				"		return 42;\n" +
+//				"	}\n" + 				
 				"}\n"	
 				,
 				//TODO expected boogie
@@ -590,6 +590,34 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				);
 	}	
+	
+	//TODO term=Block,JmlLocalDeclaration
+	public void test_0296_LocalDeclaration_Blocks() {
+		compareJavaToBoogie(	
+			// java source
+			"package tests.esc;\n" + 				
+			"public class A {\n" +
+			"   public void m5() {\n" +
+			"       { int n=3;\n" +
+			"         //@ assert n==3;\n" +
+			"       }\n" +
+			"       { int n=4;\n" +
+			"         //@ assert n!=3;\n" +
+			"       }\n" +
+			"   }\n" +
+			"}\n"
+			,
+			// TODO expected boogie
+			"procedure tests.esc.A.m5() {\n" +
+			"	var a : int;\n" +
+			"	var b : int;\n" +
+			"	a := 3;\n" +
+			"	assert (a == 3);\n" +
+			"	b := 4;\n" +
+			"	assert (b != 3);\n" +
+			"}");
+	}
+
 	// term=LocalDeclaration
 	public void test_0297_LocalDeclaration_multiVarName_diffScope() {
 		compareJavaToBoogie(	
@@ -629,13 +657,15 @@ public class InitialTests extends AbstractRegressionTest {
 			"package tests.esc;\n" + 
 			"public class A {\n" +
 			"   public void m() {\n" +
-			"		int z;\n" + 
+			"	   int z;\n" + 
+			"      boolean b;\n" + 
 			"   }\n" + 
 			"}\n"
 			, 
 			// expected boogie
 			"procedure tests.esc.A.m() {\n" +
 			"	var a : int;\n" +
+			"	var b : bool;\n" +
 			"	a := 0;\n" +
 			"}\n");
 	}
@@ -648,13 +678,16 @@ public class InitialTests extends AbstractRegressionTest {
 			"public class A {\n" +
 			"   public void m() {\n" +
 			"		int z = 3;\n" + 
+			"      	boolean b = true;\n" + 			
 			"   }\n" + 
 			"}\n"
 			, 
 			// expected boogie
 			"procedure tests.esc.A.m() {\n" +
 			"	var a : int;\n" +
+			"	var b : bool;\n" +
 			"	a := 3;\n" +
+			"	b := true;\n" +
 			"}\n");
 	}
 
@@ -753,9 +786,28 @@ public class InitialTests extends AbstractRegressionTest {
 				""
 				);
 	}
+
+	//term=UnaryExpression
+	public void test_0320_UnaryExpression() {
+		compareJavaToBoogie(
+				"package tests.esc;\n" +
+				"public class X {\n" + 
+				"   public void m() {\n" +
+				"      boolean b = true;\n" + 
+				"      //@ assert !b;\n" +
+				"   }\n" +		
+				"}" 
+				,
+				// expected boogie
+				"procedure tests.esc.X.m() {\n" +
+				"	var a : bool;\n" +
+				"	a := true;\n" +
+				"	assert !a;\n" +
+				"}\n");
+	}
 	
 	// term=WhileStatement,Block,EqualExpression
-	public void test_350_while() {
+	public void test_0350_while() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -1089,7 +1141,7 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"type Object;\n" +
 				"var tests.esc.X.i : [Object] int;\n" +
-				"var tests.esc.X.b : [Object] boolean;\n" +
+				"var tests.esc.X.b : [Object] bool;\n" +
 				"procedure tests.esc.X.m() {\n" +
 				"	tests.esc.X.i := 1;\n" +
 				"}\n"

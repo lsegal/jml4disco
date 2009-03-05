@@ -55,7 +55,6 @@ public class BoogieSource {
 	private void adjustSourcePoints() {
 		Object[] keys = pointTable.keySet().toArray();
 		for (int i = 0; i < keys.length; i++) {
-			System.out.println(keys[i]);
 			ASTNode n = (ASTNode) pointTable.remove(keys[i]);
 			((BoogieSourcePoint) keys[i]).row += prependsOffset;
 			pointTable.put(keys[i], n);

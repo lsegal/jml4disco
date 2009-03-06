@@ -1149,7 +1149,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"var tests.esc.X.i : [Object] int;\n" +
 				"var tests.esc.X.b : [Object] bool;\n" +
 				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
-				"	tests.esc.X.i := 1;\n" +
+				"	tests.esc.X.i[this] := 1;\n" +
 				"}\n"
 				);
 	}

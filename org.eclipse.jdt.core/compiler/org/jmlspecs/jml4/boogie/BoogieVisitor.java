@@ -88,6 +88,7 @@ import org.eclipse.jdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.jdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
 import org.eclipse.jdt.internal.compiler.ast.Wildcard;
+import org.eclipse.jdt.internal.compiler.lookup.Binding;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
@@ -141,6 +142,7 @@ public class BoogieVisitor extends ASTVisitor {
 	public void appendLine(Object o) { output.appendLine(o); }
 	
 	public void append(Object o) { output.append(o); }
+	public void append(char data[]) { output.append(new String(data)); }
 	
 	public void prepend(String o) {	output.prepend(o);	}
 
@@ -551,8 +553,8 @@ public class BoogieVisitor extends ASTVisitor {
 		term.type.traverse(this, scope);
 		appendLine(STMT_END);
 		// FIXME this will not work, Boogie requires that all assignments are done in a procedure
-		if (term.isStatic())
-			variableInitialization(term, scope);
+		//if (term.isStatic())
+		//	variableInitialization(term, scope);
 		return false;
 	}
 
@@ -807,20 +809,36 @@ public class BoogieVisitor extends ASTVisitor {
 		
 		if (term.statementEnd != -1) {
 			append("call "); //$NON-NLS-1$
-			append("", term); //$NON-NLS-1$
 		}
+		append("", term); //$NON-NLS-1$
 		
-		if (term.receiver instanceof ThisReference) {
+		if (term.receiver.isImplicitThis() || term.receiver instanceof ThisReference) {
 			append(new String(scope.classScope().referenceType().binding.readableName()));
 		}
-		else {
-			term.receiver.traverse(this, scope);
+		else if (term.receiver instanceof SingleNameReference) {
+			// TODO find a way to get the type of this reference
+			SingleNameReference name = (SingleNameReference)term.receiver;
+			term.receiver.resolveType(scope);
+			// Look for field or resolve type fully
+			TypeBinding classBinding = scope.classScope().referenceType().binding;
+			FieldBinding fieldBind = scope.classScope().findField(classBinding, name.token, null, true);
+
+			if (fieldBind != null) {
+				append(classBinding.readableName());
+			}
+			else {
+				Binding b = scope.getBinding(name.token, Binding.PARAMETERIZED_TYPE | Binding.FIELD | Binding.LOCAL | Binding.VARIABLE, name, true);
+				b.readableName();
+			}
 		}
 
 		append("." + new String(term.selector)); //$NON-NLS-1$
 		append("("); //$NON-NLS-1$
 		if (term.receiver instanceof ThisReference) {
 			append("this");  //$NON-NLS-1$
+		}
+		else if (term.receiver instanceof SingleNameReference) {
+			term.receiver.traverse(this, scope);
 		}
 
 		if (term.arguments != null) {
@@ -1099,7 +1117,8 @@ public class BoogieVisitor extends ASTVisitor {
 		FieldBinding fieldBind = scope.classScope().findField(classBinding, term.token, null, true);
 
 		if (fieldBind != null) {
-			append(new String(classBinding.readableName()) + "." + termName); //$NON-NLS-1$
+			append(new String(classBinding.readableName()) + "." + termName); //$NON-NLS-1$ 
+			if (!fieldBind.isStatic()) append("[this]"); //$NON-NLS-1$ 
 		}
 		else {
 			append(new String(scope.getType(term.token).readableName()));

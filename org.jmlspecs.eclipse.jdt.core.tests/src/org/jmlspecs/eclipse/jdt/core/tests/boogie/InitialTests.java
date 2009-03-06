@@ -797,6 +797,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"   public void m() {\n" +
 				"      boolean b = true;\n" + 
 				"      //@ assert !b;\n" +
+				"      //@ assert !!b;\n" +
+				"      //@ assert !!!b;\n" +				
 				"   }\n" +		
 				"}" 
 				,
@@ -805,6 +807,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"	var a : bool;\n" +
 				"	a := true;\n" +
 				"	assert !a;\n" +
+				"	assert !!a;\n" +
+				"	assert !!!a;\n" +
 				"}\n");
 	}
 	
@@ -908,7 +912,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"		do\n" +
 				"      		//@ assert (true);\n" +
 				"		while(true);\n" +	
-				"	}\n" +					
+				"	}\n" +				
 				"}\n" 
 				,
 				//expected boogie
@@ -1143,8 +1147,8 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"type Object;\n" +
 				"var tests.esc.X.i : [Object] int;\n" +
-				"var tests.esc.X.b : [Object] boolean;\n" +
-				"procedure tests.esc.X.m() {\n" +
+				"var tests.esc.X.b : [Object] bool;\n" +
+				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
 				"	tests.esc.X.i := 1;\n" +
 				"}\n"
 				);

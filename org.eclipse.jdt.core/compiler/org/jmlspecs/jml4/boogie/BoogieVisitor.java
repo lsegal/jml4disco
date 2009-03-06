@@ -85,15 +85,17 @@ import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.jdt.internal.compiler.ast.TryStatement;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 import org.eclipse.jdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
 import org.eclipse.jdt.internal.compiler.ast.Wildcard;
-import org.eclipse.jdt.internal.compiler.lookup.Binding;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.jdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.jdt.internal.compiler.lookup.ProblemReferenceBinding;
+import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 import org.jmlspecs.jml4.ast.JmlAssertStatement;
@@ -231,7 +233,7 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(Argument term, BlockScope scope) {
 		debug(term, scope);
 
-		String sym = symbolTable.addSymbol(new String(term.name));
+		String sym = symbolTable.addSymbol(new String(term.name), term.type);
 		append(sym + ": "); //$NON-NLS-1$
 		return true;
 	}
@@ -240,7 +242,7 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(Argument term, ClassScope scope) {
 		debug(term, scope);
 
-		String sym = symbolTable.addSymbol(new String(term.name));
+		String sym = symbolTable.addSymbol(new String(term.name), term.type);
 		append(sym + ": "); //$NON-NLS-1$
 		return true;
 	}
@@ -807,6 +809,13 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(MessageSend term, BlockScope scope) {
 		debug(term, scope);
 		
+		SingleNameReference name = null;
+		TypeBinding binding = null;
+		if (term.receiver instanceof SingleNameReference) {
+			name = (SingleNameReference)term.receiver;
+			binding = scope.getType(name.token);
+		}
+
 		if (term.statementEnd != -1) {
 			append("call "); //$NON-NLS-1$
 		}
@@ -817,28 +826,46 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 		else if (term.receiver instanceof SingleNameReference) {
 			// TODO find a way to get the type of this reference
-			SingleNameReference name = (SingleNameReference)term.receiver;
-			term.receiver.resolveType(scope);
-			// Look for field or resolve type fully
-			TypeBinding classBinding = scope.classScope().referenceType().binding;
-			FieldBinding fieldBind = scope.classScope().findField(classBinding, name.token, null, true);
-
-			if (fieldBind != null) {
-				append(classBinding.readableName());
+			if (binding instanceof ProblemReferenceBinding) {
+				// is this a local?
+				String termName = new String(name.token);
+				boolean found = false;
+				
+				// look through locals
+				if (!found && symbolTable != null) {
+					TypeReference type = symbolTable.lookupType(termName);
+					if (type != null) {
+						append(type.resolvedType.readableName());
+						found = true;
+					}
+				}
+				
+				// look through fields
+				if (!found) {
+					// TODO implement field support
+				}
 			}
 			else {
-				Binding b = scope.getBinding(name.token, Binding.PARAMETERIZED_TYPE | Binding.FIELD | Binding.LOCAL | Binding.VARIABLE, name, true);
-				b.readableName();
+				term.receiver.traverse(this, scope);
 			}
 		}
 
 		append("." + new String(term.selector)); //$NON-NLS-1$
 		append("("); //$NON-NLS-1$
+		
 		if (term.receiver instanceof ThisReference) {
 			append("this");  //$NON-NLS-1$
 		}
 		else if (term.receiver instanceof SingleNameReference) {
-			term.receiver.traverse(this, scope);
+			if (binding instanceof SourceTypeBinding) {
+				SourceTypeBinding sBinding = (SourceTypeBinding)binding;
+				if (!sBinding.isStatic()) {
+					term.receiver.traverse(this, scope);
+				}
+			}
+			else {
+				term.receiver.traverse(this, scope);
+			}
 		}
 
 		if (term.arguments != null) {

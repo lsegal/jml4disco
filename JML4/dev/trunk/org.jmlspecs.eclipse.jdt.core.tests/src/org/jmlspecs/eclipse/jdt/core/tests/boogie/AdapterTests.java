@@ -484,7 +484,7 @@ public class AdapterTests extends AbstractRegressionTest {
 			"}"
 			},
 			//TODO
-			"ERROR");
+			"THIS SHOULD FAIL");
 			
 	}
 	
@@ -512,7 +512,7 @@ public class AdapterTests extends AbstractRegressionTest {
 			"   }\n" +
 			"}\n" 
 			},			
-			"blah");
+			"THIS SHOULD FAIL");
 	}	
 	
 	// term=IfStatement,Argument,ReturnStatement,StringLiteral
@@ -550,6 +550,45 @@ public class AdapterTests extends AbstractRegressionTest {
 				"");
 	}	
 	
+	//term=UnaryExpression
+	public void test_0320_UnaryExpression() {
+		this.runNegativeTest (new String[] {		
+				testsPath + "X.java",
+				"package tests.esc;\n" +
+				"public class X {\n" + 
+				"   public void m() {\n" +
+				"      boolean b = true;\n" + 
+				"      //@ assert !b;\n" +
+				"   }\n" +		
+				"}" 
+				},
+				// expected boogie
+				"----------\n" +
+				"1. ERROR in " + testsPath + "X.java (at line 5)\n" +
+				"	//@ assert !b;\n" +
+				"	           ^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n");
+	}
+	
+	//term=UnaryExpression
+	public void test_0321_UnaryExpression() {
+		this.runNegativeTest (new String[] {		
+				testsPath + "X.java",
+				"package tests.esc;\n" +
+				"public class X {\n" + 
+				"   public void m() {\n" +
+				"      boolean b = true;\n" + 
+				"      //@ assert !b;\n" +
+				"      //@ assert !!b;\n" +
+				"      //@ assert !!!b;\n" +
+				"   }\n" +		
+				"}" 
+				},
+				// expected boogie
+				"THIS SHOULD HAVE 2 ASSERTION FAILED");
+	}
+	
 	// term=WhileStatement
 	public void test_350_while() {
 		this.runNegativeTest (new String[] {				
@@ -565,7 +604,56 @@ public class AdapterTests extends AbstractRegressionTest {
 				},
 				"");
 	}	
+
+	public void test_400_do() {
+		this.runNegativeTest (new String[] {	
+				testsPath + "X.java",
+				"package tests.esc;\n" +
+				"public class X {\n" + 
+				"   public void m1() {\n" +
+				"		do{\n" +
+				"      		//@ assert (true);\n" +
+				"		}while(true);\n" +	
+				"	}\n" +	
+				"   public void m2() {\n" +
+				"		do\n" +
+				"      		//@ assert (true);\n" +
+				"		while(true);\n" +	
+				"	}\n" +		
+				"   public void m3() {\n" +
+				"		int x = 0;\n" + 				
+				"		do{\n" +
+				"			x = x +1;\n" +
+				"		}while(x<10);\n" +
+				"   	//@ assert (x<10);\n" +
+				"	}\n" +						
+				"}\n"
+				},
+				"THIS SHOULD FAIL");
+	}
 	
+	// term=DoStatement,Block
+	public void test_401_do_multiline() {
+		this.runNegativeTest (new String[] {	
+				testsPath + "X.java",
+				"package tests.esc;\n" +
+				"public class X {\n" + 
+				"   public void m1() {\n" +
+				"		do{\n" +
+				"      		//@ assert (true);\n" +
+				"      		//@ assert (false);\n" +
+				"      		//@ assert (true);\n" +
+				"		}while(true);\n" +	
+				"	}\n" +	
+				"}\n" 
+				},
+				"----------\n" +
+				"1. ERROR in " + testsPath + "X.java (at line 6)\n" +
+				"	//@ assert (false);\n" +
+				"	           ^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n");
+	}				
 	// term=WhileStatement,BreakStatement,LabeledStatement
 	public void test_0370_Break_withlabel() {		 
 		this.runNegativeTest (new String[] {				

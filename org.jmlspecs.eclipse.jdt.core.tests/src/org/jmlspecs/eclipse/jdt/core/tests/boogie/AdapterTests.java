@@ -586,7 +586,12 @@ public class AdapterTests extends AbstractRegressionTest {
 				"}" 
 				},
 				// expected boogie
-				"THIS SHOULD HAVE 2 ASSERTION FAILED");
+				"----------\n" +
+				"1. ERROR in " + testsPath + "X.java (at line 5)\n" +
+				"	//@ assert !b;\n" +
+				"	           ^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n");
 	}
 	
 	// term=WhileStatement

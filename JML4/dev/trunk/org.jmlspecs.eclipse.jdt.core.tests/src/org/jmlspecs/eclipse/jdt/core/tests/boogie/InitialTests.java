@@ -1613,18 +1613,18 @@ public class InitialTests extends AbstractRegressionTest {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class M {\n" +
-				"	public static void m(N x) {" +
-				"		x.o();\n" +
-				"		int y = x.n(3);\n" +
-				"	}\n" +
-				"}\n" +
 				"public class N {\n" +
 				"	public int n(int x) {\n" +
 				"		return x;\n" +
 				"	}\n" +
 				"	public void o() { }\n" +
-				"}\n"
+				"}\n" +
+				"public class M {\n" +
+				"	public static void m(N x) {" +
+				"		x.o();\n" +
+				"		int y = x.n(3);\n" +
+				"	}\n" +
+				"}\n" 
 				,
 				//expected boogie
 				"procedure tests.esc.M.m(a: tests.esc.N) {\n" +
@@ -1638,6 +1638,51 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" +
 				"procedure tests.esc.N.o(this : tests.esc.N) {\n" +
 				"}\n"
+				);
+	}
+
+	// TODO term=MessageSend
+	public void test_2005_messageSendOnThis() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class M {\n" +
+				"	public void m() { this.n(); }\n" +
+				"	public void n() { }\n" +
+				"}\n"
+				,
+				//expected boogie
+				"procedure tests.esc.M.m(this : tests.esc.M) {\n" +
+				"	call tests.esc.M.n(this);\n" +
+				"}\n" +
+				"procedure tests.esc.M.n(this : tests.esc.M) {\n" +
+				"}\n" 
+				);
+	}
+
+	// TODO term=MessageSend
+	public void test_2005_messageSendOnField() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class M {\n" +
+				"	public N x = new N();" +
+				"	public static N y = new N();" +
+				"	public void m() { x.n(); y.n(); }\n" +
+				"}\n" +
+				"public class N {\n" +
+				"	public void n() { }\n" +
+				"}\n"
+				,
+				//expected boogie
+				"var tests.esc.M.x : [Object] N;\n" +
+				"var tests.esc.M.y : N;\n" +
+				"procedure tests.esc.M.m(this : tests.esc.M) {\n" +
+				"	call tests.esc.N.n(tests.esc.M.x[this]);\n" +
+				"	call tests.esc.N.n(tests.esc.M.y);\n" +
+				"}\n" +
+				"procedure tests.esc.N.n(this : tests.esc.N) {\n" +
+				"}\n" 
 				);
 	}
 }

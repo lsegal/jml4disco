@@ -35,8 +35,6 @@ public class ProveVc extends HttpServlet {
    @SuppressWarnings("unchecked")
     protected void processRequest (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
 	   
-	   Esc.GEN_STATS = false;
-	   
 		String contentType = "application/x-java-serialized-object";  
 
 		ProveVcServerResult result = null;

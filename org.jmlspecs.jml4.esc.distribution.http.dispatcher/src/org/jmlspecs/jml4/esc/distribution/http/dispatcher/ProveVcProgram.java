@@ -38,7 +38,6 @@ public class ProveVcProgram extends HttpServlet {
 	   
 	   System.out.println("DickieESC4Web processRequest");
 	   
-	   Esc.GEN_STATS = false;
 		String contentType = "application/x-java-serialized-object";  
 		response.setContentType(contentType);
 		

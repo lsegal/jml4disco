@@ -1,7 +1,6 @@
 package org.jmlspecs.jml4.esc;
 
 import java.io.IOException;
-import java.util.Vector;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -28,7 +27,6 @@ import org.jmlspecs.jml4.util.Logger;
 public class Esc extends DefaultCompilerExtension {
 
 	private static boolean DEBUG = false;
-	public static boolean GEN_STATS = true; 
 
 	public static final int NUMBER_OF_THREADS = 32;
     private final Executor executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
@@ -59,8 +57,6 @@ public class Esc extends DefaultCompilerExtension {
 		final int[] done = new int[1];
 		   
 		String debugName = (new String(unit.compilationResult.fileName)).substring(0, unit.compilationResult.fileName.length-(".java".length()));  //$NON-NLS-1$
-		if (GEN_STATS)
-			System.out.println("ESC4\tCU\tstart\t"+debugName+"\t"+timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 		if (DEBUG)
 			Logger.println(this + " - CompilationUnit: "+new String(unit.getFileName())); //$NON-NLS-1$
 		// DISCO threading 
@@ -108,8 +104,6 @@ public class Esc extends DefaultCompilerExtension {
 			int sourceEnd = 0;
 			compiler.problemReporter.jmlEsc2Error(message, sourceStart, sourceEnd);
 		}
-		if (GEN_STATS)
-			System.out.println("ESC4\tCU\tend\t"+debugName+"\t"+timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	// DISCO waiting for threads to come back
 	public static void waitForItToFinish(int[] done, int howMany) {
@@ -128,8 +122,6 @@ public class Esc extends DefaultCompilerExtension {
 	// DISCO some vars became final to allow serialization
 	/*package*/ void process(JmlAbstractMethodDeclaration method, CachedVcs cachedVcs, Counter postProcessorCounter, JmlTypeDeclaration typeDecl, CompilationUnitScope scope, CompilerOptions options, ProblemReporter problemReporter) {
 		String debugName = getDebugNameForMethod((AbstractMethodDeclaration)method); 
-		if (GEN_STATS)
-			System.out.println("ESC4\tmethod\tstart\t"+debugName+"\t"+timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 		final GcTranslator gcTranslator = new GcTranslator(options, problemReporter);
 		final VcGenerator vcGenerator = new VcGenerator (options, problemReporter);
 		final ProverCoordinator prover = new ProverCoordinator(options, problemReporter, cachedVcs);
@@ -143,18 +135,13 @@ public class Esc extends DefaultCompilerExtension {
 		// store the results in the method declaration so later stages can take advantage of the information
 		method.setEscResults(results);
 		// DISCO timing printout
-		if (GEN_STATS)
-			System.out.println("ESC4\tmethod\tend\t"+debugName+"\t"+timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public void optionsToBuffer(CompilerOptions options, StringBuffer buf) {
 		buf.append("\n\t\t- ESC: ").append(options.jmlEscEnabled ? CompilerOptions.ENABLED : CompilerOptions.DISABLED); //$NON-NLS-1$	
 	}
 	// DISCO timing 
-	private static final long startTime = System.currentTimeMillis();
-	public static long timeDelta() {
-		return System.currentTimeMillis() - startTime;
-	}
+
 	// DISCO timing printout
 	private static String getDebugNameForMethod(AbstractMethodDeclaration asJdtMethod) {
 		String filename = new String(asJdtMethod.compilationResult().getCompilationUnit().getFileName());

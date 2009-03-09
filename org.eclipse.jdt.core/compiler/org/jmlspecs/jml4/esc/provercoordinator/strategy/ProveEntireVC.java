@@ -28,9 +28,6 @@ public class ProveEntireVC implements IProverStrategy {
 	}
 
 	public Result[] prove(VcProgram vcProg) {
-		// DISCO 
-		if (Esc.GEN_STATS)
-			System.out.println("ESC4\tproveEntire\tstart\t"+vcProg.methodIndicator+"\t"+Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
 
 		if (this.cachedVcs.contains(vcProg))
 			return Result.VALID;
@@ -43,8 +40,7 @@ public class ProveEntireVC implements IProverStrategy {
 			this.cachedVcs.add(vcProg);
 		}
 		this.active = false;
-		if (Esc.GEN_STATS)
-			System.out.println("ESC4\tproveEntire\tend\t"+vcProg.methodIndicator+"\t"+Esc.timeDelta()); //$NON-NLS-1$ //$NON-NLS-2$
+
 		return results;
 	}
 	

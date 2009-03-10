@@ -306,9 +306,23 @@ public class BoogieVisitor extends ASTVisitor {
 		if (term.expression instanceof MessageSend) {
 			append("call "); //$NON-NLS-1$
 		}
-		term.lhs.traverse(this, scope);
-		append(" := "); //$NON-NLS-1$
-		term.expression.traverse(this, scope);
+		
+		if (term.expression instanceof PostfixExpression) {
+			term.lhs.traverse(this, scope);
+			append(" := "); //$NON-NLS-1$
+			((Assignment)term.expression).lhs.traverse(this, scope);
+		}
+		else if (term.expression instanceof Assignment) {
+			term.expression.traverse(this, scope);
+			term.lhs.traverse(this, scope);
+			append(" := "); //$NON-NLS-1$
+			((Assignment)term.expression).lhs.traverse(this, scope);
+		}
+		else {
+			term.lhs.traverse(this, scope);
+			append(" := "); //$NON-NLS-1$
+			term.expression.traverse(this, scope);
+		}
 		
 		return false;
 	}
@@ -318,7 +332,12 @@ public class BoogieVisitor extends ASTVisitor {
 			// FIXME we don't handle this yet!
 			return;
 		}
+		
 		appendLine (STMT_END);		
+
+		if (term.expression instanceof PostfixExpression) {
+			term.expression.traverse(this, scope);
+		}
 	}
 
 	// priority=2 group=expr
@@ -998,7 +1017,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=2 group=expr
 	public boolean visit(PostfixExpression term, BlockScope scope) {
 		debug(term, scope);	
-		return true;
+		return false;
 	}
 	
 	// priority=2 group=expr
@@ -1008,28 +1027,18 @@ public class BoogieVisitor extends ASTVisitor {
 	
 	// priority=2 group=expr
 	public void endVistiPrePostFixExpression(CompoundAssignment term, BlockScope scope) {
-		debug(term, scope);		
-		append (" := "); //$NON-NLS-1$
-		switch (term.operator) {
-		case OperatorIds.PLUS :
-			term.lhs.traverse(this, scope);
-			appendLine (" + 1;"); //$NON-NLS-1$
-			break;
-		case OperatorIds.MINUS :
-			term.lhs.traverse(this, scope);
-			appendLine (" - 1;"); //$NON-NLS-1$
-		} 
-	}
-	
-	// TODO priority=2 group=expr
-	public boolean visit(PrefixExpression term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		IntLiteral i = new IntLiteral(new char[] { '1' }, term.sourceStart, term.sourceEnd, 1);
+		BinaryExpression expr = new BinaryExpression(term.lhs, i, term.operator);
+		Assignment a = new Assignment(term.lhs, expr, term.sourceStart);
+		a.traverse(this, scope);
 	}
 	
 	// priority=2 group=expr
-	public void endVisit(PrefixExpression term, BlockScope scope) {
+	public boolean visit(PrefixExpression term, BlockScope scope) {
+		debug(term, scope);
 		endVistiPrePostFixExpression(term, scope);
+		return false;
 	}
 	
 	// TODO priority=? group=expr

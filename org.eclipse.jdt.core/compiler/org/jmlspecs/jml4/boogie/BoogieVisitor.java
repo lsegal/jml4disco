@@ -1169,10 +1169,6 @@ public class BoogieVisitor extends ASTVisitor {
 			return true;
 		}
 		
-		if (term.resolvedType != null && term.resolvedType.isBaseType()) {
-			declareType(new String(term.resolvedType.readableName()));
-		}
-		
 		append(new String(term.token));
 		
 		return true;

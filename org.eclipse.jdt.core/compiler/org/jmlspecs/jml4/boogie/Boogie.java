@@ -53,7 +53,7 @@ public class Boogie extends DefaultCompilerExtension {
 				compiler.problemReporter.jmlEsc2Error(resultsArray[1], 0, 0);
 			}
 			else {
-				compiler.problemReporter.jmlEsc2Error("Invalid or missing boogie:\n'" + results + "'", 0, 0); //$NON-NLS-1$ //$NON-NLS-2$
+				compiler.problemReporter.jmlEsc2Error("Invalid or missing boogie:\n" + results, 0, 0); //$NON-NLS-1$
 			}
 		}
 		else {

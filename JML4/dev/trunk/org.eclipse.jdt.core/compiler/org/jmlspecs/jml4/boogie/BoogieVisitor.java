@@ -430,7 +430,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=stmt
+	// TODO priority=0 group=stmt
 	public boolean visit(CaseStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -990,25 +990,25 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(ParameterizedQualifiedTypeReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(ParameterizedQualifiedTypeReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(ParameterizedSingleTypeReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(ParameterizedSingleTypeReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;
@@ -1041,55 +1041,55 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 	
-	// TODO priority=? group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(QualifiedAllocationExpression term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=? group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(QualifiedNameReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=? group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(QualifiedNameReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(QualifiedSuperReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(QualifiedSuperReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(QualifiedThisReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(QualifiedThisReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(QualifiedTypeReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(QualifiedTypeReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;
@@ -1207,13 +1207,13 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=stmt
+	// TODO priority=0 group=stmt
 	public boolean visit(SwitchStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=stmt
+	// TODO priority=0 group=stmt
 	public boolean visit(SynchronizedStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;

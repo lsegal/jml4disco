@@ -31,30 +31,33 @@ public class InitialTests extends AbstractRegressionTest {
 		super.tearDown();
 		PostProcessor.useOldErrorReporting = false;
 	}
+	
+	private Map<String, String> options = null;
 
 	// Augment problem detection settings
 	@Override
 	@SuppressWarnings("unchecked")
 	protected Map<String, String> getCompilerOptions() {
-		Map<String, String> options = super.getCompilerOptions();
-
-		options.put(JmlCompilerOptions.OPTION_EnableJml, CompilerOptions.ENABLED);
-		options.put(JmlCompilerOptions.OPTION_EnableJmlDbc, CompilerOptions.ENABLED);
-		options.put(JmlCompilerOptions.OPTION_EnableJmlBoogie, CompilerOptions.ENABLED);
-		options.put(JmlCompilerOptions.OPTION_JmlBoogieOutputOnly, CompilerOptions.ENABLED);
-		options.put(JmlCompilerOptions.OPTION_DefaultNullity, JmlCompilerOptions.NON_NULL);
-		options.put(CompilerOptions.OPTION_ReportNullReference, CompilerOptions.ERROR);
-		options.put(CompilerOptions.OPTION_ReportPotentialNullReference, CompilerOptions.ERROR);
-		options.put(CompilerOptions.OPTION_ReportRedundantNullCheck, CompilerOptions.IGNORE);
-		options.put(JmlCompilerOptions.OPTION_ReportNonNullTypeSystem, CompilerOptions.ERROR);
-		options.put(CompilerOptions.OPTION_ReportRawTypeReference, CompilerOptions.IGNORE);
-		options.put(CompilerOptions.OPTION_ReportUnnecessaryElse, CompilerOptions.IGNORE);
-		options.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.IGNORE);
-		// options.put(JmlCompilerOptions.OPTION_SpecPath,
-		// NullTypeSystemTestCompiler.getSpecPath());
-		options.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
-		options.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
-		options.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
+		if (options == null) {
+			options = super.getCompilerOptions();
+			options.put(JmlCompilerOptions.OPTION_EnableJml, CompilerOptions.ENABLED);
+			options.put(JmlCompilerOptions.OPTION_EnableJmlDbc, CompilerOptions.ENABLED);
+			options.put(JmlCompilerOptions.OPTION_EnableJmlBoogie, CompilerOptions.ENABLED);
+			options.put(JmlCompilerOptions.OPTION_JmlBoogieOutputOnly, CompilerOptions.ENABLED);
+			options.put(JmlCompilerOptions.OPTION_DefaultNullity, JmlCompilerOptions.NON_NULL);
+			options.put(CompilerOptions.OPTION_ReportNullReference, CompilerOptions.ERROR);
+			options.put(CompilerOptions.OPTION_ReportPotentialNullReference, CompilerOptions.ERROR);
+			options.put(CompilerOptions.OPTION_ReportRedundantNullCheck, CompilerOptions.IGNORE);
+			options.put(JmlCompilerOptions.OPTION_ReportNonNullTypeSystem, CompilerOptions.ERROR);
+			options.put(CompilerOptions.OPTION_ReportRawTypeReference, CompilerOptions.IGNORE);
+			options.put(CompilerOptions.OPTION_ReportUnnecessaryElse, CompilerOptions.IGNORE);
+			options.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.IGNORE);
+			// options.put(JmlCompilerOptions.OPTION_SpecPath,
+			// NullTypeSystemTestCompiler.getSpecPath());
+			options.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
+			options.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
+			options.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
+		}
 		return options;
 	}
 	
@@ -84,6 +87,10 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 	
 	protected void compareJavaToBoogie(String java, String boogie) {
+		compareJavaToBoogie(java, boogie, null);
+	}
+	
+	protected void compareJavaToBoogie(String java, String boogie, String adapterOutput) {
 		String file = "A.java";
 		runNegativeTest(new String[] {file, java},
 				"----------\n" +
@@ -92,6 +99,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"	^\n\n" +
 				boogie +
 				"\n----------\n");
+		if (adapterOutput != null) {
+			String key = JmlCompilerOptions.OPTION_JmlBoogieOutputOnly;
+			String orig = getCompilerOptions().get(key);
+			getCompilerOptions().put(key, CompilerOptions.DISABLED);
+			runNegativeTest(new String[] {file, java}, adapterOutput);
+			getCompilerOptions().put(key, orig);
+		}
 	}
 
 	protected void compareJavaExprToBoogie(String java, String boogie) {
@@ -1159,7 +1173,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=PrefixExpression,PostFixExpression
+	// term=PrefixExpression,PostFixExpression adapter=true
 	public void test_602_pre_post_FixExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1184,11 +1198,14 @@ public class InitialTests extends AbstractRegressionTest {
 				"	a := (a + 1);\n" +
 				"	assert (a == 6);\n" +
 				"	assert (b == 5);\n" +
-				"}\n"			
+				"}\n"
+				,
+				// adapter output
+				""
 				);
 	}
 	
-	// term=PrefixExpression,PostFixExpression
+	// term=PrefixExpression,PostFixExpression adapter=true
 	public void test_603_post_pre_FixExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1213,11 +1230,14 @@ public class InitialTests extends AbstractRegressionTest {
 				"	b := a;\n" +
 				"	assert (a == 6);\n" +
 				"	assert (b == 6);\n" +
-				"}\n"			
+				"}\n"		
+				,
+				// adapter output
+				""
 				);
 	}
 
-	// term=Assignment
+	// term=Assignment adapter=true
 	public void test_604_multiAssignment() {
 
 		this.compareJavaToBoogie(
@@ -1248,6 +1268,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert (b == 3);\n" +
 				"	assert (c == 3);\n" +
 				"}\n"
+				,
+				// adapter output
+				""
 				);
 	}	
 
@@ -1645,7 +1668,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=MessageSend
+	// term=MessageSend adapter=true 
 	public void test_2000_messageSend() {
 		this.compareJavaToBoogie(
 				//java
@@ -1670,10 +1693,18 @@ public class InitialTests extends AbstractRegressionTest {
 				"	__result__ := 4;\n" +
 				"	return;\n" +
 				"}\n"
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 5)\n" +
+				"	//@ assert c == 4;\n" +
+				"	           ^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}
 	
-	// term=MessageSend
+	// term=MessageSend adapter=true
 	public void test_2001_messageSend() {
 		this.compareJavaToBoogie(
 				//java
@@ -1698,10 +1729,18 @@ public class InitialTests extends AbstractRegressionTest {
 				"	__result__ := a;\n" +
 				"	return;\n" +
 				"}\n"
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 5)\n" +
+				"	//@ assert c == 5;\n" +
+				"	           ^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}
 	
-	// term=MessageSend
+	// term=MessageSend adapter=true
 	public void test_2002_messageSend() {
 		this.compareJavaToBoogie(
 				//java
@@ -1722,10 +1761,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"}\n"
+				,
+				// adapter output
+				""
 				);
 	}
 
-	// term=MessageSend
+	// term=MessageSend adapter=true
 	public void test_2003_messageSendStatic() {
 		this.compareJavaToBoogie(
 				//java
@@ -1748,10 +1790,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.N.n() {\n" +
 				"	assert true;\n" +
 				"}\n"
+				,
+				// adapter output
+				""
 				);
 	}
 	
-	// term=MessageSend
+	// term=MessageSend adapter=true
 	public void test_2004_messageSendOnReceiver() {
 		this.compareJavaToBoogie(
 				//java
@@ -1781,10 +1826,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" +
 				"procedure tests.esc.N.o(this : tests.esc.N) {\n" +
 				"}\n"
+				,
+				// adapter output
+				""
 				);
 	}
 
-	// term=MessageSend
+	// term=MessageSend adapter=true
 	public void test_2005_messageSendOnThis() {
 		this.compareJavaToBoogie(
 				//java
@@ -1803,7 +1851,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
-	// TODO term=MessageSend
+	// TODO term=MessageSend adapter=true
 	public void test_2005_messageSendOnField() {
 		this.compareJavaToBoogie(
 				//java
@@ -1817,7 +1865,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	public void n() { }\n" +
 				"}\n"
 				,
-				//expected boogie
+				// expected boogie
 				"var tests.esc.A.x : [Object] tests.esc.N;\n" +
 				"var tests.esc.A.y : tests.esc.N;\n" +
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
@@ -1825,11 +1873,14 @@ public class InitialTests extends AbstractRegressionTest {
 				"	call tests.esc.N.n(tests.esc.A.y);\n" +
 				"}\n" +
 				"procedure tests.esc.N.n(this : tests.esc.N) {\n" +
-				"}\n" 
+				"}\n"
+				,
+				// adapter output
+				""
 				);
 	}
 	
-	// TODO term=MessageSend
+	// TODO term=MessageSend adapter=true
 	public void test_2005_messageSendOnLocal() {
 		this.compareJavaToBoogie(
 				//java
@@ -1846,6 +1897,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" +
 				"procedure tests.esc.N.n(this : tests.esc.N) {\n" +
 				"}\n" 
+				,
+				// adapter output
+				""
 				);
 	}
 }

@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.VcCache;
+
 public class Presentation {
 
 	public static void render(HttpServletRequest request, HttpServletResponse response, RequestDispatcher dispatcher) throws ServletException, IOException {
@@ -34,9 +36,15 @@ public class Presentation {
 		response_out.println("<div id='header'>");
 		response_out.println("<div id='menu'>");
 		response_out.println("	<ul>");
-		response_out.println("		<li><a href='index' title=''>JML4 Disco - Server Config</a></li>");
+		response_out.println("		<li><a href='index.jsp' title=''>JML4 Disco - Server Config</a></li>");
 		response_out.println("		<li><a href='AddServers' title=''>Add Servers</a></li>");
 		response_out.println("		<li><a href='RemoveServers' title=''>Remove Servers</a></li>");
+		if(VcCache.isEnabled()) {
+			response_out.println("		<li><a href='DisableCaching' title=''>Disable Caching</a></li>");	
+		}
+		else {
+			response_out.println("		<li><a href='EnableCaching' title=''>Enable Caching</a></li>");	
+		}
 		response_out.println("	</ul>");
 		response_out.println("</div>");
 		response_out.println("</div>");

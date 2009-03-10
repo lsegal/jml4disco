@@ -74,6 +74,13 @@ public final class PreferencesMessages extends NLS {
 	public static String Jml2EnableChecker_label;
 	public static String Jml2EnableCompiler_label;
 	
+	public static String JmlDistributed_title;
+	public static String JmlEnableDistributed_label;
+	public static String JmlSpecPathDistributed_label;
+	
+	public static String JmlBoogie_title;
+	public static String JmlEnableBoogie_label;
+	
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, PreferencesMessages.class);
 	}

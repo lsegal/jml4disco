@@ -37,8 +37,10 @@ public class JmlCompilerOptions extends CompilerOptions {
     public static final String OPTION_EnableJmlBoogie = "org.eclipse.jdt.core.compiler.problem.enableJmlBoogie"; //$NON-NLS-1$   
   	// Distributed options
   	public static final String OPTION_EscProverStrategy = "org.eclipse.jdt.core.compiler.problem.jmlEscProverStrategy"; //$NON-NLS-1$
+  	public static final String OPTION_EscDistributedEnabled = "org.eclipse.jdt.core.compiler.problem.enableDistributed"; //$NON-NLS-1$
   	public static final String OPTION_EscDistributedPropertiesFile = "org.eclipse.jdt.core.compiler.problem.jmlEscDistributedPropertiesFile"; //$NON-NLS-1$
-    
+	public static final String OPTION_EscDistributedDispatcherPath = "org.eclipse.jdt.core.compiler.problem.distributedDispatcherPath"; //$NON-NLS-1$
+	  
 	/**
 	 * Possible values for configurable options
 	 */

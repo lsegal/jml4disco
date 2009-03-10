@@ -83,7 +83,8 @@ public class InitialTests extends AbstractRegressionTest {
 		return compiler.unitsToProcess[0];
 	}
 	
-	protected void compareJavaToBoogie(String file, String java, String boogie) {
+	protected void compareJavaToBoogie(String java, String boogie) {
+		String file = "A.java";
 		runNegativeTest(new String[] {file, java},
 				"----------\n" +
 				"1. ERROR in "+ file + " (at line 1)\n" +
@@ -130,7 +131,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlMethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement,EqualExpression
 	public void testMethodDefinition() {
-		this.compareJavaToBoogie("A.java",
+		this.compareJavaToBoogie(
 			// java
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -164,17 +165,17 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement
 	public void test_001_assertFalse() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assert false;\n" + 
 				"   }\n" + 
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert false;\n" +
 				"}\n" 		
 		);
@@ -182,17 +183,17 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=JmlAssertStatement
 	public void test_002_assertTrue() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assert true;\n" + 
 				"   }\n" + 
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"}\n" 		
 		);
@@ -200,17 +201,17 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=JmlMethodDeclaration,JmlAssertStatement,Argument
 	public void test_003_assertParam() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m(boolean b) {\n" + 
 				"      //@ assert b;\n" + 
 				"   }\n" + 
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X, a: bool) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A, a: bool) {\n" +
 				"	assert a;\n" +
 				"}\n" 			
 				);
@@ -218,17 +219,17 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement,AND_AND_Expression
 	public void test_004_assert_sequence_and() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" + 
 				"      //@ assert false && false;\n" + 
 				"   }\n" +
 				"}\n"		
 				,
 				// expected boogie
-				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert false && false;\n" +
 				"}\n"
 				
@@ -237,17 +238,17 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement,OR_OR_Expression
 	public void test_005_assert_sequence_or() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" + 
 				"      //@ assert false || false;\n" + 
 				"   }\n" + 				
 				"}\n"
 				,				
 				// expected boogie
-				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert (false || false);\n" +
 				"}\n"
 				);
@@ -255,17 +256,17 @@ public class InitialTests extends AbstractRegressionTest {
 			
 	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression
 	public void test_006_assert_sequence_and_or() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" + 
 				"      //@ assert false && (false || false);\n" + 
 				"   }\n" + 		
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert false && (false || false);\n" +
 				"}\n"				
 				);
@@ -273,17 +274,17 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression
 	public void test_007_assert_sequence_or_and() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" + 
 				"      //@ assert (false || false) && false;\n" + 
 				"   }\n" + 			
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert (false || false) && false;\n" +
 				"}\n"
 				);
@@ -291,10 +292,10 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=JmlAssertStatement
 	public void test_008_assert_sequence_tt() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assert true;\n" + 
 				"      //@ assert true;\n" + 
@@ -302,7 +303,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"	assert true;\n" +				
 				"}\n"
@@ -311,10 +312,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement
 	public void test_009_assert_sequence_tf() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assert true;\n" + 
 				"      //@ assert false;\n" + 
@@ -322,7 +323,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"	assert false;\n" +				
 				"}\n"
@@ -331,10 +332,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement
 	public void test_007_assert_sequence_ft() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assert false;\n" + 
 				"      //@ assert true;\n" + 
@@ -342,7 +343,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert false;\n" +
 				"	assert true;\n" +				
 				"}\n"
@@ -351,10 +352,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement
 	public void test_008_assert_sequence_ff() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assert false;\n" + 
 				"      //@ assert false;\n" + 
@@ -362,7 +363,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert false;\n" +
 				"	assert false;\n" +				
 				"}\n"
@@ -371,10 +372,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=AssertStatement
 	public void test_009_JavaAssertFalse() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      assert false;\n" + 
 				"      assert false: 1234;\n" + 
@@ -382,7 +383,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert false;\n" +
 				"	assert false;\n" +
 				"}\n" 		
@@ -391,17 +392,17 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=AssertStatement
 	public void test_010_JavaAssertTrue() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      assert true;\n" + 
 				"   }\n" + 
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"}\n" 		
 		);
@@ -413,17 +414,17 @@ public class InitialTests extends AbstractRegressionTest {
 		
 	// term=JmlAssumeStatement
 	public void test_0100_assumeFalse() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assume false;\n" + 
 				"   }\n" + 
 				"}\n"
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume false;\n" +
 				"}\n" 				
 				);
@@ -431,17 +432,17 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement
 	public void test_0101_assumeTrue() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assume true;\n" + 
 				"   }\n" + 
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume true;\n" +
 				"}\n" 				
 				);
@@ -449,27 +450,27 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=JmlMethodDeclaration
 	public void test_0110_JmlMethodDeclaration_EmptyMethod() {
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"      \n" + 
 				"   }\n" + 
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"}\n"
 				);
 	}
 	
 	//TODO term=JmlMethodDeclaration,JmlAssertStatement,JmlMethodSpecification
 	public void test_0111_JmlMethodDefinition_EnsuresRequires() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java				
 				"package tests.esc;\n" +
-				"public class X {\n" +
+				"public class A {\n" +
 				"   //@ ensures \\result == 42;\n" + 
 				"	public int m1() {\n" +
 				"		//@ assert true;\n" +
@@ -498,7 +499,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"      if (n == 0)\n" +
 		        "         return 1;\n" +
 				"		return 42;\n" +
-				"	}\n" +			
+				"	}\n" +
+//				" FIXME put this back when requires/ensures is done				
 //				"   //@ ensures \\result == 42;\n" + 
 //				"   //@ requires n >= 0;\n" + 				
 //				"	public int m5(int n) {\n" +
@@ -516,10 +518,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement,JmlAssertStatement
 	public void test_0200_sequence_assume_assert_tt() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assume true;\n" + 
 				"      //@ assert true;\n" + 
@@ -527,7 +529,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume true;\n" +
 				"	assert true;\n" +
 				"}\n"
@@ -536,10 +538,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement
 	public void test_0201_sequence_assume_assert_ff() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assume false;\n" + 
 				"      //@ assert false;\n" + 
@@ -547,7 +549,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume false;\n" +
 				"	assert false;\n" +
 				"}\n"
@@ -556,10 +558,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement
 	public void test_0202_sequence_assume_assert_ft() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assume false;\n" + 
 				"      //@ assert true;\n" + 
@@ -567,7 +569,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume false;\n" +
 				"	assert true;\n" +
 				"}\n"
@@ -576,10 +578,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement
 	public void test_0203_sequence_assume_assert_tf() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" + 
 				"      //@ assume true;\n" + 
 				"      //@ assert false;\n" + 
@@ -587,7 +589,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume true;\n" +
 				"	assert false;\n" +
 				"}\n"
@@ -596,7 +598,7 @@ public class InitialTests extends AbstractRegressionTest {
 		
 	//TODO term=Block
 	public void test_0296_LocalDeclaration_Blocks() {
-		compareJavaToBoogie("A.java",
+		compareJavaToBoogie(
 			// java source
 			"package tests.esc;\n" + 				
 			"public class A {\n" +
@@ -623,7 +625,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=LocalDeclaration
 	public void test_0297_LocalDeclaration_multiVarName_diffScope() {
-		compareJavaToBoogie("A.java",	
+		compareJavaToBoogie(	
 			// java source
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -655,7 +657,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=LocalDeclaration
 	public void test_0298_LocalDeclaration() {
-		compareJavaToBoogie("A.java",
+		compareJavaToBoogie(
 			// java source
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -675,7 +677,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=LocalDeclaration,Assignment
 	public void test_0299_LocalDeclarationWithInitialization() {
-		compareJavaToBoogie("A.java",
+		compareJavaToBoogie(
 			// java source
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -696,7 +698,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=IfStatement,Argument,ReturnStatement,StringLiteral,Block,EqualExpression,LocalDeclaration
 	public void test_0300_IfCondition() {
-		compareJavaToBoogie("A.java",
+		compareJavaToBoogie(
 			// java source
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -728,10 +730,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=IfStatement
 	public void test_0301_IfCondition_noBlock() {		 
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		if (true) \n" +
 				"      		//@ assert (true);\n" +
@@ -739,7 +741,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	if (true) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
@@ -748,9 +750,9 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO term=ConditionalExpression
 	public void test_0302_IfCondition_ternary() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" + 
 				"      //@ assert (true ? true : true);\n" + 
 				"   }\n" + 
@@ -792,9 +794,9 @@ public class InitialTests extends AbstractRegressionTest {
 
 	//term=EmptyStatement,DoStatement,WhileStatement,TrueLiteral,Block
 	public void test_0310_EmptyStatement() {
-		compareJavaToBoogie("X.java",
+		compareJavaToBoogie(
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +			
 				"		;\n" +
 				"   }\n" +	
@@ -820,21 +822,21 @@ public class InitialTests extends AbstractRegressionTest {
 				"}" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"}\n" +
-				"procedure tests.esc.X.m2(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
 				"	if (true) {\n" +
 				"	}\n" +
 				"}\n" +
-				"procedure tests.esc.X.m3(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m3(this : tests.esc.A) {\n" +
 				"	if (true) {\n" +
 				"	}\n" +
 				"}\n" +
-				"procedure tests.esc.X.m4(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m4(this : tests.esc.A) {\n" +
 				"	while (true) {\n" +
 				"	}\n" +
 				"}\n" +
-				"procedure tests.esc.X.m5(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m5(this : tests.esc.A) {\n" +
 				"	while (true) {\n" +
 				"	}\n" +
 				"}\n"
@@ -843,9 +845,9 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	//term=UnaryExpression
 	public void test_0320_UnaryExpression() {
-		compareJavaToBoogie("X.java",
+		compareJavaToBoogie(
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" +
 				"      boolean b = true;\n" + 
 				"      //@ assert !b;\n" +
@@ -855,7 +857,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}" 
 				,
 				// expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	var a : bool;\n" +
 				"	a := true;\n" +
 				"	assert !a;\n" +
@@ -866,9 +868,9 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	//term=UnaryExpression
 	public void test_0321_UnaryExpression() {
-		compareJavaToBoogie("X.java",
+		compareJavaToBoogie(
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m() {\n" +
 				"	int number = +1;\n" +				
 				"   }\n" +		
@@ -880,10 +882,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=WhileStatement,Block,EqualExpression
 	public void test_0350_while() {
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"      while (true == true) {" +
 				"         //@ assert true;\n" +
@@ -896,12 +898,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	while ((true == true)) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
 				"}\n" +
-				"procedure tests.esc.U.m2(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
 				"	while ((true == true)) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
@@ -911,10 +913,10 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=WhileStatement,BreakStatement,LabeledStatement,Block
 	public void test_0370_Break_withlabel() {		 
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		blah:\n" +
 				"		while(true){\n" +
@@ -928,7 +930,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	blah:\n" +
 				"	while (true) {\n" +
 				"		assert true;\n" +
@@ -942,10 +944,10 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=WhileStatement,BreakStatement,Block
 	public void test_0371_Break() {		 
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		while(true){\n" +
 				"      		//@ assert (true);\n" +
@@ -955,7 +957,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	while (true) {\n" +
 				"		assert true;\n" +
 				"		break;\n" +
@@ -965,10 +967,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=DoStatement,Block
 	public void test_400_do() {
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		do{\n" +
 				"      		//@ assert (true);\n" +
@@ -982,13 +984,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"	while (true) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
 				"}\n" +
-				"procedure tests.esc.U.m2(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"	while (true) {\n" +
 				"		assert true;\n" +
@@ -1000,10 +1002,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=DoStatement,Block
 	public void test_401_do_multiline() {
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		do{\n" +
 				"      		//@ assert (true);\n" +
@@ -1014,7 +1016,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"	assert false;\n" +
 				"	assert true;\n" +
@@ -1029,10 +1031,10 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=ForStatement,Block,BinaryExpression
 	public void test_500_for() {		
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		for (int x = 0; x<10 ; x++) {\n" +
 				"			//@assert (true);\n" +			
@@ -1046,7 +1048,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
 				"	a := 0;\n" +
 				"	while ((a < 10)) {\n" +
@@ -1054,7 +1056,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"		a := a + 1;\n" +
 				"	}\n" +
 				"}\n" +
-				"procedure tests.esc.U.m2(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
 				"	a := 10;\n" +
 				"	while ((a > 0)) {\n" +
@@ -1068,10 +1070,10 @@ public class InitialTests extends AbstractRegressionTest {
 	// term=ForStatement,Block,BinaryExpression
 	public void test_500_for_multi_initialization() {
 
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		//@assert (true);\n" +
 				"		for (int i=1,j=10; i<j; i++,j++) {\n" +
@@ -1081,7 +1083,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	assert true;\n" +
@@ -1099,10 +1101,10 @@ public class InitialTests extends AbstractRegressionTest {
 	// term=PostfixExpression,LocalDeclaration
 	public void test_600_postFixExpression() {
 		
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		int i = 0;\n" +
 				"		i++;\n" +
@@ -1114,7 +1116,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie		
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	a := 0;\n" +
@@ -1129,10 +1131,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=PrefixExpression,LocalDeclaration
 	public void test_601_preFixExpression() {
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		int i;\n" +
 				"		++ i;\n" +
@@ -1144,7 +1146,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie			
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	a := 0;\n" +
@@ -1159,10 +1161,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO term=PrefixExpression,PostFixExpression
 	public void test_602_pre_post_FixExpression() {
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"		int i = 5;\n" +
 				"		int x = 0;" +
@@ -1177,10 +1179,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=Assignment,SingleTypeReference,IntLiteral,JmlLocalDeclaration,LocalDeclaration
 	public void test_700_localVarDecl_order() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" +
+				"public class A {\n" +
 				"   public void m1() {\n" +
 				"		int x = 2;\n" +
 				"       int y = 1;\n" +
@@ -1188,7 +1190,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,				
 				// expected boogie
-				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	a := 2;\n" +
@@ -1199,10 +1201,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	//TODO term=FieldDeclaration,SingleNameReference,Assignment
 	public void test_800_FieldDeclaration() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" +
+				"public class A {\n" +
 				" 	int i;\n" +
 				" 	boolean b;\n" +
 				"	public void m() {\n" +
@@ -1211,44 +1213,44 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"var tests.esc.X.i : [Object] int;\n" +
-				"var tests.esc.X.b : [Object] bool;\n" +
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
-				"	tests.esc.X.i[this] := 1;\n" +
+				"var tests.esc.A.i : [Object] int;\n" +
+				"var tests.esc.A.b : [Object] bool;\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	tests.esc.A.i[this] := 1;\n" +
 				"}\n"
 				);
 	}
 
 	//TODO term=FieldDeclaration,SingleNameReference,Assignment
 	public void test_801_Static_FieldDeclaration() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" +
+				"public class A {\n" +
 				" 	static int i = 1;\n" +
 				"	static int x = i;\n" +
 				"	static int z;\n" +
 				"}\n" 
 				,
 				//TODO  expected boogie
-				"var tests.esc.X.i : int;\n" +				
-				"var tests.esc.X.x : int;\n" +
-				"var tests.esc.X.z : int;\n" +
-				"procedure tests.esc.X_defaultInit() {\n" +
-				"	tests.esc.X.i := 1;\n" +
-				"	tests.esc.X.x := tests.esc.X.i;\n" +
-				"   tests.esc.X.z := 0;\n" +
+				"var tests.esc.A.i : int;\n" +				
+				"var tests.esc.A.x : int;\n" +
+				"var tests.esc.A.z : int;\n" +
+				"procedure tests.esc.A_defaultInit() {\n" +
+				"	tests.esc.A.i := 1;\n" +
+				"	tests.esc.A.x := tests.esc.A.i;\n" +
+				"   tests.esc.A.z := 0;\n" +
 				"}\n" +
-				"call tests.esc.X_defaultInit();\n"
+				"call tests.esc.A_defaultInit();\n"
 				);
 	}
 	
 	// term=LocalDeclaration,SingleTypeReference,Assignment,IntLiteral
 	public void test_1000_int_localdeclaration() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +	
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"	public void m() {\n" +
 				"		int i = 0;\n" +
 				"		int x;\n" +
@@ -1259,7 +1261,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.X.m(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	var c : int;\n" +
@@ -1289,10 +1291,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO term=IntLiteral,EqualExpression
 	public void test_1000_int_eq() {
-		this.compareJavaToBoogie("X.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class X {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" + 
 				"      //@ assert 42 == 42;\n" + 
 				"   }\n" + 
@@ -1350,68 +1352,68 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected Boogie
-				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert (42 == 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m2(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
 				"	assert (42 == 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m3(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m3(this : tests.esc.A) {\n" +
 				"	assert (42 != 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m4(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m4(this : tests.esc.A) {\n" +
 				"	assert (42 != 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m5(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m5(this : tests.esc.A) {\n" +
 				"	assert (42 < 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m6(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m6(this : tests.esc.A) {\n" +
 				"	assert (42 < 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m7(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m7(this : tests.esc.A) {\n" +
 				"	assert (42 > 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m8(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m8(this : tests.esc.A) {\n" +
 				"	assert (42 > 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m9(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m9(this : tests.esc.A) {\n" +
 				"	assert (43 <= 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m10(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m10(this : tests.esc.A) {\n" +
 				"	assert (42 <= 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m11(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m11(this : tests.esc.A) {\n" +
 				"	assert (42 <= 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m12(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m12(this : tests.esc.A) {\n" +
 				"	assert (42 >= 43);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m13(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m13(this : tests.esc.A) {\n" +
 				"	assert (42 >= 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m14(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m14(this : tests.esc.A) {\n" +
 				"	assert (43 >= 42);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m15(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m15(this : tests.esc.A) {\n" +
 				"	assert ((42 >= 42) == true);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m16(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m16(this : tests.esc.A) {\n" +
 				"	assert ((42 >= 42) == false);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m17(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m17(this : tests.esc.A) {\n" +
 				"	assert ((43 >= 42) == true);\n" +
 				"}\n" +
-				"procedure tests.esc.X.m18(this : tests.esc.X) {\n" +
+				"procedure tests.esc.A.m18(this : tests.esc.A) {\n" +
 				"	assert ((43 >= 42) == false);\n" +
 				"}\n"
 				);
 	}
 	
 	public void test_1001_int_arith() {
-		this.compareJavaToBoogie("R.java",	
+		this.compareJavaToBoogie(	
 				//java
 				"package tests.esc;\n" +
-				"public class R {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" + 
 				"      //@ assert 5 + 2 == 7;\n" + 
 				"   }\n" + 
@@ -1451,40 +1453,40 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				, 
 				//expected boogie
-				"procedure tests.esc.R.m1(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert ((5 + 2) == 7);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m2(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
 				"	assert ((5 - 2) == 3);\n" +
 				"}\n" + 
-				"procedure tests.esc.R.m3(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m3(this : tests.esc.A) {\n" +
 				"	assert ((5 * 2) == 10);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m4(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m4(this : tests.esc.A) {\n" +
 				"	assert ((4 / 2) == 2);\n" +
 				"}\n" + 
-				"procedure tests.esc.R.m5(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m5(this : tests.esc.A) {\n" +
 				"	assert ((5 % 2) == 1);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m6(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m6(this : tests.esc.A) {\n" +
 				"	assert (((5 + 2) * 3) == 21);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m1b(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m1b(this : tests.esc.A) {\n" +
 				"	assert ((5 + 2) != 7);\n" +
 				"}\n" +
 				"procedure tests.esc.R.m2b(this : tests.esc.R) {\n" +
 				"	assert ((5 - 2) != 3);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m3b(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m3b(this : tests.esc.A) {\n" +
 				"	assert ((5 * 2) != 10);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m4b(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m4b(this : tests.esc.A) {\n" +
 				"	assert ((4 / 2) != 2);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m5b(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m5b(this : tests.esc.A) {\n" +
 				"	assert ((5 % 2) != 1);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m6b(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m6b(this : tests.esc.A) {\n" +
 				"	assert (((5 + 2) * 3) != 22);\n" +
 				"}\n"
 				);			
@@ -1492,9 +1494,9 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// TODO
 	public void test_1002_arith_cond() {
-		this.compareJavaToBoogie("S.java",
+		this.compareJavaToBoogie(
 				"package tests.esc;\n" +
-				"public class S {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" + 
 				"      //@ assert (5 == 3 + 2 ? 42 == 6 * 7 : 1 + 1 == 2);\n" + 
 				"   }\n" + 
@@ -1513,10 +1515,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO
 	public void test_1003_boolExpr_cond() {
-		this.compareJavaToBoogie("T.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class T {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" + 
 				"      //@ assert (!true ? false : !true);\n" + 
 				"   }\n" + 
@@ -1535,10 +1537,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO term=BinaryExpression
 	public void test_1004_implies() {
-		this.compareJavaToBoogie("U.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class U {\n" + 
+				"public class A {\n" + 
 				"   public void m1() {\n" +
 				"      //@ assert (true ==> true);\n" + 
 				"   }\n" + 
@@ -1554,16 +1556,16 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//TODO expected boogie
-				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert (true => true);\n" +
 				"}\n" +
-				"procedure tests.esc.U.m2(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
 				"	assert (true => false);\n" +
 				"}\n" +
-				"procedure tests.esc.U.m3(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m3(this : tests.esc.A) {\n" +
 				"	assert (false => true);\n" +
 				"}\n" +
-				"procedure tests.esc.U.m4(this : tests.esc.U) {\n" +
+				"procedure tests.esc.A.m4(this : tests.esc.A) {\n" +
 				"	assert (false => false);\n" +
 				"}\n"
 				);
@@ -1571,10 +1573,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=MessageSend
 	public void test_2000_messageSend() {
-		this.compareJavaToBoogie("M.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class M {\n" +
+				"public class A {\n" +
 				"	public void m1() {\n" +
 				"		int c = m2();\n" +
 				"		//@ assert c == 4;\n" +
@@ -1585,12 +1587,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.M.m1(this : tests.esc.M) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
-				"	call a := tests.esc.M.m2(this);\n" +
+				"	call a := tests.esc.A.m2(this);\n" +
 				"	assert (a == 4);\n" +
 				"}\n" +
-				"procedure tests.esc.M.m2(this : tests.esc.M) returns (__result__ : int) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) returns (__result__ : int) {\n" +
 				"	__result__ := 4;\n" +
 				"	return;\n" +
 				"}\n"
@@ -1599,10 +1601,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=MessageSend
 	public void test_2001_messageSend() {
-		this.compareJavaToBoogie("M.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class M {\n" +
+				"public class A {\n" +
 				"	public void m1() {\n" +
 				"		int c = m2(5);\n" +
 				"		//@ assert c == 5;\n" +
@@ -1613,12 +1615,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.M.m1(this : tests.esc.M) {\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
-				"	call a := tests.esc.M.m2(this, 5);\n" +
+				"	call a := tests.esc.A.m2(this, 5);\n" +
 				"	assert (a == 5);\n" +
 				"}\n" +
-				"procedure tests.esc.M.m2(this : tests.esc.M, a: int) returns (__result__ : int) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A, a: int) returns (__result__ : int) {\n" +
 				"	__result__ := a;\n" +
 				"	return;\n" +
 				"}\n"
@@ -1627,10 +1629,10 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=MessageSend
 	public void test_2002_messageSend() {
-		this.compareJavaToBoogie("M.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class M {\n" +
+				"public class A {\n" +
 				"	public void m1() {\n" +
 				"		m2();\n" +
 				"	}\n" +
@@ -1640,10 +1642,10 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.M.m1(this : tests.esc.M) {\n" +
-				"	call tests.esc.M.m2(this);\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
+				"	call tests.esc.A.m2(this);\n" +
 				"}\n" +
-				"procedure tests.esc.M.m2(this : tests.esc.M) {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"}\n"
 				);
@@ -1651,22 +1653,22 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=MessageSend
 	public void test_2003_messageSendStatic() {
-		this.compareJavaToBoogie("M.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class M {\n" +
+				"public class A {\n" +
 				"	public static void m() {\n" +
 				"		N.n();\n" +
 				"	}\n" +
 				"}\n" +
-				"public class N {\n" +
+				"class N {\n" +
 				"	public static void n() {\n" +
 				"		//@ assert true;\n" +
 				"	}\n" +
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.M.m() {\n" +
+				"procedure tests.esc.A.m() {\n" +
 				"	call tests.esc.N.n();\n" +
 				"}\n" +
 				"procedure tests.esc.N.n() {\n" +
@@ -1677,16 +1679,16 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=MessageSend
 	public void test_2004_messageSendOnReceiver() {
-		this.compareJavaToBoogie("M.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class M {\n" +
+				"public class A {\n" +
 				"	public static void m(N x) {" +
 				"		x.o();\n" +
 				"		int y = x.n(3);\n" +
 				"	}\n" +
 				"}\n" +
-				"public class N {\n" +
+				"class N {\n" +
 				"	public int n(int x) {\n" +
 				"		return x;\n" +
 				"	}\n" +
@@ -1694,7 +1696,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				//expected boogie
-				"procedure tests.esc.M.m(a: tests.esc.N) {\n" +
+				"procedure tests.esc.A.m(a: tests.esc.N) {\n" +
 				"	var b : int;\n" +
 				"	call tests.esc.N.o(a);\n" +
 				"	call b := tests.esc.N.n(a, 3);\n" +
@@ -1710,61 +1712,61 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=MessageSend
 	public void test_2005_messageSendOnThis() {
-		this.compareJavaToBoogie("M.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class M {\n" +
+				"public class A {\n" +
 				"	public void m() { this.n(); }\n" +
 				"	public void n() { }\n" +
 				"}\n"
 				,
 				//expected boogie
-				"procedure tests.esc.M.m(this : tests.esc.M) {\n" +
-				"	call tests.esc.M.n(this);\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	call tests.esc.A.n(this);\n" +
 				"}\n" +
-				"procedure tests.esc.M.n(this : tests.esc.M) {\n" +
+				"procedure tests.esc.A.n(this : tests.esc.A) {\n" +
 				"}\n" 
 				);
 	}
 
 	// TODO term=MessageSend
 	public void test_2005_messageSendOnField() {
-		this.compareJavaToBoogie("M.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"public class M {\n" +
+				"public class A {\n" +
 				"	public N x = new N();" +
 				"	public static N y = new N();" +
 				"	public void m() { x.n(); y.n(); }\n" +
 				"}\n" +
-				"public class N {\n" +
+				"class N {\n" +
 				"	public void n() { }\n" +
 				"}\n"
 				,
 				//expected boogie
-				"var tests.esc.M.x : [Object] N;\n" +
-				"var tests.esc.M.y : N;\n" +
-				"procedure tests.esc.M.m(this : tests.esc.M) {\n" +
-				"	call tests.esc.N.n(tests.esc.M.x[this]);\n" +
-				"	call tests.esc.N.n(tests.esc.M.y);\n" +
+				"var tests.esc.A.x : [Object] N;\n" +
+				"var tests.esc.A.y : N;\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	call tests.esc.N.n(tests.esc.A.x[this]);\n" +
+				"	call tests.esc.N.n(tests.esc.A.y);\n" +
 				"}\n" +
 				"procedure tests.esc.N.n(this : tests.esc.N) {\n" +
 				"}\n" 
 				);
 	}
 	
-	// term=MessageSend
+	// TODO term=MessageSend
 	public void test_2005_messageSendOnLocal() {
-		this.compareJavaToBoogie("M.java",
+		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
-				"class M {\n" +
-				"	void m() { N x; x.n(); }\n" +
+				"class A {\n" +
+				"	void m() { N x = new N(); x.n(); }\n" +
 				"}\n" +
 				"class N { void n() { } }\n" 
 				,
-				//expected boogie
-				"procedure tests.esc.M.m(this : tests.esc.M) {\n" +
+				//TODO expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	var a : N;\n" +
 				"	call tests.esc.N.n(a);\n" +
 				"}\n" +

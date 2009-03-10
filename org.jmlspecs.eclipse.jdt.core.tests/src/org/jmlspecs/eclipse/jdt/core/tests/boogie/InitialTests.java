@@ -592,8 +592,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				);
 	}	
-	
-	//TODO term=Block,JmlLocalDeclaration
+		
+	//TODO term=Block
 	public void test_0296_LocalDeclaration_Blocks() {
 		compareJavaToBoogie(	
 			// java source
@@ -789,6 +789,57 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
+	//term=EmptyStatement,DoStatement,WhileStatement,TrueLiteral,Block
+	public void test_0310_EmptyStatement() {
+		compareJavaToBoogie(
+				"package tests.esc;\n" +
+				"public class X {\n" + 
+				"   public void m1() {\n" +			
+				"		;\n" +
+				"   }\n" +	
+				"   public void m2() {\n" +
+				"		if (true)\n" +
+				"			;\n" +
+				"   }\n" +
+				"   public void m3() {\n" +
+				"		if (true) {\n" +
+				"			;\n" +
+				"		}\n" +
+				"   }\n" +
+				"   public void m4() {\n" +
+				"		while (true) {\n" +
+				"			;\n" +
+				"		}\n" +
+				"   }\n" +
+				"   public void m5() {\n" +
+				"		do{\n" +
+				"			;\n" +
+				"		}while(true);\n" +					
+				"   }\n" +						
+				"}" 
+				,
+				// expected boogie
+				"procedure tests.esc.X.m1(this : tests.esc.X) {\n" +
+				"}\n" +
+				"procedure tests.esc.X.m2(this : tests.esc.X) {\n" +
+				"	if (true) {\n" +
+				"	}\n" +
+				"}\n" +
+				"procedure tests.esc.X.m3(this : tests.esc.X) {\n" +
+				"	if (true) {\n" +
+				"	}\n" +
+				"}\n" +
+				"procedure tests.esc.X.m4(this : tests.esc.X) {\n" +
+				"	while (true) {\n" +
+				"	}\n" +
+				"}\n" +
+				"procedure tests.esc.X.m5(this : tests.esc.X) {\n" +
+				"	while (true) {\n" +
+				"	}\n" +
+				"}\n"
+				);
+	}
+	
 	//term=UnaryExpression
 	public void test_0320_UnaryExpression() {
 		compareJavaToBoogie(
@@ -811,6 +862,20 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert !!!a;\n" +
 				"}\n");
 	}
+	
+	//term=UnaryExpression
+	public void test_0321_UnaryExpression() {
+		compareJavaToBoogie(
+				"package tests.esc;\n" +
+				"public class X {\n" + 
+				"   public void m() {\n" +
+				"	int number = +1;\n" +				
+				"   }\n" +		
+				"}" 
+				,
+				// TODO expected boogie
+				"");
+	}	
 	
 	// term=WhileStatement,Block,EqualExpression
 	public void test_0350_while() {
@@ -1091,7 +1156,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// TODO term=PrefixExpression,PostFixExpression,LocalDeclaration
+	// TODO term=PrefixExpression,PostFixExpression
 	public void test_602_pre_post_FixExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1385,8 +1450,6 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				, 
 				//expected boogie
-				//"axiom (∀ x : int, y: int • {x % y} {x /y} x%y == x - x/y *y);\n" +
-				//"axiom (∀x:int,y:int•{x%y}(0<y⇒0<=x%y∧x%y<y)∧(y<0⇒y<x%y∧x%y<=0));\n" +
 				"procedure tests.esc.R.m1(this : tests.esc.R) {\n" +
 				"	assert ((5 + 2) == 7);\n" +
 				"}\n" +
@@ -1469,7 +1532,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// TODO
+	// TODO term=BinaryExpression
 	public void test_1004_implies() {
 		this.compareJavaToBoogie(
 				//java
@@ -1489,7 +1552,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"   }\n" + 
 				"}\n" 
 				,
-				//expected boogie
+				//TODO expected boogie
 				"procedure tests.esc.U.m1(this : tests.esc.U) {\n" +
 				"	assert (true => true);\n" +
 				"}\n" +

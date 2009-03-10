@@ -437,6 +437,7 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(CompilationUnitDeclaration term, CompilationUnitScope scope) {
 		debug(term, scope);
 		// implemented
+		appendLine("/*!BOOGIESTART!*/"); //$NON-NLS-1$
 		return true;
 	}
 	

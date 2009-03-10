@@ -11,7 +11,6 @@ import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
 import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
-import org.jmlspecs.jml4.boogie.BoogieSource;
 import org.jmlspecs.jml4.boogie.BoogieVisitor;
 import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.PostProcessor;
@@ -42,6 +41,7 @@ public class InitialTests extends AbstractRegressionTest {
 		options.put(JmlCompilerOptions.OPTION_EnableJml, CompilerOptions.ENABLED);
 		options.put(JmlCompilerOptions.OPTION_EnableJmlDbc, CompilerOptions.ENABLED);
 		options.put(JmlCompilerOptions.OPTION_EnableJmlBoogie, CompilerOptions.ENABLED);
+		options.put(JmlCompilerOptions.OPTION_JmlBoogieOutputOnly, CompilerOptions.ENABLED);
 		options.put(JmlCompilerOptions.OPTION_DefaultNullity, JmlCompilerOptions.NON_NULL);
 		options.put(CompilerOptions.OPTION_ReportNullReference, CompilerOptions.ERROR);
 		options.put(CompilerOptions.OPTION_ReportPotentialNullReference, CompilerOptions.ERROR);
@@ -83,13 +83,14 @@ public class InitialTests extends AbstractRegressionTest {
 		return compiler.unitsToProcess[0];
 	}
 	
-	protected void compareJavaToBoogie(String java, String boogie) {
-		CompilationUnitDeclaration unit = compileToAst(java);
-		BoogieSource source = BoogieVisitor.visit(unit);
-		String prepends = source.getPrepends();
-		String results = source.getResults();
-		boogie = BoogieSource.getHeaders() + prepends + boogie;
-		assertEquals(boogie, results);
+	protected void compareJavaToBoogie(String file, String java, String boogie) {
+		runNegativeTest(new String[] {file, java},
+				"----------\n" +
+				"1. ERROR in "+ file + " (at line 1)\n" +
+				"	package tests.esc;\n" +
+				"	^\n\n" +
+				boogie +
+				"\n----------\n");
 	}
 
 	protected void compareJavaExprToBoogie(String java, String boogie) {
@@ -129,7 +130,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlMethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement,EqualExpression
 	public void testMethodDefinition() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("A.java",
 			// java
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -163,7 +164,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement
 	public void test_001_assertFalse() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -181,7 +182,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=JmlAssertStatement
 	public void test_002_assertTrue() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -199,7 +200,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=JmlMethodDeclaration,JmlAssertStatement,Argument
 	public void test_003_assertParam() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -217,7 +218,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement,AND_AND_Expression
 	public void test_004_assert_sequence_and() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -236,7 +237,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement,OR_OR_Expression
 	public void test_005_assert_sequence_or() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -254,7 +255,7 @@ public class InitialTests extends AbstractRegressionTest {
 			
 	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression
 	public void test_006_assert_sequence_and_or() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -272,7 +273,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression
 	public void test_007_assert_sequence_or_and() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -290,7 +291,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=JmlAssertStatement
 	public void test_008_assert_sequence_tt() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -310,7 +311,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement
 	public void test_009_assert_sequence_tf() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -330,7 +331,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement
 	public void test_007_assert_sequence_ft() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -350,7 +351,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssertStatement
 	public void test_008_assert_sequence_ff() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -370,7 +371,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=AssertStatement
 	public void test_009_JavaAssertFalse() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -390,7 +391,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=AssertStatement
 	public void test_010_JavaAssertTrue() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -412,7 +413,7 @@ public class InitialTests extends AbstractRegressionTest {
 		
 	// term=JmlAssumeStatement
 	public void test_0100_assumeFalse() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -430,7 +431,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement
 	public void test_0101_assumeTrue() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -448,7 +449,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=JmlMethodDeclaration
 	public void test_0110_JmlMethodDeclaration_EmptyMethod() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -465,7 +466,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	//TODO term=JmlMethodDeclaration,JmlAssertStatement,JmlMethodSpecification
 	public void test_0111_JmlMethodDefinition_EnsuresRequires() {
-		this.compareJavaToBoogie(	
+		this.compareJavaToBoogie("X.java",
 				//java				
 				"package tests.esc;\n" +
 				"public class X {\n" +
@@ -515,7 +516,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement,JmlAssertStatement
 	public void test_0200_sequence_assume_assert_tt() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -535,7 +536,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement
 	public void test_0201_sequence_assume_assert_ff() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -555,7 +556,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement
 	public void test_0202_sequence_assume_assert_ft() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -575,7 +576,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=JmlAssumeStatement
 	public void test_0203_sequence_assume_assert_tf() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -595,7 +596,7 @@ public class InitialTests extends AbstractRegressionTest {
 		
 	//TODO term=Block
 	public void test_0296_LocalDeclaration_Blocks() {
-		compareJavaToBoogie(	
+		compareJavaToBoogie("A.java",
 			// java source
 			"package tests.esc;\n" + 				
 			"public class A {\n" +
@@ -622,7 +623,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=LocalDeclaration
 	public void test_0297_LocalDeclaration_multiVarName_diffScope() {
-		compareJavaToBoogie(	
+		compareJavaToBoogie("A.java",	
 			// java source
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -654,7 +655,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=LocalDeclaration
 	public void test_0298_LocalDeclaration() {
-		compareJavaToBoogie(	
+		compareJavaToBoogie("A.java",
 			// java source
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -674,7 +675,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=LocalDeclaration,Assignment
 	public void test_0299_LocalDeclarationWithInitialization() {
-		compareJavaToBoogie(	
+		compareJavaToBoogie("A.java",
 			// java source
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -695,7 +696,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=IfStatement,Argument,ReturnStatement,StringLiteral,Block,EqualExpression,LocalDeclaration
 	public void test_0300_IfCondition() {
-		compareJavaToBoogie(	
+		compareJavaToBoogie("A.java",
 			// java source
 			"package tests.esc;\n" + 
 			"public class A {\n" +
@@ -727,7 +728,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=IfStatement
 	public void test_0301_IfCondition_noBlock() {		 
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -747,7 +748,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO term=ConditionalExpression
 	public void test_0302_IfCondition_ternary() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				"package tests.esc;\n" +
 				"public class X {\n" + 
 				"   public void m1() {\n" + 
@@ -791,7 +792,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	//term=EmptyStatement,DoStatement,WhileStatement,TrueLiteral,Block
 	public void test_0310_EmptyStatement() {
-		compareJavaToBoogie(
+		compareJavaToBoogie("X.java",
 				"package tests.esc;\n" +
 				"public class X {\n" + 
 				"   public void m1() {\n" +			
@@ -842,7 +843,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	//term=UnaryExpression
 	public void test_0320_UnaryExpression() {
-		compareJavaToBoogie(
+		compareJavaToBoogie("X.java",
 				"package tests.esc;\n" +
 				"public class X {\n" + 
 				"   public void m() {\n" +
@@ -865,7 +866,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	//term=UnaryExpression
 	public void test_0321_UnaryExpression() {
-		compareJavaToBoogie(
+		compareJavaToBoogie("X.java",
 				"package tests.esc;\n" +
 				"public class X {\n" + 
 				"   public void m() {\n" +
@@ -879,7 +880,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=WhileStatement,Block,EqualExpression
 	public void test_0350_while() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -910,7 +911,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=WhileStatement,BreakStatement,LabeledStatement,Block
 	public void test_0370_Break_withlabel() {		 
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -941,7 +942,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=WhileStatement,BreakStatement,Block
 	public void test_0371_Break() {		 
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -964,7 +965,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=DoStatement,Block
 	public void test_400_do() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -999,7 +1000,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=DoStatement,Block
 	public void test_401_do_multiline() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -1028,7 +1029,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=ForStatement,Block,BinaryExpression
 	public void test_500_for() {		
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -1067,7 +1068,7 @@ public class InitialTests extends AbstractRegressionTest {
 	// term=ForStatement,Block,BinaryExpression
 	public void test_500_for_multi_initialization() {
 
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -1098,15 +1099,15 @@ public class InitialTests extends AbstractRegressionTest {
 	// term=PostfixExpression,LocalDeclaration
 	public void test_600_postFixExpression() {
 		
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
 				"   public void m1() {\n" +
-				"		int i;\n" +
+				"		int i = 0;\n" +
 				"		i++;\n" +
 				"		i ++;\n" +
-				"		int y;\n" +
+				"		int y = 0;\n" +
 				"		y--;\n" +
 				"		y --;\n" +
 				"	}\n" +					
@@ -1128,7 +1129,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=PrefixExpression,LocalDeclaration
 	public void test_601_preFixExpression() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -1158,7 +1159,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO term=PrefixExpression,PostFixExpression
 	public void test_602_pre_post_FixExpression() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -1176,7 +1177,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=Assignment,SingleTypeReference,IntLiteral,JmlLocalDeclaration,LocalDeclaration
 	public void test_700_localVarDecl_order() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" +
@@ -1198,7 +1199,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	//TODO term=FieldDeclaration,SingleNameReference,Assignment
 	public void test_800_FieldDeclaration() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" +
@@ -1220,7 +1221,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	//TODO term=FieldDeclaration,SingleNameReference,Assignment
 	public void test_801_Static_FieldDeclaration() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" +
@@ -1244,7 +1245,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=LocalDeclaration,SingleTypeReference,Assignment,IntLiteral
 	public void test_1000_int_localdeclaration() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +	
 				"public class X {\n" + 
@@ -1288,7 +1289,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO term=IntLiteral,EqualExpression
 	public void test_1000_int_eq() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("X.java",
 				//java
 				"package tests.esc;\n" +
 				"public class X {\n" + 
@@ -1407,7 +1408,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 	
 	public void test_1001_int_arith() {
-		this.compareJavaToBoogie(	
+		this.compareJavaToBoogie("R.java",	
 				//java
 				"package tests.esc;\n" +
 				"public class R {\n" + 
@@ -1491,7 +1492,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// TODO
 	public void test_1002_arith_cond() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("S.java",
 				"package tests.esc;\n" +
 				"public class S {\n" + 
 				"   public void m1() {\n" + 
@@ -1512,7 +1513,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO
 	public void test_1003_boolExpr_cond() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("T.java",
 				//java
 				"package tests.esc;\n" +
 				"public class T {\n" + 
@@ -1534,7 +1535,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// TODO term=BinaryExpression
 	public void test_1004_implies() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("U.java",
 				//java
 				"package tests.esc;\n" +
 				"public class U {\n" + 
@@ -1570,7 +1571,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=MessageSend
 	public void test_2000_messageSend() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("M.java",
 				//java
 				"package tests.esc;\n" +
 				"public class M {\n" +
@@ -1598,7 +1599,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=MessageSend
 	public void test_2001_messageSend() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("M.java",
 				//java
 				"package tests.esc;\n" +
 				"public class M {\n" +
@@ -1626,7 +1627,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=MessageSend
 	public void test_2002_messageSend() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("M.java",
 				//java
 				"package tests.esc;\n" +
 				"public class M {\n" +
@@ -1650,7 +1651,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=MessageSend
 	public void test_2003_messageSendStatic() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("M.java",
 				//java
 				"package tests.esc;\n" +
 				"public class M {\n" +
@@ -1676,7 +1677,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=MessageSend
 	public void test_2004_messageSendOnReceiver() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("M.java",
 				//java
 				"package tests.esc;\n" +
 				"public class M {\n" +
@@ -1709,7 +1710,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// term=MessageSend
 	public void test_2005_messageSendOnThis() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("M.java",
 				//java
 				"package tests.esc;\n" +
 				"public class M {\n" +
@@ -1728,7 +1729,7 @@ public class InitialTests extends AbstractRegressionTest {
 
 	// TODO term=MessageSend
 	public void test_2005_messageSendOnField() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("M.java",
 				//java
 				"package tests.esc;\n" +
 				"public class M {\n" +
@@ -1754,7 +1755,7 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	// term=MessageSend
 	public void test_2005_messageSendOnLocal() {
-		this.compareJavaToBoogie(
+		this.compareJavaToBoogie("M.java",
 				//java
 				"package tests.esc;\n" +
 				"class M {\n" +

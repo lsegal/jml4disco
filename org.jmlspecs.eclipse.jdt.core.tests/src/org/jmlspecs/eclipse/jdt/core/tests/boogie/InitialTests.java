@@ -1767,7 +1767,8 @@ public class InitialTests extends AbstractRegressionTest {
 				,
 				//TODO expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
-				"	var a : N;\n" +
+				"	var a : tests.esc.N;\n" +
+				"	a := _ctor_tests.esc.N();\n" +
 				"	call tests.esc.N.n(a);\n" +
 				"}\n" +
 				"procedure tests.esc.N.n(this : tests.esc.N) {\n" +

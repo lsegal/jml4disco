@@ -467,7 +467,7 @@ public class AdapterTests extends AbstractRegressionTest {
 				"");
 	}	
 	
-	//TODO term=Block,JmlLocalDeclaration
+	//TODO term=Block
 	public void test_296_LocalDeclaration_Blocks() {
 		this.runNegativeTest(new String[] {
 			testsPath + "X.java",

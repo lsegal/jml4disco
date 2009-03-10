@@ -289,11 +289,10 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=misc
+	// priority=3 group=misc
 	public boolean visit(AssertStatement term, BlockScope scope) {
 		debug(term, scope);
-		JmlAssertStatement stmt = 
-			new JmlAssertStatement("assert", term.assertExpression, term.sourceStart); //$NON-NLS-1$
+		JmlAssertStatement stmt = new JmlAssertStatement("assert", term.assertExpression, term.sourceStart); //$NON-NLS-1$
 		stmt.traverse(this, scope);
 		return false;
 	}
@@ -469,14 +468,16 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=stmt
+	// priority=3 group=stmt
 	public boolean visit(DoStatement term, BlockScope scope) {
 		debug(term, scope);		
 		if (term.action instanceof Block) {
 			Block block = (Block) term.action;
-			for (int i = 0; i < block.statements.length; i++) {
-				block.statements[i].traverse(this, scope);
-			}
+			if (block.statements != null) {
+				for (int i = 0; i < block.statements.length; i++) {
+					block.statements[i].traverse(this, scope);
+				}
+			}				
 		} else {
 			appendLine(term.action);
 		}
@@ -492,7 +493,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=stmt
+	// priority=3 group=stmt
 	public boolean visit(EmptyStatement term, BlockScope scope) {
 		debug(term, scope);
 		return true;
@@ -543,7 +544,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=field
+	// priority=3 group=field
 	public boolean visit(FieldDeclaration term, MethodScope scope) {
 		debug(term, scope);
 		
@@ -584,7 +585,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=stmt
+	// priority=3 group=stmt
 	public boolean visit(ForStatement term, BlockScope scope) {
 		debug(term, scope);
 		
@@ -727,7 +728,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=jml
+	// priority=3 group=jml
 	public boolean visit(JmlMethodSpecification term, ClassScope scope) {
 		debug(term, scope);
 
@@ -805,7 +806,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=expr
+	// priority=2 group=expr
 	public boolean visit(MessageSend term, BlockScope scope) {
 		debug(term, scope);
 		
@@ -1253,21 +1254,21 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=decl
+	// priority=2 group=decl
 	public boolean visit(TypeDeclaration term, BlockScope scope) {
 		declareType(new String(term.binding.readableName()));
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=2 group=decl
+	// priority=2 group=decl
 	public boolean visit(TypeDeclaration term, ClassScope scope) {
 		debug(term, scope);
 		declareType(new String(term.binding.readableName()));
 		return true;
 	}
 
-	// TODO priority=2 group=decl
+	// priority=2 group=decl
 	public boolean visit(TypeDeclaration term, CompilationUnitScope scope) {
 		debug(term, scope);
 		declareType(new String(term.binding.readableName()));
@@ -1289,6 +1290,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=3 group=expr
 	public boolean visit(UnaryExpression term, BlockScope scope) {
 		debug(term, scope);
+		
 		append (term.operatorToString());
 		return true;
 	}

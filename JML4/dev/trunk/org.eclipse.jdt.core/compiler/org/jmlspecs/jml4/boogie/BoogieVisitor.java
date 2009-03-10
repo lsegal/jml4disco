@@ -85,7 +85,6 @@ import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.jdt.internal.compiler.ast.TryStatement;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeParameter;
-import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 import org.eclipse.jdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
 import org.eclipse.jdt.internal.compiler.ast.Wildcard;
@@ -94,7 +93,6 @@ import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.jdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
-import org.eclipse.jdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
@@ -233,7 +231,7 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(Argument term, BlockScope scope) {
 		debug(term, scope);
 
-		String sym = symbolTable.addSymbol(new String(term.name), term.type);
+		String sym = symbolTable.addSymbol(new String(term.name));
 		append(sym + ": "); //$NON-NLS-1$
 		return true;
 	}
@@ -242,7 +240,7 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(Argument term, ClassScope scope) {
 		debug(term, scope);
 
-		String sym = symbolTable.addSymbol(new String(term.name), term.type);
+		String sym = symbolTable.addSymbol(new String(term.name));
 		append(sym + ": "); //$NON-NLS-1$
 		return true;
 	}
@@ -823,35 +821,7 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 		append("", term); //$NON-NLS-1$
 		
-		if (term.receiver.isImplicitThis() || term.receiver instanceof ThisReference) {
-			append(new String(scope.classScope().referenceType().binding.readableName()));
-		}
-		else if (term.receiver instanceof SingleNameReference) {
-			// TODO find a way to get the type of this reference
-			if (binding instanceof ProblemReferenceBinding) {
-				// is this a local?
-				String termName = new String(name.token);
-				boolean found = false;
-				
-				// look through locals
-				if (!found && symbolTable != null) {
-					TypeReference type = symbolTable.lookupType(termName);
-					if (type != null) {
-						append(type.resolvedType.readableName());
-						found = true;
-					}
-				}
-				
-				// look through fields
-				if (!found) {
-					// TODO implement field support
-				}
-			}
-			else {
-				term.receiver.traverse(this, scope);
-			}
-		}
-
+		append(term.binding.declaringClass.readableName());
 		append("." + new String(term.selector)); //$NON-NLS-1$
 		append("("); //$NON-NLS-1$
 		

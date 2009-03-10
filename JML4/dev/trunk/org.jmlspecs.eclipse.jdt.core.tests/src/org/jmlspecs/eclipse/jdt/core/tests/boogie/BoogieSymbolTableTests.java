@@ -3,8 +3,6 @@ package org.jmlspecs.eclipse.jdt.core.tests.boogie;
 import junit.framework.TestCase;
 
 import org.eclipse.jdt.internal.compiler.ast.Block;
-import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 import org.jmlspecs.jml4.boogie.BoogieSymbolTable;
 
 public class BoogieSymbolTableTests extends TestCase {
@@ -109,13 +107,5 @@ public class BoogieSymbolTableTests extends TestCase {
 		tab.exitScope();
 		assertEquals("a", tab.lookup("x", blk2));
 		assertEquals(null, tab.lookup("x", blk1));
-	}
-	
-	public void testTypeReferenceLookup() {
-		BoogieSymbolTable tab = new BoogieSymbolTable();
-		TypeReference tr = new SingleTypeReference(new char[]{'T','T'}, 1);
-		tab.addSymbol("x", tr);
-		assertEquals(tab.lookupType("x"), tr);
-		assertNull(tab.lookupType("xyz"));
 	}
 }

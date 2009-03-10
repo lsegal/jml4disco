@@ -99,13 +99,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"	^\n\n" +
 				boogie +
 				"\n----------\n");
-		if (adapterOutput != null) {
+		/*if (adapterOutput != null) {
 			String key = JmlCompilerOptions.OPTION_JmlBoogieOutputOnly;
 			String orig = getCompilerOptions().get(key);
 			getCompilerOptions().put(key, CompilerOptions.DISABLED);
 			runNegativeTest(new String[] {file, java}, adapterOutput);
 			getCompilerOptions().put(key, orig);
-		}
+		}*/
 	}
 
 	protected void compareJavaExprToBoogie(String java, String boogie) {

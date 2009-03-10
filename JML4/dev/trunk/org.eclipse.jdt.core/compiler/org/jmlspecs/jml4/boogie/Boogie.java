@@ -30,6 +30,7 @@ public class Boogie extends DefaultCompilerExtension {
 		if (DEBUG) {
 			Logger.println(this + " - compiler.options.jmlEnabled:     "+compiler.options.jmlEnabled); //$NON-NLS-1$
 			Logger.println(this + " - compiler.options.jmlBoogieEnabled:  "+compiler.options.jmlBoogieEnabled); //$NON-NLS-1$
+			Logger.println(this + " - compiler.options.jmlBoogieOutputOnly:  "+compiler.options.jmlBoogieOutputOnly); //$NON-NLS-1$
 		}
 		if (compiler.options.jmlEnabled && compiler.options.jmlDbcEnabled && compiler.options.jmlBoogieEnabled) {
 			process(compiler, unit);
@@ -43,8 +44,17 @@ public class Boogie extends DefaultCompilerExtension {
 	 * @param unit the root ASTNode object
 	 */
 	private void process(Compiler compiler, CompilationUnitDeclaration unit) {
-		BoogieAdapter adapter = new BoogieAdapter(compiler);
-		adapter.prove(unit);
+		if (compiler.options.jmlBoogieOutputOnly) {
+			// debugging / testing
+			BoogieSource source = BoogieVisitor.visit(unit);
+			String results = source.getResults();
+			String[] resultsArray = results.split("/\\*!BOOGIESTART!\\*/"); //$NON-NLS-1$
+			compiler.problemReporter.jmlEsc2Error(resultsArray[1], 0, 0);
+		}
+		else {
+			BoogieAdapter adapter = new BoogieAdapter(compiler);
+			adapter.prove(unit);
+		}
 	}
 
 	/**

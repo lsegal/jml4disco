@@ -131,6 +131,7 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlDbc, options.jmlDbcEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlEsc, options.jmlEscEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlBoogie, options.jmlBoogieEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
+	    optionsMap.put(JmlCompilerOptions.OPTION_JmlBoogieOutputOnly, options.jmlBoogieOutputOnly ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	    optionsMap.put(JmlCompilerOptions.OPTION_SimplifyPath, options.jmlSimplifyPath);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EscProverStrategy, options.jmlEscProverStrategy);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile, options.jmlEscDistributedPropertiesFile);
@@ -178,6 +179,9 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    }
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EnableJmlBoogie)) != null) {
 	    	options.jmlBoogieEnabled = CompilerOptions.ENABLED.equals(optionValue);
+	    }
+	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_JmlBoogieOutputOnly)) != null) {
+	    	options.jmlBoogieOutputOnly = CompilerOptions.ENABLED.equals(optionValue);
 	    }
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EscDistributedEnabled)) != null) {
 	    	options.jmlEscDistibutedEnabled = CompilerOptions.ENABLED.equals(optionValue);

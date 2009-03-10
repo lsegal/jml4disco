@@ -393,6 +393,7 @@ public class CompilerOptions {
 	
 	// <jml-start id="boogiesupport" />
 	public boolean jmlBoogieEnabled = false;
+	public boolean jmlBoogieOutputOnly = false;
 	// <jml-end id="boogiesupport" />
 	
 	//jml-start id="jml2toolsupport"

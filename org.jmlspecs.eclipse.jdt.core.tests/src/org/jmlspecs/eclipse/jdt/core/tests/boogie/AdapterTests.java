@@ -765,4 +765,68 @@ public class AdapterTests extends AbstractRegressionTest {
 				"This postcondition might not hold.\n" + 
 				"----------\n");
 	}
+	
+	// term=PrefixExpression,PostFixExpression
+	public void test_602_pre_post_FixExpression() {
+		this.runNegativeTest(new String[]{
+				"A.java",
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" + 
+				"   public void m1() {\n" +
+				"		int i = 5;\n" +
+				"		int x = 0;" +
+				"		x = i ++;\n" +
+				"		//@ assert i == 6;\n" +
+				"		//@ assert x == 5;\n" +
+				"	}\n" +					
+				"}\n" 
+				},
+				// expected output			
+				""			
+				);
+	}
+	
+	// term=PrefixExpression,PostFixExpression
+	public void test_603_post_pre_FixExpression() {
+		this.runNegativeTest(new String[]{
+				"A.java",
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" + 
+				"   public void m1() {\n" +
+				"		int i = 5;\n" +
+				"		int x = 0;" +
+				"		x = ++ i;\n" +
+				"		//@ assert i == 6;\n" +
+				"		//@ assert x == 6;\n" +
+				"	}\n" +					
+				"}\n" 
+				},
+				// expected output			
+				""			
+				);
+	}
+
+	// term=Assignment
+	public void test_604_multiAssignment() {
+		this.runNegativeTest(new String[]{
+				"A.java",
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" + 
+				"   public void m1() {" +
+				"		int a = 1;\n" +
+				"		int b = 2;\n" +
+				"		int c = b = a = 3;\n" +
+				"		//@ assert a == 3;\n" +
+				"		//@ assert b == 3;\n" +
+				"		//@ assert c == 3;\n" +
+				"	}\n" +					
+				"}\n" 
+				},
+				//expected output
+				""
+				);
+	}	
 }

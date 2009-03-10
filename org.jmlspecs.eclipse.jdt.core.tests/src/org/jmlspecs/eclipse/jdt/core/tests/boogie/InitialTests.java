@@ -1053,7 +1053,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	a := 0;\n" +
 				"	while ((a < 10)) {\n" +
 				"		assert true;\n" +
-				"		a := a + 1;\n" +
+				"		a := (a + 1);\n" +
 				"	}\n" +
 				"}\n" +
 				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
@@ -1061,13 +1061,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"	a := 10;\n" +
 				"	while ((a > 0)) {\n" +
 				"		assert true;\n" +
-				"		a := a - 1;\n" +
+				"		a := (a - 1);\n" +
 				"	}\n" +
 				"}\n"
 				);
 	}
 	
-	// term=ForStatement,Block,BinaryExpression
+	// term=Assignment,ForStatement,Block,BinaryExpression
 	public void test_500_for_multi_initialization() {
 
 		this.compareJavaToBoogie(
@@ -1091,14 +1091,14 @@ public class InitialTests extends AbstractRegressionTest {
 				"	b := 10;\n" +
 				"	while ((a < b)) {\n" +
 				"		assert true;\n" +
-				"		a := a + 1;\n" +
-				"		b := b + 1;\n" +
+				"		a := (a + 1);\n" +
+				"		b := (b + 1);\n" +
 				"	}\n" +
 				"}\n"
 				);
 	}	
 	
-	// term=PostfixExpression,LocalDeclaration
+	// term=Assignment,PostfixExpression,LocalDeclaration
 	public void test_600_postFixExpression() {
 		
 		this.compareJavaToBoogie(
@@ -1120,26 +1120,26 @@ public class InitialTests extends AbstractRegressionTest {
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	a := 0;\n" +
-				"	a := a + 1;\n" +
-				"	a := a + 1;\n" +
+				"	a := (a + 1);\n" +
+				"	a := (a + 1);\n" +
 				"	b := 0;\n" +
-				"	b := b - 1;\n" +
-				"	b := b - 1;\n" +
+				"	b := (b - 1);\n" +
+				"	b := (b - 1);\n" +
 				"}\n"			
 				);
 	}
 	
-	// term=PrefixExpression,LocalDeclaration
+	// term=Assignment,PrefixExpression,LocalDeclaration
 	public void test_601_preFixExpression() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
 				"public class A {\n" + 
 				"   public void m1() {\n" +
-				"		int i;\n" +
+				"		int i = 0;\n" +
 				"		++ i;\n" +
 				"		++i;\n" +				
-				"		int y;\n" +
+				"		int y = 0;\n" +
 				"		-- y;\n" +
 				"		--y;\n" +				
 				"	}\n" +					
@@ -1150,16 +1150,16 @@ public class InitialTests extends AbstractRegressionTest {
 				"	var a : int;\n" +
 				"	var b : int;\n" +
 				"	a := 0;\n" +
-				"	a := a + 1;\n" +
-				"	a := a + 1;\n" +
+				"	a := (a + 1);\n" +
+				"	a := (a + 1);\n" +
 				"	b := 0;\n" +
-				"	b := b - 1;\n" +
-				"	b := b - 1;\n" +
+				"	b := (b - 1);\n" +
+				"	b := (b - 1);\n" +
 				"}\n"			
 				);
 	}	
 	
-	// TODO term=PrefixExpression,PostFixExpression
+	// term=PrefixExpression,PostFixExpression
 	public void test_602_pre_post_FixExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1169,14 +1169,88 @@ public class InitialTests extends AbstractRegressionTest {
 				"		int i = 5;\n" +
 				"		int x = 0;" +
 				"		x = i ++;\n" +
+				"		//@ assert i == 6;\n" +
+				"		//@ assert x == 5;\n" +
 				"	}\n" +					
 				"}\n" 
 				,
-				//TODO expected boogie			
-				""			
+				// expected boogie			
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
+				"	var a : int;\n" +
+				"	var b : int;\n" +
+				"	a := 5;\n" +
+				"	b := 0;\n" +
+				"	b := a;\n" +
+				"	a := (a + 1);\n" +
+				"	assert (a == 6);\n" +
+				"	assert (b == 5);\n" +
+				"}\n"			
 				);
 	}
 	
+	// term=PrefixExpression,PostFixExpression
+	public void test_603_post_pre_FixExpression() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" + 
+				"   public void m1() {\n" +
+				"		int i = 5;\n" +
+				"		int x = 0;" +
+				"		x = ++ i;\n" +
+				"		//@ assert i == 6;\n" +
+				"		//@ assert x == 6;\n" +
+				"	}\n" +					
+				"}\n" 
+				,
+				// expected boogie			
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
+				"	var a : int;\n" +
+				"	var b : int;\n" +
+				"	a := 5;\n" +
+				"	b := 0;\n" +
+				"	a := (a + 1);\n" +
+				"	b := a;\n" +
+				"	assert (a == 6);\n" +
+				"	assert (b == 6);\n" +
+				"}\n"			
+				);
+	}
+
+	// term=Assignment
+	public void test_604_multiAssignment() {
+
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" + 
+				"   public void m1() {" +
+				"		int a = 1;\n" +
+				"		int b = 2;\n" +
+				"		int c = b = a = 3;\n" +
+				"		//@ assert a == 3;\n" +
+				"		//@ assert b == 3;\n" +
+				"		//@ assert c == 3;\n" +
+				"	}\n" +					
+				"}\n" 
+				,
+				//expected boogie
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
+				"	var a : int;\n" +
+				"	var b : int;\n" +
+				"	var c : int;\n" +
+				"	a := 1;\n" +
+				"	b := 2;\n" +
+				"	a := 3;\n" +
+				"	b := a;\n" +
+				"	c := b;\n" +
+				"	assert (a == 3);\n" +
+				"	assert (b == 3);\n" +
+				"	assert (c == 3);\n" +
+				"}\n"
+				);
+	}	
+
 	// term=Assignment,SingleTypeReference,IntLiteral,JmlLocalDeclaration,LocalDeclaration
 	public void test_700_localVarDecl_order() {
 		this.compareJavaToBoogie(

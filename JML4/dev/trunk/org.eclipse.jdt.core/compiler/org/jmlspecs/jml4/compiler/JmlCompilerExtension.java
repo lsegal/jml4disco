@@ -134,6 +134,8 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    optionsMap.put(JmlCompilerOptions.OPTION_SimplifyPath, options.jmlSimplifyPath);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EscProverStrategy, options.jmlEscProverStrategy);
 	    optionsMap.put(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile, options.jmlEscDistributedPropertiesFile);
+	    optionsMap.put(JmlCompilerOptions.OPTION_EscDistributedDispatcherPath, options.jmlEscDistributedDispatcherPath);
+	    optionsMap.put(JmlCompilerOptions.OPTION_EscDistributedEnabled, options.jmlEscDistibutedEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 		optionsMap.put(JmlCompilerOptions.OPTION_EnableJmlNewLoopSemantics, options.jmlNewLoopSemanticsEnabled ? CompilerOptions.ENABLED: CompilerOptions.DISABLED);
 	}
 
@@ -171,8 +173,18 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile)) != null) {
 	    	options.jmlEscDistributedPropertiesFile = (String)optionValue;
 	    }
+	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EscDistributedDispatcherPath)) != null) {
+	    	options.jmlEscDistributedDispatcherPath = (String)optionValue;
+	    }
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EnableJmlBoogie)) != null) {
 	    	options.jmlBoogieEnabled = CompilerOptions.ENABLED.equals(optionValue);
+	    }
+	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EscDistributedEnabled)) != null) {
+	    	options.jmlEscDistibutedEnabled = CompilerOptions.ENABLED.equals(optionValue);
+	    	if(options.jmlEscDistibutedEnabled)	{
+	    		options.jmlEscProverStrategy = "distributed"; //$NON-NLS-1$
+	    		optionsMap.put(optionsMap.get(JmlCompilerOptions.OPTION_EscProverStrategy), "distributed"); //$NON-NLS-1$
+	    	}
 	    }
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_SimplifyPath)) instanceof String) {
 	    	options.jmlSimplifyPath=(String) optionValue;
@@ -187,6 +199,7 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    buf.append("\n\t\t- DBC: ").append(options.jmlDbcEnabled ? CompilerOptions.ENABLED : CompilerOptions.DISABLED); //$NON-NLS-1$
 	    buf.append("\n\t\t- prover strategy: ").append(options.jmlEscProverStrategy); //$NON-NLS-1$
 	    buf.append("\n\t\t- distributed properties: ").append(options.jmlEscDistributedPropertiesFile); //$NON-NLS-1$
+	    buf.append("\n\t\t- distributed dispatcher: ").append(options.jmlEscDistributedDispatcherPath); //$NON-NLS-1$
 	    buf.append("\n\t\t- new loop semantics: ").append(options.jmlNewLoopSemanticsEnabled ? CompilerOptions.ENABLED : CompilerOptions.DISABLED); //$NON-NLS-1$
 	    buf.append("\n\t\t- spec path: ").append(options.jmlSpecPath); //$NON-NLS-1$
 	    buf.append("\n\t\t- report inadvertent annotation disabling: ").append(options.getSeverityString(JmlCompilerOptions.ReportJmlCommentDisabled)); //$NON-NLS-1$

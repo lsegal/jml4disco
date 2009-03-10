@@ -370,11 +370,23 @@ public class CompilerOptions {
 	// <jml-start id="esc4proofstrategy" />
 	// DISCO set prover strategy here, local (blank)/distributed
 	public String jmlEscProverStrategy = ""; //$NON-NLS-1$
-	// DISCO compiler option for properties file
-	public String jmlEscDistributedPropertiesFile = ""; //$NON-NLS-1$
-
 	// <jml-end id="esc4proofstrategy" />
 
+	// <jml-start id="esc4distributedpropertiesFile" />
+	// DISCO compiler option for properties file
+	public String jmlEscDistributedPropertiesFile = ""; //$NON-NLS-1$
+	// <jml-end id="esc4distributedpropertiesFile" />
+	
+	// <jml-start id="esc4distibutedenabled" />
+	//DISCO distributed enable
+	public boolean jmlEscDistibutedEnabled = false; //$NON-NLS-1$
+	// <jml-end id="esc4distibutedenabled" />
+	
+	// <jml-start id="esc4distributeddispatcherpath" />
+	//DISCO dispatcher path
+	public String jmlEscDistributedDispatcherPath = ""; //$NON-NLS-1$
+	// <jml-end id="esc4distributeddispatcherpath" />
+	
 	//<jml-start id="fspvsupport" />
 	public boolean jmlFspvEnabled = false;
 	//<jml-end id="fspvsupport" />

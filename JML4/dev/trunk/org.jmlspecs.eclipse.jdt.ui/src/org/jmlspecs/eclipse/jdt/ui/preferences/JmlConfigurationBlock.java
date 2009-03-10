@@ -60,6 +60,9 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 	private static final Key PREF_JML_COMMENTDISABLED = getJDTCoreKey(JavaCore.COMPILER_JML_COMMENTDISABLED);
 	private static final Key PREF_ENABLE_JML2_CHECKER = getJDTCoreKey(JavaCore.COMPILER_ENABLE_JML2_CHECKER);
 	private static final Key PREF_ENABLE_JML2_COMPILER = getJDTCoreKey(JavaCore.COMPILER_ENABLE_JML2_COMPILER);
+	private static final Key PREF_ENABLE_DISTRIBUTED = getJDTCoreKey(JavaCore.COMPILER_ENABLE_DISTRIBUTED);
+	private static final Key PREF_SPEC_DISTRIBUTED_DISPATCHER_PATH = getJDTCoreKey(JavaCore.COMPILER_DISTRIBUTED_DISPATCHER_PATH);
+	private static final Key PREF_ENABLE_JML_BOOGIE = getJDTCoreKey(JavaCore.COMPILER_ENABLE_JML_BOOGIE);
 	
 	// values
 	private static final String ERROR = JavaCore.ERROR;
@@ -81,6 +84,8 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 	private /*@nullable*/ Composite escComposite;
 	private /*@nullable*/ Composite fspvComposite;
 	private /*@nullable*/ Composite jml2Composite;
+	
+	private /*@nullable*/ Text distributedPathText;
 
 	private /*@nullable*/ ControlEnableState genEnableState;
 	private /*@nullable*/ ControlEnableState progProbsEnableState;
@@ -89,6 +94,7 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 	private /*@nullable*/ ControlEnableState escCompositeState;
 	private /*@nullable*/ ControlEnableState fspvCompositeState;
 	private /*@nullable*/ ControlEnableState jml2ControlState;
+	private /*@nullable*/ ControlEnableState distributedEnableState;
 	
 	private Button jmlEnableButton;
 	private Button jml2EnableCheckerCheckBox;
@@ -96,6 +102,8 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 	private Button esc4EnableCheckBox;
 	private Button esc2EnableCheckBox;
 	private Button fspvEnableCheckBox;
+	private Button distributedEnableCheckBox;
+	private Button boogieEnableCheckBox;	
 	
 	public JmlConfigurationBlock(IStatusChangeListener context, IProject project, IWorkbenchPreferenceContainer container) {
 		super(context, project, getKeys(), container);
@@ -127,6 +135,9 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 				PREF_ESC2_COMMANDLINE_ARGS,
 				PREF_ENABLE_JML2_CHECKER,
 				PREF_ENABLE_JML2_COMPILER,
+				PREF_ENABLE_DISTRIBUTED,
+				PREF_SPEC_DISTRIBUTED_DISPATCHER_PATH,
+				PREF_ENABLE_JML_BOOGIE
 			};
 	}
 	
@@ -228,6 +239,10 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
         inst = new Label(inner,SWT.LEFT);
         inst.setFont(description.getFont());
         inst.setText("as appropriate in the spec path)"); 
+        
+		//Boogie
+		label = PreferencesMessages.JmlEnableBoogie_label;
+		boogieEnableCheckBox = addCheckBox(inner, label, PREF_ENABLE_JML_BOOGIE, enabledDisabled, extraIndent);
 		
         //Potential programming/specification problems
 		label = PreferencesMessages.JmlProgrammingSecifications_title;
@@ -312,6 +327,17 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 		gd.widthHint = fPixelConverter.convertWidthInCharsToPixels(50);
 		gd.horizontalAlignment = GridData.END;
 		text.setTextLimit(255);
+		
+		//Distributed
+		label = PreferencesMessages.JmlEnableDistributed_label;
+		distributedEnableCheckBox = addCheckBox(inner, label, PREF_ENABLE_DISTRIBUTED, enabledDisabled, extraIndent);
+		//Distributed path
+		label = PreferencesMessages.JmlSpecPathDistributed_label;
+		distributedPathText = addTextField(inner, label, PREF_SPEC_DISTRIBUTED_DISPATCHER_PATH, extraIndent, 0);
+		gd = (GridData) distributedPathText.getLayoutData();
+		gd.widthHint = fPixelConverter.convertWidthInCharsToPixels(50);
+		gd.horizontalAlignment= GridData.END;
+		distributedPathText.setTextLimit(255);
 
 		// FSPV
 		label = PreferencesMessages.JmlFspv_title; 
@@ -377,6 +403,7 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 	private void updateEnableDisableStatusOfControls() {
 		boolean enableJml= checkValue(PREF_ENABLE_JML, ENABLED);
 		boolean dbcEnabled = checkValue(PREF_ENABLE_JML_DBC, ENABLED);
+		boolean distributedEnabled = checkValue(PREF_ENABLE_DISTRIBUTED, ENABLED);
 		if (enableJml) {
 			if (genEnableState != null) {
 				genEnableState.restore();
@@ -429,6 +456,17 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 			if (fspvCompositeState == null) {
 				fspvCompositeState = ControlEnableState.disable(fspvComposite);
 			}
+		}
+		
+		if (enableJml && dbcEnabled && distributedEnabled) {
+			if (distributedEnableState != null) {
+				distributedEnableState.restore();
+				distributedEnableState = null;
+			}
+		}
+		else {
+			if(enableJml && dbcEnabled && distributedEnableState == null)
+				distributedEnableState = ControlEnableState.disable(distributedPathText);
 		}
 	}
 

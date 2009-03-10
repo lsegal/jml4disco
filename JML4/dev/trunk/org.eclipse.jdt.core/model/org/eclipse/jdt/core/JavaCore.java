@@ -1557,6 +1557,30 @@ public final class JavaCore extends Plugin {
 	 * @since 3.3
 	 * @category CompilerOptionID
 	 */
+	
+	public static final String COMPILER_ENABLE_DISTRIBUTED = PLUGIN_ID + ".compiler.problem.enableDistributed"; //$NON-NLS-1$
+	/**
+	 * Possible  configurable option ID.
+	 * @see #getDefaultOptions()
+	 * @since 3.3 (JML)
+	 */
+	
+	public static final String COMPILER_DISTRIBUTED_DISPATCHER_PATH = PLUGIN_ID + ".compiler.problem.distributedDispatcherPath"; //$NON-NLS-1$
+	/**
+	 * Possible  configurable option ID.
+	 * @see #getDefaultOptions()
+	 * @since 3.3 (JML)
+	 */
+	
+	public static final String COMPILER_ENABLE_JML_BOOGIE = PLUGIN_ID + ".compiler.problem.enableJmlBoogie"; //$NON-NLS-1$
+	/**
+	 * Possible  configurable option ID.
+	 * @see #getDefaultOptions()
+	 * @since 3.3 (JML)
+	 */
+	
+	
+	
 	public static final String COMPILER_PB_OVERRIDING_METHOD_WITHOUT_SUPER_INVOCATION = PLUGIN_ID + ".compiler.problem.overridingMethodWithoutSuperInvocation"; //$NON-NLS-1$
 	/**
 	 * Compiler option ID: Reporting Redundant Superinterface.

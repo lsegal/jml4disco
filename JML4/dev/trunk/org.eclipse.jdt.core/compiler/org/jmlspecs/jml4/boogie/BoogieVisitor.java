@@ -298,16 +298,26 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=expr
 	public boolean visit(Assignment term, BlockScope scope) {
 		debug(term, scope);
+		if (term.expression instanceof AllocationExpression) {
+			// FIXME we don't handle this yet!
+			return false;
+		}
+		
 		if (term.expression instanceof MessageSend) {
 			append("call "); //$NON-NLS-1$
 		}
 		term.lhs.traverse(this, scope);
 		append(" := "); //$NON-NLS-1$
 		term.expression.traverse(this, scope);
+		
 		return false;
 	}
 	
 	public void endVisit(Assignment term, BlockScope scope) {
+		if (term.expression instanceof AllocationExpression) {
+			// FIXME we don't handle this yet!
+			return;
+		}
 		appendLine (STMT_END);		
 	}
 
@@ -1141,7 +1151,13 @@ public class BoogieVisitor extends ASTVisitor {
 			return true;
 		}
 		
-		append(new String(term.token));
+		if (term.resolvedType != null && !term.resolvedType.isBaseType()) {
+			declareType(new String(term.resolvedType.readableName()));
+			append(term.resolvedType.readableName());
+		}
+		else {
+			append(new String(term.token));
+		}
 		
 		return true;
 	}

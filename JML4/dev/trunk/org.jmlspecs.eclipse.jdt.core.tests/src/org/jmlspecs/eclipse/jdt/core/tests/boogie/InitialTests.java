@@ -1744,8 +1744,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//expected boogie
-				"var tests.esc.A.x : [Object] N;\n" +
-				"var tests.esc.A.y : N;\n" +
+				"var tests.esc.A.x : [Object] tests.esc.N;\n" +
+				"var tests.esc.A.y : tests.esc.N;\n" +
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	call tests.esc.N.n(tests.esc.A.x[this]);\n" +
 				"	call tests.esc.N.n(tests.esc.A.y);\n" +
@@ -1768,7 +1768,6 @@ public class InitialTests extends AbstractRegressionTest {
 				//TODO expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	var a : tests.esc.N;\n" +
-				"	a := _ctor_tests.esc.N();\n" +
 				"	call tests.esc.N.n(a);\n" +
 				"}\n" +
 				"procedure tests.esc.N.n(this : tests.esc.N) {\n" +

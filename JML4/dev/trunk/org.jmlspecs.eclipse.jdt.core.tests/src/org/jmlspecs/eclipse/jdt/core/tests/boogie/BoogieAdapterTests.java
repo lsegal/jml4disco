@@ -184,13 +184,13 @@ public class BoogieAdapterTests extends InitialTests {
 	}
 
 	@Override
-	public void test_0370_Break_withlabel() {
-		super.test_0370_Break_withlabel();
+	public void test_0370_while_break_withlabel() {
+		super.test_0370_while_break_withlabel();
 	}
 
 	@Override
-	public void test_0371_Break() {
-		super.test_0371_Break();
+	public void test_0371_while_break() {
+		super.test_0371_while_break();
 	}
 
 	@Override
@@ -274,8 +274,8 @@ public class BoogieAdapterTests extends InitialTests {
 	}
 
 	@Override
-	public void test_500_for_multi_initialization() {
-		super.test_500_for_multi_initialization();
+	public void test_501_for_multi_initialization() {
+		super.test_501_for_multi_initialization();
 	}
 
 	@Override

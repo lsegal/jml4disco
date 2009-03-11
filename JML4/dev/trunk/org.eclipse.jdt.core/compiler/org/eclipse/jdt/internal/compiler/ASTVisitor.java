@@ -116,9 +116,11 @@ import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
 import org.jmlspecs.jml4.ast.JmlClause;
 import org.jmlspecs.jml4.ast.JmlCompilationUnitDeclaration;
 import org.jmlspecs.jml4.ast.JmlConstructorDeclaration;
+import org.jmlspecs.jml4.ast.JmlDoStatement;
 import org.jmlspecs.jml4.ast.JmlEnsuresClause;
 import org.jmlspecs.jml4.ast.JmlFieldDeclaration;
 import org.jmlspecs.jml4.ast.JmlFieldReference;
+import org.jmlspecs.jml4.ast.JmlForStatement;
 import org.jmlspecs.jml4.ast.JmlLocalDeclaration;
 import org.jmlspecs.jml4.ast.JmlLoopAnnotations;
 import org.jmlspecs.jml4.ast.JmlLoopInvariant;
@@ -1336,6 +1338,12 @@ public abstract class ASTVisitor {
 	}
 	public void endVisit(JmlWhileStatement whileStatement, BlockScope scope) {
 		// do nothing by default, keep traversing
+	}
+	public boolean visit(JmlForStatement whileStatement, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+	public boolean visit(JmlDoStatement whileStatement, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(JmlLoopAnnotations jmlLoopAnnotations, BlockScope scope) {
 		return true; // do nothing by default, keep traversing

@@ -101,8 +101,10 @@ import org.jmlspecs.jml4.ast.JmlAssignment;
 import org.jmlspecs.jml4.ast.JmlAssumeStatement;
 import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
 import org.jmlspecs.jml4.ast.JmlClause;
+import org.jmlspecs.jml4.ast.JmlDoStatement;
 import org.jmlspecs.jml4.ast.JmlEnsuresClause;
 import org.jmlspecs.jml4.ast.JmlFieldDeclaration;
+import org.jmlspecs.jml4.ast.JmlForStatement;
 import org.jmlspecs.jml4.ast.JmlLoopAnnotations;
 import org.jmlspecs.jml4.ast.JmlLoopInvariant;
 import org.jmlspecs.jml4.ast.JmlLoopVariant;
@@ -111,6 +113,7 @@ import org.jmlspecs.jml4.ast.JmlMethodSpecification;
 import org.jmlspecs.jml4.ast.JmlOldExpression;
 import org.jmlspecs.jml4.ast.JmlRequiresClause;
 import org.jmlspecs.jml4.ast.JmlResultReference;
+import org.jmlspecs.jml4.ast.JmlWhileStatement;
 
 public class BoogieVisitor extends ASTVisitor {
 	private static final boolean DEBUG = true;
@@ -509,11 +512,25 @@ public class BoogieVisitor extends ASTVisitor {
 		} else {
 			appendLine(term.action);
 		}
-		WhileStatement whl = new WhileStatement(term.condition, term.action, term.sourceStart, term.sourceEnd);  
-		whl.traverse(this, scope); 
+		
+		if (term instanceof JmlDoStatement){
+			JmlDoStatement jmlDo = (JmlDoStatement)term;
+			JmlWhileStatement jmlwhl = new JmlWhileStatement(jmlDo.annotations, term.condition, term.action, term.sourceStart, term.sourceEnd);
+			jmlwhl.traverse(this, scope);
+		} else {
+			WhileStatement whl = new WhileStatement(term.condition, term.action, term.sourceStart, term.sourceEnd);  
+			whl.traverse(this, scope); 
+		}
+		
 		return false;
 	}
 
+	public boolean visit(JmlDoStatement term, BlockScope scope) {
+		debug(term, scope);	
+		visit ((DoStatement)term, scope);
+		return false;
+	}
+	
 	// priority=3 group=lit
 	public boolean visit(DoubleLiteral term, BlockScope scope) {
 		debug(term, scope);
@@ -613,22 +630,22 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// priority=3 group=stmt
-	public boolean visit(ForStatement term, BlockScope scope) {
-		debug(term, scope);
-		
-		for (int i = 0; i< term.initializations.length ; i++) {
-			term.initializations[i].traverse(this, scope);
-		}
-		
+	private Block makeBlockForLoop(ForStatement term) {
 		Block blk = new Block(0);
-		int len = 1;
-		if (term.action instanceof Block) {
-			len = ((Block)term.action).statements.length;
-		}
+		int len = 0;
+		if (term.action != null ) {
+			if (term.action instanceof Block) {
+				Block b = ((Block)term.action); 
+				if (!b.isEmptyBlock())
+					len = b.statements.length;
+			}else 
+				len = 1;
+			}
+			
+		
 		blk.statements = new Statement[len + term.increments.length];
 		for (int i = 0; i < len; i++) {
-			if (term.action instanceof Block) {
+			if (term.action instanceof Block && ((Block)term.action).statements != null ) {
 				blk.statements[i] = ((Block)term.action).statements[i];
 			}
 			else {
@@ -638,12 +655,8 @@ public class BoogieVisitor extends ASTVisitor {
 		for (int i = 0; i < term.increments.length; i++) {
 			blk.statements[i+len] = term.increments[i];
 		}
-		
-		WhileStatement w = new WhileStatement(term.condition, 
-				blk, term.sourceStart, term.sourceEnd);
-		w.traverse(this, scope);
-		
-		return false;
+		blk.scope = term.scope;
+		return blk;
 	}
 
 	// priority=3 group=stmt
@@ -738,8 +751,10 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 	
+
+	
 	// priority=0 group=jml
-	public boolean visit(JmlLoopAnnotations term, BlockScope scope) {
+	public boolean d(JmlLoopAnnotations term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
@@ -747,6 +762,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=3 group=jml
 	public boolean visit(JmlLoopInvariant term, BlockScope scope) {
 		debug(term, scope);
+		append("invariant ");		 //$NON-NLS-1$
 		return true;
 	}
 
@@ -800,7 +816,60 @@ public class BoogieVisitor extends ASTVisitor {
 		append("__result__"); //$NON-NLS-1$
 		return true;
 	}
+	
+	// priority=3 group=jml
+	public boolean visit (JmlWhileStatement term, BlockScope scope) {
+		debug(term, scope);
+		visit((WhileStatement)term, scope);
+		return false;
+		
+	}	
+	// priority=3 group=stmt
+	public boolean visit(WhileStatement term, BlockScope scope) {
+		debug(term, scope);
+		append("while ("); //$NON-NLS-1$
+		term.condition.traverse(this, scope);
+		append(") "); //$NON-NLS-1$
+		
+		if (term instanceof JmlWhileStatement ) {
+			JmlWhileStatement jmlWhile = (JmlWhileStatement) term;
+			jmlWhile.annotations.traverse(this, scope);
+			append(STMT_END + " "); //$NON-NLS-1$
+		}
+		
+		toBlock(term.action, scope).traverse(this, scope);
+		return false;
+	}
+	// priority=3 group=jml
+	public boolean visit (JmlForStatement term, BlockScope scope) {
+		debug(term, scope);
+		for (int i = 0; i< term.initializations.length ; i++) {
+			term.initializations[i].traverse(this, scope);
+		}
+		
+		Block blk = makeBlockForLoop(term);
+		JmlWhileStatement w = new JmlWhileStatement(term.annotations, term.condition, blk, term.sourceStart, term.sourceEnd);
+		w.traverse(this, scope);
 
+		return false;		
+
+	}
+	
+	// priority=3 group=stmt
+	public boolean visit(ForStatement term, BlockScope scope) {
+		debug(term, scope);
+		for (int i = 0; i< term.initializations.length ; i++) {
+			term.initializations[i].traverse(this, scope);
+		}
+		
+		Block blk = makeBlockForLoop(term);
+		WhileStatement w = new WhileStatement(term.condition, 
+				blk, term.sourceStart, term.sourceEnd);
+		w.traverse(this, scope);
+		
+		return false;
+	}
+	
 	// priority=1 group=stmt
 	public boolean visit(LabeledStatement term, BlockScope scope) {
 		debug(term, scope);
@@ -1289,16 +1358,6 @@ public class BoogieVisitor extends ASTVisitor {
 		
 		append (term.operatorToString());
 		return true;
-	}
-
-	// priority=3 group=stmt
-	public boolean visit(WhileStatement term, BlockScope scope) {
-		debug(term, scope);
-		append("while ("); //$NON-NLS-1$
-		term.condition.traverse(this, scope);
-		append(") "); //$NON-NLS-1$
-		toBlock(term.action, scope).traverse(this, scope);
-		return false;
 	}
 
 	// priority=0 group=misc

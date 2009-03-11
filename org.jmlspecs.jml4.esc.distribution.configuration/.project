@@ -3,7 +3,7 @@
 	<name>org.jmlspecs.jml4.esc.distribution.configuration</name>
 	<comment></comment>
 	<projects>
-		<project>org.eclipse.debug.core</project>
+		<project>org.eclipse.jdt.core</project>
 		<project>org.jmlspecs.jml4.esc.distribution</project>
 	</projects>
 	<buildSpec>

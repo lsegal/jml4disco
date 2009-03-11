@@ -12,7 +12,6 @@ package org.jmlspecs.jml4.esc.distribution.servers.vcprogram;
 
 import java.util.Vector;
 
-import org.jmlspecs.jml4.esc.Esc;
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.AbstractRemoteServer;
 import org.jmlspecs.jml4.esc.result.lang.Result;
 import org.jmlspecs.jml4.esc.vc.lang.VC;
@@ -43,7 +42,10 @@ public class ProveVcThread implements Runnable {
 	public void run() {
 		vc.setName(vcProg.methodIndicator + "_" + (count + 1)); //$NON-NLS-1$
 		String[] prover = new String[1]; 
-		Result[] results = VcCache.get(vc); 
+		Result[] results =null;
+		if(VcCache.isEnabled()) {
+			results = VcCache.get(vc);
+		}
 		if(results == null){ 
 			results = server.proveVc(count, vc, vcProg.incarnations, prover); 
 			if (!Result.isValid(results)) { 

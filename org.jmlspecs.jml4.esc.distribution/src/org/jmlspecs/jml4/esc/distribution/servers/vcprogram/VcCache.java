@@ -14,6 +14,7 @@ public class VcCache {
 	private static ArrayList<VC> simplifyList = new ArrayList<VC>();
 	private static ArrayList<VC> cvc3List = new ArrayList<VC>();
 	private static ArrayList<VC> notSimplifyList = new ArrayList<VC>();
+	private static boolean enabled;
 
 	private VcCache(){}
 	
@@ -27,6 +28,14 @@ public class VcCache {
 		}
 		return null;
 			
+	}
+	
+	public static boolean isEnabled() {
+		return enabled;
+	}
+	
+	public static void setEnabled(boolean e) {
+		enabled = e;
 	}
 
 	public synchronized static void add(VC vc, Result[] result, String prover){

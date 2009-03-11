@@ -829,4 +829,61 @@ public class AdapterTests extends AbstractRegressionTest {
 				""
 				);
 	}	
+	
+	//TODO
+	public void test_someNumber_intMaxBoundary() {
+		this.runNegativeTest(new String[]{
+				"A.java",
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" + 
+				"   public void m1() {\n" +
+				"      int max = 2147483647;\n" +
+				"	   //@ assert (max == 2147483647);\n" +
+				"   }\n" +
+				"	public void m2() {\n" +
+				"		int max = 2147483647;\n" + 
+				"	   //@ assert (max == 2147483646);\n" +
+				"	}\n" +
+				"}\n"
+				},
+				//expected output
+				"----------\n" +
+				"1. ERROR in A.java (at line 9)\n" +
+				"	//@ assert (max == 2147483646);\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
+				);
+		
+	}
+	
+	//TODO
+	public void test_someNumber_intMinBoundary() {
+		this.runNegativeTest(new String[]{
+				"A.java",
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" + 
+				"   public void m1() {\n" +
+				"      int min = -2147483648;\n" +
+				"	   //@ assert (min == -2147483648);\n" +
+				"   }\n" +
+				"	public void m2() {\n" +
+				"		int min = -2147483648;\n" + 
+				"	   //@ assert (min == -2147483647);\n" +
+				"	}\n" +
+				"}\n"
+				},
+				//expected output
+				"----------\n" +
+				"1. ERROR in A.java (at line 9)\n" +
+				"	//@ assert (min == -2147483647);\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
+				);
+		
+	}
+	
 }

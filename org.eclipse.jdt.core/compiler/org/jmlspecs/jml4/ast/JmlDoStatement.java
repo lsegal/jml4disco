@@ -1,5 +1,6 @@
 package org.jmlspecs.jml4.ast;
 
+import org.eclipse.jdt.internal.compiler.ASTVisitor;
 import org.eclipse.jdt.internal.compiler.ast.DoStatement;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.ast.Statement;
@@ -9,7 +10,7 @@ import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 
 public class JmlDoStatement extends DoStatement {
 
-	private final JmlLoopAnnotations annotations;
+	public final JmlLoopAnnotations annotations;
 
 	public JmlDoStatement(JmlLoopAnnotations annotations, Expression condition, Statement action,
 			int sourceStart, int sourceEnd) {
@@ -28,4 +29,14 @@ public class JmlDoStatement extends DoStatement {
 	}
 
 	//TODO: implement RAC
+	public void traverse(ASTVisitor visitor, BlockScope scope) {
+		if (visitor.visit(this, scope)) {
+			this.annotations.traverse(visitor, scope);
+			if (this.action != null) {
+				this.action.traverse(visitor, scope);
+			}
+			this.condition.traverse(visitor, scope);
+		}
+		visitor.endVisit(this, scope);
+	}	
 }

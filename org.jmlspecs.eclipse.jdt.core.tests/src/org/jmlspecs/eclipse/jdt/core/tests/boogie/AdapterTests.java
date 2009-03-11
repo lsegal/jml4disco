@@ -644,7 +644,12 @@ public class AdapterTests extends AbstractRegressionTest {
 				"	}\n" +						
 				"}\n"
 				},
-				"THIS SHOULD FAIL");
+				"----------\n" +
+				"1. ERROR in " + testsPath + "X.java (at line 18)\n" +
+				"	//@ assert (x<10);\n" +
+				"	           ^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n");
 	}
 	
 	// term=DoStatement,Block

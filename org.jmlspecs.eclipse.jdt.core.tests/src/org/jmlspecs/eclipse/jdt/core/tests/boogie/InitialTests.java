@@ -926,7 +926,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}	
 
 	// term=WhileStatement,BreakStatement,LabeledStatement,Block
-	public void test_0370_Break_withlabel() {		 
+	public void test_0370_while_break_withlabel() {		 
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -957,7 +957,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 
 	// term=WhileStatement,BreakStatement,Block
-	public void test_0371_Break() {		 
+	public void test_0371_while_break() {		 
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -979,6 +979,74 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n");
 	}
 	
+	//term=JmlWhileStatement
+    public void test_0372_while_invariant_true() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+                "public class A {\n"+
+                "   public void m(boolean b) { \n" +
+                "   	//@ loop_invariant true;\n" +
+                "   	while (b) {\n" +
+                "		} \n" +
+                "	}\n" +
+                "}\n"
+                ,
+               //expected boogie
+                "procedure tests.esc.A.m(this : tests.esc.A, a: bool) {\n" +
+        		"	while (a) invariant true; {\n" +
+        		"	}\n" +
+        		"}\n"		
+                );
+		
+    }
+    
+    //term=JmlWhileStatement
+    public void test_0373_while_invariant_expr() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+                "public class A {\n"+
+                "   public void m(boolean b) { \n" +
+                "		int n = 5;\n" +
+                "   	//@ loop_invariant n == 5;\n" +
+                "   	while (b) {\n" +
+                "		} \n" +
+                "	}\n" +
+                "}\n"
+                ,
+               //expected boogie
+                "procedure tests.esc.A.m(this : tests.esc.A, a: bool) {\n" +
+				"	var b : int;\n" +
+				"	b := 5;\n" +
+				"	while (a) invariant (b == 5); {\n" +
+				"	}\n" +
+				"}\n"
+                );
+    }  
+
+    //term=JmlWhileStatement
+    public void test_0374_while_invariant_break() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+                "public class A {\n"+
+                "   public void m(boolean b) { \n" +
+                "   	//@ loop_invariant true;\n" +
+                "   	here: while (b) { break here;} \n" +
+                "	}\n" +
+                "}\n"
+                ,
+               //expected boogie
+                "procedure tests.esc.A.m(this : tests.esc.A, a: bool) {\n" +
+				"	here:\n" +
+				"	while (a) invariant true; {\n" +
+				"		break here;\n" +
+				"	}\n" +
+				"}\n"
+				);
+    }     
+
 	// term=DoStatement,Block
 	public void test_400_do() {
 		this.compareJavaToBoogie(
@@ -1042,7 +1110,44 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				);
 	}
-
+	
+	// term=JmlDoStatement
+	public void test_402_do_invariant() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" + 
+			    "   public void m1(boolean b) { \n" +
+			    "   	//@ loop_invariant true;\n" +
+			    "   	do {} while (b); \n" +
+			    "	}\n" +
+			    "   public void m2(boolean b) { \n" +
+			    "   	//@ loop_invariant true;\n" +
+				"		do{\n" +
+				"      		//@ assert (true);\n" +
+				"      		//@ assert (false);\n" +
+				"      		//@ assert (true);\n" +
+				"		}while(true);\n" +
+			    "	}\n" +			    
+			    "}\n"
+			    ,
+			    "procedure tests.esc.A.m1(this : tests.esc.A, a: bool) {\n" +
+				"	while (a) invariant true; {\n" +
+				"	}\n" +
+				"}\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A, a: bool) {\n" +
+				"	assert true;\n" +
+				"	assert false;\n" +
+				"	assert true;\n" +
+				"	while (true) invariant true; {\n" +
+				"		assert true;\n" +
+				"		assert false;\n" +
+				"		assert true;\n" +
+				"	}\n" +
+				"}\n"
+			    );
+	}
+	
 	// term=ForStatement,Block,BinaryExpression
 	public void test_500_for() {		
 		this.compareJavaToBoogie(
@@ -1082,8 +1187,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 	
 	// term=Assignment,ForStatement,Block,BinaryExpression
-	public void test_500_for_multi_initialization() {
-
+	public void test_501_for_multi_initialization() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -1112,6 +1216,28 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
+	//term=JmlForStatement
+	public void test_503_for_invariant() {
+		this.compareJavaToBoogie(
+				//java	
+				"package tests.esc;\n" +
+			    "public class A {\n"+
+			    "   public void m(boolean b) { \n" +
+			    "   	//@ loop_invariant true;\n" +
+			    "   	for (int i=0; i<10; i++) {} \n" +
+			    "	}\n" +
+			    "}\n"
+			    ,
+			    "procedure tests.esc.A.m(this : tests.esc.A, a: bool) {\n" +
+				"	var b : int;\n" +
+				"	b := 0;\n" +
+				"	while ((b < 10)) invariant true; {\n" +
+				"		b := (b + 1);\n" +
+				"	}\n" +
+				"}\n"
+			    );
+	}
+    
 	// term=Assignment,PostfixExpression,LocalDeclaration
 	public void test_600_postFixExpression() {
 		
@@ -1933,4 +2059,5 @@ public class InitialTests extends AbstractRegressionTest {
 				""
 				);
 	}
+
 }

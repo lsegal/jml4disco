@@ -1668,6 +1668,37 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
+	//TODO
+	public void test_1005_int_boundaries() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" + 
+				"   public void m1() {\n" +
+				"      int max = Integer.MAX_VALUE;\n" +
+				"	   //@ assert (max == 2147483647);" +
+				"   }\n" +
+				"	public void m2() {\n" +
+				"		int min = Integer.MIN_VALUE;\n" + 
+				"	   //@ assert (min == -2147483648);" +
+				"	}\n" +
+				"}\n"
+				
+				,
+				//TODO expected boogie
+				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
+				"	var a : int;\n" +
+				"	a := 2147483647;\n" +
+				"	assert (a == 2147483647);\n" +
+				"}\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
+				"	var a : int;\n" +
+				"	a := -2147483648;\n" +
+				"	assert (a == -2147483648);\n" +
+				"}\n"
+				);
+	}
+	
 	// term=MessageSend adapter=true 
 	public void test_2000_messageSend() {
 		this.compareJavaToBoogie(
@@ -1881,7 +1912,7 @@ public class InitialTests extends AbstractRegressionTest {
 	}
 	
 	// TODO term=MessageSend adapter=true
-	public void test_2005_messageSendOnLocal() {
+	public void test_2005_messageSendOnLocal() {System.out.println(Integer.MIN_VALUE);
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +

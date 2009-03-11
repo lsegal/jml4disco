@@ -71,7 +71,10 @@ public class ConfigWorkbench extends HttpServlet {
 				String filename = getServletConfig().getServletContext().getRealPath(path);
 				File f = new File(filename); 
 				if(f.exists()) {
-					Presentation.render(request, response, getServletConfig().getServletContext().getRequestDispatcher("/WEB-INF/config-workbench/"+in+".get.jsp"));
+					Presentation.render(request, response, getServletConfig().getServletContext().getRequestDispatcher(path));
+				}
+				else {
+					throw new ServletException("No view for command "+command+".");
 				}
 			}
 
@@ -79,7 +82,7 @@ public class ConfigWorkbench extends HttpServlet {
 			
 			try {
 
-				String path = "/WEB-INF/config-workbench/"+in;
+				String path = "/WEB-INF/config-workbench/public/"+in;
 				String filename = getServletConfig().getServletContext().getRealPath(path);
 				File f = new File(filename); 
 				if(f.exists()) {

@@ -388,4 +388,9 @@ public class BoogieAdapterTests extends InitialTests {
 	public void test_910_JmlOldExpression() {
 		super.test_910_JmlOldExpression();
 	}
+
+	@Override
+	public void test_911_JmlOldExpression() {
+		super.test_911_JmlOldExpression();
+	}
 }

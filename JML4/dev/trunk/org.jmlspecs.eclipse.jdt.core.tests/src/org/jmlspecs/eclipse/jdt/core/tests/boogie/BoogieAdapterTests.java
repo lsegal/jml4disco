@@ -347,7 +347,50 @@ public class BoogieAdapterTests extends InitialTests {
 	public void testTrueLiteral() {
 		super.testTrueLiteral();
 	}
-	
-	
 
+	@Override
+	public void test_0372_while_invariant_true() {
+		// TODO Auto-generated method stub
+		super.test_0372_while_invariant_true();
+	}
+
+	@Override
+	public void test_0373_while_invariant_expr() {
+		super.test_0373_while_invariant_expr();
+	}
+
+	@Override
+	public void test_0374_while_invariant_break() {
+		super.test_0374_while_invariant_break();
+	}
+
+	@Override
+	public void test_1005_int_boundaries() {
+		super.test_1005_int_boundaries();
+	}
+
+	@Override
+	public void test_402_do_invariant() {
+		super.test_402_do_invariant();
+	}
+
+	@Override
+	public void test_503_for_invariant() {
+		super.test_503_for_invariant();
+	}
+
+	@Override
+	public void test_900_JmlResultExpression() {
+		super.test_900_JmlResultExpression();
+	}
+
+	@Override
+	public void test_901_JmlResultExpression() {
+		super.test_901_JmlResultExpression();
+	}
+
+	@Override
+	public void test_910_JmlOldExpression() {
+		super.test_910_JmlOldExpression();
+	}
 }

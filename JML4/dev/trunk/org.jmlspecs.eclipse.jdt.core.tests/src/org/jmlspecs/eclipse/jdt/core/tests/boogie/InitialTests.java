@@ -479,7 +479,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	//TODO term=JmlMethodDeclaration,JmlAssertStatement,JmlMethodSpecification
+	// term=JmlResultExpression,JmlMethodDeclaration,JmlMethodSpecification
 	public void test_0111_JmlMethodDefinition_EnsuresRequires() {
 		this.compareJavaToBoogie(
 				//java				
@@ -487,13 +487,11 @@ public class InitialTests extends AbstractRegressionTest {
 				"public class A {\n" +
 				"   //@ ensures \\result == 42;\n" + 
 				"	public int m1() {\n" +
-				"		//@ assert true;\n" +
 				"		return 42;\n" +
 				"	}\n" + 
 				"	" +
 				"   //@ requires n >= 0;\n" + 
 				"	public int m2(int n) {\n" +
-				"		//@ assert true;\n" +
 				"      if (n == 0)\n" +
 		        "         return 1;\n" +
 		        "	   return 10;\n"+
@@ -501,7 +499,6 @@ public class InitialTests extends AbstractRegressionTest {
 				"   //@ requires n >= 0;\n" + 				
 				"   //@ ensures \\result == 42;\n" + 
 				"	public int m3(int n) {\n" +
-				"		//@ assert true;\n" +
 				"      if (n == 0)\n" +
 		        "         return 42;\n" +
 				"		return 42;\n" +
@@ -509,24 +506,55 @@ public class InitialTests extends AbstractRegressionTest {
 				"   //@ requires n >= 0;\n" + 				
 				"   //@ ensures \\result == 42;\n" + 
 				"	public int m4(int n) {\n" +
-				"		//@ assert true;\n" +
 				"      if (n == 0)\n" +
 		        "         return 1;\n" +
 				"		return 42;\n" +
 				"	}\n" +
-//				" FIXME put this back when requires/ensures is done				
 //				"   //@ ensures \\result == 42;\n" + 
 //				"   //@ requires n >= 0;\n" + 				
 //				"	public int m5(int n) {\n" +
-//				"		//@ assert true;\n" +
-//				"      if (n == 0)\n" +
+//				"		if (n == 0)\n" +
 //		        "         return 42;\n" +
 //				"		return 42;\n" +
 //				"	}\n" + 				
 				"}\n"	
 				,
-				//TODO expected boogie
-				""
+				"procedure tests.esc.A.m1(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 42); {\n" +
+				"	__result__ := 42;\n" +
+				"	return;\n" +
+				"}\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); {\n" +
+				"	if ((a == 0)) {\n" +
+				"		__result__ := 1;\n" +
+				"		return;\n" +
+				"	}\n" +
+				"	__result__ := 10;\n" +
+				"	return;\n" +
+				"}\n" +
+				"procedure tests.esc.A.m3(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); ensures (__result__ == 42); {\n" +
+				"	if ((a == 0)) {\n" +
+				"		__result__ := 42;\n" +
+				"		return;\n" +
+				"	}\n" +
+				"	__result__ := 42;\n" +
+				"	return;\n" +
+				"}\n" +
+				"procedure tests.esc.A.m4(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); ensures (__result__ == 42); {\n" +
+				"	if ((a == 0)) {\n" +
+				"		__result__ := 1;\n" +
+				"		return;\n" +
+				"	}\n" +
+				"	__result__ := 42;\n" +
+				"	return;\n" +
+				"}\n"
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 24)\n" +
+				"	return 1;\n" +
+				"	       ^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n" 
 				);
 	}
 	
@@ -1474,7 +1502,7 @@ public class InitialTests extends AbstractRegressionTest {
 				//java
 				"package tests.esc;\n" +
 				"public class A {\n" +
-				"	//@ ensures \\result == 3;" +
+				"	//@ ensures \\result == 3;\n" +
 				"	int m() { return 3; }\n" +
 				"}\n" 
 				,
@@ -1489,20 +1517,52 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
+	// term=JmlMethodSpecification,JmlResultExpression adapter=true
+	public void test_901_JmlResultExpression() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	//@ ensures \\result == 4;\n" +
+				"	int m() { return 3; }\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 4); {\n" +
+				"	__result__ := 3;\n" +
+				"	return;\n" +
+				"}\n"
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 3)\n" +
+				"	//@ ensures \\result == 4;\n" +
+				"	    ^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 4)\n" +
+				"	int m() { return 3; }\n" +
+				"	                 ^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n"
+				);
+	}	
+
 	// term=JmlMethodSpecification,JmlOldExpression,JmlResultExpression adapter=true
-	public void test_901_JmlOldExpression() {
+	public void test_910_JmlOldExpression() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
 				"public class A {\n" +
 				"	int x;" +
-				"	//@ ensures \\old(x) == x - 1;" +
+				"	//@ assignable x;\n" +
+				"	//@ ensures \\old(x) == x - 1;\n" +
 				"	int m() { return x++; }\n" +
 				"}\n" 
 				,
 				// expected boogie
 				"var tests.esc.A.x : [tests.esc.A] int;\n" +
-				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] - 1)); {\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) modifies tests.esc.A.x; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] - 1)); {\n" +
 				"	__result__ := tests.esc.A.x[this];\n" +
 				"	tests.esc.A.x[this] := (tests.esc.A.x[this] + 1);\n" +
 				"	return;\n" +

@@ -48,9 +48,7 @@ public class VcArithExpression extends VcBinaryExpression {
 		result = prime * result + operator.hashCode();
 		return result;
 	}
-//	private void writeObject(ObjectOutputStream out) throws IOException{
-//		out.defaultWriteObject();
-//	}
+
 	// DISCO Custom Serialization overriding
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();

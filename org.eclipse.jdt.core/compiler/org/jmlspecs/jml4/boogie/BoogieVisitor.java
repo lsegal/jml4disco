@@ -98,13 +98,10 @@ import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 import org.jmlspecs.jml4.ast.JmlAssertStatement;
 import org.jmlspecs.jml4.ast.JmlAssignableClause;
-import org.jmlspecs.jml4.ast.JmlAssignment;
 import org.jmlspecs.jml4.ast.JmlAssumeStatement;
 import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
-import org.jmlspecs.jml4.ast.JmlClause;
 import org.jmlspecs.jml4.ast.JmlDoStatement;
 import org.jmlspecs.jml4.ast.JmlEnsuresClause;
-import org.jmlspecs.jml4.ast.JmlFieldDeclaration;
 import org.jmlspecs.jml4.ast.JmlForStatement;
 import org.jmlspecs.jml4.ast.JmlLoopAnnotations;
 import org.jmlspecs.jml4.ast.JmlLoopInvariant;
@@ -528,6 +525,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 
+	// priority=3 group=stmt
 	public boolean visit(JmlDoStatement term, BlockScope scope) {
 		debug(term, scope);	
 		visit ((DoStatement)term, scope);
@@ -715,12 +713,6 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 
-	// TODO priority=? group=jml
-	public boolean visit(JmlAssignment term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
 	// priority=3 group=jml
 	public boolean visit(JmlAssumeStatement term, BlockScope scope) {
 		debug(term, scope);
@@ -730,14 +722,8 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 	
-	// TODO priority=? group=jml
+	// TODO priority=0 group=jml
 	public boolean visit(JmlCastExpressionWithoutType term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=? group=jml
-	public boolean visit(JmlClause term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
@@ -749,12 +735,6 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=? group=jml
-	public boolean visit(JmlFieldDeclaration term, MethodScope scope) {
-		debug(term, scope);
-		return true;
-	}
-	
 	// priority=0 group=jml
 	public boolean visit(JmlLoopAnnotations term, BlockScope scope) {
 		debug(term, scope);
@@ -870,6 +850,7 @@ public class BoogieVisitor extends ASTVisitor {
 		toBlock(term.action, scope).traverse(this, scope);
 		return false;
 	}
+	
 	// priority=3 group=jml
 	public boolean visit (JmlForStatement term, BlockScope scope) {
 		debug(term, scope);

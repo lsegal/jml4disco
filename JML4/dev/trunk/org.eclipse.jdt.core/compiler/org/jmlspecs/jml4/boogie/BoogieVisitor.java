@@ -1262,8 +1262,9 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(StringLiteral term, BlockScope scope) {
 		debug(term, scope);
 		String name = new String(term.source());
-		// TODO can this be improved? declare these at the top
-		append("string_lit_" + new Integer(name.hashCode())); //$NON-NLS-1$
+		String type = "string_lit_" + new Integer(name.hashCode()); //$NON-NLS-1$
+		declareType(type);
+		append(type); 
 		return true;
 	}
 

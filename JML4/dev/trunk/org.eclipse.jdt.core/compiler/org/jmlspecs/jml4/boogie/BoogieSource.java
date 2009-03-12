@@ -126,9 +126,10 @@ public class BoogieSource {
 	 */
 	private static void populateHeaders() {
 		headers = new StringBuffer();
+		headers.append("type Object;\n"); //$NON-NLS-1$
 		headers.append("axiom (∀ x : int, y: int • {x % y} {x /y} x%y == x - x/y *y);\n"); //$NON-NLS-1$
 		headers.append("axiom (∀x:int,y:int•{x%y}(0<y⇒0<=x%y∧x%y<y)∧(y<0⇒y<x%y∧x%y<=0));\n"); //$NON-NLS-1$
-		headersOffset = 2;
+		headersOffset = 3;
 	}
 
 	/**

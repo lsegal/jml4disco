@@ -124,7 +124,6 @@ public class BoogieVisitor extends ASTVisitor {
 	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
 	private static final String STMT_END = ";"; //$NON-NLS-1$
-	private static final String OBJECT_TYPE_NAME = "Object"; //$NON-NLS-1$
 	
 	private BoogieSymbolTable symbolTable;
 	
@@ -597,7 +596,7 @@ public class BoogieVisitor extends ASTVisitor {
 		append(new String(term.binding.declaringClass.readableName()) + "."); //$NON-NLS-1$		
 		append(new String(term.name) + " : "); //$NON-NLS-1$
 		if (!term.isStatic())
-			append("[" + OBJECT_TYPE_NAME + "] "); //$NON-NLS-1$ //$NON-NLS-2$
+			append("[" + new String(term.binding.declaringClass.readableName()) + "] "); //$NON-NLS-1$ //$NON-NLS-2$
 		term.type.traverse(this, scope);
 		appendLine(STMT_END);
 		// FIXME this will not work, Boogie requires that all assignments are done in a procedure

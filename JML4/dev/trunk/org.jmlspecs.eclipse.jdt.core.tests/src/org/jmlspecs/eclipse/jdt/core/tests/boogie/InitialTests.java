@@ -1436,8 +1436,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"var tests.esc.A.i : [Object] int;\n" +
-				"var tests.esc.A.b : [Object] bool;\n" +
+				"var tests.esc.A.i : [tests.esc.A] int;\n" +
+				"var tests.esc.A.b : [tests.esc.A] bool;\n" +
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	tests.esc.A.i[this] := 1;\n" +
 				"}\n"
@@ -1501,7 +1501,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"var tests.esc.A.x : [Object] int;\n" +
+				"var tests.esc.A.x : [tests.esc.A] int;\n" +
 				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] - 1)); {\n" +
 				"	__result__ := tests.esc.A.x[this];\n" +
 				"	tests.esc.A.x[this] := (tests.esc.A.x[this] + 1);\n" +
@@ -2068,7 +2068,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				// expected boogie
-				"var tests.esc.A.x : [Object] tests.esc.N;\n" +
+				"var tests.esc.A.x : [tests.esc.A] tests.esc.N;\n" +
 				"var tests.esc.A.y : tests.esc.N;\n" +
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	call tests.esc.N.n(tests.esc.A.x[this]);\n" +

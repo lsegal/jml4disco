@@ -2,7 +2,6 @@ package org.jmlspecs.jml4.esc.provercoordinator.strategy;
 
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
-import org.jmlspecs.jml4.esc.Esc;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.CachedVcs;
 import org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapter;
 import org.jmlspecs.jml4.esc.result.lang.Result;

@@ -6,7 +6,7 @@ import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
 import org.jmlspecs.jml4.boogie.BoogieSource;
 import org.jmlspecs.jml4.boogie.BoogieSourcePoint;
 
-public class BoogieSourceTests extends TestCase{
+public class BoogieSourceTests extends TestCase {
 	
 	public void testPrepend() {
 		BoogieSource b = new BoogieSource();
@@ -21,7 +21,7 @@ public class BoogieSourceTests extends TestCase{
 		String toBeAppended = "true";
 		b.append(toBeAppended, new TrueLiteral(0, 4));
 		
-		assertTrue(toBeAppended.equals(b.getTermAtPoint(new BoogieSourcePoint(4, 1)).toString()));
+		assertTrue(toBeAppended.equals(b.getTermAtPoint(new BoogieSourcePoint(5, 1)).toString()));
 	}
 	
 	public void testEmpty() {

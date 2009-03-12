@@ -208,7 +208,7 @@ class TableRowEmitter
     end
 end
 
-def parse_tests(file)
+def parse_tests(file, adapter_test = false)
     lines = File.read("../" + $tests_path + file).split(/\r?\n/)
     out = {}
     lines.each_with_index do |line, index|
@@ -218,10 +218,13 @@ def parse_tests(file)
                 prevline = lines[index - 1]
                 pass = !(prevline =~ /\bTODO\b/)
                 terms = prevline[/term=(\S+)/, 1] 
+                adapter = prevline[/\badapter=(\S+)/, 1]
+                adapter = adapter == "pass" if adapter
                 next unless terms
                 terms.split(',').each do |term|
                     out[term] ||= []
                     out[term] << TestTraceability.new(file, index+1, name, pass)
+                    out[term] << TestTraceability.new(file, index+1, name, adapter) if adapter != nil
                 end
             end
         end
@@ -233,7 +236,7 @@ def parse_boogie(str)
     lines = str.split(/\r?\n/)
     out = []
     lines.each_with_index do |line, index|
-	    if line =~ /public boolean visit\((\S+) term, (\S+) .+?\)/
+	    if line =~ /public boolean visit\((\S+) term, (\S+) .+?\)/  
 		    method, scope, done, priority, group = $1, $2, true, nil, nil
             scope = scope == "BlockScope" ? "method" : "class"
 		    if lines[index - 1] =~ /^\s*\/\//

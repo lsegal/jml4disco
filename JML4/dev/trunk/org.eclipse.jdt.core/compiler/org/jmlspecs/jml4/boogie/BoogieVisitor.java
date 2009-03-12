@@ -801,7 +801,10 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=2 group=jml
 	public boolean visit(JmlOldExpression term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		append("old("); //$NON-NLS-1$
+		term.expression.traverse(this, scope);
+		append(")"); //$NON-NLS-1$
+		return false;
 	}
 
 	// TODO priority=3 group=jml

@@ -1468,6 +1468,51 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
+	// term=JmlMethodSpecification,JmlResultExpression adapter=true
+	public void test_900_JmlResultExpression() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	//@ ensures \\result == 3;" +
+				"	int m() { return 3; }\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 3); {\n" +
+				"	__result__ := 3;\n" +
+				"	return;\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}	
+	
+	// term=JmlMethodSpecification,JmlOldExpression,JmlResultExpression adapter=true
+	public void test_901_JmlOldExpression() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	int x;" +
+				"	//@ ensures \\old(x) == x - 1;" +
+				"	int m() { return x++; }\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"var tests.esc.A.x : [Object] int;\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] - 1)); {\n" +
+				"	__result__ := tests.esc.A.x[this];\n" +
+				"	tests.esc.A.x[this] := (tests.esc.A.x[this] + 1);\n" +
+				"	return;\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}		
+	
 	// term=LocalDeclaration,SingleTypeReference,Assignment,IntLiteral
 	public void test_1000_int_localdeclaration() {
 		this.compareJavaToBoogie(
@@ -2008,7 +2053,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
-	// TODO term=MessageSend adapter=true
+	// term=MessageSend adapter=true
 	public void test_2005_messageSendOnField() {
 		this.compareJavaToBoogie(
 				//java
@@ -2037,8 +2082,8 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// TODO term=MessageSend adapter=true
-	public void test_2005_messageSendOnLocal() {System.out.println(Integer.MIN_VALUE);
+	// term=MessageSend adapter=true
+	public void test_2005_messageSendOnLocal() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -2047,7 +2092,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" +
 				"class N { void n() { } }\n" 
 				,
-				//TODO expected boogie
+				// expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	var a : tests.esc.N;\n" +
 				"	call tests.esc.N.n(a);\n" +
@@ -2059,5 +2104,4 @@ public class InitialTests extends AbstractRegressionTest {
 				""
 				);
 	}
-
 }

@@ -738,9 +738,10 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=jml
+	// priority=3 group=jml
 	public boolean visit(JmlEnsuresClause term, BlockScope scope) {
 		debug(term, scope);
+		// implemented in JmlMethodSpecification
 		return true;
 	}
 
@@ -750,15 +751,13 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 	
-
-	
 	// priority=0 group=jml
-	public boolean d(JmlLoopAnnotations term, BlockScope scope) {
+	public boolean visit(JmlLoopAnnotations term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 	
-	// TODO priority=3 group=jml
+	// priority=3 group=jml
 	public boolean visit(JmlLoopInvariant term, BlockScope scope) {
 		debug(term, scope);
 		append("invariant ");		 //$NON-NLS-1$
@@ -799,7 +798,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=jml
+	// priority=2 group=jml
 	public boolean visit(JmlOldExpression term, BlockScope scope) {
 		debug(term, scope);
 		append("old("); //$NON-NLS-1$
@@ -808,9 +807,10 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 
-	// TODO priority=3 group=jml
+	// priority=3 group=jml
 	public boolean visit(JmlRequiresClause term, BlockScope scope) {
 		debug(term, scope);
+		// implemented in JmlMethodSpecification
 		return true;
 	}
 

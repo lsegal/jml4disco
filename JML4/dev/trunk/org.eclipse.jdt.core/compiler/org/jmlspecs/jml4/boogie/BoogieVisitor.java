@@ -775,7 +775,6 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(JmlMethodSpecification term, ClassScope scope) {
 		debug(term, scope);
 
-		// TODO ensures
 		for (int i = 0; i < term.getSpecCases().length; i++) {
 			if (term.getSpecCases()[i].getRequiresExpressions().size() > 0) {
 				append(" requires ", term); //$NON-NLS-1$

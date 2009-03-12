@@ -134,11 +134,6 @@ public class BoogieAdapterTests extends InitialTests {
 	}
 
 	@Override
-	public void test_0297_LocalDeclaration_multiVarName_diffScope() {
-		super.test_0297_LocalDeclaration_multiVarName_diffScope();
-	}
-
-	@Override
 	public void test_0298_LocalDeclaration() {
 		super.test_0298_LocalDeclaration();
 	}

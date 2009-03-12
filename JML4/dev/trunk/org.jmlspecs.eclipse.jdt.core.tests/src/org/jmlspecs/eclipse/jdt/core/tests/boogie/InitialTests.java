@@ -664,38 +664,6 @@ public class InitialTests extends AbstractRegressionTest {
 			"	assert (b != 3);\n" +
 			"}");
 	}
-
-	// term=LocalDeclaration
-	public void test_0297_LocalDeclaration_multiVarName_diffScope() {
-		compareJavaToBoogie(	
-			// java source
-			"package tests.esc;\n" + 
-			"public class A {\n" +
-			"   public void m() {\n" +
-			"		int z = 9;\n" +
-			"		if(true) {\n" +
-			" 			int z = 12;\n" +
-			"		}\n" +			
-			"		if(true) { \n" +
-			" 			int z = 5;\n" +
-			"		}\n" +
-			"   }\n" + 
-			"}\n"
-			, 
-			// expected boogie
-			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
-			"	var a : int;\n" +
-			"	var b : int;\n" +
-			"	var c : int;\n" +
-			"	a := 9;\n" +
-			"	if (true) {\n" +
-			"		b := 12;\n" +
-			"	}\n" +
-			"	if (true) {\n" +
-			"		c := 5;\n" +
-			"	}\n" +
-			"}\n");
-	}
 	
 	// term=LocalDeclaration
 	public void test_0298_LocalDeclaration() {

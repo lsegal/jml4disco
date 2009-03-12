@@ -479,7 +479,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlResultExpression,JmlMethodDeclaration,JmlMethodSpecification
+	// term=JmlResultExpression,JmlMethodDeclaration,JmlMethodSpecification,JmlEnsuresClause,JmlRequiresClause
 	public void test_0111_JmlMethodDefinition_EnsuresRequires() {
 		this.compareJavaToBoogie(
 				//java				
@@ -510,13 +510,6 @@ public class InitialTests extends AbstractRegressionTest {
 		        "         return 1;\n" +
 				"		return 42;\n" +
 				"	}\n" +
-//				"   //@ ensures \\result == 42;\n" + 
-//				"   //@ requires n >= 0;\n" + 				
-//				"	public int m5(int n) {\n" +
-//				"		if (n == 0)\n" +
-//		        "         return 42;\n" +
-//				"		return 42;\n" +
-//				"	}\n" + 				
 				"}\n"	
 				,
 				"procedure tests.esc.A.m1(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 42); {\n" +
@@ -531,7 +524,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	__result__ := 10;\n" +
 				"	return;\n" +
 				"}\n" +
-				"procedure tests.esc.A.m3(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); ensures (__result__ == 42); {\n" +
+				"rocedure tests.esc.A.m3(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); ensures (__result__ == 42); {\n" +
 				"	if ((a == 0)) {\n" +
 				"		__result__ := 42;\n" +
 				"		return;\n" +
@@ -975,7 +968,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n");
 	}
 	
-	//term=JmlWhileStatement
+	// term=JmlWhileStatement,JmlLoopInvariant
     public void test_0372_while_invariant_true() {
 		this.compareJavaToBoogie(
 				//java
@@ -997,7 +990,7 @@ public class InitialTests extends AbstractRegressionTest {
 		
     }
     
-    //term=JmlWhileStatement
+    //term=JmlWhileStatement,JmlLoopInvariant
     public void test_0373_while_invariant_expr() {
 		this.compareJavaToBoogie(
 				//java
@@ -1021,7 +1014,7 @@ public class InitialTests extends AbstractRegressionTest {
                 );
     }  
 
-    //term=JmlWhileStatement
+    //term=JmlWhileStatement,JmlLoopInvariant
     public void test_0374_while_invariant_break() {
 		this.compareJavaToBoogie(
 				//java
@@ -1295,7 +1288,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=PrefixExpression,PostFixExpression adapter=true
+	// term=PrefixExpression,PostFixExpression adapter=pass
 	public void test_602_pre_post_FixExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1327,7 +1320,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=PrefixExpression,PostFixExpression adapter=true
+	// term=PrefixExpression,PostFixExpression adapter=pass
 	public void test_603_post_pre_FixExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1359,7 +1352,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=Assignment adapter=true
+	// term=Assignment adapter=pass
 	public void test_604_multiAssignment() {
 
 		this.compareJavaToBoogie(
@@ -1464,7 +1457,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlMethodSpecification,JmlResultExpression adapter=true
+	// term=JmlMethodSpecification,JmlEnsuresClause,JmlResultExpression adapter=pass
 	public void test_900_JmlResultExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1485,7 +1478,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=JmlMethodSpecification,JmlResultExpression adapter=true
+	// term=JmlMethodSpecification,JmlEnsuresClause,JmlResultExpression adapter=pass
 	public void test_901_JmlResultExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1516,7 +1509,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 
-	// term=JmlMethodSpecification,JmlOldExpression,JmlResultExpression adapter=true
+	// term=JmlMethodSpecification,JmlEnsuresClause,JmlOldExpression,JmlResultExpression adapter=pass
 	public void test_910_JmlOldExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1541,7 +1534,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}		
 	
-	// term=JmlMethodSpecification,JmlOldExpression,JmlResultExpression adapter=true
+	// term=JmlEnsuresClause,JmlMethodSpecification,JmlOldExpression,JmlResultExpression adapter=pass
 	public void test_911_JmlOldExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1818,7 +1811,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);			
 		}
 
-	// TODO
+	// TODO term=IntLiteral,ConditionalExpression
 	public void test_1002_arith_cond() {
 		this.compareJavaToBoogie(
 				"package tests.esc;\n" +
@@ -1839,7 +1832,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// TODO
+	// TODO term=IntLiteral,ConditionalExpression
 	public void test_1003_boolExpr_cond() {
 		this.compareJavaToBoogie(
 				//java
@@ -1861,7 +1854,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// TODO term=BinaryExpression
+	// term=BinaryExpression
 	public void test_1004_implies() {
 		this.compareJavaToBoogie(
 				//java
@@ -1881,7 +1874,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"   }\n" + 
 				"}\n" 
 				,
-				//TODO expected boogie
+				// expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert (true => true);\n" +
 				"}\n" +
@@ -1897,7 +1890,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	//TODO
+	//TODO term=IntLiteral
 	public void test_1005_int_boundaries() {
 		this.compareJavaToBoogie(
 				//java
@@ -1928,7 +1921,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=MessageSend adapter=true 
+	// term=MessageSend adapter=pass 
 	public void test_2000_messageSend() {
 		this.compareJavaToBoogie(
 				//java
@@ -1964,7 +1957,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=MessageSend adapter=true
+	// term=MessageSend adapter=pass
 	public void test_2001_messageSend() {
 		this.compareJavaToBoogie(
 				//java
@@ -2000,7 +1993,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=MessageSend adapter=true
+	// term=MessageSend adapter=pass
 	public void test_2002_messageSend() {
 		this.compareJavaToBoogie(
 				//java
@@ -2027,7 +2020,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=MessageSend adapter=true
+	// term=MessageSend adapter=pass
 	public void test_2003_messageSendStatic() {
 		this.compareJavaToBoogie(
 				//java
@@ -2056,7 +2049,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=MessageSend adapter=true
+	// term=MessageSend adapter=pass
 	public void test_2004_messageSendOnReceiver() {
 		this.compareJavaToBoogie(
 				//java
@@ -2092,7 +2085,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=MessageSend adapter=true
+	// term=MessageSend adapter=pass
 	public void test_2005_messageSendOnThis() {
 		this.compareJavaToBoogie(
 				//java
@@ -2111,7 +2104,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=MessageSend adapter=true
+	// term=MessageSend adapter=pass
 	public void test_2005_messageSendOnField() {
 		this.compareJavaToBoogie(
 				//java
@@ -2140,7 +2133,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=MessageSend adapter=true
+	// term=MessageSend adapter=pass
 	public void test_2005_messageSendOnLocal() {
 		this.compareJavaToBoogie(
 				//java

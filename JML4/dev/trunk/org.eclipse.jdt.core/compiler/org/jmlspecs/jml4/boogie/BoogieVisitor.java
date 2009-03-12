@@ -97,6 +97,7 @@ import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 import org.jmlspecs.jml4.ast.JmlAssertStatement;
+import org.jmlspecs.jml4.ast.JmlAssignableClause;
 import org.jmlspecs.jml4.ast.JmlAssignment;
 import org.jmlspecs.jml4.ast.JmlAssumeStatement;
 import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
@@ -113,6 +114,9 @@ import org.jmlspecs.jml4.ast.JmlMethodSpecification;
 import org.jmlspecs.jml4.ast.JmlOldExpression;
 import org.jmlspecs.jml4.ast.JmlRequiresClause;
 import org.jmlspecs.jml4.ast.JmlResultReference;
+import org.jmlspecs.jml4.ast.JmlSpecCase;
+import org.jmlspecs.jml4.ast.JmlSpecCaseRestAsClauseSeq;
+import org.jmlspecs.jml4.ast.JmlStoreRefListExpression;
 import org.jmlspecs.jml4.ast.JmlWhileStatement;
 
 public class BoogieVisitor extends ASTVisitor {
@@ -775,18 +779,40 @@ public class BoogieVisitor extends ASTVisitor {
 		debug(term, scope);
 
 		for (int i = 0; i < term.getSpecCases().length; i++) {
-			if (term.getSpecCases()[i].getRequiresExpressions().size() > 0) {
+			JmlSpecCase specCase = term.getSpecCases()[i];
+			
+			if (specCase.body.rest != null) {
+				JmlSpecCaseRestAsClauseSeq rest = (JmlSpecCaseRestAsClauseSeq)specCase.body.rest;
+				for (int j = 0; j < rest.clauses.length; j++) {
+					if (rest.clauses[j] instanceof JmlAssignableClause) {
+						JmlAssignableClause modifies = (JmlAssignableClause)rest.clauses[j];
+						JmlStoreRefListExpression stores = (JmlStoreRefListExpression)modifies.expr;
+						append(" modifies ", term); //$NON-NLS-1$
+						for (int x = 0; x < stores.exprList.length; x++) {
+							//stores.exprList[x].traverse(this, methodScope);
+							if (stores.exprList[x] instanceof SingleNameReference) {
+								append(scope.classScope().referenceContext.binding.readableName());
+								append("."); //$NON-NLS-1$
+								append(((SingleNameReference)stores.exprList[x]).binding.readableName());
+							}
+							if (x < stores.exprList.length - 1) { append(", "); } //$NON-NLS-1$
+						}
+						append(STMT_END);
+					}
+				}
+			}
+			if (specCase.getRequiresExpressions().size() > 0) {
 				append(" requires ", term); //$NON-NLS-1$
-				List exprs = term.getSpecCases()[i].getRequiresExpressions();
+				List exprs = specCase.getRequiresExpressions();
 				for (int j = 0; j < exprs.size(); j++) {
 					Expression expr = (Expression)exprs.get(j);
 					expr.traverse(this, methodScope);
 				}
 				append(STMT_END); 
 			}
-			if (term.getSpecCases()[i].getEnsuresExpressions().size() > 0) {
+			if (specCase.getEnsuresExpressions().size() > 0) {
 				append(" ensures ", term); //$NON-NLS-1$
-				List exprs = term.getSpecCases()[i].getEnsuresExpressions();
+				List exprs = specCase.getEnsuresExpressions();
 				for (int j = 0; j < exprs.size(); j++) {
 					Expression expr = (Expression)exprs.get(j);
 					expr.traverse(this, methodScope);

@@ -1541,6 +1541,36 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}		
 	
+	// term=JmlMethodSpecification,JmlOldExpression,JmlResultExpression adapter=true
+	public void test_911_JmlOldExpression() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	int x;" +
+				"	//@ assignable x;\n" +
+				"	//@ ensures \\old(x) == x + 10;\n" +
+				"	int m() { return x++; }\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"var tests.esc.A.x : [tests.esc.A] int;\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) modifies tests.esc.A.x; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] + 10)); {\n" +
+				"	__result__ := tests.esc.A.x[this];\n" +
+				"	tests.esc.A.x[this] := (tests.esc.A.x[this] + 1);\n" +
+				"	return;\n" +
+				"}\n"
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 5)\n" +
+				"	int m() { return x++; }\n" +
+				"	                 ^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n"
+				);
+	}		
+
 	// term=LocalDeclaration,SingleTypeReference,Assignment,IntLiteral
 	public void test_1000_int_localdeclaration() {
 		this.compareJavaToBoogie(

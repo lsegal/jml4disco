@@ -189,6 +189,10 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    		options.jmlEscProverStrategy = "distributed"; //$NON-NLS-1$
 	    		optionsMap.put(optionsMap.get(JmlCompilerOptions.OPTION_EscProverStrategy), "distributed"); //$NON-NLS-1$
 	    	}
+	    	else{
+	    		options.jmlEscProverStrategy = ""; //$NON-NLS-1$
+	    		optionsMap.put(optionsMap.get(JmlCompilerOptions.OPTION_EscProverStrategy), ""); //$NON-NLS-1$
+	    	}
 	    }
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_SimplifyPath)) instanceof String) {
 	    	options.jmlSimplifyPath=(String) optionValue;

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.jmlspecs.eclipse.jdt.ui.preferences;
 
+import javax.swing.JLabel;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
@@ -84,8 +86,10 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 	private /*@nullable*/ Composite escComposite;
 	private /*@nullable*/ Composite fspvComposite;
 	private /*@nullable*/ Composite jml2Composite;
+	private /*@nullable*/ Composite boogieComposite;
 	
 	private /*@nullable*/ Text distributedPathText;
+	private /*@nullable*/ JLabel boogieLabel;
 
 	private /*@nullable*/ ControlEnableState genEnableState;
 	private /*@nullable*/ ControlEnableState progProbsEnableState;
@@ -94,6 +98,7 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 	private /*@nullable*/ ControlEnableState escCompositeState;
 	private /*@nullable*/ ControlEnableState fspvCompositeState;
 	private /*@nullable*/ ControlEnableState jml2ControlState;
+	private /*@nullable*/ ControlEnableState boogieCompositeState;
 	private /*@nullable*/ ControlEnableState distributedEnableState;
 	
 	private Button jmlEnableButton;
@@ -239,11 +244,7 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
         inst = new Label(inner,SWT.LEFT);
         inst.setFont(description.getFont());
         inst.setText("as appropriate in the spec path)"); 
-        
-		//Boogie
-		label = PreferencesMessages.JmlEnableBoogie_label;
-		boogieEnableCheckBox = addCheckBox(inner, label, PREF_ENABLE_JML_BOOGIE, enabledDisabled, extraIndent);
-		
+        		
         //Potential programming/specification problems
 		label = PreferencesMessages.JmlProgrammingSecifications_title;
 		excomposite = createStyleSection(composite, label, nColumns);
@@ -290,6 +291,18 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 
 		label= PreferencesMessages.JmlEnableRac_label;
 		addCheckBox(inner, label, PREF_ENABLE_RAC, enabledDisabled, extraIndent);
+
+		//Boogie
+		label = PreferencesMessages.JmlBoogie_title; 
+		excomposite = createStyleSection(composite, label, nColumns);
+		inner = new Composite(excomposite, SWT.NONE);
+		boogieComposite = inner;
+		inner.setFont(composite.getFont());
+		inner.setLayout(new GridLayout(nColumns, false));
+		excomposite.setClient(inner);
+
+		label = PreferencesMessages.JmlEnableBoogie_label;
+		boogieEnableCheckBox = addCheckBox(inner, label, PREF_ENABLE_JML_BOOGIE, enabledDisabled, extraIndent);
 
 		// ESC
 		label = PreferencesMessages.JmlEsc_title; 
@@ -404,6 +417,7 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 		boolean enableJml= checkValue(PREF_ENABLE_JML, ENABLED);
 		boolean dbcEnabled = checkValue(PREF_ENABLE_JML_DBC, ENABLED);
 		boolean distributedEnabled = checkValue(PREF_ENABLE_DISTRIBUTED, ENABLED);
+		boolean escEnabled = checkValue(PREF_ENABLE_JML_ESC, ENABLED) || checkValue(PREF_ENABLE_JML_ESC2, ENABLED); 
 		if (enableJml) {
 			if (genEnableState != null) {
 				genEnableState.restore();
@@ -424,6 +438,10 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 			if (jml2ControlState == null) {
 				jml2ControlState = ControlEnableState.disable(jml2Composite);
 			}
+			if (boogieCompositeState != null) {
+				boogieCompositeState.restore();
+				boogieCompositeState = null;
+			}
 		} else {
 			if (genEnableState == null) {
 				genEnableState = ControlEnableState.disable(genComposite);
@@ -438,9 +456,21 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 				jml2ControlState.restore();
 				jml2ControlState = null;
 			}
+			if (boogieCompositeState == null) {
+				boogieCompositeState = ControlEnableState.disable(boogieComposite);
+			}
 		}
 		
 		if (enableJml && dbcEnabled) {
+			if(boogieCompositeState != null){
+				boogieCompositeState.restore();
+				boogieCompositeState = null;
+			}
+			if(escEnabled)
+			{
+				if (boogieCompositeState == null)
+					boogieCompositeState = ControlEnableState.disable(boogieComposite);
+			}
 			if (escCompositeState != null) {
 				escCompositeState.restore();
 				escCompositeState = null;
@@ -455,6 +485,9 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 			}
 			if (fspvCompositeState == null) {
 				fspvCompositeState = ControlEnableState.disable(fspvComposite);
+			}
+			if (boogieCompositeState == null) {
+				boogieCompositeState = ControlEnableState.disable(boogieComposite);
 			}
 		}
 		

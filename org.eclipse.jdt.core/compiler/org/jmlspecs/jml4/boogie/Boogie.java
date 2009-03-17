@@ -33,7 +33,9 @@ public class Boogie extends DefaultCompilerExtension {
 			Logger.println(this + " - compiler.options.jmlBoogieOutputOnly:  "+compiler.options.jmlBoogieOutputOnly); //$NON-NLS-1$
 		}
 		if (compiler.options.jmlEnabled && compiler.options.jmlDbcEnabled && compiler.options.jmlBoogieEnabled) {
-			process(compiler, unit);
+			if (!compiler.options.jmlEscEnabled) { // FIXME Don't run if ESC is enabled (for now)
+				process(compiler, unit);
+			}
 		}
 	}
 

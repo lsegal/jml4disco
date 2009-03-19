@@ -2244,19 +2244,24 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
-				"	assert (true => true);\n" +
+				"	assert (true ⇒ true);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
-				"	assert (true => false);\n" +
+				"	assert (true ⇒ false);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m3(this : tests.esc.A) {\n" +
-				"	assert (false => true);\n" +
+				"	assert (false ⇒ true);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m4(this : tests.esc.A) {\n" +
-				"	assert (false => false);\n" +
+				"	assert (false ⇒ false);\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in A.java (at line 7)\n" +
+				"	//@ assert (true ==> false);\n" +
+				"	           ^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}
 	

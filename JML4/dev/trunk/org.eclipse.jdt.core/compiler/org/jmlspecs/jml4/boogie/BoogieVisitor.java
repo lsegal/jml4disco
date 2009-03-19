@@ -411,7 +411,7 @@ public class BoogieVisitor extends ASTVisitor {
 				out = "<="; //$NON-NLS-1$
 				break;
 			case OperatorIds.JML_IMPLIES:
-				out = "=>"; //$NON-NLS-1$ 
+				out = "⇒"; //$NON-NLS-1$ 
 				break;
 			case OperatorIds.JML_REV_IMPLIES:
 				out = "=<"; //$NON-NLS-1$

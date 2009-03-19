@@ -11,6 +11,7 @@ import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
 import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+import org.jmlspecs.jml4.boogie.BoogieAdapter;
 import org.jmlspecs.jml4.boogie.BoogieVisitor;
 import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.PostProcessor;
@@ -23,6 +24,7 @@ public class InitialTests extends AbstractRegressionTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		BoogieAdapter.DEBUG = true;
 		PostProcessor.useOldErrorReporting = true;
 	}
 

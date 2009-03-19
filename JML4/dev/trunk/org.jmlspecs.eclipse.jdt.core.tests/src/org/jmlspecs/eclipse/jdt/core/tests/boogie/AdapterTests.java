@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.eclipse.jdt.core.tests.compiler.regression.AbstractRegressionTest;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+import org.jmlspecs.jml4.boogie.BoogieAdapter;
 import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.PostProcessor;
 
@@ -15,6 +16,7 @@ public class AdapterTests extends AbstractRegressionTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		BoogieAdapter.DEBUG = true;
 		PostProcessor.useOldErrorReporting = true;
 	}
 
@@ -399,7 +401,13 @@ public class AdapterTests extends AbstractRegressionTest {
 				"}\n"	
 				},
 				"----------\n" +
-				"1. ERROR in " + testsPath + "X.java (at line 28)\n" +
+				"1. ERROR in " + testsPath + "X.java (at line 23)\n" +
+				"	//@ requires n >= 0;\n" +
+				"   //@ ensures \\result == 42;\n" +
+				"	    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in " + testsPath + "X.java (at line 28)\n" +
 				"	return 1;\n" +
 				"	       ^\n" +
 				"This postcondition might not hold.\n" +
@@ -487,12 +495,16 @@ public class AdapterTests extends AbstractRegressionTest {
 			"   }\n"+
 			"}"
 			},
-			//TODO
-			"THIS SHOULD FAIL");
-			
+			"----------\n" +
+			"1. ERROR in " + testsPath + "X.java (at line 1)\n" +
+			"	package tests.esc;\n" +
+			"	^\n" +
+			"Error parsing Java source code (unsuppored syntax?)\n" +
+			"----------\n"
+			);
 	}
 	
-	//TODO term=LocalDeclaration
+	// term=LocalDeclaration
 	public void test_297_LocalDeclaration() {	
 	this.runNegativeTest(new String[] {
 			testsPath + "X.java",
@@ -839,7 +851,7 @@ public class AdapterTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	//TODO
+	// term=IntLiteral
 	public void test_someNumber_intMaxBoundary() {
 		this.runNegativeTest(new String[]{
 				"A.java",
@@ -867,7 +879,7 @@ public class AdapterTests extends AbstractRegressionTest {
 		
 	}
 	
-	//TODO
+	// term=IntLiteral
 	public void test_someNumber_intMinBoundary() {
 		this.runNegativeTest(new String[]{
 				"A.java",
@@ -888,7 +900,7 @@ public class AdapterTests extends AbstractRegressionTest {
 				"----------\n" +
 				"1. ERROR in A.java (at line 9)\n" +
 				"	//@ assert (min == -2147483647);\n" +
-				"	           ^^^^^^^^^^^^^^^^^^^\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^\n" +
 				"This assertion might not hold.\n" +
 				"----------\n"
 				);

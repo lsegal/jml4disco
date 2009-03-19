@@ -526,7 +526,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"	__result__ := 10;\n" +
 				"	return;\n" +
 				"}\n" +
-				"rocedure tests.esc.A.m3(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); ensures (__result__ == 42); {\n" +
+				"procedure tests.esc.A.m3(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); ensures (__result__ == 42); {\n" +
 				"	if ((a == 0)) {\n" +
 				"		__result__ := 42;\n" +
 				"		return;\n" +

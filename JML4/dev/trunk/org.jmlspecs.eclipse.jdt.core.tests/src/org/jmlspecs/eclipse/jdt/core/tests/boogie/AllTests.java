@@ -11,7 +11,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(BoogieSourceTests.class);
 		suite.addTestSuite(BoogieSymbolTableTests.class);
-		suite.addTestSuite(InitialTests.class);
+		suite.addTestSuite(TranslationTests.class);
 		suite.addTestSuite(AdapterTests.class); // adapters go last
 		//$JUnit-END$
 		return suite;

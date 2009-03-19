@@ -1,7 +1,7 @@
 package org.jmlspecs.eclipse.jdt.core.tests.boogie;
 
 
-public class AdapterTests extends InitialTests {
+public class AdapterTests extends TranslationTests {
 	public AdapterTests(String name) {
 		super(name);
 	}

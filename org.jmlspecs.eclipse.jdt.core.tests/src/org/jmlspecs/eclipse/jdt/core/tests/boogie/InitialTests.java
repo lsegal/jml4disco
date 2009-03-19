@@ -170,7 +170,9 @@ public class InitialTests extends AbstractRegressionTest {
 			"	assert true;\n" +
 			"	__result__ := 42;\n" +
 			"	return;\n" +
-			"}\n"
+			"}\n",
+			// adapter output
+			""
 		);
 	}
 	
@@ -193,7 +195,9 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert false;\n" +
-				"}\n" 		
+				"}\n",
+				// adapter output
+				"" 		
 		);
 	}
 
@@ -211,7 +215,9 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
-				"}\n" 		
+				"}\n",
+				// adapter output
+				"" 		
 		);
 	}
 
@@ -229,7 +235,9 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A, a: bool) {\n" +
 				"	assert a;\n" +
-				"}\n" 			
+				"}\n",
+				// adapter output
+				"" 			
 				);
 	}	
 	
@@ -247,7 +255,9 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert false && false;\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				
 				);
 	}
@@ -266,7 +276,9 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert (false || false);\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}	
 			
@@ -284,7 +296,9 @@ public class InitialTests extends AbstractRegressionTest {
 				//expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert false && (false || false);\n" +
-				"}\n"				
+				"}\n",
+				// adapter output
+				""				
 				);
 	}	
 	
@@ -302,7 +316,9 @@ public class InitialTests extends AbstractRegressionTest {
 				//expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	assert (false || false) && false;\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 
@@ -322,7 +338,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"	assert true;\n" +				
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}	
 	
@@ -342,7 +360,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
 				"	assert false;\n" +				
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -362,7 +382,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert false;\n" +
 				"	assert true;\n" +				
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -382,7 +404,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert false;\n" +
 				"	assert false;\n" +				
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}	
 	
@@ -402,7 +426,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert false;\n" +
 				"	assert false;\n" +
-				"}\n" 		
+				"}\n",
+				// adapter output
+				"" 		
 		);
 	}
 
@@ -420,7 +446,9 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assert true;\n" +
-				"}\n" 		
+				"}\n",
+				// adapter output
+				"" 		
 		);
 	}
 		
@@ -442,7 +470,9 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume false;\n" +
-				"}\n" 				
+				"}\n",
+				// adapter output
+				"" 				
 				);
 	}	
 	
@@ -460,7 +490,9 @@ public class InitialTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume true;\n" +
-				"}\n" 				
+				"}\n",
+				// adapter output
+				"" 				
 				);
 	}
 
@@ -477,7 +509,9 @@ public class InitialTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -569,7 +603,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume true;\n" +
 				"	assert true;\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -589,7 +625,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume false;\n" +
 				"	assert false;\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}	
 	
@@ -609,7 +647,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume false;\n" +
 				"	assert true;\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}	
 	
@@ -629,11 +669,13 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	assume true;\n" +
 				"	assert false;\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}	
 		
-	//TODO term=Block
+	// term=Block
 	public void test_0296_LocalDeclaration_Blocks() {
 		compareJavaToBoogie(
 			// java source
@@ -680,7 +722,9 @@ public class InitialTests extends AbstractRegressionTest {
 			"	var a : int;\n" +
 			"	var b : bool;\n" +
 			"	a := 0;\n" +
-			"}\n");
+			"}\n",
+			// adapter output
+			"");
 	}
 
 	// term=LocalDeclaration,Assignment
@@ -701,7 +745,9 @@ public class InitialTests extends AbstractRegressionTest {
 			"	var b : bool;\n" +
 			"	a := 3;\n" +
 			"	b := true;\n" +
-			"}\n");
+			"}\n",
+			// adapter output
+			"");
 	}
 
 	// term=IfStatement,Argument,ReturnStatement,StringLiteral,Block,EqualExpression,LocalDeclaration
@@ -733,7 +779,9 @@ public class InitialTests extends AbstractRegressionTest {
 			"		__result__ := string_lit_98;\n" +
 			"		return;\n" +
 			"	}\n" +
-			"}\n");
+			"}\n",
+			// adapter output
+			"");
 	}
 	
 	// term=IfStatement
@@ -753,7 +801,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	if (true) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
-				"}\n" );
+				"}\n",
+				// adapter output
+				"" );
 	}
 	
 	// TODO term=ConditionalExpression
@@ -796,6 +846,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				//TODO expected boogie
+				"",
+				// adapter output
 				""
 				);
 	}
@@ -847,7 +899,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m5(this : tests.esc.A) {\n" +
 				"	while (true) {\n" +
 				"	}\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -871,7 +925,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert !a;\n" +
 				"	assert !!a;\n" +
 				"	assert !!!a;\n" +
-				"}\n");
+				"}\n",
+				// adapter output
+				"");
 	}
 	
 	//term=UnaryExpression
@@ -923,7 +979,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	while ((true == true)) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
-				"}\n" 				
+				"}\n",
+				// adapter output
+				"" 				
 				);
 	}	
 
@@ -955,7 +1013,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	if (true) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
-				"}\n");
+				"}\n",
+				// adapter output
+				"");
 	}
 
 	// term=WhileStatement,BreakStatement,Block
@@ -978,7 +1038,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"		assert true;\n" +
 				"		break;\n" +
 				"	}\n" +
-				"}\n");
+				"}\n",
+				// adapter output
+				"");
 	}
 	
 	// term=JmlWhileStatement,JmlLoopInvariant
@@ -998,7 +1060,9 @@ public class InitialTests extends AbstractRegressionTest {
                 "procedure tests.esc.A.m(this : tests.esc.A, a: bool) {\n" +
         		"	while (a) invariant true; {\n" +
         		"	}\n" +
-        		"}\n"		
+        		"}\n",
+				// adapter output
+				""		
                 );
 		
     }
@@ -1023,7 +1087,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	b := 5;\n" +
 				"	while (a) invariant (b == 5); {\n" +
 				"	}\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
                 );
     }  
 
@@ -1045,7 +1111,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	while (a) invariant true; {\n" +
 				"		break here;\n" +
 				"	}\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
     }     
 
@@ -1079,7 +1147,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	while (true) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 
 				);
 	}
@@ -1109,7 +1179,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"		assert false;\n" +
 				"		assert true;\n" +				
 				"	}\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -1146,7 +1218,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"		assert false;\n" +
 				"		assert true;\n" +
 				"	}\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 			    );
 	}
 	
@@ -1184,7 +1258,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"		assert true;\n" +
 				"		a := (a - 1);\n" +
 				"	}\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -1214,7 +1290,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"		a := (a + 1);\n" +
 				"		b := (b + 1);\n" +
 				"	}\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}	
 	
@@ -1236,7 +1314,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	while ((b < 10)) invariant true; {\n" +
 				"		b := (b + 1);\n" +
 				"	}\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 			    );
 	}
     
@@ -1267,7 +1347,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	b := 0;\n" +
 				"	b := (b - 1);\n" +
 				"	b := (b - 1);\n" +
-				"}\n"			
+				"}\n",
+				// adapter output
+				""			
 				);
 	}
 	
@@ -1297,7 +1379,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	b := 0;\n" +
 				"	b := (b - 1);\n" +
 				"	b := (b - 1);\n" +
-				"}\n"			
+				"}\n",
+				// adapter output
+				""			
 				);
 	}	
 	
@@ -1420,7 +1504,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	var b : int;\n" +
 				"	a := 2;\n" +
 				"	b := 1;\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -1442,7 +1528,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"var tests.esc.A.b : [tests.esc.A] bool;\n" +
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	tests.esc.A.i[this] := 1;\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 
@@ -1466,7 +1554,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	tests.esc.A.x := tests.esc.A.i;\n" +
 				"   tests.esc.A.z := 0;\n" +
 				"}\n" +
-				"call tests.esc.A_defaultInit();\n"
+				"call tests.esc.A_defaultInit();\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -1616,7 +1706,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	i := 10;\n" +
 				"	j := 20;\n" +
 				"	k := 30;\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 
@@ -1737,7 +1829,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" +
 				"procedure tests.esc.A.m18(this : tests.esc.A) {\n" +
 				"	assert ((43 >= 42) == false);\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
@@ -1806,7 +1900,7 @@ public class InitialTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m1b(this : tests.esc.A) {\n" +
 				"	assert ((5 + 2) != 7);\n" +
 				"}\n" +
-				"procedure tests.esc.R.m2b(this : tests.esc.R) {\n" +
+				"procedure tests.esc.A.m2b(this : tests.esc.A) {\n" +
 				"	assert ((5 - 2) != 3);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m3b(this : tests.esc.A) {\n" +
@@ -1820,7 +1914,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" +
 				"procedure tests.esc.A.m6b(this : tests.esc.A) {\n" +
 				"	assert (((5 + 2) * 3) != 22);\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);			
 		}
 
@@ -1841,6 +1937,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n"
 				, 
 				//TODO expected boogie
+				"",
+				// adapter output
 				""
 				);
 	}
@@ -1863,6 +1961,8 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" 
 				, 
 				// TODO expected boogie
+				"",
+				// adapter output
 				""
 				);
 	}
@@ -1899,28 +1999,29 @@ public class InitialTests extends AbstractRegressionTest {
 				"}\n" +
 				"procedure tests.esc.A.m4(this : tests.esc.A) {\n" +
 				"	assert (false => false);\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	
-	//TODO term=IntLiteral
+	// term=IntLiteral
 	public void test_1005_int_boundaries() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
 				"public class A {\n" + 
 				"   public void m1() {\n" +
-				"      int max = Integer.MAX_VALUE;\n" +
+				"      int max = 2147483647;\n" +
 				"	   //@ assert (max == 2147483647);" +
 				"   }\n" +
 				"	public void m2() {\n" +
-				"		int min = Integer.MIN_VALUE;\n" + 
+				"		int min = -2147483648;\n" + 
 				"	   //@ assert (min == -2147483648);" +
 				"	}\n" +
 				"}\n"
-				
 				,
-				//TODO expected boogie
+				// expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
 				"	var a : int;\n" +
 				"	a := 2147483647;\n" +
@@ -1930,7 +2031,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	var a : int;\n" +
 				"	a := -2147483648;\n" +
 				"	assert (a == -2147483648);\n" +
-				"}\n"
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 	

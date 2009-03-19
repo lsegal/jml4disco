@@ -180,6 +180,23 @@ public class BoogieVisitor extends ASTVisitor {
 		blk.scope = scope; 
 		return blk;
 	}
+	
+	/**
+	 * Traverses a block created by {@link #toBlock(Statement, BlockScope)}.
+	 * You must use this method if you want the block to have indentation and
+	 * surrounding braces (because Boogie does not allow anonymous blocks, 
+	 * automatically handling this in the Block visit will not work).
+	 * 
+	 * @param blk the block to traverse
+	 * @param scope the scope that would otherwise be passed to the traverse method.
+	 */
+	private void traverseBlock(Block blk, BlockScope scope) {
+		appendLine(BLOCK_OPEN);
+		output.increaseIndent();
+		blk.traverse(this, scope);
+		output.decreaseIndent();
+		appendLine(BLOCK_CLOSE);
+	}
 
 	private void variableInitialization(AbstractVariableDeclaration term, BlockScope scope) {
 		Expression init = term.initialization;
@@ -409,16 +426,12 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=stmt
 	public boolean visit(Block term, BlockScope scope) {
 		debug(term, scope);
-		appendLine(BLOCK_OPEN);
-		output.increaseIndent();
 		if (symbolTable != null) 
 			symbolTable.enterScope(term);
 		return true;
 	}
 
 	public void endVisit(Block term, BlockScope scope) {
-		output.decreaseIndent();
-		appendLine(BLOCK_CLOSE);
 		if (symbolTable != null) 
 			symbolTable.exitScope();
 	}
@@ -670,11 +683,11 @@ public class BoogieVisitor extends ASTVisitor {
 		append(") "); //$NON-NLS-1$
 		
 		if (term.thenStatement != null) {
-			toBlock(term.thenStatement, scope).traverse(this, scope);
+			traverseBlock(toBlock(term.thenStatement, scope), scope);
 		}
 		if (term.elseStatement != null) {
 			append("else ");  //$NON-NLS-1$
-			toBlock(term.elseStatement, scope).traverse(this, scope);
+			traverseBlock(toBlock(term.elseStatement, scope), scope);
 		}
 
 		return false;
@@ -851,7 +864,7 @@ public class BoogieVisitor extends ASTVisitor {
 			append(STMT_END + SPACE);
 		}
 		
-		toBlock(term.action, scope).traverse(this, scope);
+		traverseBlock(toBlock(term.action, scope), scope);
 		return false;
 	}
 	

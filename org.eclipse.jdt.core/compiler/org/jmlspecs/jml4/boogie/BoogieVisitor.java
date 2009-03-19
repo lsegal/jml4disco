@@ -1385,7 +1385,13 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(UnaryExpression term, BlockScope scope) {
 		debug(term, scope);
 		
-		append (term.operatorToString());
+		switch ((term.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) {
+			case OperatorIds.PLUS:
+				break;
+			default:
+				append (term.operatorToString());
+				break;
+		}
 		return true;
 	}
 

@@ -880,12 +880,20 @@ public class InitialTests extends AbstractRegressionTest {
 				"package tests.esc;\n" +
 				"public class A {\n" + 
 				"   public void m() {\n" +
-				"	int number = +1;\n" +				
+				"	int number = +1;" +
+				"	assert number == 1;\n" +				
 				"   }\n" +		
 				"}" 
 				,
-				// TODO expected boogie
-				"");
+				// expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	var a : int;\n" +
+				"	a := 1;\n" +
+				"	assert (a == 1);\n" +
+				"}\n",
+				// adapter output
+				""
+		);
 	}	
 	
 	// term=WhileStatement,Block,EqualExpression

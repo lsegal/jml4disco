@@ -1,731 +1,23 @@
 package org.jmlspecs.eclipse.jdt.core.tests.boogie;
 
-import java.util.Map;
 
-import org.eclipse.jdt.core.tests.compiler.regression.AbstractRegressionTest;
-import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
-import org.jmlspecs.jml4.boogie.BoogieAdapter;
-import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
-import org.jmlspecs.jml4.esc.PostProcessor;
-
-public class AdapterTests extends AbstractRegressionTest {
+public class AdapterTests extends InitialTests {
 	public AdapterTests(String name) {
 		super(name);
 	}
 
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		BoogieAdapter.DEBUG = true;
-		PostProcessor.useOldErrorReporting = true;
-	}
+	protected void compareJavaToBoogie(String java, String boogie, String adapterOutput) {
+		if (adapterOutput == null) {
+			fail("Missing adapter test for this test case");
+			return;
+		}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		PostProcessor.useOldErrorReporting = false;
-	}
-
-	// Augment problem detection settings
-	@Override
-	@SuppressWarnings("unchecked")
-	protected Map<String, String> getCompilerOptions() {
-		Map<String, String> options = super.getCompilerOptions();
-
-		options.put(JmlCompilerOptions.OPTION_EnableJml, CompilerOptions.ENABLED);
-		options.put(JmlCompilerOptions.OPTION_EnableJmlDbc, CompilerOptions.ENABLED);
-		options.put(JmlCompilerOptions.OPTION_EnableJmlBoogie, CompilerOptions.ENABLED);
-		options.put(JmlCompilerOptions.OPTION_DefaultNullity, JmlCompilerOptions.NON_NULL);
-		options.put(CompilerOptions.OPTION_ReportNullReference, CompilerOptions.ERROR);
-		options.put(CompilerOptions.OPTION_ReportPotentialNullReference, CompilerOptions.ERROR);
-		options.put(CompilerOptions.OPTION_ReportRedundantNullCheck, CompilerOptions.IGNORE);
-		options.put(JmlCompilerOptions.OPTION_ReportNonNullTypeSystem, CompilerOptions.ERROR);
-		options.put(CompilerOptions.OPTION_ReportRawTypeReference, CompilerOptions.IGNORE);
-		options.put(CompilerOptions.OPTION_ReportUnnecessaryElse, CompilerOptions.IGNORE);
-		options.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.IGNORE);
-		// options.put(JmlCompilerOptions.OPTION_SpecPath,
-		// NullTypeSystemTestCompiler.getSpecPath());
-		options.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
-		options.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
-		options.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
-		return options;
-	}
-
-//	private final String testsPath = "tests" + File.separatorChar + "esc" + File.separatorChar;
-	// the line above fails under linux.  the following works under both linux & cygwin.
-	private final String testsPath = "tests" + '\\' + "esc" + '\\';
-
-	// term=JmlAssertStatement
-	public void test_001_assertFalse() {
-		this.runNegativeTest(new String[] {
-				testsPath + "A.java",
-				"package tests.esc;\n" +
-				"public class A {\n" +
-				"   public void m() {\n" + 
-				"      //@ assert false;\n" + 
-				"   }\n" + "}\n" 
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
-				"	//@ assert false;\n" +
-				"	           ^^^^^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}
-    
-	// term=JmlAssertStatement
-	public void test_002_assertTrue() {
-		this.runNegativeTest(new String[] {
-				testsPath + "B.java",
-				"package tests.esc;\n" +
-				"public class B {\n" + 
-				"   public void m() {\n" + 
-				"      //@ assert true;\n" + 
-				"   }\n" + 
-				"}\n" 
-				}, 
-				"");
-	}
-	
-	// term=JmlMethodDeclaration,JmlAssertStatement,Argument
-	public void test_003_assertParam() {
-		this.runNegativeTest (new String[] {
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" + 
-				"   public void m(boolean b) {\n" + 
-				"      //@ assert b;\n" + 
-				"   }\n" + 
-				"}\n" 
-		 		},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "X.java (at line 4)\n" + 
-				"	//@ assert b;\n" +
-				"	           ^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}
-	
-	// term=JmlAssertStatement,OR_OR_Expression	 
-	public void test_004_assert_sequence_and() {
-		this.runNegativeTest (new String[] {
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assert false && false;\n" + 
-				"   }\n" +
-				"}\n"		
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "X.java (at line 4)\n" + 
-				"	//@ assert false && false;\n" +
-				"	           ^^^^^^^^^^^^^^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}
-	
-	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression
-	public void test_006_assert_sequence_and_or() {
-		this.runNegativeTest (new String[] {
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" + 
-				"   public void m1() {\n" + 
-				"      //@ assert false && (false || false);\n" + 
-				"   }\n" + 		
-				"}\n"
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "X.java (at line 4)\n" + 
-				"	//@ assert false && (false || false);\n" +
-				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}
-
-	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression
-	public void test_007_assert_sequence_or_and() {
-		this.runNegativeTest (new String[] {
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +				
-				"   public void m1() {\n" + 
-				"      //@ assert (false || false) && false;\n" + 
-				"   }\n" + 			
-				"}\n"
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "X.java (at line 4)\n" + 
-				"	//@ assert (false || false) && false;\n" +
-				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}	
-	// term=JmlAssertStatement
-	public void test_008_assert_sequence_tt() {
-		this.runNegativeTest (new String[] {
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +		
-				"   public void m() {\n" + 
-				"      //@ assert true;\n" + 
-				"      //@ assert true;\n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"");
-	}	
-	
-	// term=JmlAssertStatement
-	public void test_009_assert_sequence_tf() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assert true;\n" + 
-				"      //@ assert false;\n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "X.java (at line 5)\n" + 
-				"	//@ assert false;\n" +
-				"	           ^^^^^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}	
-	
-	// term=JmlAssertStatement
-	public void test_007_assert_sequence_ft() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assert false;\n" + 
-				"      //@ assert true;\n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "X.java (at line 4)\n" + 
-				"	//@ assert false;\n" +
-				"	           ^^^^^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}
-	
-	// term=JmlAssertStatement
-	public void test_008_assert_sequence_ff() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assert false;\n" + 
-				"      //@ assert false;\n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "X.java (at line 4)\n" + 
-				"	//@ assert false;\n" +
-				"	           ^^^^^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}
-	
-	// term=AssertStatement
-	public void test_009_JavaAssertFalse() {
-		this.runNegativeTest(new String[] {
-				testsPath + "A.java",
-				"package tests.esc;\n" +
-				"public class A {\n" +
-				"   public void m() {\n" + 
-				"      assert false;\n" + 
-				"   }\n" + "}\n" 
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
-				"	assert false;\n" +
-				"	       ^^^^^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}
-    
-	// term=AssertStatement
-	public void test_010_JavaAssertTrue() {
-		this.runNegativeTest(new String[] {
-				testsPath + "B.java",
-				"package tests.esc;\n" +
-				"public class B {\n" + 
-				"   public void m() {\n" + 
-				"      assert true: 12345;\n" + 
-				"   }\n" + 
-				"}\n" 
-				}, 
-				"");
-	}
-
-	// term=JmlAssumeStatement    
-	public void test_0100_assumeFalse() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assume false;\n" + 
-				"   }\n" + 
-				"}\n"
-				},
-				"");
-	}		
-
-	// term=JmlAssumeStatement
-	public void test_0101_assumeTrue() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assume true;\n" + 
-				"   }\n" + 
-				"}\n"
-				},
-				"");
-	}
-	
-	// term=JmlMethodDeclaration
-	public void test_0110_JmlMethodDeclaration_EmptyMethod() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m1() {\n" +
-				"      \n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"");
-	}	
-	
-	// term=JmlMethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement
-	public void test_0111_MethodDefinition() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"   	//@ assert false;\n" + 
-				"   }\n" +
-				"	" +
-				"   //@ ensures \\result == 42;\n" + 
-				"	public int n() {\n" +
-				"		//@ assert true;\n" +
-				"		return 42;\n" +
-				"	}\n" + 
-				"}\n"	
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "X.java (at line 4)\n" + 
-				"	//@ assert false;\n" +
-				"	           ^^^^^\n" + 
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}
-	// term=JmlMethodDeclaration,JmlAssertStatement
-	public void test_0112_DoubleMethodDefinition() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"   	//@ assert false;\n" + 
-				"   }\n" +
-				"	" +
-				"	public void n() {\n" +
-				"		//@ assert false;\n" +
-				"	}\n" + 
-				"}\n"	
-				},
-				"----------\n" +
-				"1. ERROR in " + testsPath + "X.java (at line 4)\n" +
-				"	//@ assert false;\n" +
-				"	           ^^^^^\n" +
-				"This assertion might not hold.\n" + 
-				"----------\n" +
-				"2. ERROR in " + testsPath + "X.java (at line 7)\n" +
-				"	//@ assert false;\n" +
-				"	           ^^^^^\n" +
-				"This assertion might not hold.\n" + 
-				"----------\n");
-	}
-	
-	//TODO term=JmlMethodDeclaration,JmlAssertStatement,JmlMethodSpecification
-	public void test_0113_MethodDefinition_EnsuresRequires() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   //@ ensures \\result == 42;\n" + 
-				"	public int m1() {\n" +
-				"		//@ assert true;\n" +
-				"		return 42;\n" +
-				"	}\n" + 
-				"	" +
-				"   //@ requires n >= 0;\n" + 
-				"	public int m2(int n) {\n" +
-				"		//@ assert true;\n" +
-				"      if (n == 0)\n" +
-		        "         return 1;\n" +
-		        "	   return 10;\n"+
-				"	}\n" +  
-				"   //@ requires n >= 0;\n" + 				
-				"   //@ ensures \\result == 42;\n" + 
-				"	public int m3(int n) {\n" +
-				"		//@ assert true;\n" +
-				"      if (n == 0)\n" +
-		        "         return 42;\n" +
-				"		return 42;\n" +
-				"	}\n" + 		
-				"   //@ requires n >= 0;\n" + 				
-				"   //@ ensures \\result == 42;\n" + 
-				"	public int m4(int n) {\n" +
-				"		//@ assert true;\n" +
-				"      if (n == 0)\n" +
-		        "         return 1;\n" +
-				"		return 42;\n" +
-				"	}\n" + 					
-				"}\n"	
-				},
-				"----------\n" +
-				"1. ERROR in " + testsPath + "X.java (at line 23)\n" +
-				"	//@ requires n >= 0;\n" +
-				"   //@ ensures \\result == 42;\n" +
-				"	    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
-				"This postcondition might not hold.\n" +
-				"----------\n" +
-				"2. ERROR in " + testsPath + "X.java (at line 28)\n" +
-				"	return 1;\n" +
-				"	       ^\n" +
-				"This postcondition might not hold.\n" +
-				"----------\n");
-	}
-	// term=JmlAssumeStatement,JmlAssertStatement
-	public void test_0200_sequence_assume_assert_tt() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assume true;\n" + 
-				"      //@ assert true;\n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"");
-	}	
-	
-	// term=JmlAssumeStatement	
-	public void test_0201_sequence_assume_assert_ff() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assume false;\n" + 
-				"      //@ assert true;\n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"");
-	}	
-	
-	// term=JmlAssumeStatement
-	public void test_0202_sequence_assume_assert_ft() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assume true;\n" + 
-				"      //@ assert false;\n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"----------\n" +
-				"1. ERROR in " + testsPath + "X.java (at line 5)\n" +
-				"	//@ assert false;\n" +
-				"	           ^^^^^\n" +
-				"This assertion might not hold.\n" +
-				"----------\n"
-			);
-	}
-	
-	// term=JmlAssumeStatement
-	public void test_0203_sequence_assume_assert_tf() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m() {\n" + 
-				"      //@ assume false;\n" + 
-				"      //@ assert false;\n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"");
-	}	
-	
-	//TODO term=Block
-	public void test_296_LocalDeclaration_Blocks() {
-		this.runNegativeTest(new String[] {
-			testsPath + "X.java",
-			"package tests.esc;\n" +
-			"public class X {\n" +
-			"   public void m5() {\n" +
-			"       { int n=3;\n" +
-			"         //@ assert n==3;\n" +
-			"       }\n" +
-			"       { int n=4;\n" +
-			"         //@ assert n!=3;\n" +
-			"       }\n" +
-			"   }\n"+
-			"}"
-			},
-			"----------\n" +
-			"1. ERROR in " + testsPath + "X.java (at line 1)\n" +
-			"	package tests.esc;\n" +
-			"	^\n" +
-			"Error parsing Java source code (unsuppored syntax?)\n" +
-			"----------\n"
-			);
-	}
-	
-	// term=LocalDeclaration
-	public void test_297_LocalDeclaration() {	
-	this.runNegativeTest(new String[] {
-			testsPath + "X.java",
-			"package tests.esc;\n" +
-			"public class X {\n" +
-			"   public void m1() {\n" + 
-			"      boolean b = true;\n" + 
-			"      //@ assert b;\n" + 
-			"   }\n" + 
-			"   public void m2() {\n" +
-			"      boolean b = true;\n" + 
-			"      //@ assert !b;\n" +
-			"   }\n" +
-			"   public void m3() {\n" +
-			"      int n=3;\n" +
-			"      //@ assert n<4;\n" +
-			"   }\n" +
-			"   public void m4() {\n" +
-			"      int n=3;\n" +
-			"      //@ assert n<0;\n" +
-			"   }\n" +
-			"}\n" 
-			},			
-			"----------\n" +
-			"1. ERROR in " + testsPath + "X.java (at line 9)\n" +
-			"	//@ assert !b;\n" +
-			"	           ^^\n" +
-			"This assertion might not hold.\n" +
-			"----------\n" +
-			"2. ERROR in " + testsPath + "X.java (at line 17)\n" +
-			"	//@ assert n<0;\n" +
-			"	           ^^^\n" +
-			"This assertion might not hold.\n" +
-			"----------\n");
-	}	
-	
-	// term=IfStatement,Argument,ReturnStatement,StringLiteral
-	public void test_0300_IfCondition() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public String m(int x, int y) {\n" +
-				"		int z = 3;\n" + 
-				"   	if (x == 1) {\n" +
-				"			return \"a\";\n" +	
-				"		}\n" + 
-				"		else {\n" +
-				"			return \"b\";\n" +
-				"		}\n" +
-				"   }\n" + 
-				"}\n"
-				},
-				"");
-	}
-	
-	// term=IfStatement
-	public void test_0301_IfCondition_noBlock() {		 
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +
-				"   public void m1() {\n" +
-				"		if (true) \n" +
-				"      		//@ assert (true);\n" +
-				"   }\n" +
-				"}\n" 
-				},
-				"");
-	}	
-	
-	//term=UnaryExpression
-	public void test_0320_UnaryExpression() {
-		this.runNegativeTest (new String[] {		
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" + 
-				"   public void m() {\n" +
-				"      boolean b = true;\n" + 
-				"      //@ assert !b;\n" +
-				"   }\n" +		
-				"}" 
-				},
-				// expected boogie
-				"----------\n" +
-				"1. ERROR in " + testsPath + "X.java (at line 5)\n" +
-				"	//@ assert !b;\n" +
-				"	           ^^\n" +
-				"This assertion might not hold.\n" +
-				"----------\n");
-	}
-	
-	//term=UnaryExpression
-	public void test_0321_UnaryExpression() {
-		this.runNegativeTest (new String[] {		
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" + 
-				"   public void m() {\n" +
-				"      boolean b = true;\n" + 
-				"      //@ assert !b;\n" +
-				"      //@ assert !!b;\n" +
-				"      //@ assert !!!b;\n" +
-				"   }\n" +		
-				"}" 
-				},
-				// expected boogie
-				"----------\n" +
-				"1. ERROR in " + testsPath + "X.java (at line 5)\n" +
-				"	//@ assert !b;\n" +
-				"	           ^^\n" +
-				"This assertion might not hold.\n" +
-				"----------\n");
-	}
-	
-	// term=WhileStatement
-	public void test_350_while() {
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +	
-				"   public void m1() {\n" +
-				"      while (true == true) {" +
-				"         //@ assert true;\n" +
-				"      }\n" + 
-				"   }\n" + 
-				"}\n" 
-				},
-				"");
-	}	
-
-	public void test_400_do() {
-		this.runNegativeTest (new String[] {	
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" + 
-				"   public void m1() {\n" +
-				"		do{\n" +
-				"      		//@ assert (true);\n" +
-				"		}while(true);\n" +	
-				"	}\n" +	
-				"   public void m2() {\n" +
-				"		do\n" +
-				"      		//@ assert (true);\n" +
-				"		while(true);\n" +	
-				"	}\n" +		
-				"   public void m3() {\n" +
-				"		int x = 0;\n" + 				
-				"		do{\n" +
-				"			x = x +1;\n" +
-				"		}while(x<10);\n" +
-				"   	//@ assert (x<10);\n" +
-				"	}\n" +						
-				"}\n"
-				},
-				"----------\n" +
-				"1. ERROR in " + testsPath + "X.java (at line 18)\n" +
-				"	//@ assert (x<10);\n" +
-				"	           ^^^^^^\n" +
-				"This assertion might not hold.\n" +
-				"----------\n");
-	}
-	
-	// term=DoStatement,Block
-	public void test_401_do_multiline() {
-		this.runNegativeTest (new String[] {	
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" + 
-				"   public void m1() {\n" +
-				"		do{\n" +
-				"      		//@ assert (true);\n" +
-				"      		//@ assert (false);\n" +
-				"      		//@ assert (true);\n" +
-				"		}while(true);\n" +	
-				"	}\n" +	
-				"}\n" 
-				},
-				"----------\n" +
-				"1. ERROR in " + testsPath + "X.java (at line 6)\n" +
-				"	//@ assert (false);\n" +
-				"	           ^^^^^^^\n" +
-				"This assertion might not hold.\n" +
-				"----------\n");
-	}				
-	// term=WhileStatement,BreakStatement,LabeledStatement
-	public void test_0370_Break_withlabel() {		 
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +	
-				"   public void m() {\n" +
-				"		blah:\n" +
-				"		while(true){\n" +
-				"      		//@ assert (true);\n" +
-				"			break blah;\n" +	
-				"		}\n" +	
-				"		if (true) \n" +
-				"      		//@ assert (true);\n" +
-
-				"   }\n" +
-				"}\n" 
-				},
-				"");
-	}
-	
-	// term=WhileStatement,BreakStatement
-	public void test_0371_Break() {		 
-		this.runNegativeTest (new String[] {				
-				testsPath + "X.java",
-				"package tests.esc;\n" +
-				"public class X {\n" +	
-				"   public void m() {\n" +
-				"		while(true){\n" +
-				"      		//@ assert (true);\n" +
-				"			break;\n" +	
-				"		}\n" +
-				"	}\n" +	
-				"}\n" 
-				},
-				"");
+		// always run initial test first to validate boogie
+		super.compareJavaToBoogie(java, boogie, adapterOutput);
+		
+		// run through adapter
+		runNegativeTest(new String[] {"A.java", java}, adapterOutput);
 	}
 
 	// term=ReturnStatement,JmlMethodSpecification,EqualExpression,IntLiteral
@@ -786,125 +78,384 @@ public class AdapterTests extends AbstractRegressionTest {
 				"This postcondition might not hold.\n" + 
 				"----------\n");
 	}
-	
-	// term=PrefixExpression,PostFixExpression
-	public void test_602_pre_post_FixExpression() {
-		this.runNegativeTest(new String[]{
-				"A.java",
-				//java
-				"package tests.esc;\n" +
-				"public class A {\n" + 
-				"   public void m1() {\n" +
-				"		int i = 5;\n" +
-				"		int x = 0;" +
-				"		x = i ++;\n" +
-				"		//@ assert i == 6;\n" +
-				"		//@ assert x == 5;\n" +
-				"	}\n" +					
-				"}\n" 
-				},
-				// expected output			
-				""			
-				);
-	}
-	
-	// term=PrefixExpression,PostFixExpression
-	public void test_603_post_pre_FixExpression() {
-		this.runNegativeTest(new String[]{
-				"A.java",
-				//java
-				"package tests.esc;\n" +
-				"public class A {\n" + 
-				"   public void m1() {\n" +
-				"		int i = 5;\n" +
-				"		int x = 0;" +
-				"		x = ++ i;\n" +
-				"		//@ assert i == 6;\n" +
-				"		//@ assert x == 6;\n" +
-				"	}\n" +					
-				"}\n" 
-				},
-				// expected output			
-				""			
-				);
+
+	@Override
+	public void test_001_assertFalse() {
+		super.test_001_assertFalse();
 	}
 
-	// term=Assignment
+	@Override
+	public void test_002_assertTrue() {
+		super.test_002_assertTrue();
+	}
+
+	@Override
+	public void test_003_assertParam() {
+		super.test_003_assertParam();
+	}
+
+	@Override
+	public void test_004_assert_sequence_and() {
+		super.test_004_assert_sequence_and();
+	}
+
+	@Override
+	public void test_005_assert_sequence_or() {
+		super.test_005_assert_sequence_or();
+	}
+
+	@Override
+	public void test_006_assert_sequence_and_or() {
+		super.test_006_assert_sequence_and_or();
+	}
+
+	@Override
+	public void test_007_assert_sequence_ft() {
+		super.test_007_assert_sequence_ft();
+	}
+
+	@Override
+	public void test_007_assert_sequence_or_and() {
+		super.test_007_assert_sequence_or_and();
+	}
+
+	@Override
+	public void test_008_assert_sequence_ff() {
+		super.test_008_assert_sequence_ff();
+	}
+
+	@Override
+	public void test_008_assert_sequence_tt() {
+		super.test_008_assert_sequence_tt();
+	}
+
+	@Override
+	public void test_009_assert_sequence_tf() {
+		super.test_009_assert_sequence_tf();
+	}
+
+	@Override
+	public void test_009_JavaAssertFalse() {
+		super.test_009_JavaAssertFalse();
+	}
+
+	@Override
+	public void test_010_JavaAssertTrue() {
+		super.test_010_JavaAssertTrue();
+	}
+
+	@Override
+	public void test_0100_assumeFalse() {
+		super.test_0100_assumeFalse();
+	}
+
+	@Override
+	public void test_0101_assumeTrue() {
+		super.test_0101_assumeTrue();
+	}
+
+	@Override
+	public void test_0110_JmlMethodDeclaration_EmptyMethod() {
+		super.test_0110_JmlMethodDeclaration_EmptyMethod();
+	}
+
+	@Override
+	public void test_0111_MethodDefinition() {
+		super.test_0111_MethodDefinition();
+	}
+
+	@Override
+	public void test_0112_DoubleMethodDefinition() {
+		super.test_0112_DoubleMethodDefinition();
+	}
+
+	@Override
+	public void test_0112_JmlMethodDefinition_EnsuresRequires() {
+		super.test_0112_JmlMethodDefinition_EnsuresRequires();
+	}
+
+	@Override
+	public void test_0200_sequence_assume_assert_tt() {
+		super.test_0200_sequence_assume_assert_tt();
+	}
+
+	@Override
+	public void test_0201_sequence_assume_assert_ff() {
+		super.test_0201_sequence_assume_assert_ff();
+	}
+
+	@Override
+	public void test_0202_sequence_assume_assert_ft() {
+		super.test_0202_sequence_assume_assert_ft();
+	}
+
+	@Override
+	public void test_0203_sequence_assume_assert_tf() {
+		super.test_0203_sequence_assume_assert_tf();
+	}
+
+	@Override
+	public void test_0296_LocalDeclaration_Blocks() {
+		super.test_0296_LocalDeclaration_Blocks();
+	}
+
+	@Override
+	public void test_0298_LocalDeclaration() {
+		super.test_0298_LocalDeclaration();
+	}
+
+	@Override
+	public void test_0299_LocalDeclarationWithInitialization() {
+		super.test_0299_LocalDeclarationWithInitialization();
+	}
+
+	@Override
+	public void test_0300_IfCondition() {
+		super.test_0300_IfCondition();
+	}
+
+	@Override
+	public void test_0301_IfCondition_noBlock() {
+		super.test_0301_IfCondition_noBlock();
+	}
+
+	@Override
+	public void test_0302_IfCondition_ternary() {
+		super.test_0302_IfCondition_ternary();
+	}
+
+	@Override
+	public void test_0310_EmptyStatement() {
+		super.test_0310_EmptyStatement();
+	}
+
+	@Override
+	public void test_0320_UnaryExpression() {
+		super.test_0320_UnaryExpression();
+	}
+
+	@Override
+	public void test_0321_UnaryExpression() {
+		super.test_0321_UnaryExpression();
+	}
+
+	@Override
+	public void test_0350_while() {
+		super.test_0350_while();
+	}
+
+	@Override
+	public void test_0370_while_break_withlabel() {
+		super.test_0370_while_break_withlabel();
+	}
+
+	@Override
+	public void test_0371_while_break() {
+		super.test_0371_while_break();
+	}
+
+	@Override
+	public void test_0372_while_invariant_true() {
+		super.test_0372_while_invariant_true();
+	}
+
+	@Override
+	public void test_0373_while_invariant_expr() {
+		super.test_0373_while_invariant_expr();
+	}
+
+	@Override
+	public void test_0374_while_invariant_break() {
+		super.test_0374_while_invariant_break();
+	}
+
+	@Override
+	public void test_1000_int_eq() {
+		super.test_1000_int_eq();
+	}
+
+	@Override
+	public void test_1000_int_localdeclaration() {
+		super.test_1000_int_localdeclaration();
+	}
+
+	@Override
+	public void test_1001_int_arith() {
+		super.test_1001_int_arith();
+	}
+
+	@Override
+	public void test_1002_arith_cond() {
+		super.test_1002_arith_cond();
+	}
+
+	@Override
+	public void test_1003_boolExpr_cond() {
+		super.test_1003_boolExpr_cond();
+	}
+
+	@Override
+	public void test_1004_implies() {
+		super.test_1004_implies();
+	}
+
+	@Override
+	public void test_1005_int_boundaries() {
+		super.test_1005_int_boundaries();
+	}
+
+	@Override
+	public void test_2000_messageSend() {
+		super.test_2000_messageSend();
+	}
+
+	@Override
+	public void test_2001_messageSend() {
+		super.test_2001_messageSend();
+	}
+
+	@Override
+	public void test_2002_messageSend() {
+		super.test_2002_messageSend();
+	}
+
+	@Override
+	public void test_2003_messageSendStatic() {
+		super.test_2003_messageSendStatic();
+	}
+
+	@Override
+	public void test_2004_messageSendOnReceiver() {
+		super.test_2004_messageSendOnReceiver();
+	}
+
+	@Override
+	public void test_2005_messageSendOnField() {
+		super.test_2005_messageSendOnField();
+	}
+
+	@Override
+	public void test_2005_messageSendOnLocal() {
+		super.test_2005_messageSendOnLocal();
+	}
+
+	@Override
+	public void test_2005_messageSendOnThis() {
+		super.test_2005_messageSendOnThis();
+	}
+
+	@Override
+	public void test_297_LocalDeclaration() {
+		super.test_297_LocalDeclaration();
+	}
+
+	@Override
+	public void test_400_do() {
+		super.test_400_do();
+	}
+
+	@Override
+	public void test_401_do_multiline() {
+		super.test_401_do_multiline();
+	}
+
+	@Override
+	public void test_402_do_invariant() {
+		super.test_402_do_invariant();
+	}
+
+	@Override
+	public void test_500_for() {
+		super.test_500_for();
+	}
+
+	@Override
+	public void test_501_for_multi_initialization() {
+		super.test_501_for_multi_initialization();
+	}
+
+	@Override
+	public void test_503_for_invariant() {
+		super.test_503_for_invariant();
+	}
+
+	@Override
+	public void test_600_postFixExpression() {
+		super.test_600_postFixExpression();
+	}
+
+	@Override
+	public void test_601_preFixExpression() {
+		super.test_601_preFixExpression();
+	}
+
+	@Override
+	public void test_602_pre_post_FixExpression() {
+		super.test_602_pre_post_FixExpression();
+	}
+
+	@Override
+	public void test_603_post_pre_FixExpression() {
+		super.test_603_post_pre_FixExpression();
+	}
+
+	@Override
 	public void test_604_multiAssignment() {
-		this.runNegativeTest(new String[]{
-				"A.java",
-				//java
-				"package tests.esc;\n" +
-				"public class A {\n" + 
-				"   public void m1() {" +
-				"		int a = 1;\n" +
-				"		int b = 2;\n" +
-				"		int c = b = a = 3;\n" +
-				"		//@ assert a == 3;\n" +
-				"		//@ assert b == 3;\n" +
-				"		//@ assert c == 3;\n" +
-				"	}\n" +					
-				"}\n" 
-				},
-				//expected output
-				""
-				);
-	}	
-	
-	// term=IntLiteral
-	public void test_someNumber_intMaxBoundary() {
-		this.runNegativeTest(new String[]{
-				"A.java",
-				//java
-				"package tests.esc;\n" +
-				"public class A {\n" + 
-				"   public void m1() {\n" +
-				"      int max = 2147483647;\n" +
-				"	   //@ assert (max == 2147483647);\n" +
-				"   }\n" +
-				"	public void m2() {\n" +
-				"		int max = 2147483647;\n" + 
-				"	   //@ assert (max == 2147483646);\n" +
-				"	}\n" +
-				"}\n"
-				},
-				//expected output
-				"----------\n" +
-				"1. ERROR in A.java (at line 9)\n" +
-				"	//@ assert (max == 2147483646);\n" +
-				"	           ^^^^^^^^^^^^^^^^^^^\n" +
-				"This assertion might not hold.\n" +
-				"----------\n"
-				);
-		
+		super.test_604_multiAssignment();
 	}
-	
-	// term=IntLiteral
-	public void test_someNumber_intMinBoundary() {
-		this.runNegativeTest(new String[]{
-				"A.java",
-				//java
-				"package tests.esc;\n" +
-				"public class A {\n" + 
-				"   public void m1() {\n" +
-				"      int min = -2147483648;\n" +
-				"	   //@ assert (min == -2147483648);\n" +
-				"   }\n" +
-				"	public void m2() {\n" +
-				"		int min = -2147483648;\n" + 
-				"	   //@ assert (min == -2147483647);\n" +
-				"	}\n" +
-				"}\n"
-				},
-				//expected output
-				"----------\n" +
-				"1. ERROR in A.java (at line 9)\n" +
-				"	//@ assert (min == -2147483647);\n" +
-				"	           ^^^^^^^^^^^^^^^^^^^^\n" +
-				"This assertion might not hold.\n" +
-				"----------\n"
-				);
-		
+
+	@Override
+	public void test_700_localVarDecl_order() {
+		super.test_700_localVarDecl_order();
 	}
-	
+
+	@Override
+	public void test_800_FieldDeclaration() {
+		super.test_800_FieldDeclaration();
+	}
+
+	@Override
+	public void test_801_Static_FieldDeclaration() {
+		super.test_801_Static_FieldDeclaration();
+	}
+
+	@Override
+	public void test_900_JmlResultExpression() {
+		super.test_900_JmlResultExpression();
+	}
+
+	@Override
+	public void test_901_JmlResultExpression() {
+		super.test_901_JmlResultExpression();
+	}
+
+	@Override
+	public void test_910_JmlOldExpression() {
+		super.test_910_JmlOldExpression();
+	}
+
+	@Override
+	public void test_911_JmlOldExpression() {
+		super.test_911_JmlOldExpression();
+	}
+
+	@Override
+	public void testDoubleLiteral() {
+		super.testDoubleLiteral();
+	}
+
+	@Override
+	public void testFalseLiteral() {
+		super.testFalseLiteral();
+	}
+
+	@Override
+	public void testIntLiteral() {
+		super.testIntLiteral();
+	}
+
+	@Override
+	public void testTrueLiteral() {
+		super.testTrueLiteral();
+	}
 }

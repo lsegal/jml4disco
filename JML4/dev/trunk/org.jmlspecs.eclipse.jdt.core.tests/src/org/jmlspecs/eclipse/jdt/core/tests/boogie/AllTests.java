@@ -9,9 +9,9 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.jmlspecs.eclipse.jdt.core.tests.boogie");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(InitialTests.class);
 		suite.addTestSuite(BoogieSourceTests.class);
 		suite.addTestSuite(BoogieSymbolTableTests.class);
+		suite.addTestSuite(InitialTests.class);
 		suite.addTestSuite(AdapterTests.class); // adapters go last
 		//$JUnit-END$
 		return suite;

@@ -1,5 +1,6 @@
 package org.jmlspecs.jml4.boogie;
 
+import java.util.Arrays;
 import java.util.Hashtable;
 
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
@@ -54,7 +55,8 @@ public class BoogieSource {
 	 */
 	private void adjustSourcePoints() {
 		Object[] keys = pointTable.keySet().toArray();
-		for (int i = 0; i < keys.length; i++) {
+		Arrays.sort(keys);
+		for (int i = keys.length - 1; i >= 0; i--) {
 			ASTNode n = (ASTNode) pointTable.remove(keys[i]);
 			((BoogieSourcePoint) keys[i]).row += prependsOffset;
 			pointTable.put(keys[i], n);

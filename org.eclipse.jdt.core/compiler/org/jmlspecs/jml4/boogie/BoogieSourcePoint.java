@@ -4,7 +4,7 @@ package org.jmlspecs.jml4.boogie;
  * Represents a point in a Boogie source code file. Used
  * to map points in Boogie source back to a Java source file.
  */
-public class BoogieSourcePoint {
+public class BoogieSourcePoint implements Comparable {
 	public int row; 
 	public int col;
 
@@ -39,6 +39,18 @@ public class BoogieSourcePoint {
 	
 	public int hashCode() {
 		return new Integer(row + col).hashCode();
+	}
+	
+	public String toString() {
+		return "(" + row + "," + col + ")";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+	}
+
+	public int compareTo(Object o) {
+		BoogieSourcePoint other = (BoogieSourcePoint)o;
+		if (row < other.row) return -1;
+		if (row == other.row && col < other.col) return -1;
+		if (row == other.row && col == other.col) return 0;
+		else return 1;
 	}
 
 }

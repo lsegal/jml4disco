@@ -382,7 +382,7 @@ public class AdapterTests extends AbstractRegressionTest {
 				"	}\n" +  
 				"   //@ requires n >= 0;\n" + 				
 				"   //@ ensures \\result == 42;\n" + 
-				"	public int m3() {\n" +
+				"	public int m3(int n) {\n" +
 				"		//@ assert true;\n" +
 				"      if (n == 0)\n" +
 		        "         return 42;\n" +
@@ -390,7 +390,7 @@ public class AdapterTests extends AbstractRegressionTest {
 				"	}\n" + 		
 				"   //@ requires n >= 0;\n" + 				
 				"   //@ ensures \\result == 42;\n" + 
-				"	public int m4() {\n" +
+				"	public int m4(int n) {\n" +
 				"		//@ assert true;\n" +
 				"      if (n == 0)\n" +
 		        "         return 1;\n" +
@@ -398,8 +398,12 @@ public class AdapterTests extends AbstractRegressionTest {
 				"	}\n" + 					
 				"}\n"	
 				},
-				//TODO 
-				"");
+				"----------\n" +
+				"1. ERROR in " + testsPath + "X.java (at line 28)\n" +
+				"	return 1;\n" +
+				"	       ^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n");
 	}
 	// term=JmlAssumeStatement,JmlAssertStatement
 	public void test_0200_sequence_assume_assert_tt() {

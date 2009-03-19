@@ -649,7 +649,7 @@ public class InitialTests extends AbstractRegressionTest {
 			"   }\n" +
 			"}\n"
 			,
-			// TODO expected boogie
+			// expected boogie
 			"procedure tests.esc.A.m5(this : tests.esc.A) {\n" +
 			"	var a : int;\n" +
 			"	var b : int;\n" +
@@ -657,7 +657,10 @@ public class InitialTests extends AbstractRegressionTest {
 			"	assert (a == 3);\n" +
 			"	b := 4;\n" +
 			"	assert (b != 3);\n" +
-			"}");
+			"}\n",
+			// adapter output
+			""
+			);
 	}
 	
 	// term=LocalDeclaration

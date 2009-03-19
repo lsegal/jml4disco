@@ -23,6 +23,8 @@ import org.jmlspecs.jml4.util.Logger;
  * from Eclipse's compilation stack.
  */
 public class BoogieAdapter {
+	public static boolean DEBUG = false; 
+	
 	// from proverAdapter
 	public static final String VALID = "Valid."; //$NON-NLS-1$
 	protected transient final CompilerOptions options;
@@ -69,6 +71,9 @@ public class BoogieAdapter {
 	public void prove(CompilationUnitDeclaration unit) {
 		// fill boogie visitor
 		BoogieVisitor.visit(unit, output);
+		if (DEBUG) {
+			System.out.println(output.getResults());
+		}
 
 		String[] response = proveWithBoogie();
 		if (response != null) { 
@@ -86,38 +91,43 @@ public class BoogieAdapter {
 	 */
 	private void parseResult(String[] response) {
 		for (int i = 0; i < response.length; i++) {
-			Pattern p = Pattern.compile(".+\\((\\d+),(\\d+)\\): Error (\\S+?): (.*)"); //$NON-NLS-1$
+			Pattern p = Pattern.compile(".+\\((\\d+),(\\d+)\\): (syntax error|Error (\\S+?)): (.*)"); //$NON-NLS-1$
 			Matcher m = p.matcher(response[i]);
 			if (m.matches()) {
-				// Get error message
-				String errorText = (String)resultCodes.get(m.group(3));
-				if (errorText == null) errorText = m.group(4); // Use Boogie's if none avail.
-
-				// Get Java code point
-				int row = Integer.parseInt(m.group(1));
-				int col = Integer.parseInt(m.group(2));
-				BoogieSourcePoint sp = new BoogieSourcePoint(row, col);
-				ASTNode term = output.getTermAtPoint(sp);
-				
-				if (term != null) {
-					problemReporter.jmlEsc2Error(errorText, term.sourceStart, term.sourceEnd); 
+				if (m.group(3).equals("syntax error")) { //$NON-NLS-1$
+					problemReporter.jmlEsc2Fatal("Error parsing Java source code (unsuppored syntax?)", 0, 0); //$NON-NLS-1$
 				}
 				else {
-					problemReporter.jmlEsc2Error(errorText, 0, 0);
-				}
-				
-				// Catch related location
-				p = Pattern.compile(".+\\((\\d+),(\\d+)\\): Related location: (.*)"); //$NON-NLS-1$
-				m = p.matcher(response[i+1]);
-				if (response[i+1] != null && m.matches()) {
+					// Get error message
+					String errorText = (String)resultCodes.get(m.group(4));
+					if (errorText == null) errorText = m.group(5); // Use Boogie's if none avail.
+	
 					// Get Java code point
-					row = Integer.parseInt(m.group(1));
-					col = Integer.parseInt(m.group(2));
-					sp = new BoogieSourcePoint(row, col);
-					term = output.getTermAtPoint(sp);
-
+					int row = Integer.parseInt(m.group(1));
+					int col = Integer.parseInt(m.group(2));
+					BoogieSourcePoint sp = new BoogieSourcePoint(row, col);
+					ASTNode term = output.getTermAtPoint(sp);
+					
 					if (term != null) {
 						problemReporter.jmlEsc2Error(errorText, term.sourceStart, term.sourceEnd); 
+					}
+					else {
+						problemReporter.jmlEsc2Error(errorText, 0, 0);
+					}
+					
+					// Catch related location
+					p = Pattern.compile(".+\\((\\d+),(\\d+)\\): Related location: (.*)"); //$NON-NLS-1$
+					m = p.matcher(response[i+1]);
+					if (response[i+1] != null && m.matches()) {
+						// Get Java code point
+						row = Integer.parseInt(m.group(1));
+						col = Integer.parseInt(m.group(2));
+						sp = new BoogieSourcePoint(row, col);
+						term = output.getTermAtPoint(sp);
+	
+						if (term != null) {
+							problemReporter.jmlEsc2Error(errorText, term.sourceStart, term.sourceEnd); 
+						}
 					}
 				}
 			}

@@ -219,7 +219,8 @@ def parse_tests(file, adapter_test = false)
                 pass = !(prevline =~ /\bTODO\b/)
                 terms = prevline[/term=(\S+)/, 1] 
                 adapter = prevline[/\badapter=(\S+)/, 1]
-                adapter = adapter == "pass" if adapter
+                next if adapter == "none" || !adapter
+                adapter = adapter == "pass"
                 next unless terms
                 terms.split(',').each do |term|
                     out[term] ||= []
@@ -252,7 +253,7 @@ def parse_boogie(str)
 end
 
 $traceability = {}
-["InitialTests.java", "AdapterTests.java"].each do |file|
+["TranslationTests.java", "AdapterTests.java"].each do |file|
     $traceability.update parse_tests(file)
 end
 

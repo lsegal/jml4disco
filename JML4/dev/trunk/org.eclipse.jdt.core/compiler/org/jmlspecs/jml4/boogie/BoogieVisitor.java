@@ -125,6 +125,7 @@ public class BoogieVisitor extends ASTVisitor {
 	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
 	private static final String STMT_END = ";"; //$NON-NLS-1$
+	private static final String SPACE = " "; //$NON-NLS-1$
 	
 	private BoogieSymbolTable symbolTable;
 	
@@ -399,7 +400,7 @@ public class BoogieVisitor extends ASTVisitor {
 				out = "=<"; //$NON-NLS-1$
 				break;
 		}
-		append(" " + out + " "); //$NON-NLS-1$ //$NON-NLS-2$
+		append(SPACE + out + SPACE);
 		term.right.traverse(this, scope);
 		append(")");  //$NON-NLS-1$
 		return false;
@@ -564,7 +565,7 @@ public class BoogieVisitor extends ASTVisitor {
 				out = "<=>"; //$NON-NLS-1$
 				break;
 		}
-		append(" " + out + " "); //$NON-NLS-1$ //$NON-NLS-2$
+		append(SPACE + out + SPACE);
 		term.right.traverse(this, scope);
 		append(")"); //$NON-NLS-1$
 
@@ -767,7 +768,8 @@ public class BoogieVisitor extends ASTVisitor {
 					if (rest.clauses[j] instanceof JmlAssignableClause) {
 						JmlAssignableClause modifies = (JmlAssignableClause)rest.clauses[j];
 						JmlStoreRefListExpression stores = (JmlStoreRefListExpression)modifies.expr;
-						append(" modifies ", term); //$NON-NLS-1$
+						append(SPACE);
+						append("modifies ", term); //$NON-NLS-1$
 						for (int x = 0; x < stores.exprList.length; x++) {
 							//stores.exprList[x].traverse(this, methodScope);
 							if (stores.exprList[x] instanceof SingleNameReference) {
@@ -782,7 +784,8 @@ public class BoogieVisitor extends ASTVisitor {
 				}
 			}
 			if (specCase.getRequiresExpressions().size() > 0) {
-				append(" requires ", term); //$NON-NLS-1$
+				append(SPACE);
+				append("requires ", term); //$NON-NLS-1$
 				List exprs = specCase.getRequiresExpressions();
 				for (int j = 0; j < exprs.size(); j++) {
 					Expression expr = (Expression)exprs.get(j);
@@ -791,7 +794,8 @@ public class BoogieVisitor extends ASTVisitor {
 				append(STMT_END); 
 			}
 			if (specCase.getEnsuresExpressions().size() > 0) {
-				append(" ensures ", term); //$NON-NLS-1$
+				append(SPACE);
+				append("ensures ", term); //$NON-NLS-1$
 				List exprs = specCase.getEnsuresExpressions();
 				for (int j = 0; j < exprs.size(); j++) {
 					Expression expr = (Expression)exprs.get(j);
@@ -844,7 +848,7 @@ public class BoogieVisitor extends ASTVisitor {
 		if (term instanceof JmlWhileStatement ) {
 			JmlWhileStatement jmlWhile = (JmlWhileStatement) term;
 			jmlWhile.annotations.traverse(this, scope);
-			append(STMT_END + " "); //$NON-NLS-1$
+			append(STMT_END + SPACE);
 		}
 		
 		toBlock(term.action, scope).traverse(this, scope);

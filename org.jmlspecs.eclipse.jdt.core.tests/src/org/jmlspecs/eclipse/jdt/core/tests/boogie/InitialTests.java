@@ -17,6 +17,8 @@ import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.PostProcessor;
 
 public class InitialTests extends AbstractRegressionTest {
+	protected final String testsPath = "";
+	
 	public InitialTests(String name) {
 		super(name);
 	}
@@ -45,7 +47,7 @@ public class InitialTests extends AbstractRegressionTest {
 			options.put(JmlCompilerOptions.OPTION_EnableJml, CompilerOptions.ENABLED);
 			options.put(JmlCompilerOptions.OPTION_EnableJmlDbc, CompilerOptions.ENABLED);
 			options.put(JmlCompilerOptions.OPTION_EnableJmlBoogie, CompilerOptions.ENABLED);
-			options.put(JmlCompilerOptions.OPTION_JmlBoogieOutputOnly, CompilerOptions.ENABLED);
+			options.put(JmlCompilerOptions.OPTION_JmlBoogieOutputOnly, CompilerOptions.DISABLED);
 			options.put(JmlCompilerOptions.OPTION_DefaultNullity, JmlCompilerOptions.NON_NULL);
 			options.put(CompilerOptions.OPTION_ReportNullReference, CompilerOptions.ERROR);
 			options.put(CompilerOptions.OPTION_ReportPotentialNullReference, CompilerOptions.ERROR);
@@ -94,13 +96,18 @@ public class InitialTests extends AbstractRegressionTest {
 	
 	protected void compareJavaToBoogie(String java, String boogie, String adapterOutput) {
 		String file = "A.java";
-		runNegativeTest(new String[] {file, java},
-				"----------\n" +
-				"1. ERROR in "+ file + " (at line 1)\n" +
-				"	package tests.esc;\n" +
-				"	^\n\n" +
-				boogie +
-				"\n----------\n");
+		if (boogie != null) {
+			String key = JmlCompilerOptions.OPTION_JmlBoogieOutputOnly;
+			getCompilerOptions().put(key, CompilerOptions.ENABLED);
+			runNegativeTest(new String[] {file, java},
+					"----------\n" +
+					"1. ERROR in "+ file + " (at line 1)\n" +
+					"	package tests.esc;\n" +
+					"	^\n\n" +
+					boogie +
+					"\n----------\n");
+			getCompilerOptions().put(key, CompilerOptions.DISABLED);
+		}
 		/*if (adapterOutput != null) {
 			String key = JmlCompilerOptions.OPTION_JmlBoogieOutputOnly;
 			String orig = getCompilerOptions().get(key);
@@ -145,38 +152,6 @@ public class InitialTests extends AbstractRegressionTest {
 		compareJavaExprToBoogie("2.2456", "2.2456");
 	}
 	
-	// term=JmlMethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement,EqualExpression
-	public void testMethodDefinition() {
-		this.compareJavaToBoogie(
-			// java
-			"package tests.esc;\n" + 
-			"public class A {\n" +
-			"   public void m() {\n" + 
-			"   	//@ assert false;\n" + 
-			"   }\n" +
-			"	" +
-			"   //@ ensures \\result == 42;\n" + 
-			"	public int n() {\n" +
-			"		//@ assert true;\n" +
-			"		return 42;\n" +
-			"	}\n" + 
-			"}\n"
-			,
-			// expected boogie
-			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
-			"	assert false;\n" +
-			"}\n" +
-			"procedure tests.esc.A.n(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 42); {\n" +
-			"	assert true;\n" +
-			"	__result__ := 42;\n" +
-			"	return;\n" +
-			"}\n",
-			// adapter output
-			""
-		);
-	}
-	
-
 /*******************************************
 *			ASSERTS
 *******************************************/	
@@ -197,7 +172,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert false;\n" +
 				"}\n",
 				// adapter output
-				"" 		
+				"----------\n" + 
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
+				"	//@ assert false;\n" +
+				"	           ^^^^^\n" + 
+				"This assertion might not hold.\n" + 
+				"----------\n"	
 		);
 	}
 
@@ -237,7 +217,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert a;\n" +
 				"}\n",
 				// adapter output
-				"" 			
+				"----------\n" + 
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
+				"	//@ assert b;\n" +
+				"	           ^\n" + 
+				"This assertion might not hold.\n" + 
+				"----------\n" 			
 				);
 	}	
 	
@@ -257,8 +242,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert false && false;\n" +
 				"}\n",
 				// adapter output
-				""
-				
+				"----------\n" +
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" +
+				"	//@ assert false && false;\n" +
+				"	           ^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}
 	
@@ -278,7 +267,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert (false || false);\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" +
+				"	//@ assert false || false;\n" +
+				"	           ^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}	
 			
@@ -298,7 +292,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert false && (false || false);\n" +
 				"}\n",
 				// adapter output
-				""				
+				"----------\n" + 
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
+				"	//@ assert false && (false || false);\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
+				"This assertion might not hold.\n" + 
+				"----------\n"			
 				);
 	}	
 	
@@ -318,7 +317,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert (false || false) && false;\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" + 
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
+				"	//@ assert (false || false) && false;\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
+				"This assertion might not hold.\n" + 
+				"----------\n"
 				);
 	}
 
@@ -362,7 +366,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert false;\n" +				
 				"}\n",
 				// adapter output
-				""
+				"----------\n" + 
+				"1. ERROR in " + testsPath + "A.java (at line 5)\n" + 
+				"	//@ assert false;\n" +
+				"	           ^^^^^\n" + 
+				"This assertion might not hold.\n" + 
+				"----------\n"
 				);
 	}
 	
@@ -384,7 +393,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert true;\n" +				
 				"}\n",
 				// adapter output
-				""
+				"----------\n" + 
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
+				"	//@ assert false;\n" +
+				"	           ^^^^^\n" + 
+				"This assertion might not hold.\n" + 
+				"----------\n"
 				);
 	}
 	
@@ -406,7 +420,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert false;\n" +				
 				"}\n",
 				// adapter output
-				""
+				"----------\n" + 
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
+				"	//@ assert false;\n" +
+				"	           ^^^^^\n" + 
+				"This assertion might not hold.\n" + 
+				"----------\n"
 				);
 	}	
 	
@@ -428,7 +447,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert false;\n" +
 				"}\n",
 				// adapter output
-				"" 		
+				"----------\n" + 
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
+				"	assert false;\n" +
+				"	       ^^^^^\n" + 
+				"This assertion might not hold.\n" + 
+				"----------\n"	
 		);
 	}
 
@@ -515,8 +539,78 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
+	// term=JmlMethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement,EqualExpression
+	public void test_0111_MethodDefinition() {
+		this.compareJavaToBoogie(
+			// java
+			"package tests.esc;\n" + 
+			"public class A {\n" +
+			"   public void m() {\n" + 
+			"   	//@ assert false;\n" + 
+			"   }\n" +
+			"	" +
+			"   //@ ensures \\result == 42;\n" + 
+			"	public int n() {\n" +
+			"		//@ assert true;\n" +
+			"		return 42;\n" +
+			"	}\n" + 
+			"}\n"
+			,
+			// expected boogie
+			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+			"	assert false;\n" +
+			"}\n" +
+			"procedure tests.esc.A.n(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 42); {\n" +
+			"	assert true;\n" +
+			"	__result__ := 42;\n" +
+			"	return;\n" +
+			"}\n",
+			// adapter output
+			"----------\n" + 
+			"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
+			"	//@ assert false;\n" +
+			"	           ^^^^^\n" + 
+			"This assertion might not hold.\n" + 
+			"----------\n"
+		);
+	}
+	
+	// term=JmlMethodDeclaration,JmlAssertStatement
+	public void test_0112_DoubleMethodDefinition() {
+		this.compareJavaToBoogie(
+				// java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"   public void m() {\n" + 
+				"   	//@ assert false;\n" + 
+				"   }\n" +
+				"	public void n() {\n" +
+				"		//@ assert false;\n" +
+				"	}\n" + 
+				"}\n",	
+				// expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	assert false;\n" +
+				"}\n" +
+				"procedure tests.esc.A.n(this : tests.esc.A) {\n" +
+				"	assert false;\n" +
+				"}\n",
+				// adapter output
+				"----------\n" +
+				"1. ERROR in " + testsPath + "A.java (at line 4)\n" +
+				"	//@ assert false;\n" +
+				"	           ^^^^^\n" +
+				"This assertion might not hold.\n" + 
+				"----------\n" +
+				"2. ERROR in " + testsPath + "A.java (at line 7)\n" +
+				"	//@ assert false;\n" +
+				"	           ^^^^^\n" +
+				"This assertion might not hold.\n" + 
+				"----------\n");
+	}
+	
 	// term=JmlResultExpression,JmlMethodDeclaration,JmlMethodSpecification,JmlEnsuresClause,JmlRequiresClause
-	public void test_0111_JmlMethodDefinition_EnsuresRequires() {
+	public void test_0112_JmlMethodDefinition_EnsuresRequires() {
 		this.compareJavaToBoogie(
 				//java				
 				"package tests.esc;\n" +
@@ -579,11 +673,17 @@ public class InitialTests extends AbstractRegressionTest {
 				,
 				// adapter output
 				"----------\n" +
-				"1. ERROR in A.java (at line 24)\n" +
+				"1. ERROR in " + testsPath + "A.java (at line 20)\n" +
+				"	//@ requires n >= 0;\n" +
+				"   //@ ensures \\result == 42;\n" +
+				"	    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in " + testsPath + "A.java (at line 24)\n" +
 				"	return 1;\n" +
 				"	       ^\n" +
 				"This postcondition might not hold.\n" +
-				"----------\n" 
+				"----------\n"
 				);
 	}
 	
@@ -609,7 +709,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlAssumeStatement
+	// term=JmlAssumeStatement,JmlAssertStatement
 	public void test_0201_sequence_assume_assert_ff() {
 		this.compareJavaToBoogie(
 				//java
@@ -627,11 +727,11 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert false;\n" +
 				"}\n",
 				// adapter output
-				""
+				"" 
 				);
 	}	
 	
-	// term=JmlAssumeStatement
+	// term=JmlAssumeStatement,JmlAssertStatement
 	public void test_0202_sequence_assume_assert_ft() {
 		this.compareJavaToBoogie(
 				//java
@@ -653,7 +753,7 @@ public class InitialTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=JmlAssumeStatement
+	// term=JmlAssumeStatement,JmlAssertStatement
 	public void test_0203_sequence_assume_assert_tf() {
 		this.compareJavaToBoogie(
 				//java
@@ -671,7 +771,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert false;\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in " + testsPath + "A.java (at line 5)\n" +
+				"	//@ assert false;\n" +
+				"	           ^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}	
 		
@@ -703,6 +808,65 @@ public class InitialTests extends AbstractRegressionTest {
 			// adapter output
 			""
 			);
+	}
+	
+	// term=LocalDeclaration
+	public void test_297_LocalDeclaration() {	
+	this.compareJavaToBoogie(
+			// java
+			"package tests.esc;\n" +
+			"public class A {\n" +
+			"   public void m1() {\n" + 
+			"      boolean b = true;\n" + 
+			"      //@ assert b;\n" + 
+			"   }\n" + 
+			"   public void m2() {\n" +
+			"      boolean b = true;\n" + 
+			"      //@ assert !b;\n" +
+			"   }\n" +
+			"   public void m3() {\n" +
+			"      int n=3;\n" +
+			"      //@ assert n<4;\n" +
+			"   }\n" +
+			"   public void m4() {\n" +
+			"      int n=3;\n" +
+			"      //@ assert n<0;\n" +
+			"   }\n" +
+			"}\n",		
+			// expected boogie
+			"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
+			"	var a : bool;\n" +
+			"	a := true;\n" +
+			"	assert a;\n" +
+			"}\n" +
+			"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
+			"	var a : bool;\n" +
+			"	a := true;\n" +
+			"	assert !a;\n" +
+			"}\n" +
+			"procedure tests.esc.A.m3(this : tests.esc.A) {\n" +
+			"	var a : int;\n" +
+			"	a := 3;\n" +
+			"	assert (a < 4);\n" +
+			"}\n" +
+			"procedure tests.esc.A.m4(this : tests.esc.A) {\n" +
+			"	var a : int;\n" +
+			"	a := 3;\n" +
+			"	assert (a < 0);\n" +
+			"}\n"
+			,
+			// adapter output
+			"----------\n" +
+			"1. ERROR in " + testsPath + "A.java (at line 9)\n" +
+			"	//@ assert !b;\n" +
+			"	           ^^\n" +
+			"This assertion might not hold.\n" +
+			"----------\n" +
+			"2. ERROR in " + testsPath + "A.java (at line 17)\n" +
+			"	//@ assert n<0;\n" +
+			"	           ^^^\n" +
+			"This assertion might not hold.\n" +
+			"----------\n");
 	}
 	
 	// term=LocalDeclaration
@@ -927,7 +1091,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert !!!a;\n" +
 				"}\n",
 				// adapter output
-				"");
+				"----------\n" +
+				"1. ERROR in " + testsPath + "A.java (at line 5)\n" +
+				"	//@ assert !b;\n" +
+				"	           ^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n");
 	}
 	
 	//term=UnaryExpression
@@ -1181,7 +1350,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in " + testsPath + "A.java (at line 6)\n" +
+				"	//@ assert (false);\n" +
+				"	           ^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}
 	
@@ -1220,7 +1394,12 @@ public class InitialTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in A.java (at line 11)\n" +
+				"	//@ assert (false);\n" +
+				"	           ^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 			    );
 	}
 	
@@ -1643,7 +1822,7 @@ public class InitialTests extends AbstractRegressionTest {
 				//java
 				"package tests.esc;\n" +
 				"public class A {\n" +
-				"	int x;" +
+				"	int x;\n" +
 				"	//@ assignable x;\n" +
 				"	//@ ensures \\old(x) == x + 10;\n" +
 				"	int m() { return x++; }\n" +
@@ -1659,7 +1838,13 @@ public class InitialTests extends AbstractRegressionTest {
 				,
 				// adapter output
 				"----------\n" +
-				"1. ERROR in A.java (at line 5)\n" +
+				"1. ERROR in A.java (at line 4)\n" +
+				"	//@ assignable x;\n" +
+				"	//@ ensures \\old(x) == x + 10;\n" +
+				"	    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 6)\n" +
 				"	int m() { return x++; }\n" +
 				"	                 ^^^\n" +
 				"This postcondition might not hold.\n" +
@@ -1831,7 +2016,52 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert ((43 >= 42) == false);\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in A.java (at line 7)\n" +
+				"	//@ assert 42 == 43;\n" +
+				"	           ^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 10)\n" +
+				"	//@ assert 42 != 42;\n" +
+				"	           ^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"3. ERROR in A.java (at line 16)\n" +
+				"	//@ assert 42 < 42;\n" +
+				"	           ^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"4. ERROR in A.java (at line 22)\n" +
+				"	//@ assert 42 > 42;\n" +
+				"	           ^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"5. ERROR in A.java (at line 25)\n" +
+				"	//@ assert 42 > 43;\n" +
+				"	           ^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"6. ERROR in A.java (at line 28)\n" +
+				"	//@ assert 43 <= 42;\n" +
+				"	           ^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"7. ERROR in A.java (at line 37)\n" +
+				"	//@ assert 42 >= 43;\n" +
+				"	           ^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"8. ERROR in A.java (at line 49)\n" +
+				"	//@ assert (42 >= 42) == false;\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"9. ERROR in A.java (at line 55)\n" +
+				"	//@ assert (43 >= 42) == false;\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}
 	
@@ -1916,7 +2146,32 @@ public class InitialTests extends AbstractRegressionTest {
 				"	assert (((5 + 2) * 3) != 22);\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in A.java (at line 22)\n" +
+				"	//@ assert 5 + 2 != 7;\n" +
+				"	           ^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 25)\n" +
+				"	//@ assert 5 - 2 != 3;\n" +
+				"	           ^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"3. ERROR in A.java (at line 28)\n" +
+				"	//@ assert 5 * 2 != 10;\n" +
+				"	           ^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"4. ERROR in A.java (at line 31)\n" +
+				"	//@ assert 4 / 2 != 2;\n" +
+				"	           ^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"5. ERROR in A.java (at line 34)\n" +
+				"	//@ assert 5 % 2 != 1;\n" +
+				"	           ^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);			
 		}
 
@@ -2216,7 +2471,9 @@ public class InitialTests extends AbstractRegressionTest {
 				"	call tests.esc.A.n(this);\n" +
 				"}\n" +
 				"procedure tests.esc.A.n(this : tests.esc.A) {\n" +
-				"}\n" 
+				"}\n",
+				// adapter output
+				""
 				);
 	}
 

@@ -471,7 +471,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=expr
+	// TODO priority=0 group=expr
 	public boolean visit(Clinit term, ClassScope scope) {
 		debug(term, scope);
 		return true;

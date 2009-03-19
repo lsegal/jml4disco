@@ -156,7 +156,7 @@ public class TranslationTests extends AbstractRegressionTest {
 *			ASSERTS
 *******************************************/	
 	
-	// term=JmlAssertStatement
+	// term=JmlAssertStatement adapter=pass
 	public void test_001_assertFalse() {
 		this.compareJavaToBoogie(
 				//java
@@ -181,7 +181,7 @@ public class TranslationTests extends AbstractRegressionTest {
 		);
 	}
 
-	// term=JmlAssertStatement
+	// term=JmlAssertStatement adapter=pass
 	public void test_002_assertTrue() {
 		this.compareJavaToBoogie(
 				//java
@@ -201,7 +201,7 @@ public class TranslationTests extends AbstractRegressionTest {
 		);
 	}
 
-	// term=JmlMethodDeclaration,JmlAssertStatement,Argument
+	// term=JmlMethodDeclaration,JmlAssertStatement,Argument adapter=pass
 	public void test_003_assertParam() {
 		this.compareJavaToBoogie(
 				//java
@@ -226,7 +226,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=JmlAssertStatement,AND_AND_Expression
+	// term=JmlAssertStatement,AND_AND_Expression adapter=pass
 	public void test_004_assert_sequence_and() {
 		this.compareJavaToBoogie(
 				//java
@@ -251,7 +251,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlAssertStatement,OR_OR_Expression
+	// term=JmlAssertStatement,OR_OR_Expression adapter=pass
 	public void test_005_assert_sequence_or() {
 		this.compareJavaToBoogie(
 				//java
@@ -276,7 +276,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 			
-	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression
+	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression adapter=pass
 	public void test_006_assert_sequence_and_or() {
 		this.compareJavaToBoogie(
 				//java
@@ -301,7 +301,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression
+	// term=JmlAssertStatement,AND_AND_Expression,OR_OR_Expression adapter=pass
 	public void test_007_assert_sequence_or_and() {
 		this.compareJavaToBoogie(
 				//java
@@ -326,7 +326,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=JmlAssertStatement
+	// term=JmlAssertStatement adapter=pass
 	public void test_008_assert_sequence_tt() {
 		this.compareJavaToBoogie(
 				//java
@@ -348,7 +348,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=JmlAssertStatement
+	// term=JmlAssertStatement adapter=pass
 	public void test_009_assert_sequence_tf() {
 		this.compareJavaToBoogie(
 				//java
@@ -375,7 +375,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlAssertStatement
+	// term=JmlAssertStatement adapter=pass
 	public void test_007_assert_sequence_ft() {
 		this.compareJavaToBoogie(
 				//java
@@ -402,7 +402,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlAssertStatement
+	// term=JmlAssertStatement adapter=pass
 	public void test_008_assert_sequence_ff() {
 		this.compareJavaToBoogie(
 				//java
@@ -429,7 +429,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=AssertStatement
+	// term=AssertStatement adapter=pass
 	public void test_009_JavaAssertFalse() {
 		this.compareJavaToBoogie(
 				//java
@@ -456,7 +456,7 @@ public class TranslationTests extends AbstractRegressionTest {
 		);
 	}
 
-	// term=AssertStatement
+	// term=AssertStatement adapter=pass
 	public void test_010_JavaAssertTrue() {
 		this.compareJavaToBoogie(
 				//java
@@ -480,7 +480,7 @@ public class TranslationTests extends AbstractRegressionTest {
 *			ASSUMES
 *******************************************/
 		
-	// term=JmlAssumeStatement
+	// term=JmlAssumeStatement adapter=pass
 	public void test_0100_assumeFalse() {
 		this.compareJavaToBoogie(
 				//java
@@ -500,7 +500,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=JmlAssumeStatement
+	// term=JmlAssumeStatement adapter=pass
 	public void test_0101_assumeTrue() {
 		this.compareJavaToBoogie(
 				//java
@@ -520,7 +520,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=JmlMethodDeclaration
+	// term=JmlMethodDeclaration adapter=pass
 	public void test_0110_JmlMethodDeclaration_EmptyMethod() {
 		this.compareJavaToBoogie(
 				//java
@@ -539,7 +539,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlMethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement,EqualExpression
+	// term=JmlMethodDeclaration,Argument,JmlResultReference,JmlMethodSpecification,ReturnStatement,JmlAssertStatement,EqualExpression adapter=pass
 	public void test_0111_MethodDefinition() {
 		this.compareJavaToBoogie(
 			// java
@@ -575,7 +575,7 @@ public class TranslationTests extends AbstractRegressionTest {
 		);
 	}
 	
-	// term=JmlMethodDeclaration,JmlAssertStatement
+	// term=JmlMethodDeclaration,JmlAssertStatement adapter=pass
 	public void test_0112_DoubleMethodDefinition() {
 		this.compareJavaToBoogie(
 				// java
@@ -609,7 +609,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"----------\n");
 	}
 	
-	// term=JmlResultExpression,JmlMethodDeclaration,JmlMethodSpecification,JmlEnsuresClause,JmlRequiresClause
+	// term=JmlResultExpression,JmlMethodDeclaration,JmlMethodSpecification,JmlEnsuresClause,JmlRequiresClause adapter=pass
 	public void test_0112_JmlMethodDefinition_EnsuresRequires() {
 		this.compareJavaToBoogie(
 				//java				
@@ -687,7 +687,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlAssumeStatement,JmlAssertStatement
+	// term=JmlAssumeStatement,JmlAssertStatement adapter=pass
 	public void test_0200_sequence_assume_assert_tt() {
 		this.compareJavaToBoogie(
 				//java
@@ -709,7 +709,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlAssumeStatement,JmlAssertStatement
+	// term=JmlAssumeStatement,JmlAssertStatement adapter=pass
 	public void test_0201_sequence_assume_assert_ff() {
 		this.compareJavaToBoogie(
 				//java
@@ -731,7 +731,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=JmlAssumeStatement,JmlAssertStatement
+	// term=JmlAssumeStatement,JmlAssertStatement adapter=pass
 	public void test_0202_sequence_assume_assert_ft() {
 		this.compareJavaToBoogie(
 				//java
@@ -753,7 +753,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=JmlAssumeStatement,JmlAssertStatement
+	// term=JmlAssumeStatement,JmlAssertStatement adapter=pass
 	public void test_0203_sequence_assume_assert_tf() {
 		this.compareJavaToBoogie(
 				//java
@@ -780,7 +780,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 		
-	// term=Block
+	// term=Block adapter=pass
 	public void test_0296_LocalDeclaration_Blocks() {
 		compareJavaToBoogie(
 			// java source
@@ -810,7 +810,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			);
 	}
 	
-	// term=LocalDeclaration
+	// term=LocalDeclaration adapter=pass
 	public void test_297_LocalDeclaration() {	
 	this.compareJavaToBoogie(
 			// java
@@ -869,7 +869,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			"----------\n");
 	}
 	
-	// term=LocalDeclaration
+	// term=LocalDeclaration adapter=pass
 	public void test_0298_LocalDeclaration() {
 		compareJavaToBoogie(
 			// java source
@@ -891,7 +891,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			"");
 	}
 
-	// term=LocalDeclaration,Assignment
+	// term=LocalDeclaration,Assignment adapter=pass
 	public void test_0299_LocalDeclarationWithInitialization() {
 		compareJavaToBoogie(
 			// java source
@@ -914,7 +914,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			"");
 	}
 
-	// term=IfStatement,Argument,ReturnStatement,StringLiteral,Block,EqualExpression,LocalDeclaration
+	// term=IfStatement,Argument,ReturnStatement,StringLiteral,Block,EqualExpression,LocalDeclaration adapter=pass
 	public void test_0300_IfCondition() {
 		compareJavaToBoogie(
 			// java source
@@ -948,7 +948,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			"");
 	}
 	
-	// term=IfStatement
+	// term=IfStatement adapter=pass
 	public void test_0301_IfCondition_noBlock() {		 
 		this.compareJavaToBoogie(
 				//java
@@ -970,7 +970,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"" );
 	}
 	
-	// TODO term=ConditionalExpression
+	// TODO term=ConditionalExpression adapter=none
 	public void test_0302_IfCondition_ternary() {
 		this.compareJavaToBoogie(
 				"package tests.esc;\n" +
@@ -1016,7 +1016,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 
-	//term=EmptyStatement,DoStatement,WhileStatement,TrueLiteral,Block
+	//term=EmptyStatement,DoStatement,WhileStatement,TrueLiteral,Block adapter=pass
 	public void test_0310_EmptyStatement() {
 		compareJavaToBoogie(
 				"package tests.esc;\n" +
@@ -1069,7 +1069,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	//term=UnaryExpression
+	//term=UnaryExpression adapter=pass
 	public void test_0320_UnaryExpression() {
 		compareJavaToBoogie(
 				"package tests.esc;\n" +
@@ -1099,7 +1099,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"----------\n");
 	}
 	
-	//term=UnaryExpression
+	//term=UnaryExpression adapter=pass
 	public void test_0321_UnaryExpression() {
 		compareJavaToBoogie(
 				"package tests.esc;\n" +
@@ -1121,7 +1121,7 @@ public class TranslationTests extends AbstractRegressionTest {
 		);
 	}	
 	
-	// term=WhileStatement,Block,EqualExpression
+	// term=WhileStatement,Block,EqualExpression adapter=pass
 	public void test_0350_while() {
 		this.compareJavaToBoogie(
 				//java
@@ -1154,7 +1154,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 
-	// term=WhileStatement,BreakStatement,LabeledStatement,Block
+	// term=WhileStatement,BreakStatement,LabeledStatement,Block adapter=pass
 	public void test_0370_while_break_withlabel() {		 
 		this.compareJavaToBoogie(
 				//java
@@ -1187,7 +1187,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"");
 	}
 
-	// term=WhileStatement,BreakStatement,Block
+	// term=WhileStatement,BreakStatement,Block adapter=pass
 	public void test_0371_while_break() {		 
 		this.compareJavaToBoogie(
 				//java
@@ -1212,7 +1212,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"");
 	}
 	
-	// term=JmlWhileStatement,JmlLoopInvariant
+	// term=JmlWhileStatement,JmlLoopInvariant adapter=pass
     public void test_0372_while_invariant_true() {
 		this.compareJavaToBoogie(
 				//java
@@ -1236,7 +1236,7 @@ public class TranslationTests extends AbstractRegressionTest {
 		
     }
     
-    //term=JmlWhileStatement,JmlLoopInvariant
+    //term=JmlWhileStatement,JmlLoopInvariant adapter=pass
     public void test_0373_while_invariant_expr() {
 		this.compareJavaToBoogie(
 				//java
@@ -1262,7 +1262,7 @@ public class TranslationTests extends AbstractRegressionTest {
                 );
     }  
 
-    //term=JmlWhileStatement,JmlLoopInvariant
+    //term=JmlWhileStatement,JmlLoopInvariant adapter=pass
     public void test_0374_while_invariant_break() {
 		this.compareJavaToBoogie(
 				//java
@@ -1286,7 +1286,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
     }     
 
-	// term=DoStatement,Block
+	// term=DoStatement,Block adapter=pass
 	public void test_400_do() {
 		this.compareJavaToBoogie(
 				//java
@@ -1323,7 +1323,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=DoStatement,Block
+	// term=DoStatement,Block adapter=pass
 	public void test_401_do_multiline() {
 		this.compareJavaToBoogie(
 				//java
@@ -1359,7 +1359,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlDoStatement
+	// term=JmlDoStatement adapter=pass
 	public void test_402_do_invariant() {
 		this.compareJavaToBoogie(
 				//java
@@ -1403,7 +1403,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			    );
 	}
 	
-	// term=ForStatement,Block,BinaryExpression
+	// term=ForStatement,Block,BinaryExpression adapter=pass
 	public void test_500_for() {		
 		this.compareJavaToBoogie(
 				//java
@@ -1443,7 +1443,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=Assignment,ForStatement,Block,BinaryExpression
+	// term=Assignment,ForStatement,Block,BinaryExpression adapter=pass
 	public void test_501_for_multi_initialization() {
 		this.compareJavaToBoogie(
 				//java
@@ -1475,7 +1475,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	//term=JmlForStatement
+	//term=JmlForStatement adapter=pass
 	public void test_503_for_invariant() {
 		this.compareJavaToBoogie(
 				//java	
@@ -1499,7 +1499,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			    );
 	}
     
-	// term=Assignment,PostfixExpression,LocalDeclaration
+	// term=Assignment,PostfixExpression,LocalDeclaration adapter=pass
 	public void test_600_postFixExpression() {
 		
 		this.compareJavaToBoogie(
@@ -1532,7 +1532,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=Assignment,PrefixExpression,LocalDeclaration
+	// term=Assignment,PrefixExpression,LocalDeclaration adapter=pass
 	public void test_601_preFixExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1564,7 +1564,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=PrefixExpression,PostFixExpression adapter=pass
+	// term=PrefixExpression,PostFixExpression adapter=pass adapter=pass
 	public void test_602_pre_post_FixExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1596,7 +1596,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=PrefixExpression,PostFixExpression adapter=pass
+	// term=PrefixExpression,PostFixExpression adapter=pass adapter=pass
 	public void test_603_post_pre_FixExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1628,7 +1628,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=Assignment adapter=pass
+	// term=Assignment adapter=pass adapter=pass
 	public void test_604_multiAssignment() {
 
 		this.compareJavaToBoogie(
@@ -1665,7 +1665,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 
-	// term=Assignment,SingleTypeReference,IntLiteral,JmlLocalDeclaration,LocalDeclaration
+	// term=Assignment,SingleTypeReference,IntLiteral,JmlLocalDeclaration,LocalDeclaration adapter=pass
 	public void test_700_localVarDecl_order() {
 		this.compareJavaToBoogie(
 				//java
@@ -1689,7 +1689,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	//TODO term=FieldDeclaration,SingleNameReference,Assignment
+	//TODO term=FieldDeclaration,SingleNameReference,Assignment adapter=pass
 	public void test_800_FieldDeclaration() {
 		this.compareJavaToBoogie(
 				//java
@@ -1713,7 +1713,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 
-	//TODO term=FieldDeclaration,SingleNameReference,Assignment
+	//TODO term=FieldDeclaration,SingleNameReference,Assignment adapter=none
 	public void test_801_Static_FieldDeclaration() {
 		this.compareJavaToBoogie(
 				//java
@@ -1739,7 +1739,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=JmlMethodSpecification,JmlEnsuresClause,JmlResultExpression adapter=pass
+	// term=JmlMethodSpecification,JmlEnsuresClause,JmlResultExpression adapter=pass adapter=pass
 	public void test_900_JmlResultExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1760,7 +1760,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 	
-	// term=JmlMethodSpecification,JmlEnsuresClause,JmlResultExpression adapter=pass
+	// term=JmlMethodSpecification,JmlEnsuresClause,JmlResultExpression adapter=pass adapter=pass
 	public void test_901_JmlResultExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1791,7 +1791,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}	
 
-	// term=JmlMethodSpecification,JmlEnsuresClause,JmlOldExpression,JmlResultExpression adapter=pass
+	// term=JmlMethodSpecification,JmlEnsuresClause,JmlOldExpression,JmlResultExpression adapter=pass adapter=pass
 	public void test_910_JmlOldExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1816,7 +1816,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}		
 	
-	// term=JmlEnsuresClause,JmlMethodSpecification,JmlOldExpression,JmlResultExpression adapter=pass
+	// term=JmlEnsuresClause,JmlMethodSpecification,JmlOldExpression,JmlResultExpression adapter=pass adapter=pass
 	public void test_911_JmlOldExpression() {
 		this.compareJavaToBoogie(
 				//java
@@ -1852,7 +1852,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}		
 
-	// term=LocalDeclaration,SingleTypeReference,Assignment,IntLiteral
+	// term=LocalDeclaration,SingleTypeReference,Assignment,IntLiteral adapter=pass
 	public void test_1000_int_localdeclaration() {
 		this.compareJavaToBoogie(
 				//java
@@ -1898,7 +1898,7 @@ public class TranslationTests extends AbstractRegressionTest {
 	}
 
 	
-	// TODO term=IntLiteral,EqualExpression
+	// TODO term=IntLiteral,EqualExpression adapter=pass
 	public void test_1000_int_eq() {
 		this.compareJavaToBoogie(
 				//java
@@ -2175,7 +2175,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);			
 		}
 
-	// TODO term=IntLiteral,ConditionalExpression
+	// TODO term=IntLiteral,ConditionalExpression adapter=none
 	public void test_1002_arith_cond() {
 		this.compareJavaToBoogie(
 				"package tests.esc;\n" +
@@ -2198,7 +2198,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// TODO term=IntLiteral,ConditionalExpression
+	// TODO term=IntLiteral,ConditionalExpression adapter=none
 	public void test_1003_boolExpr_cond() {
 		this.compareJavaToBoogie(
 				//java
@@ -2222,7 +2222,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=BinaryExpression
+	// term=BinaryExpression adapter=pass
 	public void test_1004_implies() {
 		this.compareJavaToBoogie(
 				//java
@@ -2265,7 +2265,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=IntLiteral
+	// term=IntLiteral adapter=pass
 	public void test_1005_int_boundaries() {
 		this.compareJavaToBoogie(
 				//java

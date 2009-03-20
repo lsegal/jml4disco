@@ -327,7 +327,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=expr
 	public boolean visit(Assignment term, BlockScope scope) {
 		debug(term, scope);
-		if (term.expression instanceof AllocationExpression) {
+		if (term.expression instanceof AllocationExpression || term.expression instanceof ArrayAllocationExpression) {
 			// FIXME we don't handle this yet!
 			return false;
 		}
@@ -357,7 +357,7 @@ public class BoogieVisitor extends ASTVisitor {
 	}
 	
 	public void endVisit(Assignment term, BlockScope scope) {
-		if (term.expression instanceof AllocationExpression) {
+		if (term.expression instanceof AllocationExpression || term.expression instanceof ArrayAllocationExpression) {
 			// FIXME we don't handle this yet!
 			return;
 		}

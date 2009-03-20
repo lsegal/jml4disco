@@ -70,6 +70,9 @@ public class RemoteServersMapper {
 			fileName = fileName+"/"+name+"."+VcProgramDispatchingServerResources.getProperty("remoteProversFileExtension");
 		}
 		File proverFile = new File(fileName);
+		if(!proverFile.exists()) {
+			return;
+		}
 		ObjectOutputStream output = null;
 		try {
 			output = new ObjectOutputStream(new FileOutputStream(proverFile));
@@ -94,6 +97,9 @@ public class RemoteServersMapper {
 			fileName = fileName+"/"+name+"."+VcProgramDispatchingServerResources.getProperty("remoteProversFileExtension");
 		}
 		File proverFile = new File(fileName);
+		if(proverFile.exists()) {
+			return;
+		}
 		ObjectOutputStream output = null;
 		try {
 			output = new ObjectOutputStream(new FileOutputStream(proverFile));

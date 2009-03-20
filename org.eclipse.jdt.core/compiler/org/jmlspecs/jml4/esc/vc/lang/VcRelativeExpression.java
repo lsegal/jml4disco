@@ -10,7 +10,7 @@ import org.jmlspecs.jml4.esc.provercoordinator.prover.ProverVisitor;
 
 public class VcRelativeExpression extends VcBinaryExpression {
 
-	//DISCO removed private to allow serialization
+	//DISCO removed 'final' to allow serialization
 	public VcOperator operator;
 	
 	public VcRelativeExpression(VcOperator operator, VC left, VC right, KindOfAssertion kindOfAssertion, int kindOfLabel, int sourceStart, int sourceEnd, int labelStart) {

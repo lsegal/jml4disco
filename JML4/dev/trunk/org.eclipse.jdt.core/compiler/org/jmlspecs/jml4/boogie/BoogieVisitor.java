@@ -121,6 +121,9 @@ public class BoogieVisitor extends ASTVisitor {
 	private BlockScope methodScope;
 	private BoogieSource output;
 	private Hashtable typeList = new Hashtable();
+
+	private int stringPoolValue = 0;
+	private Hashtable stringPool = new Hashtable();
 	
 	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
@@ -202,21 +205,41 @@ public class BoogieVisitor extends ASTVisitor {
 
 	private void variableInitialization(AbstractVariableDeclaration term, BlockScope scope) {
 		Expression init = term.initialization;
-		if (init == null && term.type.resolveType(scope) == TypeBinding.INT) {
-			init = new IntLiteral(new char[]{'0'}, 
-					term.sourceStart, term.sourceEnd);
+		if (init == null) {
+			if (term.type.resolvedType == TypeBinding.INT) {
+					init = new IntLiteral(new char[]{'0'}, 
+							term.sourceStart, term.sourceEnd);
+			}
+			else if (term.type.resolvedType == TypeBinding.LONG) {
+				init = new LongLiteral(new char[]{'0'}, 
+						term.sourceStart, term.sourceEnd);
+			}
+			else if (term.type.resolvedType == TypeBinding.BOOLEAN) {
+				init = new FalseLiteral(term.sourceStart, term.sourceEnd);
+			}
+			else {
+				init = new NullLiteral(term.sourceStart, term.sourceEnd);
+			}
 		}
 		
-		if (init != null) {
-			Assignment a = 
-				new Assignment(new SingleNameReference(term.name, term.sourceStart), 
-						init, term.sourceEnd);
-			a.traverse(this, scope);
-		}
+		Assignment a = 
+			new Assignment(new SingleNameReference(term.name, term.sourceStart), 
+					init, term.sourceEnd);
+		a.traverse(this, scope);
 	}
 	
 	private void declareType(String type) {
 		typeList.put(type, new Integer(1));
+	}
+	
+
+	private String declareString(String key) {
+		String value = (String)stringPool.get(key);
+		if (value == null) {
+			value = "string_lit_" + stringPoolValue++; //$NON-NLS-1$
+			prepend("var " + value + " : java.lang.String;\n");  //$NON-NLS-1$//$NON-NLS-2$
+		}
+		return value;
 	}
 	
 	private void emitTypes() {
@@ -233,7 +256,7 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(AllocationExpression term, BlockScope scope) {
 		debug(term, scope);
 		// implemented in Assignment
-		return true;
+		return false;
 	}
 
 	// priority=3 group=expr
@@ -309,7 +332,21 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(ArrayTypeReference term, BlockScope scope) {
 		debug(term, scope);
 		append("[int] "); //$NON-NLS-1$
-		append(term.resolvedType.leafComponentType().readableName());
+		
+		if (term.resolvedType == TypeBinding.BOOLEAN || term.token.equals(TypeConstants.BOOLEAN)) {
+			append("bool"); //$NON-NLS-1$
+			return true;
+		}
+		
+		if (term.resolvedType != null && !term.resolvedType.isBaseType()) {
+			String name = new String(term.resolvedType.leafComponentType().readableName());
+			declareType(name);
+			append(name);
+		}
+		else {
+			append(new String(term.token));
+		}
+		
 		return true;
 	}
 
@@ -333,32 +370,73 @@ public class BoogieVisitor extends ASTVisitor {
 		lhs.traverse(this, scope);
 		appendLine(".length := " + size + STMT_END); //$NON-NLS-1$
 	}
+	
+	private void initializeArray(Expression lhs, Expression[] expressions, BlockScope scope) {
+		for (int i = 0; i < expressions.length; i++) {
+			Assignment asn = new Assignment(
+					new ArrayReference(lhs, 
+						new IntLiteral(new Integer(i).toString().toCharArray(), 0, 0, i)),
+					expressions[i],
+					lhs.sourceEnd);
+			asn.traverse(this, scope);
+		}
+		defineArrayLength(lhs, scope, expressions.length);		
+	}
 
 	// priority=3 group=expr
 	public boolean visit(Assignment term, BlockScope scope) {
 		debug(term, scope);
 		if (term.expression instanceof AllocationExpression) {
-			// FIXME we don't handle this yet!
+			AllocationExpression expr = (AllocationExpression)term.expression;
+			append("call "); //$NON-NLS-1$
+			append("", term); //$NON-NLS-1$
+			append(expr.binding.declaringClass.readableName());
+			append("." + new String(expr.type.getLastToken())); //$NON-NLS-1$
+			append(PAREN_OPEN);
+			term.lhs.traverse(this, scope);
+			
+			if (expr.arguments != null) {
+				append(", "); //$NON-NLS-1$
+				for (int i = 0; i < expr.arguments.length; i++) {
+					expr.arguments[i].traverse(this, scope);
+					if (i < expr.arguments.length - 1) append(", "); //$NON-NLS-1$
+				}
+			}
+			append(PAREN_CLOSE);
+			appendLine(STMT_END);
 			return false;
 		}
 		
 		if (term.expression instanceof ArrayInitializer) {
 			// treat this as a list of regular assignments
-			ArrayInitializer init = (ArrayInitializer)term.expression;
-			for (int i = 0; i < init.expressions.length; i++) {
-				Assignment asn = new Assignment(
-						new ArrayReference(term.lhs, 
-							new IntLiteral(new Integer(i).toString().toCharArray(), 0, 0, i)),
-						init.expressions[i],
-						init.sourceEnd);
-				asn.traverse(this, scope);
-			}
-			defineArrayLength(term.lhs, scope, init.expressions.length);
+			initializeArray(term.lhs, ((ArrayInitializer)term.expression).expressions, scope);
 			return false;
 		}
 		else if (term.expression instanceof ArrayAllocationExpression) {
 			ArrayAllocationExpression alloc = (ArrayAllocationExpression)term.expression;
-			defineArrayLength(term.lhs, scope, ((IntLiteral)alloc.dimensions[0]).value);
+			if (alloc.initializer != null) {
+				initializeArray(term.lhs, alloc.initializer.expressions, scope);
+			}
+			else {
+				int size = ((IntLiteral)alloc.dimensions[0]).value;
+				Expression[] exprs = new Expression[size];
+				if (alloc.type.resolvedType == TypeBinding.INT || alloc.type.resolvedType == TypeBinding.LONG) {
+					for (int i = 0; i < size; i++) {
+						exprs[i] = new IntLiteral(new char[]{'0'}, 0, 0, 0);
+					}
+				}
+				else if (alloc.type.resolvedType == TypeBinding.BOOLEAN) {
+					for (int i = 0; i < size; i++) {
+						exprs[i] = new FalseLiteral(0, 0);
+					}
+				}
+				else {
+					for (int i = 0; i < size; i++) {
+						exprs[i] = new NullLiteral(0, 0);
+					}
+				}
+				initializeArray(term.lhs, exprs, scope);
+			}
 			return false;
 		}
 		
@@ -388,7 +466,6 @@ public class BoogieVisitor extends ASTVisitor {
 	
 	public void endVisit(Assignment term, BlockScope scope) {
 		if (term.expression instanceof AllocationExpression) {
-			// FIXME we don't handle this yet!
 			return;
 		}
 		if (term.expression instanceof ArrayInitializer || term.expression instanceof ArrayAllocationExpression) {
@@ -542,9 +619,15 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=decl
+	// priority=2 group=decl
 	public boolean visit(JmlConstructorDeclaration term, ClassScope scope) {
 		debug(term, scope);
+		
+		if (term.isDefaultConstructor() && 
+				(term.statements == null || term.statements.length == 0)) {
+			return false;
+		}
+
 		JmlMethodDeclaration decl = new JmlMethodDeclaration(term.compilationResult);
 		decl.annotations = term.annotations;
 		decl.arguments = term.arguments;
@@ -558,8 +641,8 @@ public class BoogieVisitor extends ASTVisitor {
 		decl.statements = term.statements;
 		decl.specification = term.specification;
 		decl.scope = term.scope;
-	//	decl.traverse(this, scope);
-		return true;
+		decl.traverse(this, scope);
+		return false;
 	}
 
 	// TODO priority=3 group=stmt
@@ -1067,7 +1150,10 @@ public class BoogieVisitor extends ASTVisitor {
 			}
 		}
 		append(PAREN_CLOSE);
-		if (term.returnType.resolveType(scope) != TypeBinding.VOID) {
+		if (term.binding.methodDeclaration instanceof JmlConstructorDeclaration) {
+			// do nothing
+		}
+		else if (term.returnType.resolveType(scope) != TypeBinding.VOID) {
 			append(" returns (__result__ : "); //$NON-NLS-1$
 			term.returnType.traverse(this, scope);
 			append(PAREN_CLOSE);
@@ -1207,30 +1293,26 @@ public class BoogieVisitor extends ASTVisitor {
 		debug(term, scope);
 		String termName = new String(term.tokens[0]);
 		
-		// First look in symbol table if there is one (local vars)
-		if (symbolTable != null) {
-			String symName = symbolTable.lookup(termName);
-			if (symName != null) {
-				append(symName);
+		// Look for field or resolve type fully
+		TypeBinding classBinding = scope.classScope().referenceType().binding;
+		FieldBinding fieldBind = scope.classScope().findField(classBinding, term.tokens[1], null, true);
+
+		if (fieldBind != null) {
+			append(new String(classBinding.readableName()) + "." + new String(term.tokens[1])); //$NON-NLS-1$ 
+			if (!fieldBind.isStatic()) { 
+				if (symbolTable != null) {
+					String symName = symbolTable.lookup(termName);
+					if (symName != null) {
+						append("[" + symName + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else {
+					// TODO implement non local qualified references
+				}
 			}
 		}
 		else {
-			// Look for field or resolve type fully
-			TypeBinding classBinding = scope.classScope().referenceType().binding;
-			FieldBinding fieldBind = scope.classScope().findField(classBinding, term.tokens[0], null, true);
-	
-			if (fieldBind != null) {
-				append(new String(classBinding.readableName()) + "." + termName); //$NON-NLS-1$ 
-				if (!fieldBind.isStatic()) append("[this]"); //$NON-NLS-1$ 
-			}
-			else {
-				append(new String(scope.getType(term.tokens[0]).readableName()));
-			}
-		}
-		
-		for (int i = 0; i < term.otherBindings.length; i++) {
-			append("."); //$NON-NLS-1$
-			append(term.otherBindings[i].name);
+			append(new String(scope.getType(term.tokens[1]).readableName()));
 		}
 		return true;
 	}
@@ -1371,10 +1453,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=2 group=lit
 	public boolean visit(StringLiteral term, BlockScope scope) {
 		debug(term, scope);
-		String name = new String(term.source());
-		String type = "string_lit_" + new Integer(name.hashCode()); //$NON-NLS-1$
-		declareType(type);
-		append(type); 
+		append(declareString(term.toString()));
 		return true;
 	}
 

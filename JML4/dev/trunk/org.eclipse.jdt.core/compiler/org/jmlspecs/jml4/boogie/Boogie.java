@@ -46,27 +46,21 @@ public class Boogie extends DefaultCompilerExtension {
 	 * @param unit the root ASTNode object
 	 */
 	private void process(Compiler compiler, CompilationUnitDeclaration unit) {
-		try {
-			if (compiler.options.jmlBoogieOutputOnly) {
-				// debugging / testing
-				BoogieSource source = BoogieVisitor.visit(unit);
-				String results = source.getResults();
-				String[] resultsArray = results.split("/\\*!BOOGIESTART!\\*/"); //$NON-NLS-1$
-				if (resultsArray.length >= 2) {
-					compiler.problemReporter.jmlEsc2Error(resultsArray[1], 0, 0);
-				}
-				else {
-					compiler.problemReporter.jmlEsc2Error("Invalid or missing boogie:\n" + results, 0, 0); //$NON-NLS-1$
-				}
+		if (compiler.options.jmlBoogieOutputOnly) {
+			// debugging / testing
+			BoogieSource source = BoogieVisitor.visit(unit);
+			String results = source.getResults();
+			String[] resultsArray = results.split("/\\*!BOOGIESTART!\\*/"); //$NON-NLS-1$
+			if (resultsArray.length >= 2) {
+				compiler.problemReporter.jmlEsc2Error(resultsArray[1], 0, 0);
 			}
 			else {
-				BoogieAdapter adapter = new BoogieAdapter(compiler);
-				adapter.prove(unit);
+				compiler.problemReporter.jmlEsc2Error("Invalid or missing boogie:\n" + results, 0, 0); //$NON-NLS-1$
 			}
 		}
-		catch (Exception e) {
-			e.printStackTrace(System.err);
-			compiler.problemReporter.jmlEsc2Fatal("Error parsing Java source code (unsuppored syntax?)", 0, 0); //$NON-NLS-1$
+		else {
+			BoogieAdapter adapter = new BoogieAdapter(compiler);
+			adapter.prove(unit);
 		}
 	}
 

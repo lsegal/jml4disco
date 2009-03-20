@@ -56,6 +56,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			options.put(CompilerOptions.OPTION_ReportRawTypeReference, CompilerOptions.IGNORE);
 			options.put(CompilerOptions.OPTION_ReportUnnecessaryElse, CompilerOptions.IGNORE);
 			options.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.IGNORE);
+			options.put(CompilerOptions.OPTION_ReportPotentialNullReference, CompilerOptions.IGNORE);
 			// options.put(JmlCompilerOptions.OPTION_SpecPath,
 			// NullTypeSystemTestCompiler.getSpecPath());
 			options.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
@@ -779,8 +780,45 @@ public class TranslationTests extends AbstractRegressionTest {
 				"----------\n"
 				);
 	}	
+	
+	// term=LocalDeclaration adapter=pass
+	public void test_0295_LocalDeclarationDefaultInitialization() {
+		compareJavaToBoogie(
+			// java source
+			"package tests.esc;\n" +
+			"public class A {\n" +
+			"	public void m() {\n" +
+			"		int z;\n" + 
+			"		boolean b;\n" +
+			"		String q;\n" +
+			"		long p;\n" +
+//			"		assert z == 0;\n" +
+//			"		assert b == false;\n" +
+//			"		assert q == null;\n" +
+//			"		assert p == 0;\n" + 
+			"	}\n" + 
+			"}\n"
+			, 
+			// expected boogie
+			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+			"	var a : int;\n" +
+			"	var b : bool;\n" +
+			"	var c : java.lang.String;\n" +
+			"	var d : long;\n" +
+			"	a := 0;\n" +
+			"	b := false;\n" +
+			"	c := null;\n" +
+			"	d := 0;\n" +
+//			"	assert (a == 0);\n" +
+//			"	assert (b == false);\n" +
+//			"	assert (c == null);\n" +
+//			"	assert (d == 0);\n" + 
+			"}\n",
+			// adapter output
+			"");
+	}
 		
-	// term=Block adapter=pass
+	// term=LocalDeclaration,Block adapter=pass
 	public void test_0296_LocalDeclaration_Blocks() {
 		compareJavaToBoogie(
 			// java source
@@ -886,6 +924,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			"	var a : int;\n" +
 			"	var b : bool;\n" +
 			"	a := 0;\n" +
+			"	b := false;\n" +
 			"}\n",
 			// adapter output
 			"");
@@ -2626,9 +2665,9 @@ public class TranslationTests extends AbstractRegressionTest {
 				"package tests.esc;\n" +
 				"class A {\n" +
 				"	void m() {\n" +
-				"		int[] x = new int[100];\n" +
+				"		int[] x = new int[1];\n" +
 				"		if (true) {\n" +
-				"			x = new int[1000];\n" +
+				"			x = new int[2];\n" +
 				"		}\n" +
 				"	}\n" +
 				"}\n" 
@@ -2637,9 +2676,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	var a : [int] int;\n" +
 				"	var a.length : int;\n" +
-				"	a.length := 100;\n" +
+				"	a[0] := 0;\n" +
+				"	a.length := 1;\n" +
 				"	if (true) {\n" +
-				"		a.length := 1000;\n" +
+				"		a[0] := 0;\n" +
+				"		a[1] := 0;\n" +
+				"		a.length := 2;\n" +
 				"	}\n" +
 				"}\n"
 				,
@@ -2664,6 +2706,9 @@ public class TranslationTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	var a : [int] int;\n" +
 				"	var a.length : int;\n" +
+				"	a[0] := 0;\n" +
+				"	a[1] := 0;\n" +
+				"	a[2] := 0;\n" +
 				"	a.length := 3;\n" +
 				"	assert (a.length == 3);\n" +
 				"}\n"
@@ -2673,8 +2718,45 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=AllocationExpression,ConstructorDeclaration
-	public void test_2200_ConstructorCall() {
+	// term=ArrayTypeReference,ArrayAllocationExpression adapter=pass
+	public void test_2104_arrayDefaultInitialization() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {\n" +
+				"	void m() {\n" +
+				"		int[] x = new int[2];\n" +
+				"		String[] y = new String[2];\n" +
+				"		boolean[] z = new boolean[2];\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	var a : [int] int;\n" +
+				"	var a.length : int;\n" +
+				"	var b : [int] java.lang.String;\n" +
+				"	var b.length : int;\n" +
+				"	var c : [int] bool;\n" +
+				"	var c.length : int;\n" +
+				"	a[0] := 0;\n" +
+				"	a[1] := 0;\n" +
+				"	a.length := 2;\n" +
+				"	b[0] := null;\n" +
+				"	b[1] := null;\n" +
+				"	b.length := 2;\n" +
+				"	c[0] := false;\n" +
+				"	c[1] := false;\n" +
+				"	c.length := 2;\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
+	
+	// term=AllocationExpression,JmlConstructorDeclaration adapter=pass
+	public void test_2200_JmlConstructorDeclaration() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -2684,9 +2766,66 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"procedure tests.esc.A.A(this : tests.esc.A, a: int) {\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
+
+	// term=MessageSend,AllocationExpression adapter=pass
+	public void test_2201_ConstructorCall() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {\n" +
+				"	public A(int x) {\n" +
+				"	}" +
+				"	public static void x() {\n" +
+				"		A a = new A(1);" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.A(this : tests.esc.A, a: int) {\n" +
+				"}\n" +
+				"procedure tests.esc.A.x() {\n" +
 				"	var a : tests.esc.A;\n" +
-				"	tests.esc.A..ctor(a);\n" +
+				"	call tests.esc.A.A(a, 1);\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
+
+	// term=MessageSend,AllocationExpression,JmlQualifiedName adapter=fail
+	public void test_2202_ConstructorCallFieldModification() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {\n" +
+				"	String x;\n" +
+				"	//@ assignable x;\n" +
+				"	public A(int q) {\n" +
+				"		x = \"hello world\";\n" +
+				"	}\n" +
+				"	public static void x() {\n" +
+				"		A a = new A(1);\n" +
+				"		assert a.x != \"abc\";" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"var tests.esc.A.x : [tests.esc.A] java.lang.String;\n" +
+				"procedure tests.esc.A.A(this : tests.esc.A, a: int) modifies tests.esc.A.x; {\n" +
+				"	tests.esc.A.x[this] := string_lit_0;\n" +
+				"}\n" +
+				"procedure tests.esc.A.x() {\n" +
+				"	var a : tests.esc.A;\n" +
+				"	call tests.esc.A.A(a, 1);\n" +
+				"	assert (tests.esc.A.x[a] != string_lit_1);\n" +
 				"}\n"
 				,
 				// adapter output

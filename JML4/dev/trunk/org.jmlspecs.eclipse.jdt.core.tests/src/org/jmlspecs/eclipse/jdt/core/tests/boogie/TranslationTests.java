@@ -870,7 +870,7 @@ public class TranslationTests extends AbstractRegressionTest {
 	}
 	
 	// term=LocalDeclaration adapter=pass
-	public void test_0298_LocalDeclaration() {
+	public void test_0297_LocalDeclaration() {
 		compareJavaToBoogie(
 			// java source
 			"package tests.esc;\n" + 
@@ -891,6 +891,34 @@ public class TranslationTests extends AbstractRegressionTest {
 			"");
 	}
 
+	// term=LocalDeclaration adapter=pass
+	public void test_0298_LocalDeclarationDuplicateSymbol() {
+		compareJavaToBoogie(
+			// java source
+			"package tests.esc;\n" + 
+			"public class A {\n" +
+			"   public void m() {\n" +
+			"	   for (int i = 0; i < 1; i++);\n" + 
+			"      for (int i = 0; i < 1; i++);\n" + 
+			"   }\n" + 
+			"}\n"
+			, 
+			// expected boogie
+			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+			"	var a : int;\n" +
+			"	a := 0;\n" +
+			"	while ((a < 1)) {\n" +
+			"		a := (a + 1);\n" +
+			"	}\n" +
+			"	a := 0;\n" +
+			"	while ((a < 1)) {\n" +
+			"		a := (a + 1);\n" +
+			"	}\n" +
+			"}\n",
+			// adapter output
+			"");
+	}
+	
 	// term=LocalDeclaration,Assignment adapter=pass
 	public void test_0299_LocalDeclarationWithInitialization() {
 		compareJavaToBoogie(
@@ -2554,6 +2582,111 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	tests.esc.A.x[this][1] := 4;\n" +
 				"	tests.esc.A.x[this][2] := 6;\n" +
 				"	assert (((tests.esc.A.x[this][0] + tests.esc.A.x[this][1]) + tests.esc.A.x[this][2]) == 12);\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
+	
+	// term=ArrayTypeReference,ArrayReference,ArrayInitializer adapter=pass
+	public void test_2101_arrayInitializer() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {\n" +
+				"	void m() {\n" +
+				"		int x[] = { 1, 2, 3 };\n" +
+				"		assert x[0] + x[1] + x[2] == 6;\n" +
+				"		assert x.length == 3;\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	var a : [int] int;\n" +
+				"	var a.length : int;\n" +
+				"	a[0] := 1;\n" +
+				"	a[1] := 2;\n" +
+				"	a[2] := 3;\n" +
+				"	a.length := 3;\n" +
+				"	assert (((a[0] + a[1]) + a[2]) == 6);\n" +
+				"	assert (a.length == 3);\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
+	
+	// term=ArrayTypeReference,ArrayReference,ArrayAllocationExpression adapter=pass
+	public void test_2102_arrayAllocation() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {\n" +
+				"	void m() {\n" +
+				"		int[] x = new int[100];\n" +
+				"		if (true) {\n" +
+				"			x = new int[1000];\n" +
+				"		}\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	var a : [int] int;\n" +
+				"	var a.length : int;\n" +
+				"	a.length := 100;\n" +
+				"	if (true) {\n" +
+				"		a.length := 1000;\n" +
+				"	}\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
+	
+	// term=ArrayTypeReference,QualifiedNameReference adapter=pass
+	public void test_2103_arrayLength() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {\n" +
+				"	void m() {\n" +
+				"		int[] x = new int[3];\n" +
+				"		assert x.length == 3;\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	var a : [int] int;\n" +
+				"	var a.length : int;\n" +
+				"	a.length := 3;\n" +
+				"	assert (a.length == 3);\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
+	
+	// term=AllocationExpression,ConstructorDeclaration
+	public void test_2200_ConstructorCall() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {" +
+				"	public A(int x) {\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	var a : tests.esc.A;\n" +
+				"	tests.esc.A..ctor(a);\n" +
 				"}\n"
 				,
 				// adapter output

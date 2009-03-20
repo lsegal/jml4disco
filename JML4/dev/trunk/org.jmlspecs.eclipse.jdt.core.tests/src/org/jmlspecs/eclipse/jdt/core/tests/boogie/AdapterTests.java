@@ -97,22 +97,6 @@ public class AdapterTests extends TranslationTests {
 				"----------\n");
 	}
 
-	public void test_0402_UnSupportedError_Array() {
-		this.runNegativeTest(new String[] {
-				testsPath + "A.java",
-				"package tests.esc;\n" +
-				"public class A {\n" +
-				"	int x[] = {1,2,3};\n" +
-				"}\n"
-				},
-				"----------\n" + 
-				"1. ERROR in " + testsPath + "A.java (at line 1)\n" + 
-				"	package tests.esc;\n" +
-				"	^\n" + 
-				"Error parsing Java source code (unsuppored syntax?)\n" + 
-				"----------\n");
-	}
-
 	@Override
 	public void test_001_assertFalse() {
 		super.test_001_assertFalse();
@@ -234,8 +218,13 @@ public class AdapterTests extends TranslationTests {
 	}
 
 	@Override
-	public void test_0298_LocalDeclaration() {
-		super.test_0298_LocalDeclaration();
+	public void test_0297_LocalDeclaration() {
+		super.test_0297_LocalDeclaration();
+	}
+
+	@Override
+	public void test_0298_LocalDeclarationDuplicateSymbol() {
+		super.test_0298_LocalDeclarationDuplicateSymbol();
 	}
 
 	@Override
@@ -496,5 +485,15 @@ public class AdapterTests extends TranslationTests {
 	@Override
 	public void test_2100_arrayField() {
 		super.test_2100_arrayField();
+	}
+	
+	@Override
+	public void test_2101_arrayInitializer() {
+		super.test_2101_arrayInitializer();
+	}
+
+	@Override
+	public void test_2103_arrayLength() {
+		super.test_2103_arrayLength();
 	}
 }

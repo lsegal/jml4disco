@@ -30,7 +30,6 @@ import org.eclipse.jdt.internal.compiler.ast.Clinit;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.CompoundAssignment;
 import org.eclipse.jdt.internal.compiler.ast.ConditionalExpression;
-import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ContinueStatement;
 import org.eclipse.jdt.internal.compiler.ast.DoStatement;
 import org.eclipse.jdt.internal.compiler.ast.DoubleLiteral;
@@ -100,6 +99,7 @@ import org.jmlspecs.jml4.ast.JmlAssertStatement;
 import org.jmlspecs.jml4.ast.JmlAssignableClause;
 import org.jmlspecs.jml4.ast.JmlAssumeStatement;
 import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
+import org.jmlspecs.jml4.ast.JmlConstructorDeclaration;
 import org.jmlspecs.jml4.ast.JmlDoStatement;
 import org.jmlspecs.jml4.ast.JmlEnsuresClause;
 import org.jmlspecs.jml4.ast.JmlForStatement;
@@ -124,6 +124,8 @@ public class BoogieVisitor extends ASTVisitor {
 	
 	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
+	private static final String PAREN_OPEN = "("; //$NON-NLS-1$
+	private static final String PAREN_CLOSE = ")"; //$NON-NLS-1$
 	private static final String STMT_END = ";"; //$NON-NLS-1$
 	private static final String SPACE = " "; //$NON-NLS-1$
 	
@@ -227,9 +229,10 @@ public class BoogieVisitor extends ASTVisitor {
 		prepend(outBuf.toString());
 	}
 	
-	// TODO priority=2 group=expr
+	// priority=2 group=expr
 	public boolean visit(AllocationExpression term, BlockScope scope) {
 		debug(term, scope);
+		// implemented in Assignment
 		return true;
 	}
 
@@ -266,25 +269,27 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// priority=1 group=expr
 	public boolean visit(ArrayAllocationExpression term, BlockScope scope) {
 		debug(term, scope);
+		// implemented in Assignment
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// priority=1 group=expr
 	public boolean visit(ArrayInitializer term, BlockScope scope) {
 		debug(term, scope);
+		// implemented in Assignment
 		return true;
 	}
 
-	// TODO priority=1 group=array
+	// TODO priority=0 group=array
 	public boolean visit(ArrayQualifiedTypeReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=array
+	// TODO priority=0 group=array
 	public boolean visit(ArrayQualifiedTypeReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;
@@ -323,12 +328,37 @@ public class BoogieVisitor extends ASTVisitor {
 		stmt.traverse(this, scope);
 		return false;
 	}
+	
+	private void defineArrayLength(Expression lhs, BlockScope scope, int size) {
+		lhs.traverse(this, scope);
+		appendLine(".length := " + size + STMT_END); //$NON-NLS-1$
+	}
 
 	// priority=3 group=expr
 	public boolean visit(Assignment term, BlockScope scope) {
 		debug(term, scope);
-		if (term.expression instanceof AllocationExpression || term.expression instanceof ArrayAllocationExpression) {
+		if (term.expression instanceof AllocationExpression) {
 			// FIXME we don't handle this yet!
+			return false;
+		}
+		
+		if (term.expression instanceof ArrayInitializer) {
+			// treat this as a list of regular assignments
+			ArrayInitializer init = (ArrayInitializer)term.expression;
+			for (int i = 0; i < init.expressions.length; i++) {
+				Assignment asn = new Assignment(
+						new ArrayReference(term.lhs, 
+							new IntLiteral(new Integer(i).toString().toCharArray(), 0, 0, i)),
+						init.expressions[i],
+						init.sourceEnd);
+				asn.traverse(this, scope);
+			}
+			defineArrayLength(term.lhs, scope, init.expressions.length);
+			return false;
+		}
+		else if (term.expression instanceof ArrayAllocationExpression) {
+			ArrayAllocationExpression alloc = (ArrayAllocationExpression)term.expression;
+			defineArrayLength(term.lhs, scope, ((IntLiteral)alloc.dimensions[0]).value);
 			return false;
 		}
 		
@@ -357,12 +387,15 @@ public class BoogieVisitor extends ASTVisitor {
 	}
 	
 	public void endVisit(Assignment term, BlockScope scope) {
-		if (term.expression instanceof AllocationExpression || term.expression instanceof ArrayAllocationExpression) {
+		if (term.expression instanceof AllocationExpression) {
 			// FIXME we don't handle this yet!
 			return;
 		}
+		if (term.expression instanceof ArrayInitializer || term.expression instanceof ArrayAllocationExpression) {
+			return;	// don't need stmt_end here
+		}
 		
-		appendLine (STMT_END);		
+		appendLine(STMT_END);		
 
 		if (term.expression instanceof PostfixExpression) {
 			term.expression.traverse(this, scope);
@@ -510,8 +543,22 @@ public class BoogieVisitor extends ASTVisitor {
 	}
 
 	// TODO priority=2 group=decl
-	public boolean visit(ConstructorDeclaration term, ClassScope scope) {
+	public boolean visit(JmlConstructorDeclaration term, ClassScope scope) {
 		debug(term, scope);
+		JmlMethodDeclaration decl = new JmlMethodDeclaration(term.compilationResult);
+		decl.annotations = term.annotations;
+		decl.arguments = term.arguments;
+		decl.binding = term.binding;
+		decl.bits = term.bits;
+		decl.bodyEnd = term.bodyEnd;
+		decl.bodyStart = term.bodyStart;
+		decl.sourceStart = term.sourceStart;
+		decl.sourceEnd = term.sourceEnd;
+		decl.selector = term.selector;
+		decl.statements = term.statements;
+		decl.specification = term.specification;
+		decl.scope = term.scope;
+	//	decl.traverse(this, scope);
 		return true;
 	}
 
@@ -957,7 +1004,7 @@ public class BoogieVisitor extends ASTVisitor {
 		
 		append(term.binding.declaringClass.readableName());
 		append("." + new String(term.selector)); //$NON-NLS-1$
-		append("("); //$NON-NLS-1$
+		append(PAREN_OPEN);
 		
 		if (term.receiver instanceof ThisReference) {
 			append("this");  //$NON-NLS-1$
@@ -981,7 +1028,7 @@ public class BoogieVisitor extends ASTVisitor {
 				if (i < term.arguments.length - 1) append(", "); //$NON-NLS-1$
 			}
 		}
-		append(")"); //$NON-NLS-1$
+		append(PAREN_CLOSE);
 		return false;
 	}
 	
@@ -1006,7 +1053,7 @@ public class BoogieVisitor extends ASTVisitor {
 		append("procedure "); //$NON-NLS-1$
 		append(cls + "."); //$NON-NLS-1$
 		append(new String(term.selector));
-		append("("); //$NON-NLS-1$
+		append(PAREN_OPEN);
 		if (!term.isStatic()) {
 			append("this : " + cls); //$NON-NLS-1$
 		}
@@ -1019,11 +1066,11 @@ public class BoogieVisitor extends ASTVisitor {
 				}
 			}
 		}
-		append(")"); //$NON-NLS-1$
+		append(PAREN_CLOSE);
 		if (term.returnType.resolveType(scope) != TypeBinding.VOID) {
 			append(" returns (__result__ : "); //$NON-NLS-1$
 			term.returnType.traverse(this, scope);
-			append(")"); //$NON-NLS-1$
+			append(PAREN_CLOSE);
 		}
 		
 		// ensures & requires clause
@@ -1031,7 +1078,7 @@ public class BoogieVisitor extends ASTVisitor {
 			visit(term.getSpecification(), scope);
 		}
 		
-		appendLine(" {"); //$NON-NLS-1$
+		appendLine(SPACE + BLOCK_OPEN);
 		output.increaseIndent();
 
 		BoogieVariableDeclFinderVisitor varDeclFinder = new BoogieVariableDeclFinderVisitor(symbolTable);
@@ -1053,7 +1100,7 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 
 		output.decreaseIndent();
-		appendLine("}"); //$NON-NLS-1$
+		appendLine(BLOCK_CLOSE);
 		
 		symbolTable = null;
 
@@ -1069,6 +1116,9 @@ public class BoogieVisitor extends ASTVisitor {
 		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
 		term.type.traverse(this, scope);
 		appendLine(STMT_END);
+		if (term.type instanceof ArrayTypeReference) {
+			appendLine("var " + name + ".length : int;"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	// priority=0 group=decl
@@ -1152,13 +1202,40 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=0 group=expr
+	// priority=1 group=expr
 	public boolean visit(QualifiedNameReference term, BlockScope scope) {
 		debug(term, scope);
+		String termName = new String(term.tokens[0]);
+		
+		// First look in symbol table if there is one (local vars)
+		if (symbolTable != null) {
+			String symName = symbolTable.lookup(termName);
+			if (symName != null) {
+				append(symName);
+			}
+		}
+		else {
+			// Look for field or resolve type fully
+			TypeBinding classBinding = scope.classScope().referenceType().binding;
+			FieldBinding fieldBind = scope.classScope().findField(classBinding, term.tokens[0], null, true);
+	
+			if (fieldBind != null) {
+				append(new String(classBinding.readableName()) + "." + termName); //$NON-NLS-1$ 
+				if (!fieldBind.isStatic()) append("[this]"); //$NON-NLS-1$ 
+			}
+			else {
+				append(new String(scope.getType(term.tokens[0]).readableName()));
+			}
+		}
+		
+		for (int i = 0; i < term.otherBindings.length; i++) {
+			append("."); //$NON-NLS-1$
+			append(term.otherBindings[i].name);
+		}
 		return true;
 	}
 
-	// TODO priority=0 group=expr
+	// TODO priority=1 group=expr
 	public boolean visit(QualifiedNameReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;

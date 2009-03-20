@@ -2533,4 +2533,31 @@ public class TranslationTests extends AbstractRegressionTest {
 				""
 				);
 	}
+	
+	// term=ArrayTypeReference,ArrayReference adapter=pass
+	public void test_2100_arrayField() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {\n" +
+				"	int[] x = new int[3];\n" +
+				"	void m() {\n" +
+				"		x[0] = 2; x[1] = 4; x[2] = 6;\n" +
+				"		assert x[0] + x[1] + x[2] == 12;\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"var tests.esc.A.x : [tests.esc.A] [int] int;\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	tests.esc.A.x[this][0] := 2;\n" +
+				"	tests.esc.A.x[this][1] := 4;\n" +
+				"	tests.esc.A.x[this][2] := 6;\n" +
+				"	assert (((tests.esc.A.x[this][0] + tests.esc.A.x[this][1]) + tests.esc.A.x[this][2]) == 12);\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
 }

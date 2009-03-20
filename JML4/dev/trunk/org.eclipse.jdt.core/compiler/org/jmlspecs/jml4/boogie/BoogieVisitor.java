@@ -290,21 +290,29 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=array
+	// priority=2 group=array
 	public boolean visit(ArrayReference term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		term.receiver.traverse(this, scope);
+		append("["); //$NON-NLS-1$
+		term.position.traverse(this, scope);
+		append("]"); //$NON-NLS-1$
+		return false;
 	}
 
-	// TODO priority=2 group=array
+	// priority=2 group=array
 	public boolean visit(ArrayTypeReference term, BlockScope scope) {
 		debug(term, scope);
+		append("[int] "); //$NON-NLS-1$
+		append(term.resolvedType.leafComponentType().readableName());
 		return true;
 	}
 
-	// TODO priority=2 group=array
+	// priority=2 group=array
 	public boolean visit(ArrayTypeReference term, ClassScope scope) {
 		debug(term, scope);
+		append("[int] "); //$NON-NLS-1$
+		append(term.resolvedType.leafComponentType().readableName());
 		return true;
 	}
 

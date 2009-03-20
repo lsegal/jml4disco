@@ -18,6 +18,7 @@ public class AddServers extends FrontCommand {
 			try {
 				RemoteTomCatServer server = new RemoteTomCatServer(s);
 				RemoteServersMapper.insert(server);
+				arg.setAttribute("out", "Server added successfully");
 			} catch (MalformedURLException e) {
 				throw new FrontControllerException(e);
 			} catch (IOException e) {

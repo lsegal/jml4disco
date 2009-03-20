@@ -1050,7 +1050,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 	
-	// TODO priority=3 group=lit
+	// priority=3 group=lit
 	public boolean visit(LongLiteral term, BlockScope scope) {
 		debug(term, scope);
 		append(new String(term.source()));

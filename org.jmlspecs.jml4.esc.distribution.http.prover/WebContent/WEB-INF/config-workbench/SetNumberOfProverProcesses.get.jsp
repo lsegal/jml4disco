@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-This page will allow you to choose how many concurrent prover processes there should be for various provers:
+<p>
+This page allows you to change how many concurrent prover processes there should be for various provers. <br>
+For any prover that you wish to change, please fill the appropriate field with the number of processes you <br>
+desire (an integer) and click submit.
+</p>
 
 <table>
 

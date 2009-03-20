@@ -20,6 +20,7 @@ public class RemoveServers extends FrontCommand {
 				server = RemoteServersMapper.findByUniqueName(s);
 				if(server!=null) {
 					RemoteServersMapper.destroy(server);
+					arg.setAttribute("out", "Server removed successfully");
 				}
 			} catch (IOException e) {
 				throw new FrontControllerException(e);

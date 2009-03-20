@@ -16,7 +16,7 @@ public class BoogieSymbolTableTests extends TestCase {
 		BoogieSymbolTable tab = new BoogieSymbolTable();
 		tab.addSymbol("x");
 		assertEquals("a", tab.lookup("x"));
-		tab.addSymbol("x");
+		assertNull(tab.addSymbol("x"));
 		assertEquals("a", tab.lookup("x"));
 	}
 	

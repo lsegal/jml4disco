@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-This page will allow you to remove servers:
-
+<p>
+These are the server URL's currently registered with the system.<br>
+To remove one from getting distributed to, simply click the appropriate delete button.
+</p>
 <table>
 <%
 Object[] servers = (Object[])request.getAttribute("servers");

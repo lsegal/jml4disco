@@ -71,7 +71,7 @@ public class ConfigWorkbench extends HttpServlet {
 				String filename = getServletConfig().getServletContext().getRealPath(path);
 				File f = new File(filename); 
 				if(f.exists()) {
-					Presentation.render(request, response, getServletConfig().getServletContext().getRequestDispatcher(path));
+					Presentation.render(this, request, response, path);
 				}
 				else {
 					throw new ServletException("No view for command "+command+".");
@@ -87,7 +87,7 @@ public class ConfigWorkbench extends HttpServlet {
 				File f = new File(filename); 
 				if(f.exists()) {
 					if(filename.endsWith(".jsp")) {
-						Presentation.render(request, response, getServletConfig().getServletContext().getRequestDispatcher(path));
+						Presentation.render(this, request, response, path);
 					}
 					else {
 						getServletConfig().getServletContext().getRequestDispatcher(path).include(request,response);

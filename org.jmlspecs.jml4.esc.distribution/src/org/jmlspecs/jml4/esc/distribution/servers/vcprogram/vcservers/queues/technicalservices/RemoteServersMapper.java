@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.VcProgramDispatchingServerResources;
 import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.AbstractRemoteServer;
@@ -21,19 +22,22 @@ public class RemoteServersMapper {
 		}
 		File[] files = dir.listFiles();
 		
-		AbstractRemoteServer[] toreturn = new AbstractRemoteServer[files.length];
+		ArrayList<AbstractRemoteServer> toreturn = new ArrayList<AbstractRemoteServer>();
 		
 		for(int i=0; i<files.length; i++) {
 			File proverFile = files[i];
-			ObjectInputStream input = new ObjectInputStream(new FileInputStream(proverFile));
-			try {
-				AbstractRemoteServer prover = (AbstractRemoteServer) input.readObject();
-				toreturn[i] = prover;
-			} catch (ClassNotFoundException e) {
-				throw new IOException(e);
+			if(proverFile.getName().endsWith("."+VcProgramDispatchingServerResources.getProperty("remoteProversFileExtension"))) {
+				ObjectInputStream input = new ObjectInputStream(new FileInputStream(proverFile));
+				try {
+					AbstractRemoteServer prover = (AbstractRemoteServer) input.readObject();
+					toreturn.add(prover);
+				} catch (ClassNotFoundException e) {
+					throw new IOException(e);
+				}
 			}
 		}
-		return toreturn;
+		AbstractRemoteServer[] returnValue = new AbstractRemoteServer[toreturn.size()];
+		return toreturn.toArray(returnValue);
 	}
 
 	public static AbstractRemoteServer findByUniqueName(String name) throws IOException  {

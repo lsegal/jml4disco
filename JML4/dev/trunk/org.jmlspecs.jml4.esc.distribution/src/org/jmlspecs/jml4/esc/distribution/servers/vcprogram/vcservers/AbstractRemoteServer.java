@@ -10,6 +10,7 @@
  */
 package org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jmlspecs.jml4.esc.distribution.IServerProfile;
@@ -20,7 +21,7 @@ import org.jmlspecs.jml4.esc.vc.lang.VC;
  * All RemoteServer implementations should inherit from here. To do so ensures
  * that they will all be forced to implement IServerProfile.
  */
-public abstract class AbstractRemoteServer implements IServerProfile {
+public abstract class AbstractRemoteServer implements IServerProfile, Serializable {
 
 	public abstract Result[] proveVc(int i, VC vc, Map<String, Integer> map, String[] prover);
 	public abstract long timeSinceLastProve();

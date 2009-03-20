@@ -28,10 +28,10 @@ import org.jmlspecs.jml4.esc.vc.lang.VcProgram;
  */
 public class VcProgramDispatchingServer {
 
-	private static int THREAD_POOL_SIZE = 75; 	// The max number of threads in
+	private static int THREAD_POOL_SIZE = initThreadPoolSize(); 	// The max number of threads in
 												// the pool
-	private static int THROTTLE_VALUE = 25;		//The number of pending VC's before throttling
-	private static int THROTTLE_TIME = 1000; 	//In milliseconds
+	private static int THROTTLE_VALUE = initThrottleValue();		//The number of pending VC's before throttling
+	private static int THROTTLE_TIME = initThrottleTime(); 	//In milliseconds
 	
 	private static Executor proveVcThreadPool = initProveVcThreadPool();
 
@@ -84,6 +84,39 @@ public class VcProgramDispatchingServer {
 			accumulator.add(Result.VALID[0]);
 
 		return (Result[]) accumulator.toArray(Result.EMPTY);
+	}
+
+	private static int initThrottleTime() {
+		try {
+			int i = Integer.parseInt(VcProgramDispatchingServerResources.getProperty("dispatchingThrottleWaitTime")); 
+			return i;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return 1000;
+		}
+	}
+
+	private static int initThrottleValue() {
+		try {
+			int i = Integer.parseInt(VcProgramDispatchingServerResources.getProperty("dispatchingThrottleLimit")); 
+			return i;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return 25;
+		}
+	}
+
+	private static int initThreadPoolSize() {
+		try {
+			int i = Integer.parseInt(VcProgramDispatchingServerResources.getProperty("dispatchingParallelRequestsLimit")); 
+			return i;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return 75;
+		}
 	}
 
 	private static Executor initProveVcThreadPool() {

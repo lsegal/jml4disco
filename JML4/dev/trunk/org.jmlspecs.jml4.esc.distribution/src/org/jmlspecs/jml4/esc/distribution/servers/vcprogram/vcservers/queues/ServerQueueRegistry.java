@@ -1,10 +1,7 @@
 package org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues;
 
-import java.net.MalformedURLException;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
-import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.implementations.RemoteTomCatServer;
+import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.AbstractRemoteServer;
+import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.queues.technicalservices.RemoteServersMapper;
 
 /**
  * This factory class will return an instance of SeverQueue. If no instance yet
@@ -12,8 +9,7 @@ import org.jmlspecs.jml4.esc.distribution.servers.vcprogram.vcservers.implementa
  */
 public final class ServerQueueRegistry {
 
-	private static final String PROPERTIES_FILE = "jml4-disco-dispatcher"; // To initialize
-																// the servers
+	// the servers
 	private static ServerQueue serverqueue = null;
 
 	private ServerQueueRegistry() {
@@ -37,43 +33,37 @@ public final class ServerQueueRegistry {
 	 *         initialized from the properties file.
 	 */
 	private static ServerQueue initServers() {
+		
 		try {
-			ResourceBundle bundle = ResourceBundle.getBundle(PROPERTIES_FILE);
-
-			// TODO check that numberOfServers key exists
-			int numberOfServers = Integer.parseInt(bundle
-					.getString("numberOfServers"));
-			ServerQueue newqueue = new ServerQueue(numberOfServers);
-
-			for (int i = 1; i <= numberOfServers; i++) {
-				String serverInfo = bundle.getString("proverServer." + i);
-				try {
-					newqueue.add(new RemoteTomCatServer(serverInfo));
-				}
-				catch(MalformedURLException e) {
-					System.out.println("Unable to add server '"+serverInfo+"'");
-					e.printStackTrace();
-				}
+			AbstractRemoteServer[] servers = RemoteServersMapper.findAll();
+	
+			ServerQueue newqueue = new ServerQueue(servers.length);
+			
+			for (int i = 0; i < servers.length; i++) {
+				newqueue.add(servers[i]);
 			}
 			return newqueue;
-		} catch (MissingResourceException e) {
+		}
+		catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	public static void addServer(String serverInfo) throws ServerQueueRegistryException {
+
+	public static void addServer(AbstractRemoteServer prover) throws ServerQueueRegistryException {
 		try {
-			getRemoteProveVcServerQueueInstance().add(new RemoteTomCatServer(serverInfo));
-		} catch (MalformedURLException e) {
-			throw new ServerQueueRegistryException("Unable to add server '"+serverInfo+"'", e);
+			getRemoteProveVcServerQueueInstance().add(prover);
+			System.out.println("added?");
+		} catch (Exception e) {
+			throw new ServerQueueRegistryException("Unable to add server '"+prover.toString()+"'", e);
 		}
 	}
-	
-	public static void removeServer(String serverIdentifier) {
+
+	public static void removeServer(AbstractRemoteServer prover) {
 		for(Object s:getRemoteProveVcServerQueueInstance().toArray()) {
-			if(serverIdentifier.equals(s.toString())) {
+			if(prover.toString().equals(s.toString())) {
 				getRemoteProveVcServerQueueInstance().remove(s);
+				System.out.println("removed?");
 				return;
 			}
 		}

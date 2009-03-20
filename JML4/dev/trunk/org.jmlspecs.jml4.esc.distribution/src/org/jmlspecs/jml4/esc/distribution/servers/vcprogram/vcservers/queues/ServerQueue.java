@@ -26,6 +26,9 @@ public class ServerQueue implements Queue<AbstractRemoteServer> {
 	 */
 	public ServerQueue(int initialCapacity) {
 		comparator = new ServerComparator();
+		if(initialCapacity<1) {
+			initialCapacity = 1;
+		}
 		queue = new PriorityQueue<AbstractRemoteServer>(initialCapacity,
 				comparator);
 	}

@@ -10,7 +10,7 @@
 <style>
 body { border: 0; background: #eee; }
 #header { width: 100%; overflow-y: hidden; padding: 0px;height: 40px; }
-#menu { width: 800px; float: left; font-family: sans-serif; }
+#menu { width: 800px; float: left; font-family: sans-serif; padding-bottom: 10px; }
 #menu ul { list-style: none; padding: 0; margin: 0; float: left; }
 #menu li { float: left; display: block; } 
 #menu a { display: block; padding: 20px; float: left; }
@@ -23,8 +23,7 @@ body { border: 0; background: #eee; }
 <div id='menu'>
 	<ul>
 		<li><a href='index.jsp' title=''>JML4 Disco - Server Config</a></li>
-		<li><a href='AddServers' title=''>Add Servers</a></li>
-		<li><a href='RemoveServers' title=''>Remove Servers</a></li>
+		<li><a href='SetNumberOfProverProcesses' >Configure Prover Processes</a></li>
 	</ul>
 </div>
 </div>

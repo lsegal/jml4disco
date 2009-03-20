@@ -213,6 +213,11 @@ public class AdapterTests extends TranslationTests {
 	}
 
 	@Override
+	public void test_0295_LocalDeclarationDefaultInitialization() {
+		super.test_0295_LocalDeclarationDefaultInitialization();
+	}
+
+	@Override
 	public void test_0296_LocalDeclaration_Blocks() {
 		super.test_0296_LocalDeclaration_Blocks();
 	}
@@ -368,6 +373,46 @@ public class AdapterTests extends TranslationTests {
 	}
 
 	@Override
+	public void test_2100_arrayField() {
+		super.test_2100_arrayField();
+	}
+
+	@Override
+	public void test_2101_arrayInitializer() {
+		super.test_2101_arrayInitializer();
+	}
+
+	@Override
+	public void test_2102_arrayAllocation() {
+		super.test_2102_arrayAllocation();
+	}
+
+	@Override
+	public void test_2103_arrayLength() {
+		super.test_2103_arrayLength();
+	}
+
+	@Override
+	public void test_2104_arrayDefaultInitialization() {
+		super.test_2104_arrayDefaultInitialization();
+	}
+
+	@Override
+	public void test_2200_JmlConstructorDeclaration() {
+		super.test_2200_JmlConstructorDeclaration();
+	}
+
+	@Override
+	public void test_2201_ConstructorCall() {
+		super.test_2201_ConstructorCall();
+	}
+	
+	@Override
+	public void test_2202_ConstructorCallFieldModification() {
+		super.test_2202_ConstructorCallFieldModification();
+	}
+
+	@Override
 	public void test_297_LocalDeclaration() {
 		super.test_297_LocalDeclaration();
 	}
@@ -480,20 +525,5 @@ public class AdapterTests extends TranslationTests {
 	@Override
 	public void testTrueLiteral() {
 		super.testTrueLiteral();
-	}
-	
-	@Override
-	public void test_2100_arrayField() {
-		super.test_2100_arrayField();
-	}
-	
-	@Override
-	public void test_2101_arrayInitializer() {
-		super.test_2101_arrayInitializer();
-	}
-
-	@Override
-	public void test_2103_arrayLength() {
-		super.test_2103_arrayLength();
 	}
 }

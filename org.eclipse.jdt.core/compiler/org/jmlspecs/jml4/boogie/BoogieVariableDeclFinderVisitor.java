@@ -37,8 +37,10 @@ public class BoogieVariableDeclFinderVisitor extends ASTVisitor {
 	}
 	
 	public boolean visit(LocalDeclaration localDecl, BlockScope scope) {
-		symbolTable.addSymbol(new String(localDecl.name));
-		locals.add(new Object[]{localDecl,symbolTable.getCurrentBlock()});
+		String value = symbolTable.addSymbol(new String(localDecl.name));
+		if (value != null) {
+			locals.add(new Object[]{localDecl,symbolTable.getCurrentBlock()});
+		}
 		return true;
 	}
 	

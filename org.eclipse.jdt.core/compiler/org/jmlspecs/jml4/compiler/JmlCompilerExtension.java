@@ -186,7 +186,7 @@ public class JmlCompilerExtension extends DefaultCompilerExtension {
 	    if ((optionValue = optionsMap.get(JmlCompilerOptions.OPTION_EscDistributedEnabled)) != null) {
 	    	options.jmlEscDistibutedEnabled = CompilerOptions.ENABLED.equals(optionValue);
 	    	if(options.jmlEscDistibutedEnabled)	{
-	    		options.jmlEscProverStrategy = "distributed"; //$NON-NLS-1$
+	    		options.jmlEscProverStrategy = "ProveVcDistributed"; //$NON-NLS-1$
 	    		optionsMap.put(optionsMap.get(JmlCompilerOptions.OPTION_EscProverStrategy), "distributed"); //$NON-NLS-1$
 	    	}
 	    	else{

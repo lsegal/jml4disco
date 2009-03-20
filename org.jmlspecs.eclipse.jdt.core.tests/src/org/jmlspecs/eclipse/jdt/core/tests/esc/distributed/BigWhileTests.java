@@ -47,6 +47,7 @@ public class BigWhileTests extends AbstractRegressionTest {
 		options.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
 		options.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
 		options.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
+		options.put(JmlCompilerOptions.OPTION_EscDistributedEnabled,  CompilerOptions.ENABLED);
 		options.put(JmlCompilerOptions.OPTION_EscDistributedPropertiesFile, "proverCoordinatorUrls.properties");
 		options.put(JmlCompilerOptions.OPTION_EscProverStrategy, ProveVcDistributed.getName());
 		return options;

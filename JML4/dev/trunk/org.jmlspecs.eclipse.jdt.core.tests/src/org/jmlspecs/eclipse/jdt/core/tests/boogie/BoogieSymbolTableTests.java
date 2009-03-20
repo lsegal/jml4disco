@@ -16,13 +16,8 @@ public class BoogieSymbolTableTests extends TestCase {
 		BoogieSymbolTable tab = new BoogieSymbolTable();
 		tab.addSymbol("x");
 		assertEquals("a", tab.lookup("x"));
-		try {
-			tab.addSymbol("x");
-			fail("Duplicate symbol addition should fail.");
-		}
-		catch (IllegalArgumentException e) {
-			assertEquals("Symbol x already exists", e.getMessage());
-		}
+		tab.addSymbol("x");
+		assertEquals("a", tab.lookup("x"));
 	}
 	
 	public void testEnterScope() {

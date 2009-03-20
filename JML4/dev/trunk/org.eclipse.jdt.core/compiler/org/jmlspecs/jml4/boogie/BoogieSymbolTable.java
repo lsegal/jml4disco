@@ -63,7 +63,8 @@ public class BoogieSymbolTable {
 	public synchronized String addSymbol(String symbol) {
 		Hashtable lastScope = (Hashtable)scope.get(currentBlock);
 		if (lastScope.get(symbol) != null) {
-			throw new IllegalArgumentException("Symbol " + symbol + " already exists"); //$NON-NLS-1$ //$NON-NLS-2$
+			return (String)lastScope.get(symbol);
+			//throw new IllegalArgumentException("Symbol " + symbol + " already exists"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		String value = generateSymbol();
 		lastScope.put(symbol, value);

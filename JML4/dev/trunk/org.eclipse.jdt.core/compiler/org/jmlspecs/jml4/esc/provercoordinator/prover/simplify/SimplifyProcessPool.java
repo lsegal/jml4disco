@@ -68,10 +68,4 @@ public class SimplifyProcessPool extends ProcessPool {
 		}
 		return null;
 	}
-
-	public void getProcessConfiguration() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

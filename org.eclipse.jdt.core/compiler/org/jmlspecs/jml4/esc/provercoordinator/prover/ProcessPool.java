@@ -14,7 +14,6 @@ public abstract class ProcessPool {
 	
 	abstract protected Process createNewProcess();
 	abstract protected String launcherCommand();
-	abstract public void getProcessConfiguration();
 	abstract public String failedToLaunch();
 
 	protected ProcessPool() {
@@ -55,7 +54,15 @@ public abstract class ProcessPool {
 	}
 	
 	public void setMAX_PROCESS(int max_process) {
+		
+		Process p = (Process) idleProcessQueue.poll();
+		while(p != null) {
+			p.destroy();
+			p = (Process) idleProcessQueue.poll();
+		}
+		num_of_process_avaiable = 0;
 		MAX_PROCESS = max_process;
+		
 	}
 	
 	public void notifyDeadProcess(Process p) {

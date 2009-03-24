@@ -77,6 +77,7 @@ public class SimplifyAdapter extends ProverAdapter {
 			}
 
 		} catch (IOException e) {
+			processPool.releaseProcess(process);
 			e.printStackTrace();
 		}
 		processPool.releaseProcess(process);

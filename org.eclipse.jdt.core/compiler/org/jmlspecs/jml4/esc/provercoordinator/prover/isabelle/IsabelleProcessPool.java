@@ -68,8 +68,4 @@ public class IsabelleProcessPool extends ProcessPool {
 		}
 		return null;
 	}
-	
-	public void getProcessConfiguration() {
-		//get configuration if any
-	}
 }

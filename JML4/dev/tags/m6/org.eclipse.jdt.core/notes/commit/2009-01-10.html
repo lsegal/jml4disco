@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>JML4 Commit 2009-01-10</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+
+<body>
+<h2>JML4 Commit Notes - 2009-01-10</h2>
+<p>These notes describe three commits. </p>
+<hr />
+<h2>Commit <a href="http://jmlspecs.svn.sourceforge.net/viewvc/jmlspecs?view=rev&revision=1186">1186</a> - start of the experimental merge of JML5 into JML4 </h2>
+<p>As of this commit, JML4 should be run with a <strong>Java 6</strong> or higher JVM (previously it was Java 5), and JML projects will need to be set to a Java 6 compliance level or higher. JML projects must also have <a href="https://jmlspecs.svn.sourceforge.net/svnroot/jmlspecs/JMLAnnotations/branches/jml4">org.jmlspecs.annotation</a> in their build path. </p>
+<h3>Prelude</h3>
+<p>This is checkpoint commit, the first of a series of commits,  adding experimental support for JML5 (i.e. Java 5 annotations for JML) to JML4. JML5 was developed by Kristina Taylor in her master's thesis under the supervision of Gary Leavens:</p>
+<blockquote>
+  <p> <a href="http://archives.cs.iastate.edu/documents/disk0/00/00/05/68/index.html">Taylor, Kristina B. (2008) <em>A Specification Language Design for the Java Modeling Language (JML) Using Java 5 Annotations </em>. Masters thesis, Computer Science, Iowa State University. </a></p>
+</blockquote>
+<p>Another closely related article is</p>
+<blockquote>
+  <p> <a href="http://archives.cs.iastate.edu/documents/disk0/00/00/05/79/index.html">Taylor, Kristina B., Rieken, Johannes and Leavens, Gary T. (2008) Adapting the Java Modeling Language for Java 5 Annotations. Technical Report 08-06, Computer Science, Iowa State University. </a> </p>
+</blockquote>
+<p>which also describes <a href="http://modernjass.sourceforge.net/">Modern Jass</a> and how it supports a subset of the Java 5 annotations for JML. </p>
+<h2>WHAT is in this commit?</h2>
+<p>This commit has JML4 switch to using JML5 annotations to represent JML modifiers (e.g. @Nullable, @SpecPublic) rather than our previous homegrown org.jmlspecs.jml4.runtime.annotation. This switch caused some of the code resolution for JML set statements to no longer work, so that has been adjusted as well.</p>
+<h2>DETAILS</h2>
+<p>Selected details:</p>
+<ul>
+  <li>org.jmlspecs.annotation:
+      <ul>
+        <li>Added Java 5 annotations for JML modifiers that were missing; i.e. the math modes and instance modifiers.</li>
+        <li>@Ghost and @Model have been given a default value so that they can be used as simple modifiers (rather than &quot;declarator&quot; annotations). </li>
+      </ul>
+  </li>
+  <li>org.eclipse.jdt.core:
+    <ul>
+      <li>The main changes in this package are to <strong>JmlModifier</strong> and TypeConstants
+    to support constants (mainly char arrays) to hold the simple and fully qualified names of the JML5 annotations.</li>
+        <li>Aligned processing of the ghost modifier in JmlSetStatement as well as VariableBinding, FieldBinding and LocalVariableBinding to make use of the @Ghost annotation rather than a JML specific field in the binding classes named isGhost. (VariableBinding and FieldBinding now match their Eclipse JDT counterparts; i.e. all JML4 specific changes have been eliminated.) </li>
+    </ul>
+  </li>
+  <li>org.jmlspecs.eclipse.jdt.core.tests:
+    <ul>
+      <li>Test files updated to make use of org.jmlspecs.annotation. </li>
+        <li>New Jml5BasicTests.java.</li>
+    </ul>
+  </li>
+</ul>
+<p></p>
+<hr />
+<h2>WHAT is in commit <a href="http://jmlspecs.svn.sourceforge.net/viewvc/jmlspecs?view=rev&amp;revision=1185">1185</a>?</h2>
+<p>The JmlPrimary grammar non-terminal was defined as an extra alternative to Primary. This is wrong in the JDT since it prevents the successful parsing of expressions like &quot;\result[0]&quot;. The proper place to introduce <strong>JmlPrimary</strong> is as an alternative to <strong>PrimaryNoNewArray</strong>. This commit now enables <em>DbcTestCompiler.test_0043_result_as_array</em>() to pass. </p>
+<hr />
+<h2>WHAT is in commit <a href="http://jmlspecs.svn.sourceforge.net/viewvc/jmlspecs?view=rev&amp;revision=1184">1184</a>?</h2>
+<p>Only attempt to reset a boolean flag of the Scanner.parser field if the is non-null. This field is JML4 specific (i.e. does not exists in the JDT). Under some circumstances (e.g. when the Scanner is used by the dom.ASTConverter, the field is not initialized). Failing to do this check caused 8 errors in the JDT tests. </p>
+<p></p>
+<hr />
+<p>&nbsp; </p>
+<p>&nbsp;</p>
+</body>
+</html>

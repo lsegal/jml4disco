@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Plan For Distributed Req</title>
+ 
+<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="PlanforDistributedDischargingofVCsRequirements">Plan for Distributed Discharging of VCs Requirements</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.Introduction">1. Introduction</a></li><li class="active">
+<a href="#a2.PotentialStrategies">2. Potential Strategies</a><ol><li class="active"><a href="#a2.1DecisionTable">2.1 Decision Table</a></li><li class="active">
+<a href="#a2.2Explanation">2.2 Explanation</a></li></ol></li><li class="active"><a href="#a3.Evaluation">3. Evaluation</a><ol><li class="active"><a href="#a3.1BenchmarkingTool">3.1 Benchmarking Tool</a></li><li class="active">
+<a href="#a3.2DistributedTechnology">3.2 Distributed Technology</a><ol><li class="active"><a href="#a3.2.1JavaRMI">3.2.1 Java RMI</a></li><li class="active">
+<a href="#a3.2.2CORBA">3.2.2 CORBA</a></li><li class="active">
+<a href="#a3.2.3WebServices">3.2.3 Web Services</a></li><li class="active">
+<a href="#a3.2.4Hybrid">3.2.4 Hybrid</a></li><li class="active">
+<a href="#a3.2.5FunctionalComparisonofRMIandWebServices">3.2.5 Functional Comparison of RMI and Web Services</a></li></ol></li><li class="active"><a href="#a3.3Caching">3.3 Caching</a><ol><li class="active"><a href="#a3.3.1Buildvs.Buy">3.3.1 Build vs. Buy</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#a4.References">4. References</a></li></li></ol></div>
+
+</p>
+<h2 id="a1.Introduction">1. Introduction</h2>
+<p>
+This wiki page provides general overviews of any possible strategies to achieve the objective of distributing VCs to several servers with improved response time.  
+</p>
+<h2 id="a2.PotentialStrategies">2. Potential Strategies</h2>
+<p>
+This section lists all the possible solutions that we can look at to achieve better time performance in a distributed environment.
+</p>
+<h3 id="a2.1DecisionTable">2.1 Decision Table</h3>
+<p>
+<a href="/trac/attachment/wiki/PlanForDistributedReq/DecisionTree.png" style="padding:0; border:none"><img title="Strategies Tree" src="images/DecisionTree.png" alt="Strategies Tree" /></a>
+</p>
+<h3 id="a2.2Explanation">2.2 Explanation</h3>
+<p>
+The first step is to find the performance bottlenecks of the current distributed JML prototype.  This task involved following activities:
+</p>
+<ul><li>Choose the appropriate tool for performing the benchmark.
+</li><li>Use existing test data to measure the average proving process time of each theorem prover
+</li><li>Measure the time of object serialization process
+</li><li>Measure the network latency time
+</li></ul><p>
+Based on the result of benchmark, we will be able to make a decision on which strategy for each category that we are going to follow to evolve the system.
+</p>
+<h2 id="a3.Evaluation">3. Evaluation</h2>
+<h3 id="a3.1BenchmarkingTool">3.1 Benchmarking Tool</h3>
+<p>
+There exists several free java profilers on the Internet.   Following is a list of few java profilers that we found:
+</p>
+<ul><li><strong>Eclipse TPTP:</strong> Eclipse built-in profiler.  It provides framework and services for testing and collecting application performance measurement. <a href="http://www.eclipse.org/tptp/" class="ext-link"><span class="icon">Eclipse TPTP Website</span></a>
+</li><li><strong>DJProf:</strong> is an open source experimental java profiler.  It adopts AspectJ mechanism to insert measurement points. <a href="http://homepages.mcs.vuw.ac.nz/~djp/djprof/" class="ext-link"><span class="icon">DJProf Website</span></a>
+</li><li><strong>JMP:</strong> a profiler for monitoring/tracing objects usage and methods timing.  It uses JVMPI (Profiler Interface) to collect measurements. <a href="http://www.khelekore.org/jmp/" class="ext-link"><span class="icon">JMP Website</span></a>
+</li><li><strong>Infrared:</strong> was developed for profiling J2EE application.  Similar to DJProf, this profiler uses Aspect-Oriented Programming to insert performance monitoring code into the application.  It provides more features than DJProf. <a href="http://infrared.sourceforge.net/versions/latest/features.html" class="ext-link"><span class="icon">Infrared Website</span></a>
+</li></ul><h3 id="a3.2DistributedTechnology">3.2 Distributed Technology</h3>
+<p>
+This section provides an overall description and the characteristics of three common distributed technologies: Java RMI, CORBA, and Web Service
+</p>
+<h4 id="a3.2.1JavaRMI">3.2.1 Java RMI</h4>
+<ul><li>Distributed Object Model
+</li><li>Communication usually blocked by firewalls, hence more appropriate in LAN environment.
+</li><li>Use TCP/IP protocol
+</li><li>Data exchanges in binary format
+</li><li>Limited to Java platform
+</li></ul><h4 id="a3.2.2CORBA">3.2.2 CORBA</h4>
+<ul><li>Multi-language RMI system
+</li><li>Communication is done through GIOP (General <a href="/trac/wiki/InterOrb" class="missing wiki" rel="nofollow">InterOrb?</a>) or IIOP (Internet <a href="/trac/wiki/InterOrb" class="missing wiki" rel="nofollow">InterOrb?</a>) protocol.
+</li><li>OS independent
+</li></ul><h4 id="a3.2.3WebServices">3.2.3 Web Services</h4>
+<p>
+ 
+</p>
+<ul><li>XML Based Message
+</li><li>Promotes SOA concept
+</li><li>Message driven Model
+</li><li>Interoperability between different platforms
+</li><li>Use SOAP protocol over HTTP/HTTPS
+</li><li>Data exchanges in native format (XML)
+</li><li>Low performance compared to Java RMI/CORBA
+</li></ul><h4 id="a3.2.4Hybrid">3.2.4 Hybrid</h4>
+<p>
+One of the possible solutions is to integrate different distributed technologies into the system.  For example, integrate Java RMI and Web Services together.  The goal is to combine the strength of each technology to solve our problem.
+</p>
+<h4 id="a3.2.5FunctionalComparisonofRMIandWebServices">3.2.5 Functional Comparison of RMI and Web Services</h4>
+<table class="wiki">
+<tr><td> <strong>Functionality</strong> </td><td> <strong>RMI</strong> </td><td> <strong>WS</strong> 
+</td></tr><tr><td> Synchronous operations </td><td> Yes </td><td> Yes 
+</td></tr><tr><td> Asynchronous operations </td><td> No </td><td> Yes 
+</td></tr><tr><td> Remote method/procedure invocation </td><td> Yes </td><td> Yes 
+</td></tr><tr><td> Document oriented </td><td> No </td><td> Yes 
+</td></tr><tr><td> One-way operations </td><td> No </td><td> Yes 
+</td></tr><tr><td> Stateful objects/services </td><td> Yes </td><td> No 
+</td></tr><tr><td> Dynamic class downloading </td><td> Yes </td><td> No 
+</td></tr><tr><td> Automatic distributed garbage collection </td><td> Yes </td><td> No 
+</td></tr><tr><td> Language independent wire protocol </td><td> No </td><td> Yes 
+</td></tr><tr><td> Language indp. object/service description </td><td> No </td><td> Yes 
+</td></tr><tr><td> Location of objects/services </td><td> Registry </td><td> UDDI 
+</td></tr><tr><td> Dynamic binding to instances </td><td> No </td><td> Yes 
+</td></tr><tr><td> Remote object/service activation </td><td> Yes </td><td> No 
+</td></tr><tr><td> Interoperability through SW platforms </td><td> Partial (IIOP) </td><td> Yes 
+</td></tr><tr><td> Security </td><td> SSL or TLS </td><td> WS-Sec 
+</td></tr></table>
+<p>
+[ref: 2]
+</p>
+<ul><li>Interoperability: WS favorable
+</li><li>Scalability: WS favorable
+</li><li>Performance: RMI/CORBA favorable
+</li></ul><h3 id="a3.3Caching">3.3 Caching</h3>
+<p>
+One of the approaches for optimizing performance is the use of caching mechanism.
+</p>
+<h4 id="a3.3.1Buildvs.Buy">3.3.1 Build vs. Buy</h4>
+<p>
+The principal question is whether we are going to develop the caching mechanism ourselves or using the existing one out of market.  
+</p>
+<ul><li><strong>OSCache:</strong> high performance J2EE caching framework.  It provides caching of arbitrary objects, and support persistence caching.  <a href="http://www.opensymphony.com/oscache/" class="ext-link"><span class="icon">OSCache Website</span></a>
+</li><li><strong>Cache4j:</strong> a cache for Java objects.  It provides in-memory caching, runs in multi-threaded environment, and allows user to choose a strategy among various caching algorithms. <a href="http://cache4j.sourceforge.net/" class="ext-link"><span class="icon">Cache4j Website</span></a>
+</li><li><strong>SwarmCache:</strong> simple lightweight distributed cache.  It uses IP multicast to communicate within LAN environment.  It is more appropriate for database driven application. <a href="http://swarmcache.sourceforge.net/" class="ext-link"><span class="icon">SwarmCache Website</span></a>
+</li><li><strong>Java Caching System:</strong> distributed caching system for server-side applications.  <a href="http://jakarta.apache.org/jcs/" class="ext-link"><span class="icon">JCS Website</span></a>
+</li></ul><h2 id="a4.References">4. References</h2>
+<ol><li><strong>"Comparison of Web Services, Java-RMI, and CORBA service implementations"</strong>, N.A.B Gray, School of Information Technology &amp; Computer Science, University of Wollongong
+</li><li><strong>"Comparison of performance of Web Services, WS-Security, RMI, and RMI-SSL"</strong>, Matjaz B. Juric, al.  Institute of Informatics, Faculty of Electrical Engineering and Computer Science, University of Maribor
+</li><li><strong>"Optimizing Distributed System Performance via Adaptive Middleware Load Balancing"</strong>, Ossama Othman, and Douglas C. Schmidt, Department of Electrical and Computer Engineering, University of California
+</li><li><strong>"Web Services versus Distributed Objects: A Case Study of Performance and Interface Design"</strong>, William R. Cook, Janel Barfield, Department of Computer Sciences, University of Texas
+</li></ol></div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

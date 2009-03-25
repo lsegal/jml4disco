@@ -37,8 +37,8 @@
 <a href="#a3.1.2.2RecompileESC4">3.1.2.2 Recompile ESC4</a></li><li class="active">
 <a href="#a3.1.2.3RecompileSimplify">3.1.2.3 Recompile Simplify</a></li><li class="active">
 <a href="#a3.1.2.4RecompileCVC3">3.1.2.4 Recompile CVC3</a></li><li class="active">
-<a href="#a3.1.2.5InstallBoogieunderLinux">3.1.2.5 Install Boogie under Linux</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#a3.2CheckingoutJML4SourceCode">3.2 Checking out JML4 Source Code</a></li><li class="active">
-<a href="#a3.3RunningTests">3.3 Running Tests</a></li></li></ol></li></li></ol></div>
+<a href="#a3.1.2.5InstallBoogieunderLinux">3.1.2.5 Install Boogie under Linux</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#a3.2CheckingoutJML4DiscoSourceCode">3.2 Checking out JML4 Disco Source Code</a></li></li><li class="active">
+<a href="#a3.3SettingupProverServers">3.3 Setting up Prover Servers</a><ol><li class="active"><a href="#a3.3.1SettinguptheDispatcher">3.3.1 Setting up the Dispatcher</a></li></ol><li class="active"><a href="#a3.3RunningTests">3.3 Running Tests</a></li></li></ol></li></li></ol></div>
 
 </p>
 <h2 id="a0.RevisionHistory">0. Revision History</h2>
@@ -170,12 +170,28 @@ You must then install the .NET binaries from Microsoft using the <tt>winetricks<
 Follow the installation procedure. You should then be able to test Boogie by typing <tt>boogie</tt> in a terminal, which should give the following output:
 </p>
 <pre class="wiki">    *** Error: No input files were specified.
-</pre><h3 id="a3.2CheckingoutJML4SourceCode">3.2 Checking out JML4 Source Code</h3>
+</pre><h3 id="a3.2CheckingoutJML4DiscoSourceCode">3.2 Checking out JML4 Disco Source Code</h3>
 <p>
 The repository location is: <i><a href="svn+ssh://stu01.encs.concordia.ca/svn_rep/JML4/dev/trunk" class="ext-link"><span class="icon">svn+ssh://stu01.encs.concordia.ca/svn_rep/JML4/dev/trunk</span></a></i>
 </p>
 <p>
 Use Subclipse to checkout the above URL into an empty workspace to create the project. Make sure to enter valid user credentials, as the repository does not permit anonymous logins.
+</p>
+<h3 id="a3.3SettingupProverServers">3.3 Setting up Prover Servers</h3>
+<p>
+Two Dynamic Web Projects - <tt>org.jmlspecs.jml4.esc.distribution.http.dispatcher</tt> and <tt>org.jmlspecs.jml4.esc.distribution.http.prover</tt> - have to be deployed on <a href="/trac/wiki/TomCat" class="missing wiki" rel="nofollow">TomCat?</a> servers in order to be used.
+</p>
+<h4 id="a3.3.1SettinguptheDispatcher">3.3.1 Setting up the Dispatcher</h4>
+<p>
+The <tt>org.jmlspecs.jml4.esc.distribution.http.dispatcher</tt> project also requires a properties file for configuration, which includes the following key-value pairs:
+</p>
+<ul><li><span class="underline">remoteProversFileExtension:</span> The file extension for the files found in the <span class="underline">remoteProversDirectory</span>
+</li><li><span class="underline">remoteProversDirectory:</span> The name of a directory found on the dispatcher machine in which the dispatcher will store the information needed to connect to remote machines
+</li><li><span class="underline">dispatchingThrottleLimit:</span> The maximum number of VCs the dispatcher will send to a single remote prover.
+</li><li><span class="underline">dispatchingThrottleWaitTime:</span> Should all prover servers have more than the <span class="underline">dispatchingThrottleLimit</span> VCs pending, this is how long the dispatcher will wait to continue dispatching.
+</li><li><span class="underline">dispatchingParallelRequestsLimit:</span> The maximum number of concurrent requests the dispatcher can send to prover servers.
+</li></ul><p>
+Once this configuration file exists, one should connect to the dispatcher's configuration workbench; open a web browser and visit <tt>/config-workbench/index.jsp</tt> (relative to the dispatcher's root directory) and choose to 'Add Servers'. You will have to specify the URLs for remote prover servers to which the dispatcher can connect before distributed verification works properly.
 </p>
 <h3 id="a3.3RunningTests">3.3 Running Tests</h3>
 <p>

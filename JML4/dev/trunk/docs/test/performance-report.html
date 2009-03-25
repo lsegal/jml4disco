@@ -28,31 +28,31 @@
 <p>
 <div class="wiki-toc">
 <h4>Table of Contents</h4>
-<ol><li class="active"><a href="#Introduction"><strong>Introduction</strong></a></li><li class="active">
-<a href="#SystemSettings"><strong>System Settings</strong></a><ol><li class="active"><a href="#HardwareConfiguration"><strong>Hardware Configuration</strong></a></li><li class="active">
-<a href="#SoftwareConfiguration"><strong>Software Configuration</strong></a></li><li class="active">
-<a href="#NetworkConfiguration"><strong>Network Configuration</strong></a></li><li class="active">
-<a href="#ClientConfiguration"><strong>Client Configuration</strong></a></li></ol><li class="active"><a href="#BenchmarkProcedure"><strong>Benchmark Procedure</strong></a></li></li><li class="active">
-<a href="#BenchmarkResult"><strong>Benchmark Result</strong></a><ol><li class="active"><a href="#ProversPerformance"><strong> Prover's Performance </strong></a></li><li class="active">
-<a href="#TimingResults"><strong>Timing Results</strong></a></li><li class="active">
-<a href="#Graph"><strong>Graph</strong></a></li><li class="active">
-<a href="#Analysis"><strong>Analysis</strong></a></li><li class="active">
-<a href="#Conclusion"><strong>Conclusion</strong></a></li></ol><li class="active"><a href="#Appendix"><strong>Appendix</strong></a></li></li></ol></div>
+<ol><li class="active"><a href="#a1.Introduction"><strong>1. Introduction</strong></a></li><li class="active">
+<a href="#a2.SystemSettings"><strong>2. System Settings</strong></a><ol><li class="active"><a href="#a2.1HardwareConfiguration"><strong>2.1 Hardware Configuration</strong></a></li><li class="active">
+<a href="#a2.2SoftwareConfiguration"><strong>2.2 Software Configuration</strong></a></li><li class="active">
+<a href="#a2.3NetworkConfiguration"><strong>2.3 Network Configuration</strong></a></li><li class="active">
+<a href="#a2.4ClientConfiguration"><strong>2.4 Client Configuration</strong></a></li></ol><li class="active"><a href="#a3.BenchmarkProcedure"><strong>3. Benchmark Procedure</strong></a></li></li><li class="active">
+<a href="#a4.BenchmarkResult"><strong>4. Benchmark Result</strong></a><ol><li class="active"><a href="#a4.1ProversPerformance"><strong>4.1 Prover's Performance </strong></a></li><li class="active">
+<a href="#a4.2TimingResults"><strong>4.2 Timing Results</strong></a></li><li class="active">
+<a href="#a4.3Graph"><strong>4.3 Graph</strong></a></li></ol></li><li class="active"><a href="#a5.GeneralAnalysis"><strong>5. General Analysis</strong></a><ol><li class="active"><a href="#a5.1BigWhileTestResultDetailedAnalysis"><strong>5.1 BigWhileTest Result Detailed Analysis</strong></a></li><li class="active">
+<a href="#a5.2DistributedBurdenTestResultDetailedAnalysis"><strong>5.2 DistributedBurdenTest Result Detailed Analysis</strong></a></li></ol><li class="active"><a href="#a6.Conclusion"><strong>6. Conclusion</strong></a></li><li class="active">
+<a href="#a7.Terminology"><strong>7. Terminology</strong></a></li></li></ol></div>
 
 </p>
-<h2 id="Introduction"><strong>Introduction</strong></h2>
+<h2 id="a1.Introduction"><strong>1. Introduction</strong></h2>
 <blockquote>
 <p>
 This artifact provides details information about JML4 Disco performance.  The performance results are based on various tests running through original version of JML4 and the current working version to observe the trends of improvement.
 </p>
 </blockquote>
-<h2 id="SystemSettings"><strong>System Settings</strong></h2>
+<h2 id="a2.SystemSettings"><strong>2. System Settings</strong></h2>
 <blockquote>
 <p>
 This section provides details information about the benchmarking environment.  It lists all the principal hardware and software configuration that are used for this benchmarking.  The benchmark session is held in the dedicated SOEN-490 lab (H-837 in the Henry F. Hall Building) in which the servers are located next to each other.
 </p>
 </blockquote>
-<h3 id="HardwareConfiguration"><strong>Hardware Configuration</strong></h3>
+<h3 id="a2.1HardwareConfiguration"><strong>2.1 Hardware Configuration</strong></h3>
 <blockquote>
 <table class="wiki">
 <tr><td> <strong>Processor</strong> </td><td> Intel Core 2 Duo E6300 1.86GHz 
@@ -61,7 +61,7 @@ This section provides details information about the benchmarking environment.  I
 </td></tr><tr><td> <strong>Memory</strong> </td><td> 2G, 667 MHz 
 </td></tr></table>
 </blockquote>
-<h3 id="SoftwareConfiguration"><strong>Software Configuration</strong></h3>
+<h3 id="a2.2SoftwareConfiguration"><strong>2.2 Software Configuration</strong></h3>
 <blockquote>
 <table class="wiki">
 <tr><td> <strong>OS</strong> </td><td> Fedora 9 
@@ -70,20 +70,20 @@ This section provides details information about the benchmarking environment.  I
 </td></tr><tr><td> <strong>Theorem Provers</strong> </td><td> Simplify, CVC3 and Isabelle ESC4 
 </td></tr></table>
 </blockquote>
-<h3 id="NetworkConfiguration"><strong>Network Configuration</strong></h3>
+<h3 id="a2.3NetworkConfiguration"><strong>2.3 Network Configuration</strong></h3>
 <blockquote>
 <table class="wiki">
 <tr><td> <strong>Topology</strong> </td><td> LAN 
 </td></tr><tr><td> <strong>Protocol</strong> </td><td> HTTP 
 </td></tr></table>
 </blockquote>
-<h3 id="ClientConfiguration"><strong>Client Configuration</strong></h3>
+<h3 id="a2.4ClientConfiguration"><strong>2.4 Client Configuration</strong></h3>
 <blockquote>
 <p>
 same as server
 </p>
 </blockquote>
-<h2 id="BenchmarkProcedure"><strong>Benchmark Procedure</strong></h2>
+<h2 id="a3.BenchmarkProcedure"><strong>3. Benchmark Procedure</strong></h2>
 <ol><li>Benchmark all theorem prover's performance
 </li><li>Server is launched through eclipse.
 </li><li>For each test run, clear the thy file generated by the application.
@@ -91,13 +91,13 @@ same as server
 </li></ol><p>
  
 </p>
-<h2 id="BenchmarkResult"><strong>Benchmark Result</strong></h2>
+<h2 id="a4.BenchmarkResult"><strong>4. Benchmark Result</strong></h2>
 <blockquote>
 <p>
 This section provides the actual result of the benchmarks.
 </p>
 </blockquote>
-<h3 id="ProversPerformance"><strong> Prover's Performance </strong></h3>
+<h3 id="a4.1ProversPerformance"><strong>4.1 Prover's Performance </strong></h3>
 <blockquote>
 <p>
 The table below shows the performance of each theorem provers used in the JML4 Disco project.
@@ -112,30 +112,239 @@ The table below shows the performance of each theorem provers used in the JML4 D
  * All Tests will go through all four provers: Simplify, CVC3, Neg. Simplify and Isabelle regardless of the result given from each prover. (In order to achieve this,  ProveVCPiecewise.java is modified)
  </font> 
 </blockquote>
-<h3 id="TimingResults"><strong>Timing Results</strong></h3>
+<h3 id="a4.2TimingResults"><strong>4.2 Timing Results</strong></h3>
+<p>
+For BigWhileTest, there are <strong>27</strong> VcProgram and <strong>129</strong> VCs been generated.<br />
+For DistributedBurdenTest, there are <strong>990</strong> VcProgram and <strong>2820</strong> VCs been generated.
+</p>
 <blockquote>
+<p>
+<strong>Performance Improvement result in each milestone</strong>
+</p>
 <table class="wiki">
 <tr><td> </td><td> </td><td> <strong>BigWhileTest</strong> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> <strong>DistributedBurdenTest</strong> </td><td> </td><td> </td><td> </td><td> </td><td> 
 </td></tr><tr><td> </td><td> <strong>Local</strong> </td><td> 7.681 </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> 79.972 </td><td> </td><td> </td><td> </td><td> </td><td> 
 </td></tr><tr><td> </td><td> </td><td> <strong>Remote Dispatch</strong> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> <strong>Remote Dispatch</strong> </td><td> </td><td> </td><td> </td><td> </td><td> 
 </td></tr><tr><td> </td><td> </td><td> 1 Server (2 Cores) </td><td> 2 Server (4 Cores) </td><td> 3 Server (6 Cores) </td><td> 4 Servers (8 Cores) </td><td> 5 Servers (10 Cores) </td><td> 6 Servers (12 Cores) </td><td> </td><td>  1 Server (2 Cores) </td><td> 2 Server (4 Cores) </td><td> 3 Server (6 Cores) </td><td> 4 Servers (8 Cores) </td><td> 5 Servers (10 Cores) </td><td> 6 Servers (12 Cores) 
 </td></tr><tr><td> M2 </td><td> <strong>Distributed Prototype (Round Robin)</strong> </td><td> 20.488 </td><td> 11.921 </td><td> 9.018 </td><td> 6.332 </td><td> 5.121 </td><td> 6.216 </td><td> </td><td> 274.147  </td><td> 146.991 </td><td> 127.141 </td><td> 113.212 </td><td> 108.84 </td><td> 101.257 
-</td></tr><tr><td> M3 </td><td> <strong>Distributed (Improved Adapters)</strong> </td><td> 6.531 </td><td> 5.518</td><td> 4.391 </td><td> 3.549 </td><td> 2.339 </td><td> 2.269 </td><td> </td><td> 58.692 </td><td> 46.573 </td><td> 44.622 </td><td> 43.094 </td><td> 42.554 </td><td> 41.103 
+</td></tr><tr><td> M3 </td><td> <strong>Distributed (Improved Adapters+ Round Robin)</strong> </td><td> 6.531 </td><td> 5.518</td><td> 4.391 </td><td> 3.549 </td><td> 2.339 </td><td> 2.269 </td><td> </td><td> 58.692 </td><td> 46.573 </td><td> 44.622 </td><td> 43.094 </td><td> 42.554 </td><td> 41.103 
 </td></tr><tr><td> M4 - M5 </td><td> <strong>Distributed (Load Balancing + Improved Adapters)</strong> </td><td> 7.342 </td><td> 5.777 </td><td> 5.142 </td><td> 2.991 </td><td> 2.571 </td><td> 2.400 </td><td> </td><td> 57.054 </td><td> 46.907 </td><td> 43.600 </td><td> 44.868 </td><td> 44.619 </td><td> 42.649 
 </td></tr></table>
+<p>
+Table 4.2.1: Performance result for multiple cores 
+</p>
 </blockquote>
-<ul><li>Important: from the given testing environment, there's no significant difference between local dispatching and remote dispatching.  Since our servers and client are in the same LAN, it is hard to determine whether remote dispatch is better or not.  Nevertheless, theoretically, if the dedicated machine that is doing the VC dispatching process is powerful than typical computer, then it should be faster.
-</li><li>DistributedBurdenTest: test that loop through BigEscTests, DistributedWhileTests, BigWhileTests three times.
+<blockquote>
+<p>
+<strong> Load Balancing Tests </strong> 
+</p>
+</blockquote>
+<blockquote>
+<p>
+The following tests are conducted in order to show the intent of the load balancing.  There are four servers running as VC provers where 2 of them are heavy loaded in terms of CPU and memory usage.
+</p>
+<table class="wiki">
+<tr><td> </td><td> <strong>BigWhileTest</strong> </td><td> first attempt </td><td> second attempt </td><td> third attempt </td><td> <strong>average</strong> 
+</td></tr><tr><td> M3 </td><td> <strong>Distributed (Improved Adapters+ Round Robin)</strong> </td><td> 6.637 </td><td> 5.767 </td><td> 5.621 </td><td> <strong>6.009</strong> 
+</td></tr><tr><td> M4 - M5 </td><td> <strong>Distributed (Load Balancing + Improved Adapters)</strong> </td><td> 4.324 </td><td> 3.240 </td><td> 4.750 </td><td> <strong>4.105</strong> 
+</td></tr></table>
+<p>
+Table 4.2.2: 8 Cores with 50% heavy load
+</p>
+</blockquote>
+<ul><li>DistributedBurdenTest: test that loop through BigEscTests, DistributedWhileTests, BigWhileTests three times.
 </li><li>all timings are in seconds
-</li></ul><h3 id="Graph"><strong>Graph</strong></h3>
-<ul><li>put graphs here
-</li></ul><h3 id="Analysis"><strong>Analysis</strong></h3>
-<h3 id="Conclusion"><strong>Conclusion</strong></h3>
-<h2 id="Appendix"><strong>Appendix</strong></h2>
-<ul><li>might want to link to changes done for load balancing, improved adapters
+</li></ul><h3 id="a4.3Graph"><strong>4.3 Graph</strong></h3>
+<p>
+<a href="/trac/attachment/wiki/PerformanceReport/DistributedBigWhileTestsResultChart-updated.PNG" style="padding:0; border:none"><img src="images/DistributedBigWhileTestsResultChart-updated.PNG" /></a>
+</p>
+<blockquote>
+<p>
+Figure 4.3.1: Performance Improvement across multiple cores using BigWhileTests.java
+</p>
+</blockquote>
+<p>
+<a href="/trac/attachment/wiki/PerformanceReport/DistributedBurdenTestsResultChart-updated.PNG" style="padding:0; border:none"><img src="images/DistributedBurdenTestsResultChart-updated.PNG" /></a>
+</p>
+<blockquote>
+<p>
+Figure 4.3.2: Performance Improvement across multiple cores using DistributedBurdenTests.java
+</p>
+</blockquote>
+<h2 id="a5.GeneralAnalysis"><strong>5. General Analysis</strong></h2>
+<blockquote>
+<p>
+At first glance, the results do not seem particularly promising with respect to Load Balancing. While it is true that there has been overall improvement from the initial prototype, it seems that the majority of said improvement is due to the refined adapter behavior. One must remember, however, that the tests were all done on machines with identical hardware/software configurations and were all dedicated to the test (in other words they were all similarly unburdened). In such a situation, the graphs 4.3.1 and 4.3.2 show that when all the server machines are equally viable, the load balancing behaves similarly to the Improved Adapters using round robin. The similar behavior is a fairly good result: it shows that the Load Balancing is incurring very little overhead and does not significantly increase proving time when used on a unburdened system. 
+</p>
+</blockquote>
+<blockquote>
+<p>
+The relatively smaller Table 4.2.2 was compiled to show how load balancing can easily outperform round robin when the system was working at approximately 50% capacity (4 of the 8 processors were burdened to 100% usage). As expected, the load balanced version was faster than the round robin by approximately 30%.
+</p>
+</blockquote>
+<h3 id="a5.1BigWhileTestResultDetailedAnalysis"><strong>5.1 BigWhileTest Result Detailed Analysis</strong></h3>
+<p>
+  
+</p>
+<blockquote>
+<p>
+All functions are derived from nonlinear curve fitting - linear least-square regression method.  The plots are generated from Matlab - Curve Fitting toolbox.
+</p>
+</blockquote>
+<blockquote>
+<p>
+Putting the BigWhileTests results into f(n) = A/n + B according to Amdahl’s law:
+Statistic terminologies are listed in section 7.
+</p>
+</blockquote>
+<blockquote>
+<p>
+<strong>original Distributed Round Robin prototype </strong>
+</p>
+<pre class="wiki">      Linear model:
+       f(x) = a*1/x + b
+      Coefficients (with 95% confidence bounds):
+       a =        36.5  (29.67, 43.32)
+       b =       2.405  (0.7047, 4.106)
+
+      Goodness of fit:
+      SSE: 2.964
+      R-square: 0.9822
+      Adjusted R-square: 0.9777
+      RMSE: 0.8609
+</pre></blockquote>
+<blockquote>
+<p>
+<strong> Round Robin with improved Simplify and Isabelle adapters </strong>
+</p>
+<pre class="wiki">      Linear model:
+       f(x) = a*1/x + b
+      Coefficients (with 95% confidence bounds):
+       a =        10.1  (2.462, 17.74)
+       b =       2.046  (0.142, 3.95)
+
+      Goodness of fit:
+      SSE: 3.716
+      R-square: 0.7483
+      Adjusted R-square: 0.6854
+      RMSE: 0.9638
+</pre></blockquote>
+<blockquote>
+<p>
+<strong> Load Balanced with improved Simplify and Isabelle adapters </strong>
+</p>
+<pre class="wiki">      Linear model:
+       f(x) = a*1/x + b
+      Coefficients (with 95% confidence bounds):
+       a =       11.96  (3.664, 20.25)
+       b =       1.921  (-0.1465, 3.988)
+
+      Goodness of fit:
+      SSE: 4.381
+      R-square: 0.7855
+      Adjusted R-square: 0.7319
+      RMSE: 1.047
+</pre></blockquote>
+<h3 id="a5.2DistributedBurdenTestResultDetailedAnalysis"><strong>5.2 DistributedBurdenTest Result Detailed Analysis</strong></h3>
+<blockquote>
+<p>
+All functions are derived from nonlinear curve fitting - linear least-square regression method.  The plots are generated from Matlab - Curve Fitting toolbox.
+</p>
+</blockquote>
+<blockquote>
+<p>
+Putting the DistributedBurdenTest results into f(n) = A/n + B:
+</p>
+</blockquote>
+<blockquote>
+<p>
+Statistic terminologies are listed in section 7.
+</p>
+</blockquote>
+<blockquote>
+<p>
+<strong>original Distributed Round Robin prototype </strong>
+</p>
+<pre class="wiki">      Linear model:
+       f(x) = a*1/x + b
+      Coefficients (with 95% confidence bounds):
+       a =       269.7  (216.3, 323.1)
+       b =       80.37  (67.06, 93.68)
+
+      Goodness of fit:
+      SSE: 181.6
+      R-square: 0.9914
+      Adjusted R-square: 0.9893
+      RMSE: 6.738
+</pre></blockquote>
+<blockquote>
+<p>
+<strong> Round Robin with improved Simplify and Isabelle adapters </strong>
+</p>
+<pre class="wiki">      Linear model:
+       f(x) = a*1/x + b
+      Coefficients (with 95% confidence bounds):
+       a =        40.8  (33.5, 48.1)
+       b =        37.8  (35.98, 39.62)
+
+      Goodness of fit:
+      SSE: 3.395
+      R-square: 0.9836
+      Adjusted R-square: 0.9796
+      RMSE: 0.9213
+</pre></blockquote>
+<blockquote>
+<p>
+<strong> Load Balanced with improved Simplify and Isabelle adapters </strong>
+</p>
+<pre class="wiki">      Linear model:
+       f(x) = a*1/x + b
+      Coefficients (with 95% confidence bounds):
+       a =       32.84  (20.51, 45.17)
+       b =       39.91  (36.84, 42.99)
+
+      Goodness of fit:
+      SSE: 9.678
+      R-square: 0.9313
+      Adjusted R-square: 0.9141
+      RMSE: 1.555
+</pre></blockquote>
+<p>
+The B terms will represent the portion of the proving time that cannot be improved with extra serialization and the A terms represent the time that can be improved with additional processors.  From the result, We have observed that the B term increases significantly when the size of the tests scale.  This might due to the fact that our current architecture uses only one single dispatcher.  That is, there is only one dispatcher machine that do all the work to 
+</p>
+<ol><li>Getting requests from client
+</li><li>Decompose VcProgram into VCs
+</li><li>Dispatch individual VC to prover 
+</li><li>Forward result of proving back to client 
+</li><li>Perform load balancing
+</li></ol><p>
+As consequence, processing VcPrograms is done in the sequential manner (FCFS).  Several possible design alternatives for reducing/eliminating the impact of this bottleneck are listed below:
+</p>
+<ol><li>Tight the dispatcher with the client.
+</li><li>Completely change the network protocol.  (Do not use Apache Server.  Instead, use socket programming)
+</li><li>Allow client to send requests to multiple dispatchers on different hosts.
+</li></ol><h2 id="a6.Conclusion"><strong>6. Conclusion</strong></h2>
+<blockquote>
+<p>
+Overall, improvements have been made: the Adapter changes increased the overall of all the proveVc servers by minimizing the number of times prover processes were restarted and increasing server resources by controlling the number of prover processes that are active at any given point in time on each server. The Load Balancing implementation behaved extremely similar to the Round Robin implementation when the servers were dedicated and unburdened, showing that Load Balancing incurred very little overhead in terms of time. However, when some of the servers were burdened, the Load Balancing implementation easily outperformed the Round Robin. Overall, the data collected was what was expected.
+</p>
+</blockquote>
+<h2 id="a7.Terminology"><strong>7. Terminology</strong></h2>
+<p>
+(Reference: Matlab Help Document)
+</p>
+<ul><li>SSE: The sum of squares due to error. This statistic measures the deviation of the responses from the fitted values of the responses. A value closer to 0 indicates a better fit.
+</li><li>R-square: The coefficient of multiple determination. This statistic measures how successful the fit is in explaining the variation of the data. A value closer to 1 indicates a better fit.
+</li><li>DFE: The residual degrees of freedom. It is defined as the number of response values minus the number of coefficients estimated from the response values. 
+</li><li>Adj R-sq: The degrees of freedom adjusted R-square. A value closer to 1 indicates a better fit. It is generally the best indicator of the fit quality when you add additional coefficients to your model.
+</li><li>RMSE: The root mean squared error. A value closer to 0 indicates a better fit.
+</li><li># Coeff: The number of fitted coefficients.
 </li></ul></div>
    </div>
    
+    
+    
+  
   
    
   

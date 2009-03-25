@@ -24,129 +24,294 @@
   
    
    <div class="wikipage">
-    <div id="searchable"><pre class="wiki">---------------------------------------------
-Top Level Development View
----------------------------------------------
-
-|-- ./Esc4Web
-|-- ./JML4Eclipse
-|-- ./LoadBalancedDispatcher
-|-- ./LoadBalancedProver
-|-- ./ProfileProject
-|-- ./RemoteSystemsTempFiles
-|-- ./Servers
-|-- ./docs
-|-- ./jml4-utils
-|-- ./org.eclipse.core.resources
-|-- ./org.eclipse.core.tests.harness
-|-- ./org.eclipse.core.tests.resources
-|-- ./org.eclipse.debug.core
-|-- ./org.eclipse.jdt.core
-|-- ./org.eclipse.jdt.core.tests.builder
-|-- ./org.eclipse.jdt.core.tests.compiler
-|-- ./org.eclipse.jdt.core.tests.model
-|-- ./org.eclipse.jdt.core.tests.performance
-|-- ./org.eclipse.test.performance
-|-- ./org.jmlspecs.eclipse.jdt.core.tests
-|-- ./org.jmlspecs.eclipse.jdt.ui
-|-- ./org.jmlspecs.jml4.runtime
-`-- ./scripts
-
----------------------------------------------
-Boogie 
----------------------------------------------
-a new section was added under the org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/ 
-"boogie" it will contain all new development files pertaining to integration of boogie used as a proving strategy.
-
-|-- ./Esc4Web
-|-- ./JML4Eclipse
-|-- ./LoadBalancedDispatcher
-|-- ./LoadBalancedProver
-|-- ./ProfileProject
-|-- ./RemoteSystemsTempFiles
-|-- ./Servers
-|-- ./docs
-|-- ./jml4-utils
-|-- ./org.eclipse.core.resources
-|-- ./org.eclipse.core.tests.harness
-|-- ./org.eclipse.core.tests.resources
-|-- ./org.eclipse.debug.core
-|-- ./org.eclipse.jdt.core
-|   |-- ./org.eclipse.jdt.core/META-INF
-|   |-- ./org.eclipse.jdt.core/antadapter
-|   |-- ./org.eclipse.jdt.core/antbin
-|   |-- ./org.eclipse.jdt.core/batch
-|   |-- ./org.eclipse.jdt.core/bin
-|   |-- ./org.eclipse.jdt.core/codeassist
-|   |-- ./org.eclipse.jdt.core/compiler
-|   |   `-- ./org.eclipse.jdt.core/compiler/org
-|   |       |-- ./org.eclipse.jdt.core/compiler/org/eclipse
-|   |       |   `-- ./org.eclipse.jdt.core/compiler/org/eclipse/jdt
-|   |       |       |-- ./org.eclipse.jdt.core/compiler/org/eclipse/jdt/core
-|   |       |       `-- ./org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal
-|   |       `-- ./org.eclipse.jdt.core/compiler/org/jmlspecs
-|   |           |-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/eclipse
-|   |           |   `-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/eclipse/jdt
-|   |           |-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml2
-|   |           `-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml4
-|   |               |-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/ast
-|   |               |-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/boogie
-|   |			`-- Boogie.java
-|   |			|-- BoogieAdapter.java
-|   |			`-- BoogieVisitor.java
-|   |               |-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/compiler
-|   |               |-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/esc
-|   |               |-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/fspv
-|   |               |-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/lookup
-|   |               |-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/nonnull
-|   |               `-- ./org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/util
-|   |-- ./org.eclipse.jdt.core/dom
-|   |-- ./org.eclipse.jdt.core/eval
-|   |-- ./org.eclipse.jdt.core/formatter
-|   |-- ./org.eclipse.jdt.core/grammar
-|   |-- ./org.eclipse.jdt.core/lib
-|   |-- ./org.eclipse.jdt.core/model
-|   |-- ./org.eclipse.jdt.core/notes
-|   |-- ./org.eclipse.jdt.core/schema
-|   |-- ./org.eclipse.jdt.core/scripts
-|   `-- ./org.eclipse.jdt.core/search
-|-- ./org.eclipse.jdt.core.tests.builder
-|-- ./org.eclipse.jdt.core.tests.compiler
-|-- ./org.eclipse.jdt.core.tests.model
-|-- ./org.eclipse.jdt.core.tests.performance
-|-- ./org.eclipse.test.performance
-|-- ./org.jmlspecs.eclipse.jdt.core.tests
-|-- ./org.jmlspecs.eclipse.jdt.ui
-|-- ./org.jmlspecs.jml4.runtime
-`-- ./scripts
-
-
----------------------------------------------
-Distributed 
----------------------------------------------
-Content to come
-</pre><h2 id="Milestone4">Milestone 4</h2>
+    <div id="searchable"><h1 id="DevelopmentView">Development View</h1>
 <p>
-The Distributed Multi-Threaded Program Verifier component of JML4Disco is split into various layers, as described in the accompanying architecture document covering the <a href="/trac/wiki/Jml4Disco-LogicalView#High-LevelDesign" class="wiki">Logical View</a>. In terms of development, each layer is its own Eclipse Java Project, as follows:
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.Introduction">1. Introduction</a></li><li class="active">
+<a href="#a2.DevelopmentView">2. Development View</a></li></ol></div>
+
 </p>
-<ul><li>The topmost layer (the presentation layer) which is responsible for communication via Http protocol is currently contained in the project <tt>org.jmlspecs.jml4.esc.distributedServlets</tt>. It contains only the implementation of Servlets, and should be renamed to <tt>org.jmlspecs.jml4.esc.distribution.http</tt>.
-</li></ul><p>
-<a href="/trac/attachment/wiki/DevelopmentView/org.jmlspecs.jml4.esc.distribution.http.png" style="padding:0; border:none"><img src="images/org.jmlspecs.jml4.esc.distribution.http.png" /></a>
-</p>
-<ul><li>The application layer controls all logic relevant to the task of distributing program verification, and utilizing resources on remote machines. The classes of the application layer are found in the project <tt>org.jmlspecs.jml4.esc.distribution</tt>.
-</li></ul><p>
-<a href="/trac/attachment/wiki/DevelopmentView/org.jmlspecs.jml4.esc.distribution.png" style="padding:0; border:none"><img src="images/org.jmlspecs.jml4.esc.distribution.png" /></a>
-</p>
-<ul><li>The layers below are relevant to the logic on verification, and consist essentially of all other projects which were contained in JML4 before the beginning of the JML4Disco project.
-</li></ul><h2 id="Milestone5">Milestone 5</h2>
+<h2 id="a1.Introduction">1. Introduction</h2>
 <p>
-Development will begin this milestone on web-based configuration interfaces for JML4Disco servers used in distributed program verification. The intent is for the creation of new Eclipse Projects to represent separate layers of the two new components: (one for each type of server, Dispatcher and Prover)
+This wiki page provides an overview of the system in terms of layers and their components.  The organization of the application components reflects the logical structure of the system.  The following component and directory structure tree expresses the implementation view of the system.
 </p>
-<ul><li>Two web project which will contain Servlets meant to serve as a presentation layer, bridging the gap between Http requests/responses and the underlying interface-independent configuration system.
-</li><li>An application layer project, which will contain implementations of Front Controllers and Commands being executed. So as to be able to reuse Front Controller and Command implementations, this project should be shared and contain Commands meant to configure either a Dispatcher or Prover machine, and the presentation layer should be responsible for ensuring that irrelevant Commands are inaccessible. (for example, on a Dispatcher there would be no need to configure settings for logical provers, and likewise on a Prover Server there would be no need to allow access to Commands to add or remove remote servers with which to communicate)
-<ul><li>It may be beneficial to use an existing web library (such as SoenEA) instead of developing the Front Controller and Command classes from scratch.
-</li></ul></li><li>The domain logic layer beneath these would consist of the existing JML4Disco projects, in particular the <tt>org.jmlspecs.jml4.esc.distribution</tt> which would contain most of the configurable settings.
-</li></ul></div>
+<h2 id="a2.DevelopmentView">2. Development View</h2>
+<pre class="wiki">
+=================================================================================
+			JML4 Disco: Development View 
+=================================================================================
+
+|-- JML4Eclipse
+
+|-- Servers
+|   `-- Tomcat v5.5 Server at localhost-config
+
+|-- jml4-utils
+
+|-- org.eclipse.jdt.core
+|   |-- META-INF
+|   |-- about.html
+|   |-- antadapter
+|   |-- antbin
+|   |-- batch
+|   |-- bin
+|   |-- build.properties
+|   |-- buildnotes_jdt-core.html
+|   |-- codeassist
+|   |-- compiler
+|   |   `-- org
+|   |       |-- eclipse
+|   |       `-- jmlspecs
+|   |           |-- eclipse
+|   |           |-- jml2
+|   |           `-- jml4
+|   |               |-- ...
+|   |               |-- boogie
+|   |               |   |-- Boogie.java
+|   |               |   |-- BoogieAdapter.java
+|   |               |   |-- BoogieSource.java
+|   |               |   |-- BoogieSourcePoint.java
+|   |               |   |-- BoogieSymbolTable.java
+|   |               |   |-- BoogieVariableDeclFinderVisitor.java
+|   |               |   |-- BoogieVisitor.java
+|   |               |   `-- ast
+|   |               |       |-- BoogieNode.java
+|   |               |       `-- BoogieProcedure.java
+|   |               |-- esc
+|   |               |   |-- Esc.java
+|   |               |   |-- GcTranslator.java
+|   |               |   |-- PostProcessor.java
+|   |               |   |-- ProverCoordinator.java
+|   |               |   |-- VcGenerator.java
+|   |               |   |-- provercoordinator
+|   |               |   |   |-- prover
+|   |               |   |   |   |-- CachedVcs.java
+|   |               |   |   |   |-- ProcessPool.java
+|   |               |   |   |   |-- ProverAdapter.java
+|   |               |   |   |   |-- ProverVisitor.java
+|   |               |   |   |   |-- cvc3
+|   |               |   |   |   |   |-- Cvc3Adapter.java
+|   |               |   |   |   |   |-- Cvc3Visitor.java
+|   |               |   |   |   |   `-- header.cvc3
+|   |               |   |   |   |-- isabelle
+|   |               |   |   |   |   |-- IsabelleAdapter.java
+|   |               |   |   |   |   |-- IsabelleProcessPool.java
+|   |               |   |   |   |   `-- IsabelleVisitor.java
+|   |               |   |   |   `-- simplify
+|   |               |   |   |       |-- DefaultUnivBackPred.java
+|   |               |   |   |       |-- SimplifyAdapter.java
+|   |               |   |   |       |-- SimplifyBackgroundPredicate.java
+|   |               |   |   |       |-- SimplifyProcessPool.java
+|   |               |   |   |       `-- SimplifyVisitor.java
+|   |               |   |   `-- ...
+|   |               |   |-- result
+|   |               |   |   `-- lang
+|   |               |   |       `-- Result.java
+|   |               |   `-- vc
+|   |               |       |-- WlpVisitor.java
+|   |               |       `-- lang
+|   |               |           |-- VC.java
+|   |               |           |-- VcAnd.java
+|   |               |           |-- VcAndNary.java
+|   |               |           |-- VcArithExpression.java
+|   |               |           |-- VcArrayAllocationExpression.java
+|   |               |           |-- VcArrayReference.java
+|   |               |           |-- VcBinaryExpression.java
+|   |               |           |-- VcBooleanConstant.java
+|   |               |           |-- VcConditionalExpression.java
+|   |               |           |-- VcFieldReference.java
+|   |               |           |-- VcFieldStore.java
+|   |               |           |-- VcIntegerConstant.java
+|   |               |           |-- VcLogicalExpression.java
+|   |               |           |-- VcNot.java
+|   |               |           |-- VcOperator.java
+|   |               |           |-- VcOr.java
+|   |               |           |-- VcProgram.java
+|   |               |           |-- VcQuantifiedExpression.java
+|   |               |           |-- VcQuantifier.java
+|   |               |           |-- VcRelativeExpression.java
+|   |               |           |-- VcSuperReference.java
+|   |               |           |-- VcThisReference.java
+|   |               |           |-- VcTypeBinding.java
+|   |               |           |-- VcVarDecl.java
+|   |               |           `-- VcVariable.java
+|   |               |-- ...
+|   |           |-- ...
+|   |-- ...
+
+|-- org.eclipse.jdt.core.tests.compiler
+|-- org.eclipse.test.performance
+|-- org.jmlspecs.annotation
+|-- org.jmlspecs.eclipse.jdt.core.tests
+|   |-- META-INF
+|   |-- bin
+|   |-- build.properties
+|   |-- proverCoordinatorUrls.properties
+|   |-- specs
+|   |-- src
+|   |   `-- org
+|   |       `-- jmlspecs
+|   |           `-- eclipse
+|   |               `-- jdt
+|   |                   `-- core
+|   |                       `-- tests
+|   |                           |-- RunJml4Tests.java
+|   |                           |-- RunJml4_WithoutEsc4_Tests.java
+|   |                           |-- boogie
+|   |                           |   |-- AdapterTests.java
+|   |                           |   |-- AllTests.java
+|   |                           |   |-- BoogieSourceTests.java
+|   |                           |   |-- BoogieSymbolTableTests.java
+|   |                           |   `-- TranslationTests.java
+|   |                           |-- ...
+|   |                           |-- esc
+|   |                           |   |-- ...
+|   |                           |   `-- distributed
+|   |                           |       |-- BigEscTests.java
+|   |                           |       |-- BigWhileTests.java
+|   |                           |       |-- DistributedArrayTests.java
+|   |                           |       |-- DistributedBurdenTest.java
+|   |                           |       `-- DistributedWhileTests.java
+|   |                           |-- ...
+
+|-- org.jmlspecs.eclipse.jdt.ui
+
+|-- org.jmlspecs.jml4.esc.distribution
+|   |-- bin
+|   |-- remote-provers
+|   `-- src
+|       |-- META-INF
+|       |   `-- MANIFEST.MF
+|       |-- jml4-disco-dispatcher.properties
+|       `-- org
+|           `-- jmlspecs
+|               `-- jml4
+|                   `-- esc
+|                       `-- distribution
+|                           |-- IServerProfile.java
+|                           |-- ServerProfile.java
+|                           `-- servers
+|                               |-- vc
+|                               |   |-- ProveVcServer.java
+|                               |   `-- ProveVcServerResult.java
+|                               `-- vcprogram
+|                                   |-- ProveVcThread.java
+|                                   |-- VcCache.java
+|                                   |-- VcProgramDispatchingServer.java
+|                                   |-- VcProgramDispatchingServerResources.java
+|                                   `-- vcservers
+|                                       |-- AbstractRemoteServer.java
+|                                       |-- implementations
+|                                       |   `-- RemoteTomCatServer.java
+|                                       `-- queues
+|                                           |-- ServerQueue.java
+|                                           |-- ServerQueueRegistry.java
+|                                           |-- ServerQueueRegistryException.java
+|                                           |-- comparator
+|                                           |   `-- ServerComparator.java
+|                                           `-- technicalservices
+|                                               `-- RemoteServersMapper.java
+
+
+|-- org.jmlspecs.jml4.esc.distribution.configuration
+|   |-- bin
+|   `-- src
+|       |-- META-INF
+|       |   `-- MANIFEST.MF
+|       |-- jml4-disco-config.properties
+|       `-- org
+|           `-- jmlspecs
+|               `-- jml4
+|                   `-- esc
+|                       `-- distribution
+|                           `-- configuration
+|                               |-- CommandInput.java
+|                               |-- DispatcherFrontController.java
+|                               |-- FrontCommand.java
+|                               |-- ProverFrontController.java
+|                               |-- TestDriver.java
+|                               |-- commands
+|                               |   |-- dispatcher
+|                               |   |   |-- AddServers.java
+|                               |   |   |-- DisableCaching.java
+|                               |   |   |-- EnableCaching.java
+|                               |   |   `-- RemoveServers.java
+|                               |   `-- prover
+|                               |       |-- SetNumberOfProverProcesses.java
+|                               |       `-- setNumberOfProverProcesses
+|                               |           |-- SetNumberOfIsabelleProcesses.java
+|                               |           `-- SetNumberOfSimplifyProcesses.java
+|                               `-- exceptions
+|                                   |-- CommandNotFoundException.java
+|                                   `-- FrontControllerException.java
+
+|-- org.jmlspecs.jml4.esc.distribution.http.dispatcher
+|   |-- WebContent
+|   |   |-- META-INF
+|   |   `-- WEB-INF
+|   |       |-- config-workbench
+|   |       |   |-- AddServers.get.jsp
+|   |       |   |-- AddServers.post.jsp
+|   |       |   |-- DisableCaching.get.jsp
+|   |       |   |-- EnableCaching.get.jsp
+|   |       |   |-- Layout.jsp
+|   |       |   |-- RemoveServers.get.jsp
+|   |       |   |-- RemoveServers.post.jsp
+|   |       |   `-- public
+|   |       |       |-- default.css
+|   |       |       `-- index.jsp
+|   |       |-- lib
+|   |       `-- web.xml
+|   |-- build
+|   `-- src
+|       `-- org
+|           `-- jmlspecs
+|               `-- jml4
+|                   `-- esc
+|                       `-- distribution
+|                           `-- http
+|                               |-- config
+|                               `-- dispatcher
+|                                   |-- ProveVcProgram.java
+|                                   `-- config
+|                                       `-- servlets
+|                                           |-- ConfigWorkbench.java
+|                                           |-- HttpRequestCommandInput.java
+|                                           `-- Presentation.java
+
+|-- org.jmlspecs.jml4.esc.distribution.http.prover
+|   |-- WebContent
+|   |   |-- META-INF
+|   |   |   `-- MANIFEST.MF
+|   |   `-- WEB-INF
+|   |       |-- config-workbench
+|   |       |   |-- Layout.jsp
+|   |       |   |-- SetNumberOfProverProcesses.get.jsp
+|   |       |   |-- SetNumberOfProverProcesses.post.jsp
+|   |       |   `-- public
+|   |       |       |-- default.css
+|   |       |       `-- index.jsp
+|   |       |-- lib
+|   |       `-- web.xml
+|   |-- build
+|   `-- src
+|       `-- org
+|           `-- jmlspecs
+|               `-- jml4
+|                   `-- esc
+|                       `-- distribution
+|                           `-- http
+|                               `-- prover
+|                                   |-- ProveVc.java
+|                                   `-- config
+|                                       `-- servlets
+|                                           |-- ConfigWorkbench.java
+|                                           |-- HttpRequestCommandInput.java
+|                                           `-- Presentation.java
+
+
+</pre></div>
    </div>
    
     

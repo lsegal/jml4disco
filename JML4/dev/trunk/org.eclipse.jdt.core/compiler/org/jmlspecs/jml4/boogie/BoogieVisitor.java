@@ -388,8 +388,7 @@ public class BoogieVisitor extends ASTVisitor {
 		debug(term, scope);
 		if (term.expression instanceof AllocationExpression) {
 			AllocationExpression expr = (AllocationExpression)term.expression;
-			append("call "); //$NON-NLS-1$
-			append("", term); //$NON-NLS-1$
+			append("call ", expr); //$NON-NLS-1$
 			append(expr.binding.declaringClass.readableName());
 			append("." + new String(expr.type.getLastToken())); //$NON-NLS-1$
 			append(PAREN_OPEN);
@@ -441,7 +440,7 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 		
 		if (term.expression instanceof MessageSend) {
-			append("call "); //$NON-NLS-1$
+			append("call ", term.expression); //$NON-NLS-1$
 		}
 		
 		if (term.expression instanceof PostfixExpression) {
@@ -936,8 +935,8 @@ public class BoogieVisitor extends ASTVisitor {
 			}
 			if (specCase.getRequiresExpressions().size() > 0) {
 				append(SPACE);
-				append("requires ", term); //$NON-NLS-1$
 				List exprs = specCase.getRequiresExpressions();
+				append("requires ", (Expression)exprs.get(0)); //$NON-NLS-1$
 				for (int j = 0; j < exprs.size(); j++) {
 					Expression expr = (Expression)exprs.get(j);
 					expr.traverse(this, methodScope);
@@ -946,8 +945,8 @@ public class BoogieVisitor extends ASTVisitor {
 			}
 			if (specCase.getEnsuresExpressions().size() > 0) {
 				append(SPACE);
-				append("ensures ", term); //$NON-NLS-1$
 				List exprs = specCase.getEnsuresExpressions();
+				append("ensures ", (Expression)exprs.get(0)); //$NON-NLS-1$
 				for (int j = 0; j < exprs.size(); j++) {
 					Expression expr = (Expression)exprs.get(j);
 					expr.traverse(this, methodScope);
@@ -1081,9 +1080,8 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 
 		if (term.statementEnd != -1) {
-			append("call "); //$NON-NLS-1$
+			append("call ", term); //$NON-NLS-1$
 		}
-		append("", term); //$NON-NLS-1$
 		
 		append(term.binding.declaringClass.readableName());
 		append("." + new String(term.selector)); //$NON-NLS-1$

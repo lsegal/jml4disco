@@ -191,6 +191,11 @@ public class AdapterTests extends TranslationTests {
 	public void test_0112_JmlMethodDefinition_EnsuresRequires() {
 		super.test_0112_JmlMethodDefinition_EnsuresRequires();
 	}
+	
+	@Override
+	public void test_0113_Ensures() {
+		super.test_0113_Ensures();
+	}
 
 	@Override
 	public void test_0200_sequence_assume_assert_tt() {

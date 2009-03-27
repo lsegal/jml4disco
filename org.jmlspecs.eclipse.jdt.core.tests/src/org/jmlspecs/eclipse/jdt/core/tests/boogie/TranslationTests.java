@@ -688,7 +688,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	public void test_0113_Ensures() {
+	// term=JmlRequiresClause,JmlMethodSpecification adapter=pass
+	public void test_0113_Requires() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -737,6 +738,57 @@ public class TranslationTests extends AbstractRegressionTest {
 			);
 	}
 	
+	// term=JmlEnsuresClause,JmlMethodSpecification adapter=pass
+	public void test_0114_Ensures() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	//@ ensures ((n < 2) ==> (\\result == n)) && ((n >= 2) ==> (\\result == 5));\n" +
+				"	public int a(int n) {\n" +
+				"		if (n < 2) return n;\n" +
+				"		return 5;\n" +
+				"	}\n" +
+				"	\n" +
+				"	public void n() {\n" +
+				"		int i = a(0);\n" +
+				"		assert i == 1;\n" +
+				"	}\n" +
+				"	public void m() {\n" +
+				"		int i = a(2);\n" +
+				"		assert i == 5;\n" +
+				"	}\n" +
+				"}\n" ,
+				// boogie
+				"procedure tests.esc.A.a(this : tests.esc.A, a: int) returns (__result__ : int) ensures ((a < 2) ⇒ (__result__ == a)) && ((a >= 2) ⇒ (__result__ == 5)); {\n" +
+				"	if ((a < 2)) {\n" +
+				"		__result__ := a;\n" +
+				"		return;\n" +
+				"	}\n" +
+				"	__result__ := 5;\n" +
+				"	return;\n" +
+				"}\n" +
+				"procedure tests.esc.A.n(this : tests.esc.A) {\n" +
+				"	var a : int;\n" +
+				"	call a := tests.esc.A.a(this, 0);\n" +
+				"	assert (a == 1);\n" +
+				"}\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
+				"	var a : int;\n" +
+				"	call a := tests.esc.A.a(this, 2);\n" +
+				"	assert (a == 5);\n" +
+				"}\n"
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 11)\n" +
+				"	assert i == 1;\n" +
+				"	       ^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
+			);
+	}
+
 	// term=JmlAssumeStatement,JmlAssertStatement adapter=pass
 	public void test_0200_sequence_assume_assert_tt() {
 		this.compareJavaToBoogie(
@@ -2360,16 +2412,16 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
-				"	assert (true ⇒ true);\n" +
+				"	assert (true â‡’ true);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
-				"	assert (true ⇒ false);\n" +
+				"	assert (true â‡’ false);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m3(this : tests.esc.A) {\n" +
-				"	assert (false ⇒ true);\n" +
+				"	assert (false â‡’ true);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m4(this : tests.esc.A) {\n" +
-				"	assert (false ⇒ false);\n" +
+				"	assert (false â‡’ false);\n" +
 				"}\n",
 				// adapter output
 				"----------\n" +

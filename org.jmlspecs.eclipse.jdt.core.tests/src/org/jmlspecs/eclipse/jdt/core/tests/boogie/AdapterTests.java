@@ -193,10 +193,15 @@ public class AdapterTests extends TranslationTests {
 	}
 	
 	@Override
-	public void test_0113_Ensures() {
-		super.test_0113_Ensures();
+	public void test_0113_Requires() {
+		super.test_0113_Requires();
 	}
 
+	@Override
+	public void test_0114_Ensures() {
+		super.test_0114_Ensures();
+	}
+	
 	@Override
 	public void test_0200_sequence_assume_assert_tt() {
 		super.test_0200_sequence_assume_assert_tt();

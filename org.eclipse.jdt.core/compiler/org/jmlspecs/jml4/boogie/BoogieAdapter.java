@@ -59,6 +59,7 @@ public class BoogieAdapter {
 	 */
 	private void InitializeResultCodes() {
 		resultCodes.put("BP5001", "This assertion might not hold."); //$NON-NLS-1$//$NON-NLS-2$
+		resultCodes.put("BP5002", "This precondition might not hold."); //$NON-NLS-1$//$NON-NLS-2$
 		resultCodes.put("BP5003", "This postcondition might not hold."); //$NON-NLS-1$//$NON-NLS-2$
 	}
 

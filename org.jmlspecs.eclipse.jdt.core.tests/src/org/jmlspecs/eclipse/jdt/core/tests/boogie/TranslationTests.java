@@ -688,6 +688,55 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
+	public void test_0113_Ensures() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	//@ requires n >= 0;\n" +
+				"	public int fib(int n) {\n" +
+				"		if (n < 2) return n;\n" +
+				"		int n1 = fib(n - 1);\n" +
+				"		int n2 = fib(n - 2);\n" +
+				"		return n1 + n2;\n" +
+				"	}\n" +
+				"	\n" +
+				"	public void n() {\n" +
+				"		int i = fib(-1);\n" +
+				"	}\n" +
+				"}\n" ,
+				// boogie
+				"procedure tests.esc.A.fib(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); {\n" +
+				"	var b : int;\n" +
+				"	var c : int;\n" +
+				"	if ((a < 2)) {\n" +
+				"		__result__ := a;\n" +
+				"		return;\n" +
+				"	}\n" +
+				"	call b := tests.esc.A.fib(this, (a - 1));\n" +
+				"	call c := tests.esc.A.fib(this, (a - 2));\n" +
+				"	__result__ := (b + c);\n" +
+				"	return;\n" +
+				"}\n" +
+				"procedure tests.esc.A.n(this : tests.esc.A) {\n" +
+				"	var a : int;\n" +
+				"	call a := tests.esc.A.fib(this, -1);\n" +
+				"}\n",
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 3)\n" +
+				"	//@ requires n >= 0;\n" +
+				"	             ^^^^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 12)\n" +
+				"	int i = fib(-1);\n" +
+				"	        ^^^^^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n"
+			);
+	}
+	
 	// term=JmlAssumeStatement,JmlAssertStatement adapter=pass
 	public void test_0200_sequence_assume_assert_tt() {
 		this.compareJavaToBoogie(

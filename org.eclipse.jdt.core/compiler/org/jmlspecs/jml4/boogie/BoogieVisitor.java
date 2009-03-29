@@ -131,6 +131,7 @@ public class BoogieVisitor extends ASTVisitor {
 	private static final String PAREN_CLOSE = ")"; //$NON-NLS-1$
 	private static final String STMT_END = ";"; //$NON-NLS-1$
 	private static final String SPACE = " "; //$NON-NLS-1$
+	private static final String RESULT = "$r"; //$NON-NLS-1$
 	
 	private BoogieSymbolTable symbolTable;
 	
@@ -978,7 +979,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=1 group=jml
 	public boolean visit(JmlResultReference term, BlockScope scope) {
 		debug(term, scope);
-		append("__result__"); //$NON-NLS-1$
+		append(RESULT);
 		return true;
 	}
 	
@@ -1153,7 +1154,7 @@ public class BoogieVisitor extends ASTVisitor {
 			// do nothing
 		}
 		else if (term.returnType.resolveType(scope) != TypeBinding.VOID) {
-			append(" returns (__result__ : "); //$NON-NLS-1$
+			append(" returns (" + RESULT + " : "); //$NON-NLS-1$ //$NON-NLS-2$
 			term.returnType.traverse(this, scope);
 			append(PAREN_CLOSE);
 		}
@@ -1362,7 +1363,7 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(ReturnStatement term, BlockScope scope) {
 		debug(term, scope);
 		if (term.expression != null) {
-			char result[] = "__result__".toCharArray(); //$NON-NLS-1$
+			char result[] = RESULT.toCharArray(); 
 			Assignment m = new Assignment(
 					new SingleTypeReference(result,  term.sourceStart),
 						term.expression, term.sourceEnd);

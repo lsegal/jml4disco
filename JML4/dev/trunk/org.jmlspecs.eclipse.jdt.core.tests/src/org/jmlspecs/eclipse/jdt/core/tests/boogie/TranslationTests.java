@@ -122,7 +122,7 @@ public class TranslationTests extends AbstractRegressionTest {
 		CompilationUnitDeclaration unit = compileToAst("public class A { static { return " + java + "; } }");
 		String results = BoogieVisitor.visit(unit).getResults();
 
-		Pattern p = Pattern.compile(".+__result__ := (.+?);.+", Pattern.DOTALL | Pattern.MULTILINE);
+		Pattern p = Pattern.compile(".+\\$r := (.+?);.+", Pattern.DOTALL | Pattern.MULTILINE);
 		Matcher m = p.matcher(results);
 		if (m.matches()) {
 			results = m.group(1);
@@ -561,9 +561,9 @@ public class TranslationTests extends AbstractRegressionTest {
 			"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 			"	assert false;\n" +
 			"}\n" +
-			"procedure tests.esc.A.n(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 42); {\n" +
+			"procedure tests.esc.A.n(this : tests.esc.A) returns ($r : int) ensures ($r == 42); {\n" +
 			"	assert true;\n" +
-			"	__result__ := 42;\n" +
+			"	$r := 42;\n" +
 			"	return;\n" +
 			"}\n",
 			// adapter output
@@ -643,32 +643,32 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n"	
 				,
-				"procedure tests.esc.A.m1(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 42); {\n" +
-				"	__result__ := 42;\n" +
+				"procedure tests.esc.A.m1(this : tests.esc.A) returns ($r : int) ensures ($r == 42); {\n" +
+				"	$r := 42;\n" +
 				"	return;\n" +
 				"}\n" +
-				"procedure tests.esc.A.m2(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); {\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A, a: int) returns ($r : int) requires (a >= 0); {\n" +
 				"	if ((a == 0)) {\n" +
-				"		__result__ := 1;\n" +
+				"		$r := 1;\n" +
 				"		return;\n" +
 				"	}\n" +
-				"	__result__ := 10;\n" +
+				"	$r := 10;\n" +
 				"	return;\n" +
 				"}\n" +
-				"procedure tests.esc.A.m3(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); ensures (__result__ == 42); {\n" +
+				"procedure tests.esc.A.m3(this : tests.esc.A, a: int) returns ($r : int) requires (a >= 0); ensures ($r == 42); {\n" +
 				"	if ((a == 0)) {\n" +
-				"		__result__ := 42;\n" +
+				"		$r := 42;\n" +
 				"		return;\n" +
 				"	}\n" +
-				"	__result__ := 42;\n" +
+				"	$r := 42;\n" +
 				"	return;\n" +
 				"}\n" +
-				"procedure tests.esc.A.m4(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); ensures (__result__ == 42); {\n" +
+				"procedure tests.esc.A.m4(this : tests.esc.A, a: int) returns ($r : int) requires (a >= 0); ensures ($r == 42); {\n" +
 				"	if ((a == 0)) {\n" +
-				"		__result__ := 1;\n" +
+				"		$r := 1;\n" +
 				"		return;\n" +
 				"	}\n" +
-				"	__result__ := 42;\n" +
+				"	$r := 42;\n" +
 				"	return;\n" +
 				"}\n"
 				,
@@ -706,16 +706,16 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n" ,
 				// boogie
-				"procedure tests.esc.A.fib(this : tests.esc.A, a: int) returns (__result__ : int) requires (a >= 0); {\n" +
+				"procedure tests.esc.A.fib(this : tests.esc.A, a: int) returns ($r : int) requires (a >= 0); {\n" +
 				"	var b : int;\n" +
 				"	var c : int;\n" +
 				"	if ((a < 2)) {\n" +
-				"		__result__ := a;\n" +
+				"		$r := a;\n" +
 				"		return;\n" +
 				"	}\n" +
 				"	call b := tests.esc.A.fib(this, (a - 1));\n" +
 				"	call c := tests.esc.A.fib(this, (a - 2));\n" +
-				"	__result__ := (b + c);\n" +
+				"	$r := (b + c);\n" +
 				"	return;\n" +
 				"}\n" +
 				"procedure tests.esc.A.n(this : tests.esc.A) {\n" +
@@ -759,12 +759,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n" ,
 				// boogie
-				"procedure tests.esc.A.a(this : tests.esc.A, a: int) returns (__result__ : int) ensures ((a < 2) ⇒ (__result__ == a)) && ((a >= 2) ⇒ (__result__ == 5)); {\n" +
+				"procedure tests.esc.A.a(this : tests.esc.A, a: int) returns ($r : int) ensures ((a < 2) ⇒ ($r == a)) && ((a >= 2) ⇒ ($r == 5)); {\n" +
 				"	if ((a < 2)) {\n" +
-				"		__result__ := a;\n" +
+				"		$r := a;\n" +
 				"		return;\n" +
 				"	}\n" +
-				"	__result__ := 5;\n" +
+				"	$r := 5;\n" +
 				"	return;\n" +
 				"}\n" +
 				"procedure tests.esc.A.n(this : tests.esc.A) {\n" +
@@ -1099,15 +1099,15 @@ public class TranslationTests extends AbstractRegressionTest {
 			"}\n"
 			, 
 			// expected boogie
-			"procedure tests.esc.A.m(this : tests.esc.A, a: int, b: int) returns (__result__ : java.lang.String) {\n" +
+			"procedure tests.esc.A.m(this : tests.esc.A, a: int, b: int) returns ($r : java.lang.String) {\n" +
 			"	var c : int;\n" +
 			"	c := 3;\n" +
 			"	if ((a == 1)) {\n" +
-			"		__result__ := string_lit_0;\n" +
+			"		$r := string_lit_0;\n" +
 			"		return;\n" +
 			"	}\n" +
 			"	else {\n" +
-			"		__result__ := string_lit_1;\n" +
+			"		$r := string_lit_1;\n" +
 			"		return;\n" +
 			"	}\n" +
 			"}\n",
@@ -1917,8 +1917,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 3); {\n" +
-				"	__result__ := 3;\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) returns ($r : int) ensures ($r == 3); {\n" +
+				"	$r := 3;\n" +
 				"	return;\n" +
 				"}\n"
 				,
@@ -1938,8 +1938,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) ensures (__result__ == 4); {\n" +
-				"	__result__ := 3;\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) returns ($r : int) ensures ($r == 4); {\n" +
+				"	$r := 3;\n" +
 				"	return;\n" +
 				"}\n"
 				,
@@ -1972,8 +1972,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"var tests.esc.A.x : [tests.esc.A] int;\n" +
-				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) modifies tests.esc.A.x; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] - 1)); {\n" +
-				"	__result__ := tests.esc.A.x[this];\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) returns ($r : int) modifies tests.esc.A.x; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] - 1)); {\n" +
+				"	$r := tests.esc.A.x[this];\n" +
 				"	tests.esc.A.x[this] := (tests.esc.A.x[this] + 1);\n" +
 				"	return;\n" +
 				"}\n"
@@ -1997,8 +1997,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"var tests.esc.A.x : [tests.esc.A] int;\n" +
-				"procedure tests.esc.A.m(this : tests.esc.A) returns (__result__ : int) modifies tests.esc.A.x; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] + 10)); {\n" +
-				"	__result__ := tests.esc.A.x[this];\n" +
+				"procedure tests.esc.A.m(this : tests.esc.A) returns ($r : int) modifies tests.esc.A.x; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] + 10)); {\n" +
+				"	$r := tests.esc.A.x[this];\n" +
 				"	tests.esc.A.x[this] := (tests.esc.A.x[this] + 1);\n" +
 				"	return;\n" +
 				"}\n"
@@ -2484,8 +2484,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	call a := tests.esc.A.m2(this);\n" +
 				"	assert (a == 4);\n" +
 				"}\n" +
-				"procedure tests.esc.A.m2(this : tests.esc.A) returns (__result__ : int) {\n" +
-				"	__result__ := 4;\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A) returns ($r : int) {\n" +
+				"	$r := 4;\n" +
 				"	return;\n" +
 				"}\n"
 				,
@@ -2520,8 +2520,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	call a := tests.esc.A.m2(this, 5);\n" +
 				"	assert (a == 5);\n" +
 				"}\n" +
-				"procedure tests.esc.A.m2(this : tests.esc.A, a: int) returns (__result__ : int) {\n" +
-				"	__result__ := a;\n" +
+				"procedure tests.esc.A.m2(this : tests.esc.A, a: int) returns ($r : int) {\n" +
+				"	$r := a;\n" +
 				"	return;\n" +
 				"}\n"
 				,
@@ -2615,8 +2615,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	call tests.esc.N.o(a);\n" +
 				"	call b := tests.esc.N.n(a, 3);\n" +
 				"}\n" +
-				"procedure tests.esc.N.n(this : tests.esc.N, a: int) returns (__result__ : int) {\n" +
-				"	__result__ := a;\n" +
+				"procedure tests.esc.N.n(this : tests.esc.N, a: int) returns ($r : int) {\n" +
+				"	$r := a;\n" +
 				"	return;\n" +
 				"}\n" +
 				"procedure tests.esc.N.o(this : tests.esc.N) {\n" +

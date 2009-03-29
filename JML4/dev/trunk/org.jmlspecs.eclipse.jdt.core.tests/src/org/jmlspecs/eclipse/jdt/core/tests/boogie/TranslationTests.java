@@ -2663,7 +2663,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				// expected boogie
-				"var tests.esc.A.x : [tests.esc.A] $Ref;\n" +
+				"var tests.esc.A.x : [$Ref] $Ref;\n" +
 				"var tests.esc.A.y : $Ref;\n" +
 				"procedure tests.esc.A.m(this: $Ref) {\n" +
 				"	call tests.esc.N.n(tests.esc.A.x[this]);\n" +
@@ -2715,7 +2715,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"var tests.esc.A.x : [tests.esc.A] [int] int;\n" +
+				"var tests.esc.A.x : [$Ref] [int] int;\n" +
 				"procedure tests.esc.A.m(this: $Ref) {\n" +
 				"	tests.esc.A.x[this][0] := 2;\n" +
 				"	tests.esc.A.x[this][1] := 4;\n" +
@@ -2918,7 +2918,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"var tests.esc.A.x : [tests.esc.A] $Ref;\n" +
+				"var tests.esc.A.x : [$Ref] $Ref;\n" +
 				"procedure tests.esc.A.A(this: $Ref, a: int) modifies tests.esc.A.x; {\n" +
 				"	tests.esc.A.x[this] := string_lit_0;\n" +
 				"}\n" +

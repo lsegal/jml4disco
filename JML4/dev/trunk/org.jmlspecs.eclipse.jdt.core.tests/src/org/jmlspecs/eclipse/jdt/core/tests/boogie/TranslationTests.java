@@ -2948,7 +2948,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.A(this: $Ref) {\n" +
 				"}\n" +
-				"procedure tests.esc.A.main(a: [int] java.lang.String) {\n" +
+				"procedure tests.esc.A.main(a: [int] $Ref) {\n" +
 				"	var b : $Ref;\n" +
 				"	call tests.esc.A.A(b);\n" +
 				"}\n"

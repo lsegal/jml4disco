@@ -363,7 +363,19 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(ArrayTypeReference term, ClassScope scope) {
 		debug(term, scope);
 		append("[int] "); //$NON-NLS-1$
-		append(term.resolvedType.leafComponentType().readableName());
+		if (term.resolvedType == TypeBinding.BOOLEAN || term.token.equals(TypeConstants.BOOLEAN)) {
+			append("bool"); //$NON-NLS-1$
+			return true;
+		}
+		
+		if (term.resolvedType != null && !term.resolvedType.leafComponentType().isBaseType()) {
+			String name = new String(term.resolvedType.leafComponentType().readableName());
+			declareType(name);
+			append(REF);
+		}
+		else {
+			append(term.resolvedType.leafComponentType().readableName());
+		}
 		return true;
 	}
 

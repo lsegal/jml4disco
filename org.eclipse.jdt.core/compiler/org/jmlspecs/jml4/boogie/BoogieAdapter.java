@@ -2,18 +2,19 @@ package org.jmlspecs.jml4.boogie;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.internal.compiler.Compiler;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.jdt.internal.compiler.Compiler;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.jmlspecs.jml4.util.Logger;
@@ -96,7 +97,7 @@ public class BoogieAdapter {
 			Matcher m = p.matcher(response[i]);
 			if (m.matches()) {
 				if (m.group(3).equals("syntax error")) { //$NON-NLS-1$
-					problemReporter.jmlEsc2Fatal("Error parsing Java source code (unsuppored syntax?)", 0, 0); //$NON-NLS-1$
+					problemReporter.jmlEsc2Fatal("Error parsing Java source code (unsuppored syntax?): " + response[i], 0, 0); //$NON-NLS-1$
 				}
 				else {
 					// Get error message
@@ -145,8 +146,9 @@ public class BoogieAdapter {
 		try {
 			try {
 				// Create file
-				FileWriter fstream = new FileWriter(FILE);
-				BufferedWriter file = new BufferedWriter(fstream);
+				OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(FILE), "UTF8"); //$NON-NLS-1$
+				BufferedWriter file = new BufferedWriter(out);
+				
 				file.write(output.getResults());
 				// Close the output stream
 				file.close();
@@ -157,7 +159,7 @@ public class BoogieAdapter {
 			Process process = getProverProcess();
 			if (process == null) {
 				if (this.problemReporter != null)
-					this.problemReporter.jmlEsc2Error("Failed to launch", 0, 0); //$NON-NLS-1$
+					this.problemReporter.jmlEsc2Error("Failed to launch Boogie.exe", 0, 0); //$NON-NLS-1$
 					return null;
 			}
 

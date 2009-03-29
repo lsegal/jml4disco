@@ -17,7 +17,7 @@ public class BoogieSource {
 	private boolean newLine = true;
 	private StringBuffer implBody = new StringBuffer();
 	private Hashtable/* <BoogieSourcePoint, ASTNode> */pointTable = new Hashtable();
-	private static int headersOffset;
+	public static int headersOffset;
 	private int prependsOffset;
 	private static StringBuffer headers;
 	private StringBuffer prepends;
@@ -128,10 +128,13 @@ public class BoogieSource {
 	 */
 	private static void populateHeaders() {
 		headers = new StringBuffer();
-		headers.append("type Object;\n"); //$NON-NLS-1$
+		headers.append("type $TName; type $Ref;\n"); //$NON-NLS-1$
+		headers.append("const Object : $TName;\n"); //$NON-NLS-1$
+		headers.append("const null : $Ref;\n"); //$NON-NLS-1$
+		headers.append("function dtype($Ref) returns ($TName);\n"); //$NON-NLS-1$
 		headers.append("axiom (∀ x : int, y: int • {x % y} {x /y} x%y == x - x/y *y);\n"); //$NON-NLS-1$
 		headers.append("axiom (∀x:int,y:int•{x%y}(0<y⇒0<=x%y∧x%y<y)∧(y<0⇒y<x%y∧x%y<=0));\n"); //$NON-NLS-1$
-		headersOffset = 3;
+		headersOffset = 6;
 	}
 
 	/**

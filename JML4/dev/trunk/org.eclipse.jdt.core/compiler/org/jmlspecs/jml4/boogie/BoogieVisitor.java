@@ -132,6 +132,7 @@ public class BoogieVisitor extends ASTVisitor {
 	private static final String STMT_END = ";"; //$NON-NLS-1$
 	private static final String SPACE = " "; //$NON-NLS-1$
 	private static final String RESULT = "$r"; //$NON-NLS-1$
+	private static final String REF = "$Ref"; //$NON-NLS-1$
 	
 	private BoogieSymbolTable symbolTable;
 	
@@ -229,9 +230,13 @@ public class BoogieVisitor extends ASTVisitor {
 		a.traverse(this, scope);
 	}
 	
-	private void declareType(String type) {
+	private void declareType(String type, String superType) {
 		if (type.equals("int")) return; //$NON-NLS-1$
-		typeList.put(type, new Integer(1));
+		typeList.put(type, superType);
+	}
+	
+	private void declareType(String type) {
+		declareType(type, "Object"); //$NON-NLS-1$
 	}
 	
 
@@ -239,7 +244,8 @@ public class BoogieVisitor extends ASTVisitor {
 		String value = (String)stringPool.get(key);
 		if (value == null) {
 			value = "string_lit_" + stringPoolValue++; //$NON-NLS-1$
-			prepend("var " + value + " : java.lang.String;\n");  //$NON-NLS-1$//$NON-NLS-2$
+			prepend("const " + value + " : $Ref;\n"); //$NON-NLS-1$ //$NON-NLS-2$
+			prepend("axiom " + value + " <: java.lang.String;\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return value;
 	}
@@ -249,7 +255,8 @@ public class BoogieVisitor extends ASTVisitor {
 		Enumeration e = typeList.keys();
 		while (e.hasMoreElements()) {
 			String key = (String)e.nextElement();
-			outBuf.append("type " + key + ";\n"); //$NON-NLS-1$ //$NON-NLS-2$
+			outBuf.append("const " + key + ": $TName;\n"); //$NON-NLS-1$ //$NON-NLS-2$
+			outBuf.append("axiom " + key + " <: " + typeList.get(key) + ";\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		prepend(outBuf.toString());
 	}
@@ -340,13 +347,13 @@ public class BoogieVisitor extends ASTVisitor {
 			return true;
 		}
 		
-		if (term.resolvedType != null && !term.resolvedType.isBaseType()) {
+		if (term.resolvedType != null && !term.resolvedType.leafComponentType().isBaseType()) {
 			String name = new String(term.resolvedType.leafComponentType().readableName());
 			declareType(name);
-			append(name);
+			append(REF);
 		}
 		else {
-			append(new String(term.token));
+			append(term.resolvedType.leafComponentType().readableName());
 		}
 		
 		return true;
@@ -751,7 +758,7 @@ public class BoogieVisitor extends ASTVisitor {
 		append(new String(term.binding.declaringClass.readableName()) + "."); //$NON-NLS-1$		
 		append(new String(term.name) + " : "); //$NON-NLS-1$
 		if (!term.isStatic())
-			append("[" + new String(term.binding.declaringClass.readableName()) + "] "); //$NON-NLS-1$ //$NON-NLS-2$
+			append("[" + REF + "] "); //$NON-NLS-1$ //$NON-NLS-2$
 		term.type.traverse(this, scope);
 		appendLine(STMT_END);
 		// FIXME this will not work, Boogie requires that all assignments are done in a procedure
@@ -1138,7 +1145,7 @@ public class BoogieVisitor extends ASTVisitor {
 		append(new String(term.selector));
 		append(PAREN_OPEN);
 		if (!term.isStatic()) {
-			append("this : " + cls); //$NON-NLS-1$
+			append("this: " + REF); //$NON-NLS-1$
 		}
 		if (term.arguments != null) {
 			if (!term.isStatic()) append(", ");  //$NON-NLS-1$
@@ -1312,7 +1319,16 @@ public class BoogieVisitor extends ASTVisitor {
 			}
 		}
 		else {
-			append(new String(scope.getType(term.tokens[1]).readableName()));
+			if (symbolTable != null) {
+				String symName = symbolTable.lookup(termName);
+				if (symName != null) {
+					append(symName);
+				}
+			}
+			else {
+				append(term.binding.readableName());
+			}
+			append("." + new String(scope.getType(term.tokens[1]).readableName())); //$NON-NLS-1$
 		}
 		return true;
 	}
@@ -1426,7 +1442,7 @@ public class BoogieVisitor extends ASTVisitor {
 		
 		if (term.resolvedType != null && !term.resolvedType.isBaseType()) {
 			declareType(new String(term.resolvedType.readableName()));
-			append(term.resolvedType.readableName());
+			append(REF);
 		}
 		else {
 			append(new String(term.token));
@@ -1444,7 +1460,13 @@ public class BoogieVisitor extends ASTVisitor {
 			append("bool"); //$NON-NLS-1$
 		}
 		else {
-			append(new String(binding.readableName()));
+			if (term.resolvedType != null && !term.resolvedType.isBaseType()) {
+				declareType(new String(term.resolvedType.readableName()));
+				append(REF);
+			}
+			else {
+				append(new String(term.token));
+			}
 		}
 		
 		return true;
@@ -1514,7 +1536,8 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// priority=2 group=decl
 	public boolean visit(TypeDeclaration term, BlockScope scope) {
-		declareType(new String(term.binding.readableName()));
+		declareType(new String(term.superclass.resolvedType.readableName()));
+		declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
 		debug(term, scope);
 		return true;
 	}

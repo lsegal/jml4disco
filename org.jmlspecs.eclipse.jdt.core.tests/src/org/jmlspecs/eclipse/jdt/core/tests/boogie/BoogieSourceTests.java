@@ -21,7 +21,7 @@ public class BoogieSourceTests extends TestCase {
 		String toBeAppended = "true";
 		b.append(toBeAppended, new TrueLiteral(0, 4));
 		
-		assertTrue(toBeAppended.equals(b.getTermAtPoint(new BoogieSourcePoint(5, 1)).toString()));
+		assertTrue(toBeAppended.equals(b.getTermAtPoint(new BoogieSourcePoint(BoogieSource.headersOffset + 2, 1)).toString()));
 	}
 	
 	public void testEmpty() {

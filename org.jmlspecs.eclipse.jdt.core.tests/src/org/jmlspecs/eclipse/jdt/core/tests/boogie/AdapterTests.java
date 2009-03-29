@@ -35,7 +35,7 @@ public class AdapterTests extends TranslationTests {
 				"----------\n" + 
 				"1. ERROR in " + testsPath + "A.java (at line 3)\n" + 
 				"	//@ ensures \\result == 42;\n" +
-				"	    ^^^^^^^^^^^^^^^^^^^^^^\n" + 
+				"	            ^^^^^^^^^^^^^\n" + 
 				"This postcondition might not hold.\n" + 
 				"----------\n" + 
 				"2. ERROR in " + testsPath + "A.java (at line 5)\n" + 
@@ -69,7 +69,7 @@ public class AdapterTests extends TranslationTests {
 				"----------\n" + 
 				"2. ERROR in " + testsPath + "A.java (at line 7)\n" + 
 				"	//@ ensures \\result == 42;\n" +
-				"	    ^^^^^^^^^^^^^^^^^^^^^^\n" + 
+				"	            ^^^^^^^^^^^^^\n" + 
 				"This postcondition might not hold.\n" + 
 				"----------\n" + 
 				"3. ERROR in " + testsPath + "A.java (at line 9)\n" + 
@@ -535,5 +535,10 @@ public class AdapterTests extends TranslationTests {
 	@Override
 	public void testTrueLiteral() {
 		super.testTrueLiteral();
+	}
+	
+	@Override
+	public void test_3000_StandardJavaClass() {
+		super.test_3000_StandardJavaClass();
 	}
 }

@@ -674,10 +674,9 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// adapter output
 				"----------\n" +
-				"1. ERROR in " + testsPath + "A.java (at line 20)\n" +
-				"	//@ requires n >= 0;\n" +
-				"   //@ ensures \\result == 42;\n" +
-				"	    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"1. ERROR in " + testsPath + "A.java (at line 21)\n" +
+				"	//@ ensures \\result == 42;\n" +
+				"	            ^^^^^^^^^^^^^\n" +
 				"This postcondition might not hold.\n" +
 				"----------\n" +
 				"2. ERROR in " + testsPath + "A.java (at line 24)\n" +
@@ -1104,11 +1103,11 @@ public class TranslationTests extends AbstractRegressionTest {
 			"	var c : int;\n" +
 			"	c := 3;\n" +
 			"	if ((a == 1)) {\n" +
-			"		__result__ := string_lit_97;\n" +
+			"		__result__ := string_lit_0;\n" +
 			"		return;\n" +
 			"	}\n" +
 			"	else {\n" +
-			"		__result__ := string_lit_98;\n" +
+			"		__result__ := string_lit_1;\n" +
 			"		return;\n" +
 			"	}\n" +
 			"}\n",
@@ -1948,7 +1947,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"----------\n" +
 				"1. ERROR in A.java (at line 3)\n" +
 				"	//@ ensures \\result == 4;\n" +
-				"	    ^^^^^^^^^^^^^^^^^^^^^\n" +
+				"	            ^^^^^^^^^^^^\n" +
 				"This postcondition might not hold.\n" +
 				"----------\n" +
 				"2. ERROR in A.java (at line 4)\n" +
@@ -2006,10 +2005,9 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// adapter output
 				"----------\n" +
-				"1. ERROR in A.java (at line 4)\n" +
-				"	//@ assignable x;\n" +
+				"1. ERROR in A.java (at line 5)\n" +
 				"	//@ ensures \\old(x) == x + 10;\n" +
-				"	    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"	            ^^^^^^^^^^^^^^^^^\n" +
 				"This postcondition might not hold.\n" +
 				"----------\n" +
 				"2. ERROR in A.java (at line 6)\n" +
@@ -2412,16 +2410,16 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m1(this : tests.esc.A) {\n" +
-				"	assert (true â‡’ true);\n" +
+				"	assert (true ⇒ true);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m2(this : tests.esc.A) {\n" +
-				"	assert (true â‡’ false);\n" +
+				"	assert (true ⇒ false);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m3(this : tests.esc.A) {\n" +
-				"	assert (false â‡’ true);\n" +
+				"	assert (false ⇒ true);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m4(this : tests.esc.A) {\n" +
-				"	assert (false â‡’ false);\n" +
+				"	assert (false ⇒ false);\n" +
 				"}\n",
 				// adapter output
 				"----------\n" +
@@ -2692,6 +2690,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.m(this : tests.esc.A) {\n" +
 				"	var a : tests.esc.N;\n" +
+				"	call tests.esc.N.N(a);\n" +
 				"	call tests.esc.N.n(a);\n" +
 				"}\n" +
 				"procedure tests.esc.N.n(this : tests.esc.N) {\n" +
@@ -2930,6 +2929,30 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				// adapter output
+				""
+				);
+	}
+	
+	public void test_3000_StandardJavaClass() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {\n" +
+				"	public A() { }\n" +
+				"	public static void main(String[] args) {\n" +
+				"		A a = new A();\n" +
+				"	}\n" +
+				"}\n"
+				,
+				// expected boogie
+				"procedure tests.esc.A.A(this : tests.esc.A) {\n" +
+				"}\n" +
+				"procedure tests.esc.A.main(a: [int] java.lang.String) {\n" +
+				"	var b : tests.esc.A;\n" +
+				"	call tests.esc.A.A(b);\n" +
+				"}\n"
+				,
+				// adpater output
 				""
 				);
 	}

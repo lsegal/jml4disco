@@ -229,6 +229,7 @@ public class BoogieVisitor extends ASTVisitor {
 	}
 	
 	private void declareType(String type) {
+		if (type.equals("int")) return; //$NON-NLS-1$
 		typeList.put(type, new Integer(1));
 	}
 	

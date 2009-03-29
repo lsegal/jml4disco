@@ -1870,8 +1870,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"var tests.esc.A.i : [tests.esc.A] int;\n" +
-				"var tests.esc.A.b : [tests.esc.A] bool;\n" +
+				"var tests.esc.A.i : [$Ref] int;\n" +
+				"var tests.esc.A.b : [$Ref] bool;\n" +
 				"procedure tests.esc.A.m(this: $Ref) {\n" +
 				"	tests.esc.A.i[this] := 1;\n" +
 				"}\n",
@@ -1971,7 +1971,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"var tests.esc.A.x : [tests.esc.A] int;\n" +
+				"var tests.esc.A.x : [$Ref] int;\n" +
 				"procedure tests.esc.A.m(this: $Ref) returns ($r : int) modifies tests.esc.A.x; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] - 1)); {\n" +
 				"	$r := tests.esc.A.x[this];\n" +
 				"	tests.esc.A.x[this] := (tests.esc.A.x[this] + 1);\n" +

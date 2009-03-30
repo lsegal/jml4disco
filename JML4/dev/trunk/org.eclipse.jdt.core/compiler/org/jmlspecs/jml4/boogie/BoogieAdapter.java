@@ -93,10 +93,29 @@ public class BoogieAdapter {
 	 */
 	private void parseResult(String[] response) {
 		for (int i = 0; i < response.length; i++) {
-			Pattern p = Pattern.compile(".+\\((\\d+),(\\d+)\\): (syntax error|Error (\\S+?)): (.*)"); //$NON-NLS-1$
+			Pattern p = Pattern.compile(".+\\((\\d+),(\\d+)\\): (syntax error|Error|Error (\\S+?)): (.*)"); //$NON-NLS-1$
 			Matcher m = p.matcher(response[i]);
 			if (m.matches()) {
-				if (m.group(3).equals("syntax error")) { //$NON-NLS-1$
+				if (m.group(3).equals("Error")) { //$NON-NLS-1$
+					// Get Java code point
+					int row = Integer.parseInt(m.group(1));
+					int col = Integer.parseInt(m.group(2));
+					BoogieSourcePoint sp = new BoogieSourcePoint(row, col);
+					ASTNode term = output.getTermAtPoint(sp);
+					String errorText = m.group(5);
+					
+					if (errorText.startsWith("command assigns to a global variable")) { //$NON-NLS-1$
+						errorText = "Missing JML modifies clause for this attribute assignment."; //$NON-NLS-1$
+					}
+					
+					if (term != null) {
+						problemReporter.jmlEsc2Error(errorText, term.sourceStart, term.sourceEnd); 
+					}
+					else {
+						problemReporter.jmlEsc2Error(errorText, 0, 0);
+					}
+				}
+				else if (m.group(3).equals("syntax error")) { //$NON-NLS-1$
 					problemReporter.jmlEsc2Fatal("Error parsing Java source code (unsuppored syntax?): " + response[i], 0, 0); //$NON-NLS-1$
 				}
 				else {

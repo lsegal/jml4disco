@@ -115,6 +115,47 @@ public class AdapterTests extends TranslationTests {
 				"Missing JML modifies clause for this attribute assignment.\n" +
 				"----------\n");
 	}
+	
+	public void test_Stack() {
+		this.runNegativeTest(new String[] {
+				testsPath + "Stack.java",
+				"package tests.esc;\n" +
+				"public class Stack {\n" +
+				"	private int stack[];\n" +
+				"	private int size;\n" +
+				"	\n" +
+				"	//@ modifies stack;\n" +
+				"	//@ modifies size;\n" +
+				"	public Stack() {\n" +
+				"		stack = new int[20];\n" +
+				"		size = 0;\n" +
+				"	}\n" +
+				"	\n" +
+				"	//@ requires size < 20;\n" +
+				"	//@ ensures size == \\old(size) + 1;\n" +
+				"	//@ ensures stack[\\old(size)] == value;\n" +
+				"	//@ modifies stack;\n" +
+				"	//@ modifies size;\n" +
+				"	public void push(int value) {\n" +
+				"		stack[size] = value;\n" +
+				"		size = size + 1;\n" +
+				"	}\n" +
+				"	\n" +
+				"	//@ requires size >= 0;\n" +
+				"	//@ ensures size == \\old(size) - 1;\n" +
+				"	//@ ensures \\result == stack[\\old(size)];\n" +
+				"	//@ modifies stack;\n" +
+				"	//@ modifies size;\n" +
+				"	public int pop() {\n" +
+				"		int n = stack[size];\n" +
+				"		size = size - 1;\n" +
+				"		return n;\n" +
+				"	}\n" +
+				"}\n"
+				},
+				""
+				);
+	}
 
 	@Override
 	public void test_001_assertFalse() {

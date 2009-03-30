@@ -373,8 +373,13 @@ public class BoogieVisitor extends ASTVisitor {
 			declareType(name);
 			append(REF);
 		}
-		else {
+		else if (term.resolvedType != null) {
 			append(term.resolvedType.leafComponentType().readableName());
+		}
+		else {
+			String name = new String(term.token);
+			declareType(name);
+			append(REF);
 		}
 		return true;
 	}

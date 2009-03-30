@@ -1205,7 +1205,8 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 
 		output.decreaseIndent();
-		appendLine(BLOCK_CLOSE);
+		append(BLOCK_CLOSE, term);
+		appendLine(""); //$NON-NLS-1$
 		
 		symbolTable = null;
 

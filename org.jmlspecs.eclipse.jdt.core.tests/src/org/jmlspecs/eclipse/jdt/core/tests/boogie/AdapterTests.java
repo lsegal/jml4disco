@@ -541,4 +541,9 @@ public class AdapterTests extends TranslationTests {
 	public void test_3000_StandardJavaClass() {
 		super.test_3000_StandardJavaClass();
 	}
+	
+	@Override
+	public void test_3001_TestCounterClass() {
+		super.test_3001_TestCounterClass();
+	}
 }

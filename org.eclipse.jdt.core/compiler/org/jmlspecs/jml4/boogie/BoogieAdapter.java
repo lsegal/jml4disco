@@ -100,13 +100,15 @@ public class BoogieAdapter {
 					// Get Java code point
 					int row = Integer.parseInt(m.group(1));
 					int col = Integer.parseInt(m.group(2));
-					BoogieSourcePoint sp = new BoogieSourcePoint(row, col);
-					ASTNode term = output.getTermAtPoint(sp);
 					String errorText = m.group(5);
 					
 					if (errorText.startsWith("command assigns to a global variable")) { //$NON-NLS-1$
 						errorText = "Missing JML modifies clause for this attribute assignment."; //$NON-NLS-1$
+						if (col == 1) col = 2; // FIXME Boogie thinks method calls without modifies clauses are on column 1. Bug in Boogie?
 					}
+
+					BoogieSourcePoint sp = new BoogieSourcePoint(row, col);
+					ASTNode term = output.getTermAtPoint(sp);
 					
 					if (term != null) {
 						problemReporter.jmlEsc2Error(errorText, term.sourceStart, term.sourceEnd); 

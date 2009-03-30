@@ -565,9 +565,14 @@ public class AdapterTests extends TranslationTests {
 	public void test_3001_TestCounterClass() {
 		super.test_3001_TestCounterClass();
 	}
+
+	@Override
+	public void test_3002_TestCounterClass() {
+		super.test_3002_TestCounterClass();
+	}
 	
 	@Override
-	public void test_3002_TestAttributeMutation() {
-		super.test_3002_TestAttributeMutation();
+	public void test_3003_TestAttributeMutation() {
+		super.test_3003_TestAttributeMutation();
 	}
 }

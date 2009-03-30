@@ -3008,13 +3008,53 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=FieldReference,Assignment
-	public void test_3002_TestAttributeMutation() {
+	// term=FieldReference,JmlOldExpression,JmlEnsuresClause adapter=pass
+	public void test_3002_TestCounterClass() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
 				"public class A {\n" +
 				"	public int counter;\n" +
+				"	public A() { }\n" +
+				"	//@ assignable counter;\n" +
+				"	//@ ensures counter == \\old(counter) + 1;\n" +
+				"	public void increaseCounter() {\n" +
+				"		counter = counter + 2;\n" +
+				"	}\n" +
+				"	public void x() { A a = new A(); a.increaseCounter(); }\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"var tests.esc.A.counter : [$Ref] int;\n" +
+				"procedure tests.esc.A.A(this: $Ref) {\n" +
+				"}\n" +
+				"procedure tests.esc.A.increaseCounter(this: $Ref) modifies tests.esc.A.counter; ensures (tests.esc.A.counter[this] == (old(tests.esc.A.counter[this]) + 1)); {\n" +
+				"	tests.esc.A.counter[this] := (tests.esc.A.counter[this] + 2);\n" +
+				"}\n" +
+				"procedure tests.esc.A.x(this: $Ref) {\n" +
+				"	var a : $Ref;\n" +
+				"	call tests.esc.A.A(a);\n" +
+				"	call tests.esc.A.increaseCounter(a);\n" +
+				"}\n"
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 10)\n" +
+				"	public void x() { A a = new A(); a.increaseCounter(); }\n" +
+				"	                                 ^^^^^^^^^^^^^^^^^^^\n" +
+				"Missing JML modifies clause for this attribute assignment.\n" +
+				"----------\n"
+				);
+	}
+
+	// term=FieldReference,Assignment
+	public void test_3003_TestAttributeMutation() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	public int counter;\n" +
+				"	//@ modifies counter;\n" +
 				"	public A() { counter = 2; }\n" +
 				"	//@ modifies counter;\n" +
 				"	public void x() {\n" +
@@ -3026,7 +3066,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"var tests.esc.A.counter : [$Ref] int;\n" +
-				"procedure tests.esc.A.A(this: $Ref) {\n" +
+				"procedure tests.esc.A.A(this: $Ref) modifies tests.esc.A.counter; {\n" +
 				"	tests.esc.A.counter[this] := 2;\n" +
 				"}\n" +
 				"procedure tests.esc.A.x(this: $Ref) modifies tests.esc.A.counter; {\n" +
@@ -3037,7 +3077,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in A.java (at line 10)\n" +
+				"	//@ assert a.counter == 11;\n" +
+				"	           ^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}
 }

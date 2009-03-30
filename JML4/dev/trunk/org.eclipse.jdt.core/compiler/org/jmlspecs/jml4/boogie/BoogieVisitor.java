@@ -112,6 +112,7 @@ import org.jmlspecs.jml4.ast.JmlMethodSpecification;
 import org.jmlspecs.jml4.ast.JmlOldExpression;
 import org.jmlspecs.jml4.ast.JmlRequiresClause;
 import org.jmlspecs.jml4.ast.JmlResultReference;
+import org.jmlspecs.jml4.ast.JmlSingleNameReference;
 import org.jmlspecs.jml4.ast.JmlSpecCase;
 import org.jmlspecs.jml4.ast.JmlSpecCaseRestAsClauseSeq;
 import org.jmlspecs.jml4.ast.JmlStoreRefListExpression;
@@ -410,6 +411,7 @@ public class BoogieVisitor extends ASTVisitor {
 	}
 	
 	private void defineArrayLength(Expression lhs, BlockScope scope, int size) {
+		if (lhs instanceof JmlSingleNameReference && ((JmlSingleNameReference)lhs).binding instanceof FieldBinding) return; //FIXME
 		lhs.traverse(this, scope);
 		appendLine(".length := " + size + STMT_END); //$NON-NLS-1$
 	}
@@ -988,24 +990,24 @@ public class BoogieVisitor extends ASTVisitor {
 				}
 			}
 			if (specCase.getRequiresExpressions().size() > 0) {
-				append(SPACE);
 				List exprs = specCase.getRequiresExpressions();
-				append("requires ", (Expression)exprs.get(0)); //$NON-NLS-1$
 				for (int j = 0; j < exprs.size(); j++) {
+					append(SPACE);
+					append("requires ", (Expression)exprs.get(i)); //$NON-NLS-1$
 					Expression expr = (Expression)exprs.get(j);
 					expr.traverse(this, methodScope);
+					append(STMT_END); 
 				}
-				append(STMT_END); 
 			}
 			if (specCase.getEnsuresExpressions().size() > 0) {
-				append(SPACE);
 				List exprs = specCase.getEnsuresExpressions();
-				append("ensures ", (Expression)exprs.get(0)); //$NON-NLS-1$
 				for (int j = 0; j < exprs.size(); j++) {
+					append(SPACE);
+					append("ensures ", (Expression)exprs.get(i)); //$NON-NLS-1$
 					Expression expr = (Expression)exprs.get(j);
 					expr.traverse(this, methodScope);
+					append(STMT_END);
 				}
-				append(STMT_END);
 			}
 		}
 

@@ -244,9 +244,10 @@ public class BoogieVisitor extends ASTVisitor {
 	
 
 	private String declareString(String key) {
+		declareType("java.lang.String"); //$NON-NLS-1$
 		String value = (String)stringPool.get(key);
 		if (value == null) {
-			value = "string_lit_" + stringPoolValue++; //$NON-NLS-1$
+			value = "$string_lit_" + stringPoolValue++; //$NON-NLS-1$
 			prepend("const " + value + " : $Ref;\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			prepend("axiom " + value + " <: java.lang.String;\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -363,8 +364,13 @@ public class BoogieVisitor extends ASTVisitor {
 			declareType(name);
 			append(REF);
 		}
-		else {
+		else if (term.resolvedType != null) {
 			append(term.resolvedType.leafComponentType().readableName());
+		}
+		else {
+			String name = new String(term.token);
+			declareType(name);
+			append(REF);
 		}
 		
 		return true;
@@ -615,9 +621,10 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=lit
+	// priority=2 group=lit
 	public boolean visit(CharLiteral term, BlockScope scope) {
 		debug(term, scope);
+		append(new Integer(term.source()[1]));
 		return true;
 	}
 
@@ -722,10 +729,10 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 	
-	// priority=3 group=lit
+	// TODO priority=3 group=lit
 	public boolean visit(DoubleLiteral term, BlockScope scope) {
 		debug(term, scope);
-		append(new String(term.source()));
+		append("0"); //FIXME! //$NON-NLS-1$
 		return true;
 	}
 
@@ -812,6 +819,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=3 group=lit
 	public boolean visit(FloatLiteral term, BlockScope scope) {
 		debug(term, scope);
+		append("0"); //FIXME! //$NON-NLS-1$
 		return true;
 	}
 

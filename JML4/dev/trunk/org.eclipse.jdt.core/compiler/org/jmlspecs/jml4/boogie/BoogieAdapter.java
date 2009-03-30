@@ -106,6 +106,9 @@ public class BoogieAdapter {
 						errorText = "Missing JML modifies clause for this attribute assignment."; //$NON-NLS-1$
 						if (col == 1) col = 2; // FIXME Boogie thinks method calls without modifies clauses are on column 1. Bug in Boogie?
 					}
+					else {
+						errorText = "Boogie Error: " + errorText; //$NON-NLS-1$
+					}
 
 					BoogieSourcePoint sp = new BoogieSourcePoint(row, col);
 					ASTNode term = output.getTermAtPoint(sp);

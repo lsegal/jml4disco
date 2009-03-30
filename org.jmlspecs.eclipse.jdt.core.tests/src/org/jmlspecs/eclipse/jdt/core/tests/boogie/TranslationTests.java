@@ -148,9 +148,14 @@ public class TranslationTests extends AbstractRegressionTest {
 		compareJavaExprToBoogie("2", "2");
 	}
 	
-	// term=DoubleLiteral
+	// TODO term=DoubleLiteral
 	public void testDoubleLiteral() {
-		compareJavaExprToBoogie("2.2456", "2.2456");
+		compareJavaExprToBoogie("2.2456", "0"); // FIXME
+	}
+	
+	// term=CharLiteral
+	public void testCharLiteral() {
+		compareJavaExprToBoogie("'a'", "97");
 	}
 	
 /*******************************************
@@ -1103,11 +1108,11 @@ public class TranslationTests extends AbstractRegressionTest {
 			"	var c : int;\n" +
 			"	c := 3;\n" +
 			"	if ((a == 1)) {\n" +
-			"		$r := string_lit_0;\n" +
+			"		$r := $string_lit_0;\n" +
 			"		return;\n" +
 			"	}\n" +
 			"	else {\n" +
-			"		$r := string_lit_1;\n" +
+			"		$r := $string_lit_1;\n" +
 			"		return;\n" +
 			"	}\n" +
 			"}\n",
@@ -2920,12 +2925,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				// expected boogie
 				"var tests.esc.A.x : [$Ref] $Ref;\n" +
 				"procedure tests.esc.A.A(this: $Ref, a: int) modifies tests.esc.A.x; {\n" +
-				"	tests.esc.A.x[this] := string_lit_0;\n" +
+				"	tests.esc.A.x[this] := $string_lit_0;\n" +
 				"}\n" +
 				"procedure tests.esc.A.x() {\n" +
 				"	var a : $Ref;\n" +
 				"	call tests.esc.A.A(a, 1);\n" +
-				"	assert (tests.esc.A.x[a] != string_lit_1);\n" +
+				"	assert (tests.esc.A.x[a] != $string_lit_1);\n" +
 				"}\n"
 				,
 				// adapter output

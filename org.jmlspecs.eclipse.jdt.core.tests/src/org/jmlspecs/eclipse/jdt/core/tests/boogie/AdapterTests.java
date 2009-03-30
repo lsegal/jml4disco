@@ -93,7 +93,26 @@ public class AdapterTests extends TranslationTests {
 				"1. ERROR in " + testsPath + "A.java (at line 1)\n" + 
 				"	package tests.esc;\n" +
 				"	^\n" + 
-				"Error parsing Java source code (unsuppored syntax?)\n" + 
+				"Error parsing Java source code (unsuppored syntax?): out.bpl(12,11): syntax error: ) expected\n" + 
+				"----------\n");
+	}
+	
+	public void test_0402_MissingModifies() {
+		this.runNegativeTest(new String[] {
+				testsPath + "A.java",
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	public int q;\n" +
+				"	public void x() {\n" +
+				"		q = 1;\n" +
+				"	}\n" + 
+				"}\n"
+				},
+				"----------\n" +
+				"1. ERROR in A.java (at line 5)\n" +
+				"	q = 1;\n" +
+				"	^^^^^\n" +
+				"Missing JML modifies clause for this attribute assignment.\n" +
 				"----------\n");
 	}
 
@@ -545,5 +564,10 @@ public class AdapterTests extends TranslationTests {
 	@Override
 	public void test_3001_TestCounterClass() {
 		super.test_3001_TestCounterClass();
+	}
+	
+	@Override
+	public void test_3002_TestAttributeMutation() {
+		super.test_3002_TestAttributeMutation();
 	}
 }

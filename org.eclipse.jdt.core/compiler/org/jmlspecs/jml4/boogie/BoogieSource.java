@@ -129,7 +129,7 @@ public class BoogieSource {
 	private static void populateHeaders() {
 		headers = new StringBuffer();
 		headers.append("type $TName; type $Ref;\n"); //$NON-NLS-1$
-		headers.append("const Object : $TName;\n"); //$NON-NLS-1$
+		headers.append("const java.lang.Object : $TName;\n"); //$NON-NLS-1$
 		headers.append("const null : $Ref;\n"); //$NON-NLS-1$
 		headers.append("function dtype($Ref) returns ($TName);\n"); //$NON-NLS-1$
 		headers.append("axiom (∀ x : int, y: int • {x % y} {x /y} x%y == x - x/y *y);\n"); //$NON-NLS-1$

@@ -103,6 +103,7 @@ import org.jmlspecs.jml4.ast.JmlConstructorDeclaration;
 import org.jmlspecs.jml4.ast.JmlDoStatement;
 import org.jmlspecs.jml4.ast.JmlEnsuresClause;
 import org.jmlspecs.jml4.ast.JmlForStatement;
+import org.jmlspecs.jml4.ast.JmlKeywordExpression;
 import org.jmlspecs.jml4.ast.JmlLoopAnnotations;
 import org.jmlspecs.jml4.ast.JmlLoopInvariant;
 import org.jmlspecs.jml4.ast.JmlLoopVariant;
@@ -124,6 +125,8 @@ public class BoogieVisitor extends ASTVisitor {
 
 	private int stringPoolValue = 0;
 	private Hashtable stringPool = new Hashtable();
+
+	//private int objectPoolValue = 0;
 	
 	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
 	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
@@ -236,7 +239,7 @@ public class BoogieVisitor extends ASTVisitor {
 	}
 	
 	private void declareType(String type) {
-		declareType(type, "Object"); //$NON-NLS-1$
+		declareType(type, "java.lang.Object"); //$NON-NLS-1$
 	}
 	
 
@@ -249,6 +252,14 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 		return value;
 	}
+	
+	/*
+	private String declareObject() {
+		String objName = "$obj_" + objectPoolValue++; //$NON-NLS-1$
+		prepend("const unique " + objName + ": $Ref;");  //$NON-NLS-1$//$NON-NLS-2$
+		return objName;
+	}
+	*/
 	
 	private void emitTypes() {
 		StringBuffer outBuf = new StringBuffer();
@@ -414,6 +425,8 @@ public class BoogieVisitor extends ASTVisitor {
 		debug(term, scope);
 		if (term.expression instanceof AllocationExpression) {
 			AllocationExpression expr = (AllocationExpression)term.expression;
+			//term.lhs.traverse(this, scope);
+			//appendLine(" := " + declareObject() + STMT_END); //$NON-NLS-1$
 			append("call ", expr); //$NON-NLS-1$
 			append(expr.binding.declaringClass.readableName());
 			append("." + new String(expr.type.getLastToken())); //$NON-NLS-1$
@@ -471,18 +484,18 @@ public class BoogieVisitor extends ASTVisitor {
 		
 		if (term.expression instanceof PostfixExpression) {
 			term.lhs.traverse(this, scope);
-			append(" := "); //$NON-NLS-1$
+			append(" := ", term); //$NON-NLS-1$
 			((Assignment)term.expression).lhs.traverse(this, scope);
 		}
 		else if (term.expression instanceof Assignment) {
 			term.expression.traverse(this, scope);
 			term.lhs.traverse(this, scope);
-			append(" := "); //$NON-NLS-1$
+			append(" := ", term); //$NON-NLS-1$
 			((Assignment)term.expression).lhs.traverse(this, scope);
 		}
 		else {
 			term.lhs.traverse(this, scope);
-			append(" := "); //$NON-NLS-1$
+			append(" := ", term); //$NON-NLS-1$
 			term.expression.traverse(this, scope);
 		}
 		
@@ -943,17 +956,24 @@ public class BoogieVisitor extends ASTVisitor {
 				for (int j = 0; j < rest.clauses.length; j++) {
 					if (rest.clauses[j] instanceof JmlAssignableClause) {
 						JmlAssignableClause modifies = (JmlAssignableClause)rest.clauses[j];
-						JmlStoreRefListExpression stores = (JmlStoreRefListExpression)modifies.expr;
 						append(SPACE);
 						append("modifies ", term); //$NON-NLS-1$
-						for (int x = 0; x < stores.exprList.length; x++) {
-							//stores.exprList[x].traverse(this, methodScope);
-							if (stores.exprList[x] instanceof SingleNameReference) {
-								append(scope.classScope().referenceContext.binding.readableName());
-								append("."); //$NON-NLS-1$
-								append(((SingleNameReference)stores.exprList[x]).binding.readableName());
+						if (modifies.expr instanceof JmlStoreRefListExpression) {
+							JmlStoreRefListExpression stores = (JmlStoreRefListExpression)modifies.expr;
+							for (int x = 0; x < stores.exprList.length; x++) {
+								//stores.exprList[x].traverse(this, methodScope);
+								if (stores.exprList[x] instanceof SingleNameReference) {
+									append(scope.classScope().referenceContext.binding.readableName());
+									append("."); //$NON-NLS-1$
+									append(((SingleNameReference)stores.exprList[x]).binding.readableName());
+								}
+								if (x < stores.exprList.length - 1) { append(", "); } //$NON-NLS-1$
 							}
-							if (x < stores.exprList.length - 1) { append(", "); } //$NON-NLS-1$
+						}
+						else if (modifies.expr instanceof JmlKeywordExpression) {
+							// TODO support JmlKeywordExpression
+							JmlKeywordExpression expr = (JmlKeywordExpression)modifies.expr;
+							append(expr.toString());
 						}
 						append(STMT_END);
 					}

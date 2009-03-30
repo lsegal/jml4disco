@@ -2933,7 +2933,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=ArrayReference,ConstructorDeclaration,MessageSend
+	// term=ArrayTypeReference,ArrayReference,ConstructorDeclaration,MessageSend
 	public void test_3000_StandardJavaClass() {
 		this.compareJavaToBoogie(
 				//java
@@ -2973,6 +2973,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
+	// term=FieldReference,JmlOldExpression,JmlEnsuresClause adapter=pass
 	public void test_3001_TestCounterClass() {
 		this.compareJavaToBoogie(
 				//java
@@ -2990,6 +2991,49 @@ public class TranslationTests extends AbstractRegressionTest {
 				"var tests.esc.A.counter : [$Ref] int;\n" +
 				"procedure tests.esc.A.increaseCounter(this: $Ref) modifies tests.esc.A.counter; ensures (tests.esc.A.counter[this] == (old(tests.esc.A.counter[this]) + 1)); {\n" +
 				"	tests.esc.A.counter[this] := (tests.esc.A.counter[this] + 2);\n" +
+				"}\n"
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 5)\n" +
+				"	//@ ensures counter == \\old(counter) + 1;\n" +
+				"	            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 6)\n" +
+				"	public void increaseCounter() {\n" +
+				"	            ^^^^^^^^^^^^^^^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n"
+				);
+	}
+	
+	// term=FieldReference,Assignment
+	public void test_3002_TestAttributeMutation() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	public int counter;\n" +
+				"	public A() { counter = 2; }\n" +
+				"	//@ modifies counter;\n" +
+				"	public void x() {\n" +
+				"		A a = new A();\n" +
+				"		a.counter = 10;\n" +
+				"		//@ assert a.counter == 11;\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"var tests.esc.A.counter : [$Ref] int;\n" +
+				"procedure tests.esc.A.A(this: $Ref) {\n" +
+				"	tests.esc.A.counter[this] := 2;\n" +
+				"}\n" +
+				"procedure tests.esc.A.x(this: $Ref) modifies tests.esc.A.counter; {\n" +
+				"	var a : $Ref;\n" +
+				"	call tests.esc.A.A(a);\n" +
+				"	tests.esc.A.counter[a] := 10;\n" +
+				"	assert (tests.esc.A.counter[a] == 11);\n" +
 				"}\n"
 				,
 				// adapter output

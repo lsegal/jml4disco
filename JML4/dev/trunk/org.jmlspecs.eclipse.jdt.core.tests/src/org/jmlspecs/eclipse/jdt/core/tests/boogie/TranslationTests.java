@@ -2940,20 +2940,59 @@ public class TranslationTests extends AbstractRegressionTest {
 				"package tests.esc;\n" +
 				"class A {\n" +
 				"	public A() { }\n" +
+				"	public int fib(int n) { return 2; }\n" +
 				"	public static void main(String[] args) {\n" +
 				"		A a = new A();\n" +
+				"		int n = a.fib(1);\n" +
+				"		assert n == 1;\n" +
 				"	}\n" +
 				"}\n"
 				,
 				// expected boogie
 				"procedure tests.esc.A.A(this: $Ref) {\n" +
 				"}\n" +
+				"procedure tests.esc.A.fib(this: $Ref, a: int) returns ($r : int) {\n" +
+				"	$r := 2;\n" +
+				"	return;\n" +
+				"}\n" +
 				"procedure tests.esc.A.main(a: [int] $Ref) {\n" +
 				"	var b : $Ref;\n" +
+				"	var c : int;\n" +
 				"	call tests.esc.A.A(b);\n" +
+				"	call c := tests.esc.A.fib(b, 1);\n" +
+				"	assert (c == 1);\n" +
 				"}\n"
 				,
 				// adpater output
+				"----------\n" +
+				"1. ERROR in A.java (at line 8)\n" +
+				"	assert n == 1;\n" +
+				"	       ^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
+				);
+	}
+	
+	public void test_3001_TestCounterClass() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	public int counter;\n" +
+				"	//@ assignable counter;\n" +
+				"	//@ ensures counter == \\old(counter) + 1;\n" +
+				"	public void increaseCounter() {\n" +
+				"		counter = counter + 2;\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"var tests.esc.A.counter : [$Ref] int;\n" +
+				"procedure tests.esc.A.increaseCounter(this: $Ref) modifies tests.esc.A.counter; ensures (tests.esc.A.counter[this] == (old(tests.esc.A.counter[this]) + 1)); {\n" +
+				"	tests.esc.A.counter[this] := (tests.esc.A.counter[this] + 2);\n" +
+				"}\n"
+				,
+				// adapter output
 				""
 				);
 	}

@@ -626,4 +626,9 @@ public class AdapterTests extends TranslationTests {
 	public void test_3003_TestAttributeMutation() {
 		super.test_3003_TestAttributeMutation();
 	}
+	
+	@Override
+	public void test_3004_TestStringArgument() {
+		super.test_3004_TestStringArgument();
+	}
 }

@@ -370,8 +370,13 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 		else {
 			String name = new String(term.token);
-			declareType(name);
-			append(REF);
+			if (!name.equals("int")) { //$NON-NLS-1$
+				declareType(name);
+				append(REF);
+			}
+			else {
+				append(name);
+			}
 		}
 		
 		return true;

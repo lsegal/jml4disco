@@ -949,7 +949,7 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=jml
 	public boolean visit(JmlLoopInvariant term, BlockScope scope) {
 		debug(term, scope);
-		append("invariant ");		 //$NON-NLS-1$
+		append("invariant ", term.expr); //$NON-NLS-1$
 		return true;
 	}
 

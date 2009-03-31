@@ -3160,4 +3160,29 @@ public class TranslationTests extends AbstractRegressionTest {
 				"----------\n"
 				);
 	}
+	
+	// term=StringLiteral
+	public void test_3004_TestStringArgument() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	public void a(String arg) {\n" +
+				"	}\n" +
+				"	public void b() {\n" +
+				"		a(\"hello world\");" +
+				"	}\n" +
+				"}\n"
+				,
+				// expected boogie
+				"procedure tests.esc.A.a(this: $Ref, a: $Ref) {\n" +
+				"}\n" +
+				"procedure tests.esc.A.b(this: $Ref) {\n" +
+				"	call tests.esc.A.a(this, $string_lit_0);\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
 }

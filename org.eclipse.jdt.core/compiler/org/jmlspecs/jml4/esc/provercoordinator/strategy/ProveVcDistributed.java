@@ -81,6 +81,7 @@ public class ProveVcDistributed implements IProverStrategy {
 	private String getUrlString(String key) {
 		// Read properties file.
 		if (dispatercherUrl == null) {
+			/*
 			Properties properties = new Properties();
 			try {
 				File file = new File(options.jmlEscDistributedPropertiesFile);
@@ -95,6 +96,8 @@ public class ProveVcDistributed implements IProverStrategy {
 				e.printStackTrace();
 				return null;
 			} 
+			*/
+			dispatercherUrl = options.jmlEscDistributedDispatcherPath;
 		}
 		return dispatercherUrl;
 

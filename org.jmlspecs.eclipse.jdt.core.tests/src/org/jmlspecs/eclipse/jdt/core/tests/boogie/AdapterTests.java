@@ -486,6 +486,11 @@ public class AdapterTests extends TranslationTests {
 	public void test_2202_ConstructorCallFieldModification() {
 		super.test_2202_ConstructorCallFieldModification();
 	}
+	
+	@Override
+	public void test_2203_MultipleClasses() {
+		super.test_2203_MultipleClasses();
+	}
 
 	@Override
 	public void test_297_LocalDeclaration() {

@@ -2935,7 +2935,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 
-	// term=MessageSend,AllocationExpression,JmlQualifiedName adapter=fail
+	// term=MessageSend,AllocationExpression,JmlQualifiedName adapter=pass
 	public void test_2202_ConstructorCallFieldModification() {
 		this.compareJavaToBoogie(
 				//java
@@ -2968,7 +2968,47 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	// term=ArrayTypeReference,ArrayReference,ConstructorDeclaration,MessageSend
+	// term=CompilationUnitDeclaration adapter=pass
+	public void test_2203_MultipleClasses() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"class A {" +
+				"	public A() { }\n" +
+				"	//@ ensures \\result == 2;\n" +
+				"	public int n() { return 2; }\n" +
+				"}\n" +
+				"class B {\n" +
+				"	public B() {\n" +
+				"		A a = new A();\n" +
+				"		int n = a.n();\n" +
+				"		n++;\n" +
+				"		//@ assert n == 3;\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.A(this: $Ref) {\n" +
+				"}\n" +
+				"procedure tests.esc.A.n(this: $Ref) returns ($r : int) ensures ($r == 2); {\n" +
+				"	$r := 2;\n" +
+				"	return;\n" +
+				"}\n" +
+				"procedure tests.esc.B.B(this: $Ref) {\n" +
+				"	var a : $Ref;\n" +
+				"	var b : int;\n" +
+				"	call tests.esc.A.A(a);\n" +
+				"	call b := tests.esc.A.n(a);\n" +
+				"	b := (b + 1);\n" +
+				"	assert (b == 3);\n" +
+				"}\n" 
+				,
+				// adapter output
+				""
+				);
+	}
+
+	// term=ArrayTypeReference,ArrayReference,ConstructorDeclaration,MessageSend adapter=pass
 	public void test_3000_StandardJavaClass() {
 		this.compareJavaToBoogie(
 				//java

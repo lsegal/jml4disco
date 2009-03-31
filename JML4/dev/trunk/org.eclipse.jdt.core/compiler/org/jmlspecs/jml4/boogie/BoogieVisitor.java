@@ -468,7 +468,7 @@ public class BoogieVisitor extends ASTVisitor {
 			if (alloc.initializer != null) {
 				initializeArray(term.lhs, alloc.initializer.expressions, scope);
 			}
-			else {
+			else if (alloc.dimensions[0] instanceof IntLiteral) {
 				int size = ((IntLiteral)alloc.dimensions[0]).value;
 				Expression[] exprs = new Expression[size];
 				if (alloc.type.resolvedType == TypeBinding.INT || alloc.type.resolvedType == TypeBinding.LONG) {

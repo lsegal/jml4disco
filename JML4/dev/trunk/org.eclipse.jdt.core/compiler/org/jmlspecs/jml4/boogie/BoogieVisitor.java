@@ -998,7 +998,7 @@ public class BoogieVisitor extends ASTVisitor {
 				List exprs = specCase.getRequiresExpressions();
 				for (int j = 0; j < exprs.size(); j++) {
 					append(SPACE);
-					append("requires ", (Expression)exprs.get(i)); //$NON-NLS-1$
+					append("requires ", (Expression)exprs.get(j)); //$NON-NLS-1$
 					Expression expr = (Expression)exprs.get(j);
 					expr.traverse(this, methodScope);
 					append(STMT_END); 
@@ -1008,7 +1008,7 @@ public class BoogieVisitor extends ASTVisitor {
 				List exprs = specCase.getEnsuresExpressions();
 				for (int j = 0; j < exprs.size(); j++) {
 					append(SPACE);
-					append("ensures ", (Expression)exprs.get(i)); //$NON-NLS-1$
+					append("ensures ", (Expression)exprs.get(j)); //$NON-NLS-1$
 					Expression expr = (Expression)exprs.get(j);
 					expr.traverse(this, methodScope);
 					append(STMT_END);

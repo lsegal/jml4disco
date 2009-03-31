@@ -792,6 +792,36 @@ public class TranslationTests extends AbstractRegressionTest {
 				"----------\n"
 			);
 	}
+	
+	// term=JmlEnsuresClause,JmlMethodSpecification adapter=pass
+	public void test_0115_MultipleEnsures() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	//@ ensures true;\n" +
+				"	//@ ensures true;\n" +
+				"	//@ ensures false;\n" +
+				"	public void a() { }\n" +
+				"}\n" ,
+				// boogie
+				"procedure tests.esc.A.a(this: $Ref) ensures true; ensures true; ensures false; {\n" +
+				"}\n" 
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 5)\n" +
+				"	//@ ensures false;\n" +
+				"	            ^^^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 6)\n" +
+				"	public void a() { }\n" +
+				"	            ^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n"
+			);
+	}
 
 	// term=JmlAssumeStatement,JmlAssertStatement adapter=pass
 	public void test_0200_sequence_assume_assert_tt() {

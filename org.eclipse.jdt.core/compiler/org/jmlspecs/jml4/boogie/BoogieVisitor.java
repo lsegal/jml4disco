@@ -249,7 +249,7 @@ public class BoogieVisitor extends ASTVisitor {
 		String value = (String)stringPool.get(key);
 		if (value == null) {
 			value = "$string_lit_" + stringPoolValue++; //$NON-NLS-1$
-			prepend("axiom dtype(" + value + ") == java.lang.String;\n"); //$NON-NLS-1$ //$NON-NLS-2$
+			prepend("axiom $dtype(" + value + ") == java.lang.String;\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			prepend("const " + value + " : $Ref;\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return value;
@@ -798,13 +798,24 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(FieldDeclaration term, MethodScope scope) {
 		debug(term, scope);
 		
-		append("var "); //$NON-NLS-1$
-		append(new String(term.binding.declaringClass.readableName()) + "."); //$NON-NLS-1$		
-		append(new String(term.name) + " : "); //$NON-NLS-1$
+		String name = new String(term.binding.declaringClass.readableName()) + "." + new String(term.name);  //$NON-NLS-1$
+		append("var " + name + ": "); //$NON-NLS-1$ //$NON-NLS-2$
 		if (!term.isStatic())
 			append("[" + REF + "] "); //$NON-NLS-1$ //$NON-NLS-2$
 		term.type.traverse(this, scope);
 		appendLine(STMT_END);
+		
+		if (term.type.resolvedType == null) {
+			return false;
+		}
+		if (term.type.resolvedType.isArrayType()) {
+			// TODO implement dynamic type support for arrays
+			return false;
+		}
+		if (term.type.resolvedType.canBeInstantiated()) {
+			//append("axiom ∀n: int • $dtype(" + name + "[n]) == " + new String(term.binding.declaringClass.readableName())); //$NON-NLS-1$ //$NON-NLS-2$
+			//appendLine(STMT_END);
+		}
 		// FIXME this will not work, Boogie requires that all assignments are done in a procedure
 		//if (term.isStatic())
 		//	variableInitialization(term, scope);
@@ -896,10 +907,13 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// priority=1 group=expr
 	public boolean visit(InstanceOfExpression term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		append("$dtype("); //$NON-NLS-1$
+		term.expression.traverse(this, scope);
+		append(") <: " + new String(term.type.resolvedType.readableName())); //$NON-NLS-1$
+		return false;
 	}
 
 	// priority=3 group=lit
@@ -1162,6 +1176,10 @@ public class BoogieVisitor extends ASTVisitor {
 				term.receiver.traverse(this, scope);
 			}
 		}
+		else if (term.receiver instanceof CastExpression) {
+			CastExpression expr = (CastExpression)term.receiver;
+			expr.expression.traverse(this, scope);
+		}
 
 		if (term.arguments != null) {
 			append(", "); //$NON-NLS-1$
@@ -1218,6 +1236,28 @@ public class BoogieVisitor extends ASTVisitor {
 			append(PAREN_CLOSE);
 		}
 		
+		// requires for types
+		if (!term.isStatic()) {
+			append(SPACE);
+			append("requires $dtype(this) == " + cls + STMT_END, term); //$NON-NLS-1$
+		}
+		if (term.arguments != null) {
+			boolean first = false;
+			for (int i = 0; i < term.arguments.length; i++) {
+				Argument arg = term.arguments[i];
+				if (!arg.type.resolvedType.canBeInstantiated()) continue;
+				if (arg.type.resolvedType.isArrayType()) continue;
+				if (!first) append(SPACE);
+				first = true;
+				append("requires $dtype(" + symbolTable.lookup(new String(arg.name)) + ") == ", arg);  //$NON-NLS-1$//$NON-NLS-2$
+				append(arg.type.resolvedType.readableName());
+				append(STMT_END);
+				if (i < term.arguments.length - 1) {
+					append(SPACE);
+				}
+			}
+		}
+		
 		// ensures & requires clause
 		if (term.getSpecification() != null) {
 			visit(term.getSpecification(), scope);
@@ -1235,6 +1275,19 @@ public class BoogieVisitor extends ASTVisitor {
 				LocalDeclaration loc = (LocalDeclaration)data[0];
 				Block blk = (Block)data[1];
 				addLocalDeclaration(loc, term.scope, blk);				
+			}
+
+			// types for all locals
+			for (int i = 0; i < locals.size(); i++) {
+				Object[] data = (Object[])locals.get(i);
+				LocalDeclaration loc = (LocalDeclaration)data[0];
+				Block blk = (Block)data[1];
+				String name = symbolTable.lookup(new String(loc.name), blk);
+				if (!loc.type.resolvedType.canBeInstantiated()) continue;
+				if (loc.type.resolvedType.isArrayType()) continue;
+				append("assume $dtype(" + name + ") == ", loc); //$NON-NLS-1$ //$NON-NLS-2$
+				append(loc.type.resolvedType.readableName());
+				appendLine(STMT_END);
 			}
 		}
 		
@@ -1589,8 +1642,14 @@ public class BoogieVisitor extends ASTVisitor {
 
 	// priority=2 group=decl
 	public boolean visit(TypeDeclaration term, BlockScope scope) {
-		declareType(new String(term.superclass.resolvedType.readableName()));
-		declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
+		if (term.superclass != null) {
+			String superclass = new String(term.superclass.resolvedType.readableName());
+			declareType(superclass);
+			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
+		}
+		else {
+			declareType(new String(term.binding.readableName()));
+		}
 		debug(term, scope);
 		return true;
 	}
@@ -1598,15 +1657,52 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=2 group=decl
 	public boolean visit(TypeDeclaration term, ClassScope scope) {
 		debug(term, scope);
-		declareType(new String(term.binding.readableName()));
-		return true;
+		if (term.superclass != null) {
+			String superclass = new String(term.superclass.resolvedType.readableName());
+			declareType(superclass);
+			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
+		}
+		else {
+			declareType(new String(term.binding.readableName()));
+		}
+		return false;
 	}
 
 	// priority=2 group=decl
 	public boolean visit(TypeDeclaration term, CompilationUnitScope scope) {
 		debug(term, scope);
-		declareType(new String(term.binding.readableName()));
-		return true;
+		if (term.superclass != null) {
+			String superclass = new String(term.superclass.resolvedType.readableName());
+			declareType(superclass);
+			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
+		}
+		else {
+			declareType(new String(term.binding.readableName()));
+		}
+
+		if (term.memberTypes != null) {
+			int length = term.memberTypes.length;
+			for (int i = 0; i < length; i++)
+				term.memberTypes[i].traverse(this, term.scope);
+		}
+		if (term.fields != null) {
+			int length = term.fields.length;
+			for (int i = 0; i < length; i++) {
+				FieldDeclaration field;
+				if ((field = term.fields[i]).isStatic()) {
+					field.traverse(this, term.staticInitializerScope);
+				} else {
+					field.traverse(this, term.initializerScope);
+				}
+			}
+		}
+		if (term.methods != null) {
+			int length = term.methods.length;
+			for (int i = 0; i < length; i++)
+				term.methods[i].traverse(this, term.scope);
+		}
+
+		return false;
 	}
 
 	// TODO priority=2 group=expr

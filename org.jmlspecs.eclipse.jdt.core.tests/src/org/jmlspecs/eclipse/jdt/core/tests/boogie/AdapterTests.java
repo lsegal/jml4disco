@@ -93,7 +93,7 @@ public class AdapterTests extends TranslationTests {
 				"1. ERROR in " + testsPath + "A.java (at line 1)\n" + 
 				"	package tests.esc;\n" +
 				"	^\n" + 
-				"Error parsing Java source code (unsuppored syntax?): out.bpl(12,11): syntax error: ) expected\n" + 
+				"Error parsing Java source code (unsuppored syntax?): out.bpl(13,11): syntax error: ) expected\n" + 
 				"----------\n");
 	}
 	
@@ -630,5 +630,15 @@ public class AdapterTests extends TranslationTests {
 	@Override
 	public void test_3004_TestStringArgument() {
 		super.test_3004_TestStringArgument();
+	}
+
+	@Override
+	public void test_3005_Subclass() {
+		super.test_3005_Subclass();
+	}
+
+	@Override
+	public void test_3006_InstanceOfExpression() {
+		super.test_3006_InstanceOfExpression();
 	}
 }

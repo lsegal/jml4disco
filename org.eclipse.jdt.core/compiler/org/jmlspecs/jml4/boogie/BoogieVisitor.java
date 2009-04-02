@@ -249,8 +249,8 @@ public class BoogieVisitor extends ASTVisitor {
 		String value = (String)stringPool.get(key);
 		if (value == null) {
 			value = "$string_lit_" + stringPoolValue++; //$NON-NLS-1$
+			prepend("axiom dtype(" + value + ") == java.lang.String;\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			prepend("const " + value + " : $Ref;\n"); //$NON-NLS-1$ //$NON-NLS-2$
-			prepend("axiom " + value + " <: java.lang.String;\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return value;
 	}

@@ -79,25 +79,27 @@ public class ProveVcDistributed implements IProverStrategy {
 	}
 
 	private String getUrlString(String key) {
-		// Read properties file.
+		// Read properties file. for development 
 		if (dispatercherUrl == null) {
-			/*
-			Properties properties = new Properties();
-			try {
-				File file = new File(options.jmlEscDistributedPropertiesFile);
-				FileInputStream  s = new FileInputStream(file);
-				System.out.println(file.getAbsolutePath());
-				properties.load(s);
-				dispatercherUrl = (String) properties.get(key);
-				s.close();
-				return dispatercherUrl;
-
-			} catch (IOException e) {
-				e.printStackTrace();
-				return null;
-			} 
-			*/
-			dispatercherUrl = options.jmlEscDistributedDispatcherPath;
+			if(options.jmlEscDistributedDispatcherPath==null || options.jmlEscDistributedDispatcherPath.equals("")) {
+				Properties properties = new Properties();
+				try {
+					File file = new File(options.jmlEscDistributedPropertiesFile);
+					FileInputStream  s = new FileInputStream(file);
+					System.out.println(file.getAbsolutePath());
+					properties.load(s);
+					dispatercherUrl = (String) properties.get(key);
+					s.close();
+					return dispatercherUrl;
+	
+				} catch (IOException e) {
+					e.printStackTrace();
+					return null;
+				} 
+			}
+			else {
+				dispatercherUrl = options.jmlEscDistributedDispatcherPath;
+			}
 		}
 		return dispatercherUrl;
 

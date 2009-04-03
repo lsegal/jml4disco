@@ -12,7 +12,7 @@ import org.eclipse.jdt.internal.compiler.env.IBinaryType;
 public class LookupEnvironmentEmptyForSerialization extends LookupEnvironment {
 
 	public LookupEnvironmentEmptyForSerialization() {
-		super();
+		super(null, null, null, null);
 	}
 	public ReferenceBinding askForType(char[][] compoundName) {
 		return null;

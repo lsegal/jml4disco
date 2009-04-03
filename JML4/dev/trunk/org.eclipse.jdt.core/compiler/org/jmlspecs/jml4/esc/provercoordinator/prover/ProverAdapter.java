@@ -11,8 +11,8 @@ public abstract class ProverAdapter {
 
 	// DISCO CompierlerOptions and ProblemReporter set to null to allow serialization 
 	public static final String VALID = "Valid."; //$NON-NLS-1$
-	protected transient final CompilerOptions options;
-	protected transient final ProblemReporter problemReporter;
+	protected final CompilerOptions options;
+	protected final ProblemReporter problemReporter;
 	protected ProcessPool processPool;
 
 	public ProverAdapter(CompilerOptions options, ProblemReporter problemReporter) {

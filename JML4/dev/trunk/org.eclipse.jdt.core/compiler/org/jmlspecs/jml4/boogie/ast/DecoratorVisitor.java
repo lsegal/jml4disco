@@ -2,28 +2,30 @@ package org.jmlspecs.jml4.boogie.ast;
 
 import java.util.ArrayList;
 
-import org.jmlspecs.jml4.boogie.ast.Assignment;
-import org.jmlspecs.jml4.boogie.ast.BoogieNode;
-import org.jmlspecs.jml4.boogie.ast.CallStatement;
-import org.jmlspecs.jml4.boogie.ast.Procedure;
-import org.jmlspecs.jml4.boogie.ast.VariableDeclaration;
-import org.jmlspecs.jml4.boogie.ast.VariableReference;
-import org.jmlspecs.jml4.boogie.ast.VariableStatement;
-import org.jmlspecs.jml4.boogie.ast.Visitor;
-
 public class DecoratorVisitor extends Visitor {
+	public boolean visit(Program term) {
+		for (int i = 0; i < term.getTypes().size(); i++) {
+			resolveTypes((TypeDeclaration)term.getTypes().get(i));
+		}
+
+		for (int i = 0; i < term.getProcedures().size(); i++) {
+			((BoogieNode)term.getProcedures().get(i)).traverse(this);
+		}
+		return false;
+	}
+	
 	public boolean visit(Procedure term) {
+		// traverse statements first (might generate new locals here)
+		for (int i = 0; i < term.getStatements().size(); i++) {
+			((BoogieNode)term.getStatements().get(i)).traverse(this);
+		}
+
 		resolveProcedureLocals(term.getLocals());
 		
 		// arguments must be added after locals traversal
 		for (int i = 0; i < term.getArguments().size(); i++) {
 			VariableDeclaration var = (VariableDeclaration)term.getArguments().get(i);
 			resolveProcedureArguments(var);
-		}
-		
-		// traverse statements
-		for (int i = 0; i < term.getStatements().size(); i++) {
-			((BoogieNode)term.getStatements().get(i)).traverse(this);
 		}
 		
 		return false;
@@ -50,7 +52,6 @@ public class DecoratorVisitor extends Visitor {
 							new VariableReference(varName, null, proc),  
 							calledProcedure.getReturnType(), proc);
 					proc.addVariable(decl);
-					proc.getStatements().add(0, new VariableStatement(decl, null, proc));
 					term.setOutVar(decl.getName());
 				}
 			}
@@ -58,8 +59,27 @@ public class DecoratorVisitor extends Visitor {
 		return false;
 	}
 	
+	private void resolveTypes(TypeDeclaration term) {
+		ArrayList stmts = term.getScope().getProgramScope().getStatements();
+		stmts.add(new ConstStatement(term, null, term.getScope()));
+		stmts.add(new Axiom(new BinaryExpression(new TokenLiteral(
+				term.getType().getTypeName()), "<:", //$NON-NLS-1$
+				new TokenLiteral(term.getSuperType().getTypeName()), 
+				null, term.getScope()), null, term.getScope()));
+	}
+	
 	private void resolveProcedureArguments(VariableDeclaration var) {
 		var.getScope().addVariable(var);
+		
+		// type requirements
+		// TODO add support for array types
+		if (!(var.getType() instanceof MapTypeReference) && !var.getType().isNative()) {
+			Procedure proc = var.getScope().getProcedureScope();
+			BinaryExpression expr = new BinaryExpression(
+					new FunctionCall("$dtype", new Expression[] { var.getName() }, var.getJavaNode(), proc),  //$NON-NLS-1$
+					"==", new TokenLiteral(var.getType().getTypeName()), null, proc); //$NON-NLS-1$
+			proc.getRequires().add(expr);
+		}
 	}
 
 	private void resolveProcedureLocals(ArrayList vars) {

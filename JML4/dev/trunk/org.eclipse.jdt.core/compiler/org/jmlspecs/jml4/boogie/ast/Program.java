@@ -71,6 +71,7 @@ public class Program extends BoogieNode implements Scope {
 	}
 
 	public void toBuffer(BoogieSource out) {
+		resolve(); // resolve before printing buffer out
 		for (int i = 0; i < getStatements().size(); i++) {
 			((Statement)getStatements().get(i)).toBuffer(out);
 		}

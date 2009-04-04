@@ -21,7 +21,7 @@ public class TypeDeclaration extends BoogieNode {
 	}
 
 	public void toBuffer(BoogieSource out) {
-		return;
+		// nothing here
 	}
 
 	public void traverse(Visitor visitor) {

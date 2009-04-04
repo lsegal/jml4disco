@@ -21,6 +21,7 @@ public abstract class BoogieNode {
 	public static final String TOKEN_REF = "$Ref"; //$NON-NLS-1$
 	public static final String TOKEN_RESULT = "$r"; //$NON-NLS-1$
 	public static final String TOKEN_TNAME = "$TName"; //$NON-NLS-1$
+	public static final String TOKEN_DTYPE = "$dtype"; //$NON-NLS-1$
 	
 	private ASTNode javaNode;
 	private Scope scope;

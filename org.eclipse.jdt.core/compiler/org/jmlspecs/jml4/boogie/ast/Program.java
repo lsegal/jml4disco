@@ -51,9 +51,9 @@ public class Program extends BoogieNode implements Scope {
 	}
 
 	public VariableDeclaration lookupVariable(String name) {
-		for (int i = 0; i < getTypes().size(); i++) {
-			VariableDeclaration decl = (VariableDeclaration)getTypes().get(i);
-			if (decl.getType().getTypeName().equals(name)) {
+		for (int i = 0; i < getGlobals().size(); i++) {
+			VariableDeclaration decl = (VariableDeclaration)getGlobals().get(i);
+			if (decl.getName().getName().equals(name)) {
 				return decl;
 			}
 		}
@@ -75,6 +75,7 @@ public class Program extends BoogieNode implements Scope {
 		for (int i = 0; i < getStatements().size(); i++) {
 			((Statement)getStatements().get(i)).toBuffer(out);
 		}
+		out.appendLine("/*!BOOGIESTART!*/"); //$NON-NLS-1$
 		for (int i = 0; i < getProcedures().size(); i++) {
 			((Procedure)getProcedures().get(i)).toBuffer(out);
 		}

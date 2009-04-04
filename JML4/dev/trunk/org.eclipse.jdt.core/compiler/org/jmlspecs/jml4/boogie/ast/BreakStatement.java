@@ -4,12 +4,22 @@ import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.jmlspecs.jml4.boogie.BoogieSource;
 
 public class BreakStatement extends Statement {
-	public BreakStatement(ASTNode javaNode, Scope scope) {
+	private String label;
+	
+	public BreakStatement(String label, ASTNode javaNode, Scope scope) {
 		super(javaNode, scope);
+		this.label = label;
+	}
+	
+	public String getLabel() {
+		return label;
 	}
 	
 	public void toBuffer(BoogieSource out) {
 		out.append("break", getJavaNode()); //$NON-NLS-1$
+		if (getLabel() != null) {
+			out.append(TOKEN_SPACE + getLabel());
+		}
 		out.appendLine(TOKEN_SEMICOLON);
 	}
 

@@ -22,6 +22,7 @@ public abstract class Visitor {
 	public boolean visit(ReturnStatement term) { return true; }
 	public boolean visit(TypeDeclaration term) { return true; }
 	public boolean visit(TypeReference term) { return true; }
+	public boolean visit(UnaryExpression term) { return true; }
 	public boolean visit(VariableDeclaration term) { return true; }
 	public boolean visit(VariableReference term) { return true; }
 	public boolean visit(VariableStatement term) { return true; }
@@ -48,6 +49,7 @@ public abstract class Visitor {
 	public void endVisit(ReturnStatement term) { /* nothing */ }
 	public void endVisit(TypeDeclaration term) { /* nothing */ }
 	public void endVisit(TypeReference term) { /* nothing */ }
+	public void endVisit(UnaryExpression term) { /* nothing */ }
 	public void endVisit(VariableDeclaration term) { /* nothing */ }
 	public void endVisit(VariableReference term) { /* nothing */ }
 	public void endVisit(VariableStatement term) { /* nothing */ }

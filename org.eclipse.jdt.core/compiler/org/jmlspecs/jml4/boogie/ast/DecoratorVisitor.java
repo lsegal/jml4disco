@@ -65,7 +65,7 @@ public class DecoratorVisitor extends Visitor {
 		stmts.add(new Axiom(new BinaryExpression(new TokenLiteral(
 				term.getType().getTypeName()), "<:", //$NON-NLS-1$
 				new TokenLiteral(term.getSuperType().getTypeName()), 
-				null, term.getScope()), null, term.getScope()));
+				false, null, term.getScope()), null, term.getScope()));
 	}
 	
 	private void resolveProcedureArguments(VariableDeclaration var) {
@@ -77,7 +77,7 @@ public class DecoratorVisitor extends Visitor {
 			Procedure proc = var.getScope().getProcedureScope();
 			BinaryExpression expr = new BinaryExpression(
 					new FunctionCall("$dtype", new Expression[] { var.getName() }, var.getJavaNode(), proc),  //$NON-NLS-1$
-					"==", new TokenLiteral(var.getType().getTypeName()), null, proc); //$NON-NLS-1$
+					"==", new TokenLiteral(var.getType().getTypeName()), false, null, proc); //$NON-NLS-1$
 			proc.getRequires().add(expr);
 		}
 	}

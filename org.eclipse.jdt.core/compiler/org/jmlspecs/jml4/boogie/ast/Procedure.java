@@ -14,6 +14,10 @@ public class Procedure extends BoogieNode implements Scope {
 	private ArrayList/*<MapVariableReference>*/ modifies;
 	private String name;
 	private TypeReference returnType;
+
+	// for varaible generation
+	private final static String charmap = "abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
+	private String generatedSymbol = ""; //$NON-NLS-1$
 	
 	public Procedure(String name, TypeReference returnType, ASTNode javaNode, Program scope) {
 		super(javaNode, scope);
@@ -141,6 +145,9 @@ public class Procedure extends BoogieNode implements Scope {
 
 	public void addVariable(VariableDeclaration decl) {
 		getLocals().add(decl);
+		if (!decl.getName().getName().equals("this")) { //$NON-NLS-1$
+			decl.setShortName(generateSymbol());
+		}
 	}
 
 	public void traverse(Visitor visitor) {
@@ -176,5 +183,46 @@ public class Procedure extends BoogieNode implements Scope {
 
 	public Program getProgramScope() {
 		return (Program)getScope();
+	}
+	
+	/**
+	 * Generates a new unique symbol name, also storing it as {@link #generatedSymbol}.
+	 *  
+	 * @return the next symbol value (the value of {@link #generatedSymbol})
+	 */
+	private synchronized String generateSymbol() {
+		if (generatedSymbol == "") { //$NON-NLS-1$
+			generatedSymbol = new String(new char[]{charmap.charAt(0)}, 0, 1);
+			return generatedSymbol;
+		}
+		
+		char[] sym = generatedSymbol.toCharArray();
+		for (int symindex = sym.length - 1; symindex >= 0; symindex--) {
+			char c = sym[symindex];
+			int index = charmap.indexOf(c);
+			if (index + 1 >= charmap.length()) {
+				c = charmap.charAt(0);
+				if (symindex == 0) {
+					// increment the string length ("zzz" turns into "aaaa")
+					sym = new char[sym.length + 1];
+					for (int i = 0; i < sym.length; i++) {
+						sym[i] = c;
+					}
+					break;
+				}
+				
+				// make everything else "a" ("azzz" goes to "baaa")
+				for (int i = symindex; i < sym.length; i++) { 
+					sym[i] = c;
+				}
+			}
+			else {
+				sym[symindex] = charmap.charAt(index + 1);
+				break;
+			}
+		}
+		
+		generatedSymbol = new String(sym);
+		return generatedSymbol;
 	}
 }

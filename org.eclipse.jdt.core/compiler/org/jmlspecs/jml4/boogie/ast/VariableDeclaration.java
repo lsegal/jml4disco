@@ -5,11 +5,13 @@ import org.jmlspecs.jml4.boogie.BoogieSource;
 public class VariableDeclaration extends BoogieNode {
 	private VariableReference name;
 	private TypeReference type;
+	private String shortName;
 	
 	public VariableDeclaration(VariableReference name, TypeReference type, Scope scope) {
 		super(null, scope);
 		this.type = type;
 		this.name = name;
+		this.shortName = null;
 	}
 	
 	public VariableReference getName() {
@@ -18,6 +20,14 @@ public class VariableDeclaration extends BoogieNode {
 	
 	public TypeReference getType() {
 		return type;
+	}
+	
+	public String getShortName() {
+		return shortName;
+	}
+	
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 	
 	public boolean isLocal() {

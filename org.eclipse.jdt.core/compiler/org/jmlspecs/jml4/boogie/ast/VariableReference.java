@@ -16,7 +16,8 @@ public class VariableReference extends Expression {
 	}
 
 	public void toBuffer(BoogieSource out) {
-		out.append(getName(), getJavaNode());
+		VariableDeclaration decl = getScope().lookupVariable(getName());
+		out.append(decl != null && decl.getShortName() != null ? decl.getShortName() : getName(), getJavaNode());
 	}
 
 	public void traverse(Visitor visitor) {

@@ -8,6 +8,9 @@ public class TypeDeclaration extends BoogieNode {
 	
 	public TypeDeclaration(TypeReference type, TypeReference superType, Scope scope) {
 		super(null, scope);
+		if (superType == null) {
+			superType = new TypeReference("java.lang.Object", type.getJavaNode(), scope); //$NON-NLS-1$
+		}
 		this.type = type;
 		this.superType = superType;
 	}

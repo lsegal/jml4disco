@@ -47,13 +47,15 @@ public class IfStatement extends Statement {
 		}
 		out.decreaseIndent();
 		out.appendLine(TOKEN_RBRACE);
-		out.appendLine("else" + TOKEN_SPACE + TOKEN_LBRACE); //$NON-NLS-1$
-		out.increaseIndent();
-		for (int i = 0; i < getElseStatements().size(); i++) {
-			((Statement)getElseStatements().get(i)).toBuffer(out);
+		if (getElseStatements().size() > 0) {
+			out.appendLine("else" + TOKEN_SPACE + TOKEN_LBRACE); //$NON-NLS-1$
+			out.increaseIndent();
+			for (int i = 0; i < getElseStatements().size(); i++) {
+				((Statement)getElseStatements().get(i)).toBuffer(out);
+			}
+			out.decreaseIndent();
+			out.appendLine(TOKEN_RBRACE);
 		}
-		out.decreaseIndent();
-		out.appendLine(TOKEN_RBRACE);
 	}
 
 	public void traverse(Visitor visitor) {

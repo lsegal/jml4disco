@@ -96,6 +96,7 @@ public class Program extends BoogieNode implements Scope {
 
 	public void addType(TypeDeclaration type) {
 		if (type.getType().isNative()) return;
+		if (type.getType().getTypeName().equals("java.lang.Object")) return; //$NON-NLS-1$
 		if (typesMap.get(type.getType().getTypeName()) == null) {
 			getTypes().add(type);
 			typesMap.put(type.getType().getTypeName(), new Boolean(true));

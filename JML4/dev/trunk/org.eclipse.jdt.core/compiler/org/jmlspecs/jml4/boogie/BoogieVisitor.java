@@ -499,7 +499,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=1 group=expr
+	// priority=1 group=expr
 	public boolean visit(CastExpression term, BlockScope scope) {
 		debug(term, scope);
 		term.expression.traverse(this, scope);
@@ -519,10 +519,11 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=2 group=expr
+	// priority=2 group=expr
 	public boolean visit(CompoundAssignment term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		extractCompoundAssignment(term, scope);
+		return false;
 	}
 	
 	private VariableReference extractConditionalExpression(ConditionalExpression term) {
@@ -535,7 +536,7 @@ public class BoogieVisitor extends ASTVisitor {
 		return ref;
 	}
 
-	// TODO priority=3 group=expr
+	// priority=3 group=expr
 	public boolean visit(ConditionalExpression term, BlockScope scope) {
 		debug(term, scope);
 		// TODO implement for program scope
@@ -674,13 +675,13 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 
-	// TODO priority=3 group=field
+	// TODO priority=? group=field
 	public boolean visit(FieldReference term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=3 group=field
+	// TODO priority=? group=field
 	public boolean visit(FieldReference term, ClassScope scope) {
 		debug(term, scope);
 		return true;
@@ -1166,14 +1167,14 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 	}
 
-	// TODO priority=1 group=expr
+	// priority=1 group=expr
 	public boolean visit(QualifiedNameReference term, BlockScope scope) {
 		debug(term, scope);
 		result = getQualifiedVariableReference(term, scope.classScope());
 		return false;
 	}
 
-	// TODO priority=1 group=expr
+	// priority=1 group=expr
 	public boolean visit(QualifiedNameReference term, ClassScope scope) {
 		debug(term, scope);
 		result = getQualifiedVariableReference(term, scope.classScope());
@@ -1291,14 +1292,14 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=3 group=expr
+	// priority=3 group=expr
 	public boolean visit(ThisReference term, BlockScope scope) {
 		debug(term, scope);
 		result = new VariableReference("this", term, boogieScope); //$NON-NLS-1$
 		return false;
 	}
 
-	// TODO priority=3 group=expr
+	// priority=3 group=expr
 	public boolean visit(ThisReference term, ClassScope scope) {
 		debug(term, scope);
 		result = new VariableReference("this", term, boogieScope); //$NON-NLS-1$

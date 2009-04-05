@@ -258,8 +258,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				// adapter output
 				"----------\n" + 
 				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
-				"	//@ assert false && (false || false);\n" +
-				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
+				"	//@ assert (false && (false || false));\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
 				"This assertion might not hold.\n" + 
 				"----------\n"			
 				);
@@ -283,8 +283,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				// adapter output
 				"----------\n" + 
 				"1. ERROR in " + testsPath + "A.java (at line 4)\n" + 
-				"	//@ assert (false || false) && false;\n" +
-				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
+				"	//@ assert ((false || false) && false);\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" + 
 				"This assertion might not hold.\n" + 
 				"----------\n"
 				);
@@ -2723,9 +2723,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				//java
 				"package tests.esc;\n" +
 				"public class A {\n" +
-				"	public N x = new N();" +
-				"	public static N y = new N();" +
-				"	public void m() { x.n(); y.n(); }\n" +
+				"	public N x = new N();\n" +
+				"	public static N y = new N();\n" +
+				"	public void m() {\n" +
+				"		x.n();\n" +
+				"		y.n();\n" +
+				"	}\n" +
 				"}\n" +
 				"class N {\n" +
 				"	public void n() { }\n" +
@@ -2733,9 +2736,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"var tests.esc.A.x: [$Ref] $Ref;\n" +
-//				"axiom ∀n: int • $ftype(tests.esc.A.x[n]) == tests.esc.A;\n" +
 				"var tests.esc.A.y: $Ref;\n" +
-				"axiom $dtype(tests.esc.A.y) == tests.esc.N;\n" +
+				// FIXME "axiom $dtype(tests.esc.A.y) == tests.esc.N;\n" + (boogie says: cannot refer to global variable in this context)
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
 				"	call tests.esc.N.n(tests.esc.A.x[this]);\n" +
 				"	call tests.esc.N.n(tests.esc.A.y);\n" +
@@ -2744,7 +2746,27 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in A.java (at line 6)\n" +
+				"	x.n();\n" +
+				"	^^^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 7)\n" +
+				"	y.n();\n" +
+				"	^^^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n" +
+				"3. ERROR in A.java (at line 11)\n" +
+				"	public void n() { }\n" +
+				"	            ^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n" +
+				"4. ERROR in A.java (at line 11)\n" +
+				"	public void n() { }\n" +
+				"	            ^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n"
 				);
 	}
 	

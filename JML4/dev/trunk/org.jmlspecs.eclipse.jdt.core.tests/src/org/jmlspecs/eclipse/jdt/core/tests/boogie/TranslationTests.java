@@ -203,7 +203,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	assert false && false;\n" +
+				"	assert (false && false);\n" +
 				"}\n",
 				// adapter output
 				"----------\n" +
@@ -247,13 +247,13 @@ public class TranslationTests extends AbstractRegressionTest {
 				"package tests.esc;\n" +
 				"public class A {\n" + 
 				"   public void m1() {\n" + 
-				"      //@ assert false && (false || false);\n" + 
+				"      //@ assert (false && (false || false));\n" + 
 				"   }\n" + 		
 				"}\n"
 				,
 				//expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	assert false && (false || false);\n" +
+				"	assert (false && (false || false));\n" +
 				"}\n",
 				// adapter output
 				"----------\n" + 
@@ -272,13 +272,13 @@ public class TranslationTests extends AbstractRegressionTest {
 				"package tests.esc;\n" +
 				"public class A {\n" + 
 				"   public void m1() {\n" + 
-				"      //@ assert (false || false) && false;\n" + 
+				"      //@ assert ((false || false) && false);\n" + 
 				"   }\n" + 			
 				"}\n"
 				,
 				//expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	assert (false || false) && false;\n" +
+				"	assert ((false || false) && false);\n" +
 				"}\n",
 				// adapter output
 				"----------\n" + 
@@ -722,7 +722,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n" ,
 				// boogie
-				"procedure tests.esc.A.a(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; ensures ((a < 2) ⇒ ($r == a)) && ((a >= 2) ⇒ ($r == 5)); {\n" +
+				"procedure tests.esc.A.a(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; ensures (((a < 2) ⇒ ($r == a)) && ((a >= 2) ⇒ ($r == 5))); {\n" +
 				"	if (a < 2) {\n" +
 				"		$r := a;\n" +
 				"		return;\n" +
@@ -942,7 +942,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			);
 	}
 	
-	// term=LocalDeclaration adapter=pass
+	// term=LocalDeclaration,UnaryExpression, adapter=pass
 	public void test_297_LocalDeclaration() {	
 	this.compareJavaToBoogie(
 			// java
@@ -1838,7 +1838,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
-	//TODO term=FieldDeclaration,SingleNameReference,Assignment adapter=pass
+	// term=FieldDeclaration,SingleNameReference,Assignment adapter=pass
 	public void test_800_FieldDeclaration() {
 		this.compareJavaToBoogie(
 				//java
@@ -1874,7 +1874,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	public A() { }" +
 				"}\n" 
 				,
-				//TODO  expected boogie
+				//TODO expected boogie
 				"var tests.esc.A.i: [$Ref] int;\n" +				
 				"var tests.esc.A.x: [$Ref] int;\n" +
 				"var tests.esc.A.z: [$Ref] int;\n" +
@@ -2049,7 +2049,7 @@ public class TranslationTests extends AbstractRegressionTest {
 	}
 
 	
-	// TODO term=IntLiteral,EqualExpression adapter=pass
+	// term=IntLiteral,EqualExpression adapter=pass
 	public void test_1000_int_eq() {
 		this.compareJavaToBoogie(
 				//java
@@ -2216,6 +2216,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
+	// term=IntLiteral,BinaryExpression,EqualExpression
 	public void test_1001_int_arith() {
 		this.compareJavaToBoogie(	
 				//java
@@ -2374,11 +2375,21 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	assert a;\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in A.java (at line 7)\n" +
+				"	//@ assert (5 == 3 + 2 ? 42 > 6 * 7 : 1 + 1 == 2);\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 10)\n" +
+				"	//@ assert (5 == 3 + 3 ? 42 == 6 * 7 : 1 + 1 != 2);\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}
 	
-	// TODO term=IntLiteral,ConditionalExpression adapter=none
+	// term=IntLiteral,ConditionalExpression adapter=pass
 	public void test_1003_boolExpr_cond() {
 		this.compareJavaToBoogie(
 				//java
@@ -2408,11 +2419,11 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" +
 				"procedure tests.esc.A.m2(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
 				"	var a: bool;\n" +
-				"	if false && false {\n" +
+				"	if (false && false) {\n" +
 				"		a := true;\n" +
 				"	}\n" +
 				"	else {\n" +
-				"		a := false && false;\n" +
+				"		a := (false && false);\n" +
 				"	}\n" +
 				"	assert a;\n" +
 				"}\n" +
@@ -2427,7 +2438,22 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	assert a;\n" +
 				"}\n",
 				// adapter output
-				""
+				"----------\n" +
+				"1. ERROR in A.java (at line 4)\n" +
+				"	//@ assert (!true ? false : !true);\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 7)\n" +
+				"	//@ assert (false && false ? true : false && false);\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n" +
+				"3. ERROR in A.java (at line 10)\n" +
+				"	//@ assert (false || false ? true : false || false);\n" +
+				"	           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
 				);
 	}
 	
@@ -2692,7 +2718,7 @@ public class TranslationTests extends AbstractRegressionTest {
 	}
 
 	// term=MessageSend adapter=pass
-	public void test_2005_messageSendOnField() {
+	public void test_2006_messageSendOnField() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -2723,7 +2749,7 @@ public class TranslationTests extends AbstractRegressionTest {
 	}
 	
 	// term=MessageSend adapter=pass
-	public void test_2005_messageSendOnLocal() {
+	public void test_2007_messageSendOnLocal() {
 		this.compareJavaToBoogie(
 				//java
 				"package tests.esc;\n" +
@@ -2749,6 +2775,62 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
+	// term=MessageSend,Assignment adapter=pass
+	public void test_2008_MessageSendExpression() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	public int fib(int n) {\n" +
+				"		if (n < 2) return n;\n" +
+				"		return fib(n - 1) + fib(n - 2);\n" +
+				"	}\n" +
+				"}" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.fib(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var b: int;\n" +
+				"	var c: int;\n" +
+				"	if (a < 2) {\n" +
+				"		$r := a;\n" +
+				"		return;\n" +
+				"	}\n" +
+				"	call b := tests.esc.A.fib(this, (a - 1));\n" +
+				"	call c := tests.esc.A.fib(this, (a - 2));\n" +
+				"	$r := (b + c);\n" +
+				"	return;\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
+
+	// term=MessageSend adapter=pass
+	public void test_2009_MessageSendMissingOutVar() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	public boolean a() {\n" +
+				"		a();\n" +
+				"		return false;\n" +
+				"	}\n" +
+				"}" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.a(this: $Ref) returns ($r: bool) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: bool;\n" +
+				"	call a := tests.esc.A.a(this);\n" +
+				"	$r := false;\n" +
+				"	return;\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
+	}
+
 	// term=ArrayTypeReference,ArrayReference adapter=pass
 	public void test_2100_arrayField() {
 		this.compareJavaToBoogie(
@@ -3292,5 +3374,26 @@ public class TranslationTests extends AbstractRegressionTest {
 				"----------\n"
 				);
 		
+	}
+	
+	// term=ThisReference adapter=pass
+	public void test_3007_ThisReference() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	public void a() {\n" +
+				"		this.a();\n" +
+				"	}\n" +
+				"}" 
+				,
+				// expected boogie
+				"procedure tests.esc.A.a(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	call tests.esc.A.a(this);\n" +
+				"}\n"
+				,
+				// adapter output
+				""
+				);
 	}
 }

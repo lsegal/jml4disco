@@ -16,7 +16,8 @@ public class VariableStatement extends Statement {
 	}
 
 	public void toBuffer(BoogieSource out) {
-		out.append("var" + TOKEN_SPACE); //$NON-NLS-1$
+		out.append((getDeclaration().isConstant() ? "const" : "var") + TOKEN_SPACE); //$NON-NLS-1$ //$NON-NLS-2$
+		if (getDeclaration().isUnique()) out.append("unique" + TOKEN_SPACE); //$NON-NLS-1$
 		getDeclaration().toBuffer(out);
 		out.appendLine(TOKEN_SEMICOLON);
 	}

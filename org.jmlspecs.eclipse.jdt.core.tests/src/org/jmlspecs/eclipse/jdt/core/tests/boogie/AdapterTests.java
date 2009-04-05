@@ -436,18 +436,28 @@ public class AdapterTests extends TranslationTests {
 	}
 
 	@Override
-	public void test_2005_messageSendOnField() {
-		super.test_2005_messageSendOnField();
-	}
-
-	@Override
-	public void test_2005_messageSendOnLocal() {
-		super.test_2005_messageSendOnLocal();
-	}
-
-	@Override
 	public void test_2005_messageSendOnThis() {
 		super.test_2005_messageSendOnThis();
+	}
+
+	@Override
+	public void test_2006_messageSendOnField() {
+		super.test_2006_messageSendOnField();
+	}
+
+	@Override
+	public void test_2007_messageSendOnLocal() {
+		super.test_2007_messageSendOnLocal();
+	}
+
+	@Override
+	public void test_2008_MessageSendExpression() {
+		super.test_2008_MessageSendExpression();
+	}
+	
+	@Override
+	public void test_2009_MessageSendMissingOutVar() {
+		super.test_2009_MessageSendMissingOutVar();
 	}
 
 	@Override
@@ -643,5 +653,10 @@ public class AdapterTests extends TranslationTests {
 	@Override
 	public void test_3006_InstanceOfExpression() {
 		super.test_3006_InstanceOfExpression();
+	}
+
+	@Override
+	public void test_3007_ThisReference() {
+		super.test_3007_ThisReference();
 	}
 }

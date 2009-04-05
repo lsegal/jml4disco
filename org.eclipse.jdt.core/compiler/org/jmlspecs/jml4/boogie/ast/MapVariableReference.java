@@ -30,4 +30,13 @@ public class MapVariableReference extends VariableReference {
 			out.append(TOKEN_RBRACK);
 		}
 	}
+	
+	public void traverse(Visitor visitor) {
+		if (visitor.visit(this)) {
+			for (int i = 0; i < getMapKeys().size(); i++) {
+				((Expression)getMapKeys().get(i)).traverse(visitor);
+			}
+		}
+		visitor.endVisit(this);
+	}
 }

@@ -1,18 +1,10 @@
 package org.jmlspecs.eclipse.jdt.core.tests.boogie;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.jdt.core.tests.compiler.regression.AbstractRegressionTest;
-import org.eclipse.jdt.core.tests.compiler.regression.Requestor;
-import org.eclipse.jdt.internal.compiler.Compiler;
-import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
-import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.jmlspecs.jml4.boogie.BoogieAdapter;
-import org.jmlspecs.jml4.boogie.BoogieVisitor;
 import org.jmlspecs.jml4.compiler.JmlCompilerOptions;
 import org.jmlspecs.jml4.esc.PostProcessor;
 
@@ -66,35 +58,6 @@ public class TranslationTests extends AbstractRegressionTest {
 		return options;
 	}
 	
-	CompilationUnitDeclaration compileToAst(String source) {
-		CompilerOptions compilerOptions = new CompilerOptions(getCompilerOptions());
-		Requestor requestor = new Requestor( /* custom requestor */
-						false,
-						null /* no custom requestor */,
-						false,
-						false);
-		Compiler compiler = 
-				new Compiler(
-					getNameEnvironment(new String[]{}, null /* no class libraries */), 
-					getErrorHandlingPolicy(), 
-					compilerOptions,
-					requestor, 
-					getProblemFactory()) { 
-			public void compile(ICompilationUnit[] sourceUnits) {
-				parseThreshold = sourceUnits.length + 1;
-				beginToCompile(sourceUnits);
-			}
-		};
-
-		CompilationUnit cUnit = new CompilationUnit(source.toCharArray(), "test.java", null);
-		compiler.compile(new CompilationUnit[] { cUnit });
-		return compiler.unitsToProcess[0];
-	}
-	
-	protected void compareJavaToBoogie(String java, String boogie) {
-		compareJavaToBoogie(java, boogie, null);
-	}
-	
 	protected void compareJavaToBoogie(String java, String boogie, String adapterOutput) {
 		String file = "A.java";
 		if (boogie != null) {
@@ -109,28 +72,21 @@ public class TranslationTests extends AbstractRegressionTest {
 					"\n----------\n");
 			getCompilerOptions().put(key, CompilerOptions.DISABLED);
 		}
-		/*if (adapterOutput != null) {
-			String key = JmlCompilerOptions.OPTION_JmlBoogieOutputOnly;
-			String orig = getCompilerOptions().get(key);
-			getCompilerOptions().put(key, CompilerOptions.DISABLED);
-			runNegativeTest(new String[] {file, java}, adapterOutput);
-			getCompilerOptions().put(key, orig);
-		}*/
 	}
 
 	protected void compareJavaExprToBoogie(String java, String boogie) {
-		CompilationUnitDeclaration unit = compileToAst("public class A { static { return " + java + "; } }");
-		String results = BoogieVisitor.visit(unit).getResults();
-
-		Pattern p = Pattern.compile(".+\\$r := (.+?);.+", Pattern.DOTALL | Pattern.MULTILINE);
-		Matcher m = p.matcher(results);
-		if (m.matches()) {
-			results = m.group(1);
-			assertEquals(boogie, results);
-		}
-		else {
-			fail("Invalid expression: " + results);
-		}
+		String key = JmlCompilerOptions.OPTION_JmlBoogieOutputOnly;
+		getCompilerOptions().put(key, CompilerOptions.ENABLED);
+		runNegativeTest(new String[] {"A.java", 
+				"package a;\npublic class A { public A() { assert " + java + " == " + java + "; } }" },
+				"----------\n" +
+				"1. ERROR in A.java (at line 1)\n" +
+				"	package a;\n" +
+				"	^\n\n" +
+				"procedure a.A.A(this: $Ref) requires $dtype(this) == a.A; {\n" +
+				"	assert (" + boogie + " == " + boogie + ");\n" +
+				"}\n" +
+				"\n----------\n");
 	}
 
 	// term=FalseLiteral
@@ -156,6 +112,8 @@ public class TranslationTests extends AbstractRegressionTest {
 	// term=CharLiteral
 	public void testCharLiteral() {
 		compareJavaExprToBoogie("'a'", "97");
+		compareJavaExprToBoogie("'\\6'", "6");
+		compareJavaExprToBoogie("'\\n'", "10");
 	}
 	
 /*******************************************
@@ -566,7 +524,7 @@ public class TranslationTests extends AbstractRegressionTest {
 			"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
 			"	assert false;\n" +
 			"}\n" +
-			"procedure tests.esc.A.n(this: $Ref) returns ($r : int) requires $dtype(this) == tests.esc.A; ensures ($r == 42); {\n" +
+			"procedure tests.esc.A.n(this: $Ref) returns ($r: int) requires $dtype(this) == tests.esc.A; ensures ($r == 42); {\n" +
 			"	assert true;\n" +
 			"	$r := 42;\n" +
 			"	return;\n" +
@@ -648,28 +606,28 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n"	
 				,
-				"procedure tests.esc.A.m1(this: $Ref) returns ($r : int) requires $dtype(this) == tests.esc.A; ensures ($r == 42); {\n" +
+				"procedure tests.esc.A.m1(this: $Ref) returns ($r: int) requires $dtype(this) == tests.esc.A; ensures ($r == 42); {\n" +
 				"	$r := 42;\n" +
 				"	return;\n" +
 				"}\n" +
-				"procedure tests.esc.A.m2(this: $Ref, a: int) returns ($r : int) requires $dtype(this) == tests.esc.A; requires (a >= 0); {\n" +
-				"	if ((a == 0)) {\n" +
+				"procedure tests.esc.A.m2(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; requires (a >= 0); {\n" +
+				"	if (a == 0) {\n" +
 				"		$r := 1;\n" +
 				"		return;\n" +
 				"	}\n" +
 				"	$r := 10;\n" +
 				"	return;\n" +
 				"}\n" +
-				"procedure tests.esc.A.m3(this: $Ref, a: int) returns ($r : int) requires $dtype(this) == tests.esc.A; requires (a >= 0); ensures ($r == 42); {\n" +
-				"	if ((a == 0)) {\n" +
+				"procedure tests.esc.A.m3(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; requires (a >= 0); ensures ($r == 42); {\n" +
+				"	if (a == 0) {\n" +
 				"		$r := 42;\n" +
 				"		return;\n" +
 				"	}\n" +
 				"	$r := 42;\n" +
 				"	return;\n" +
 				"}\n" +
-				"procedure tests.esc.A.m4(this: $Ref, a: int) returns ($r : int) requires $dtype(this) == tests.esc.A; requires (a >= 0); ensures ($r == 42); {\n" +
-				"	if ((a == 0)) {\n" +
+				"procedure tests.esc.A.m4(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; requires (a >= 0); ensures ($r == 42); {\n" +
+				"	if (a == 0) {\n" +
 				"		$r := 1;\n" +
 				"		return;\n" +
 				"	}\n" +
@@ -711,10 +669,10 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n" ,
 				// boogie
-				"procedure tests.esc.A.fib(this: $Ref, a: int) returns ($r : int) requires $dtype(this) == tests.esc.A; requires (a >= 0); {\n" +
-				"	var b : int;\n" +
-				"	var c : int;\n" +
-				"	if ((a < 2)) {\n" +
+				"procedure tests.esc.A.fib(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; requires (a >= 0); {\n" +
+				"	var b: int;\n" +
+				"	var c: int;\n" +
+				"	if (a < 2) {\n" +
 				"		$r := a;\n" +
 				"		return;\n" +
 				"	}\n" +
@@ -724,7 +682,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	return;\n" +
 				"}\n" +
 				"procedure tests.esc.A.n(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	call a := tests.esc.A.fib(this, -1);\n" +
 				"}\n",
 				// adapter output
@@ -764,8 +722,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n" ,
 				// boogie
-				"procedure tests.esc.A.a(this: $Ref, a: int) returns ($r : int) requires $dtype(this) == tests.esc.A; ensures ((a < 2) ⇒ ($r == a)) && ((a >= 2) ⇒ ($r == 5)); {\n" +
-				"	if ((a < 2)) {\n" +
+				"procedure tests.esc.A.a(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; ensures ((a < 2) ⇒ ($r == a)) && ((a >= 2) ⇒ ($r == 5)); {\n" +
+				"	if (a < 2) {\n" +
 				"		$r := a;\n" +
 				"		return;\n" +
 				"	}\n" +
@@ -773,12 +731,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	return;\n" +
 				"}\n" +
 				"procedure tests.esc.A.n(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	call a := tests.esc.A.a(this, 0);\n" +
 				"	assert (a == 1);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	call a := tests.esc.A.a(this, 2);\n" +
 				"	assert (a == 5);\n" +
 				"}\n"
@@ -936,10 +894,10 @@ public class TranslationTests extends AbstractRegressionTest {
 			, 
 			// expected boogie
 			"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var a : int;\n" +
-			"	var b : bool;\n" +
-			"	var c : $Ref;\n" +
-			"	var d : long;\n" +
+			"	var a: int;\n" +
+			"	var b: bool;\n" +
+			"	var c: $Ref;\n" +
+			"	var d: long;\n" +
 			"	assume $dtype(c) == java.lang.String;\n" +
 			"	a := 0;\n" +
 			"	b := false;\n" +
@@ -964,20 +922,20 @@ public class TranslationTests extends AbstractRegressionTest {
 			"       { int n=3;\n" +
 			"         //@ assert n==3;\n" +
 			"       }\n" +
-			"       { int n=4;\n" +
-			"         //@ assert n!=3;\n" +
+			"       { boolean n=true;\n" +
+			"         //@ assert n;\n" +
 			"       }\n" +
 			"   }\n" +
 			"}\n"
 			,
 			// expected boogie
 			"procedure tests.esc.A.m5(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var a : int;\n" +
-			"	var b : int;\n" +
+			"	var a: int;\n" +
+			"	var b: bool;\n" +
 			"	a := 3;\n" +
 			"	assert (a == 3);\n" +
-			"	b := 4;\n" +
-			"	assert (b != 3);\n" +
+			"	b := true;\n" +
+			"	assert b;\n" +
 			"}\n",
 			// adapter output
 			""
@@ -1009,22 +967,22 @@ public class TranslationTests extends AbstractRegressionTest {
 			"}\n",		
 			// expected boogie
 			"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var a : bool;\n" +
+			"	var a: bool;\n" +
 			"	a := true;\n" +
 			"	assert a;\n" +
 			"}\n" +
 			"procedure tests.esc.A.m2(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var a : bool;\n" +
+			"	var a: bool;\n" +
 			"	a := true;\n" +
 			"	assert !a;\n" +
 			"}\n" +
 			"procedure tests.esc.A.m3(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var a : int;\n" +
+			"	var a: int;\n" +
 			"	a := 3;\n" +
 			"	assert (a < 4);\n" +
 			"}\n" +
 			"procedure tests.esc.A.m4(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var a : int;\n" +
+			"	var a: int;\n" +
 			"	a := 3;\n" +
 			"	assert (a < 0);\n" +
 			"}\n"
@@ -1057,8 +1015,8 @@ public class TranslationTests extends AbstractRegressionTest {
 			, 
 			// expected boogie
 			"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var a : int;\n" +
-			"	var b : bool;\n" +
+			"	var a: int;\n" +
+			"	var b: bool;\n" +
 			"	a := 0;\n" +
 			"	b := false;\n" +
 			"}\n",
@@ -1080,13 +1038,14 @@ public class TranslationTests extends AbstractRegressionTest {
 			, 
 			// expected boogie
 			"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var a : int;\n" +
+			"	var a: int;\n" +
+			"	var b: int;\n" + // FIXME this is a side effect of RemoveLocal
 			"	a := 0;\n" +
-			"	while ((a < 1)) {\n" +
+			"	while (a < 1) {\n" +
 			"		a := (a + 1);\n" +
 			"	}\n" +
 			"	a := 0;\n" +
-			"	while ((a < 1)) {\n" +
+			"	while (a < 1) {\n" +
 			"		a := (a + 1);\n" +
 			"	}\n" +
 			"}\n",
@@ -1108,8 +1067,8 @@ public class TranslationTests extends AbstractRegressionTest {
 			, 
 			// expected boogie
 			"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var a : int;\n" +
-			"	var b : bool;\n" +
+			"	var a: int;\n" +
+			"	var b: bool;\n" +
 			"	a := 3;\n" +
 			"	b := true;\n" +
 			"}\n",
@@ -1135,10 +1094,14 @@ public class TranslationTests extends AbstractRegressionTest {
 			"}\n"
 			, 
 			// expected boogie
-			"procedure tests.esc.A.m(this: $Ref, a: int, b: int) returns ($r : $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-			"	var c : int;\n" +
+			"const unique $string_lit_0: $Ref;\n" +
+			"const unique $string_lit_1: $Ref;\n" +
+			"axiom $dtype($string_lit_0) == java.lang.String;\n" +
+			"axiom $dtype($string_lit_1) == java.lang.String;\n" +
+			"procedure tests.esc.A.m(this: $Ref, a: int, b: int) returns ($r: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+			"	var c: int;\n" +
 			"	c := 3;\n" +
-			"	if ((a == 1)) {\n" +
+			"	if (a == 1) {\n" +
 			"		$r := $string_lit_0;\n" +
 			"		return;\n" +
 			"	}\n" +
@@ -1173,47 +1136,30 @@ public class TranslationTests extends AbstractRegressionTest {
 				"" );
 	}
 	
-	// TODO term=ConditionalExpression adapter=none
+	// term=ConditionalExpression adapter=pass
 	public void test_0302_IfCondition_ternary() {
 		this.compareJavaToBoogie(
 				"package tests.esc;\n" +
 				"public class A {\n" + 
-				"   public void m1() {\n" + 
-				"      //@ assert (true ? true : true);\n" + 
-				"   }\n" + 
-				"   public void m2() {\n" + 
-				"      //@ assert (true ? true : false);\n" + 
-				"   }\n" + 
-				"   public void m3() {\n" + 
-				"      //@ assert (true ? false : true);\n" + 
-				"   }\n" + 
-				"   public void m4() {\n" + 
-				"      //@ assert (true ? false : false);\n" + 
-				"   }\n" + 
-				"   public void m5() {\n" + 
-				"      //@ assert (false ? true : true);\n" + 
-				"   }\n" + 
-				"   public void m6() {\n" + 
-				"      //@ assert (false ? true : false);\n" + 
-				"   }\n" + 
-				"   public void m7() {\n" + 
-				"      //@ assert (false ? false : true);\n" + 
-				"   }\n" + 
-				"   public void m8() {\n" + 
-				"      //@ assert (false ? false : false);\n" + 
-				"   }\n" + 
-				"   public void m9() {\n" + 
-				"      //@ assert (false ? false : \n" +
-				"                          (false ? false : true));\n" + 
-				"   }\n" + 
-				"   public void m10() {\n" + 
-				"      //@ assert (false ? false : \n" +
-				"                          (false ? false : false));\n" + 
-				"   }\n" + 
+				"	public void m() {" +
+				"		int a = 0;\n" + 
+				"		assert (a < 10 ? a == 0 : false);\n" +
+				"	}\n" + 
 				"}\n"
 				,
-				//TODO expected boogie
-				"",
+				// expected boogie
+				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: int;\n" +
+				"	var b: bool;\n" +
+				"	a := 0;\n" +
+				"	if (a < 10) {\n" +
+				"		b := (a == 0);\n" +
+				"	}\n" +
+				"	else {\n" +
+				"		b := false;\n" +
+				"	}\n" +
+				"	assert b;\n" +
+				"}\n",
 				// adapter output
 				""
 				);
@@ -1287,7 +1233,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : bool;\n" +
+				"	var a: bool;\n" +
 				"	a := true;\n" +
 				"	assert !a;\n" +
 				"	assert !!a;\n" +
@@ -1315,7 +1261,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	a := 1;\n" +
 				"	assert (a == 1);\n" +
 				"}\n",
@@ -1343,12 +1289,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	while ((true == true)) {\n" +
+				"	while (true == true) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
 				"}\n" +
 				"procedure tests.esc.A.m2(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	while ((true == true)) {\n" +
+				"	while (true == true) {\n" +
 				"		assert true;\n" +
 				"	}\n" +
 				"}\n",
@@ -1455,7 +1401,7 @@ public class TranslationTests extends AbstractRegressionTest {
                 ,
                //expected boogie
                 "procedure tests.esc.A.m(this: $Ref, a: bool) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var b : int;\n" +
+				"	var b: int;\n" +
 				"	b := 5;\n" +
 				"	while (a) invariant (b == 5); {\n" +
 				"	}\n" +
@@ -1626,17 +1572,17 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	a := 0;\n" +
-				"	while ((a < 10)) {\n" +
+				"	while (a < 10) {\n" +
 				"		assert true;\n" +
 				"		a := (a + 1);\n" +
 				"	}\n" +
 				"}\n" +
 				"procedure tests.esc.A.m2(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	a := 10;\n" +
-				"	while ((a > 0)) {\n" +
+				"	while (a > 0) {\n" +
 				"		assert true;\n" +
 				"		a := (a - 1);\n" +
 				"	}\n" +
@@ -1662,12 +1608,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
-				"	var b : int;\n" +
+				"	var a: int;\n" +
+				"	var b: int;\n" +
 				"	assert true;\n" +
 				"	a := 1;\n" +
 				"	b := 10;\n" +
-				"	while ((a < b)) {\n" +
+				"	while (a < b) {\n" +
 				"		assert true;\n" +
 				"		a := (a + 1);\n" +
 				"		b := (b + 1);\n" +
@@ -1691,9 +1637,9 @@ public class TranslationTests extends AbstractRegressionTest {
 			    "}\n"
 			    ,
 			    "procedure tests.esc.A.m(this: $Ref, a: bool) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var b : int;\n" +
+				"	var b: int;\n" +
 				"	b := 0;\n" +
-				"	while ((b < 10)) invariant true; {\n" +
+				"	while (b < 10) invariant true; {\n" +
 				"		b := (b + 1);\n" +
 				"	}\n" +
 				"}\n",
@@ -1721,8 +1667,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie		
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
-				"	var b : int;\n" +
+				"	var a: int;\n" +
+				"	var b: int;\n" +
 				"	a := 0;\n" +
 				"	a := (a + 1);\n" +
 				"	a := (a + 1);\n" +
@@ -1753,8 +1699,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie			
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
-				"	var b : int;\n" +
+				"	var a: int;\n" +
+				"	var b: int;\n" +
 				"	a := 0;\n" +
 				"	a := (a + 1);\n" +
 				"	a := (a + 1);\n" +
@@ -1784,8 +1730,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie			
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
-				"	var b : int;\n" +
+				"	var a: int;\n" +
+				"	var b: int;\n" +
 				"	a := 5;\n" +
 				"	b := 0;\n" +
 				"	b := a;\n" +
@@ -1816,8 +1762,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie			
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
-				"	var b : int;\n" +
+				"	var a: int;\n" +
+				"	var b: int;\n" +
 				"	a := 5;\n" +
 				"	b := 0;\n" +
 				"	a := (a + 1);\n" +
@@ -1850,9 +1796,9 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
-				"	var b : int;\n" +
-				"	var c : int;\n" +
+				"	var a: int;\n" +
+				"	var b: int;\n" +
+				"	var c: int;\n" +
 				"	a := 1;\n" +
 				"	b := 2;\n" +
 				"	a := 3;\n" +
@@ -1882,8 +1828,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,				
 				// expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
-				"	var b : int;\n" +
+				"	var a: int;\n" +
+				"	var b: int;\n" +
 				"	a := 2;\n" +
 				"	b := 1;\n" +
 				"}\n",
@@ -1908,7 +1854,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				// expected boogie
 				"var tests.esc.A.i: [$Ref] int;\n" +
 				"var tests.esc.A.b: [$Ref] bool;\n" +
-				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"procedure tests.esc.A.m(this: $Ref) modifies tests.esc.A.i; requires $dtype(this) == tests.esc.A; {\n" +
 				"	tests.esc.A.i[this] := 1;\n" +
 				"}\n",
 				// adapter output
@@ -1922,21 +1868,24 @@ public class TranslationTests extends AbstractRegressionTest {
 				//java
 				"package tests.esc;\n" +
 				"public class A {\n" +
-				" 	static int i = 1;\n" +
-				"	static int x = i;\n" +
-				"	static int z;\n" +
+				" 	int i = 1;\n" +
+				"	int x = i;\n" +
+				"	int z;\n" +
+				"	public A() { }" +
 				"}\n" 
 				,
 				//TODO  expected boogie
-				"var tests.esc.A.i: int;\n" +				
-				"var tests.esc.A.x: int;\n" +
-				"var tests.esc.A.z: int;\n" +
-				"procedure tests.esc.A_defaultInit() {\n" +
-				"	tests.esc.A.i := 1;\n" +
-				"	tests.esc.A.x := tests.esc.A.i;\n" +
-				"   tests.esc.A.z := 0;\n" +
+				"var tests.esc.A.i: [$Ref] int;\n" +				
+				"var tests.esc.A.x: [$Ref] int;\n" +
+				"var tests.esc.A.z: [$Ref] int;\n" +
+				"procedure tests.esc.A.$initFields(this: $Ref) modifies tests.esc.A.i; modifies.test.esc.A.x; modifies tests.esc.A.z; {\n" +
+				"	tests.esc.A.i[this] := 1;\n" +
+				"	tests.esc.A.x[this] := tests.esc.A.i;\n" +
+				"   tests.esc.A.z[this] := 0;\n" +
 				"}\n" +
-				"call tests.esc.A_defaultInit();\n",
+				"procedure tests.esc.A.A(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	call tests.esc.A.$initFields(this);\n" +
+				"}\n",
 				// adapter output
 				""
 				);
@@ -1953,7 +1902,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.A.m(this: $Ref) returns ($r : int) requires $dtype(this) == tests.esc.A; ensures ($r == 3); {\n" +
+				"procedure tests.esc.A.m(this: $Ref) returns ($r: int) requires $dtype(this) == tests.esc.A; ensures ($r == 3); {\n" +
 				"	$r := 3;\n" +
 				"	return;\n" +
 				"}\n"
@@ -1974,7 +1923,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n" 
 				,
 				// expected boogie
-				"procedure tests.esc.A.m(this: $Ref) returns ($r : int) requires $dtype(this) == tests.esc.A; ensures ($r == 4); {\n" +
+				"procedure tests.esc.A.m(this: $Ref) returns ($r: int) requires $dtype(this) == tests.esc.A; ensures ($r == 4); {\n" +
 				"	$r := 3;\n" +
 				"	return;\n" +
 				"}\n"
@@ -2008,7 +1957,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"var tests.esc.A.x: [$Ref] int;\n" +
-				"procedure tests.esc.A.m(this: $Ref) returns ($r : int) requires $dtype(this) == tests.esc.A; modifies tests.esc.A.x; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] - 1)); {\n" +
+				"procedure tests.esc.A.m(this: $Ref) returns ($r: int) modifies tests.esc.A.x; requires $dtype(this) == tests.esc.A; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] - 1)); {\n" +
 				"	$r := tests.esc.A.x[this];\n" +
 				"	tests.esc.A.x[this] := (tests.esc.A.x[this] + 1);\n" +
 				"	return;\n" +
@@ -2033,7 +1982,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"var tests.esc.A.x: [$Ref] int;\n" +
-				"procedure tests.esc.A.m(this: $Ref) returns ($r : int) requires $dtype(this) == tests.esc.A; modifies tests.esc.A.x; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] + 10)); {\n" +
+				"procedure tests.esc.A.m(this: $Ref) returns ($r: int) modifies tests.esc.A.x; requires $dtype(this) == tests.esc.A; ensures (old(tests.esc.A.x[this]) == (tests.esc.A.x[this] + 10)); {\n" +
 				"	$r := tests.esc.A.x[this];\n" +
 				"	tests.esc.A.x[this] := (tests.esc.A.x[this] + 1);\n" +
 				"	return;\n" +
@@ -2071,17 +2020,17 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
-				"	var b : int;\n" +
-				"	var c : int;\n" +
-				"	var d : int;\n" +
-				"	var e : int;\n" +
-				"	var f : int;\n" +
-				"	var g : int;\n" +
-				"	var h : int;\n" +
-				"	var i : int;\n" +
-				"	var j : int;\n" +
-				"	var k : int;\n" +
+				"	var a: int;\n" +
+				"	var b: int;\n" +
+				"	var c: int;\n" +
+				"	var d: int;\n" +
+				"	var e: int;\n" +
+				"	var f: int;\n" +
+				"	var g: int;\n" +
+				"	var h: int;\n" +
+				"	var i: int;\n" +
+				"	var j: int;\n" +
+				"	var k: int;\n" +
 				"	a := 0;\n" +
 				"	b := 0;\n" +
 				"	c := 0;\n" +
@@ -2393,8 +2342,37 @@ public class TranslationTests extends AbstractRegressionTest {
 				"   }\n" + 
 				"}\n"
 				, 
-				//TODO expected boogie
-				"",
+				// expected boogie
+				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: bool;\n" +
+				"	if (5 == (3 + 2)) {\n" +
+				"		a := (42 == (6 * 7));\n" +
+				"	}\n" +
+				"	else {\n" +
+				"		a := ((1 + 1) == 2);\n" +
+				"	}\n" +
+				"	assert a;\n" +
+				"}\n" +
+				"procedure tests.esc.A.m2(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: bool;\n" +
+				"	if (5 == (3 + 2)) {\n" +
+				"		a := (42 > (6 * 7));\n" +
+				"	}\n" +
+				"	else {\n" +
+				"		a := ((1 + 1) == 2);\n" +
+				"	}\n" +
+				"	assert a;\n" +
+				"}\n" +
+				"procedure tests.esc.A.m3(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: bool;\n" +
+				"	if (5 == (3 + 3)) {\n" +
+				"		a := (42 == (6 * 7));\n" +
+				"	}\n" +
+				"	else {\n" +
+				"		a := ((1 + 1) != 2);\n" +
+				"	}\n" +
+				"	assert a;\n" +
+				"}\n",
 				// adapter output
 				""
 				);
@@ -2417,8 +2395,37 @@ public class TranslationTests extends AbstractRegressionTest {
 				"   }\n" + 
 				"}\n" 
 				, 
-				// TODO expected boogie
-				"",
+				// expected boogie
+				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: bool;\n" +
+				"	if (!true) {\n" +
+				"		a := false;\n" +
+				"	}\n" +
+				"	else {\n" +
+				"		a := !true;\n" +
+				"	}\n" +
+				"	assert a;\n" +
+				"}\n" +
+				"procedure tests.esc.A.m2(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: bool;\n" +
+				"	if false && false {\n" +
+				"		a := true;\n" +
+				"	}\n" +
+				"	else {\n" +
+				"		a := false && false;\n" +
+				"	}\n" +
+				"	assert a;\n" +
+				"}\n" +
+				"procedure tests.esc.A.m3(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: bool;\n" +
+				"	if (false || false) {\n" +
+				"		a := true;\n" +
+				"	}\n" +
+				"	else {\n" +
+				"		a := (false || false);\n" +
+				"	}\n" +
+				"	assert a;\n" +
+				"}\n",
 				// adapter output
 				""
 				);
@@ -2485,12 +2492,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	a := 2147483647;\n" +
 				"	assert (a == 2147483647);\n" +
 				"}\n" +
 				"procedure tests.esc.A.m2(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	a := -2147483648;\n" +
 				"	assert (a == -2147483648);\n" +
 				"}\n",
@@ -2516,11 +2523,11 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	call a := tests.esc.A.m2(this);\n" +
 				"	assert (a == 4);\n" +
 				"}\n" +
-				"procedure tests.esc.A.m2(this: $Ref) returns ($r : int) requires $dtype(this) == tests.esc.A; {\n" +
+				"procedure tests.esc.A.m2(this: $Ref) returns ($r: int) requires $dtype(this) == tests.esc.A; {\n" +
 				"	$r := 4;\n" +
 				"	return;\n" +
 				"}\n"
@@ -2552,11 +2559,11 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.A.m1(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : int;\n" +
+				"	var a: int;\n" +
 				"	call a := tests.esc.A.m2(this, 5);\n" +
 				"	assert (a == 5);\n" +
 				"}\n" +
-				"procedure tests.esc.A.m2(this: $Ref, a: int) returns ($r : int) requires $dtype(this) == tests.esc.A; {\n" +
+				"procedure tests.esc.A.m2(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; {\n" +
 				"	$r := a;\n" +
 				"	return;\n" +
 				"}\n"
@@ -2647,11 +2654,11 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				//expected boogie
 				"procedure tests.esc.A.m(a: $Ref) requires $dtype(a) == tests.esc.N; {\n" +
-				"	var b : int;\n" +
+				"	var b: int;\n" +
 				"	call tests.esc.N.o(a);\n" +
 				"	call b := tests.esc.N.n(a, 3);\n" +
 				"}\n" +
-				"procedure tests.esc.N.n(this: $Ref, a: int) returns ($r : int) requires $dtype(this) == tests.esc.N; {\n" +
+				"procedure tests.esc.N.n(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.N; {\n" +
 				"	$r := a;\n" +
 				"	return;\n" +
 				"}\n" +
@@ -2702,7 +2709,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"var tests.esc.A.x: [$Ref] $Ref;\n" +
 //				"axiom ∀n: int • $ftype(tests.esc.A.x[n]) == tests.esc.A;\n" +
 				"var tests.esc.A.y: $Ref;\n" +
-//				"axiom ∀n: int • $ftype(tests.esc.A.y[n]) == tests.esc.A;\n" +
+				"axiom $dtype(tests.esc.A.y) == tests.esc.N;\n" +
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
 				"	call tests.esc.N.n(tests.esc.A.x[this]);\n" +
 				"	call tests.esc.N.n(tests.esc.A.y);\n" +
@@ -2723,14 +2730,16 @@ public class TranslationTests extends AbstractRegressionTest {
 				"class A {\n" +
 				"	void m() { N x = new N(); x.n(); }\n" +
 				"}\n" +
-				"class N { void n() { } }\n" 
+				"class N { public N() { } void n() { } }\n" 
 				,
 				// expected boogie
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : $Ref;\n" +
+				"	var a: $Ref;\n" +
 				"	assume $dtype(a) == tests.esc.N;\n" +
 				"	call tests.esc.N.N(a);\n" +
 				"	call tests.esc.N.n(a);\n" +
+				"}\n" +
+				"procedure tests.esc.N.N(this: $Ref) requires $dtype(this) == tests.esc.N; {\n" +
 				"}\n" +
 				"procedure tests.esc.N.n(this: $Ref) requires $dtype(this) == tests.esc.N; {\n" +
 				"}\n" 
@@ -2756,7 +2765,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"var tests.esc.A.x: [$Ref] [int] int;\n" +
-				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; modifies tests.esc.A.x; {\n" +
+				"procedure tests.esc.A.m(this: $Ref) modifies tests.esc.A.x; requires $dtype(this) == tests.esc.A; {\n" +
 				"	tests.esc.A.x[this][0] := 2;\n" +
 				"	tests.esc.A.x[this][1] := 4;\n" +
 				"	tests.esc.A.x[this][2] := 6;\n" +
@@ -2783,8 +2792,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : [int] int;\n" +
-				"	var a.length : int;\n" +
+				"	var a: [int] int;\n" +
+				"	var a.length: int;\n" +
 				"	a[0] := 1;\n" +
 				"	a[1] := 2;\n" +
 				"	a[2] := 3;\n" +
@@ -2814,8 +2823,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : [int] int;\n" +
-				"	var a.length : int;\n" +
+				"	var a: [int] int;\n" +
+				"	var a.length: int;\n" +
 				"	a[0] := 0;\n" +
 				"	a.length := 1;\n" +
 				"	if (true) {\n" +
@@ -2844,8 +2853,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : [int] int;\n" +
-				"	var a.length : int;\n" +
+				"	var a: [int] int;\n" +
+				"	var a.length: int;\n" +
 				"	a[0] := 0;\n" +
 				"	a[1] := 0;\n" +
 				"	a[2] := 0;\n" +
@@ -2873,12 +2882,12 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : [int] int;\n" +
-				"	var a.length : int;\n" +
-				"	var b : [int] $Ref;\n" +
-				"	var b.length : int;\n" +
-				"	var c : [int] bool;\n" +
-				"	var c.length : int;\n" +
+				"	var a: [int] int;\n" +
+				"	var a.length: int;\n" +
+				"	var b: [int] $Ref;\n" +
+				"	var b.length: int;\n" +
+				"	var c: [int] bool;\n" +
+				"	var c.length: int;\n" +
 				"	a[0] := 0;\n" +
 				"	a[1] := 0;\n" +
 				"	a.length := 2;\n" +
@@ -2931,7 +2940,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"procedure tests.esc.A.A(this: $Ref, a: int) requires $dtype(this) == tests.esc.A; {\n" +
 				"}\n" +
 				"procedure tests.esc.A.x() {\n" +
-				"	var a : $Ref;\n" +
+				"	var a: $Ref;\n" +
 				"	assume $dtype(a) == tests.esc.A;\n" +
 				"	call tests.esc.A.A(a, 1);\n" +
 				"}\n"
@@ -2949,23 +2958,28 @@ public class TranslationTests extends AbstractRegressionTest {
 				"class A {\n" +
 				"	String x;\n" +
 				"	//@ assignable x;\n" +
+				"	//@ ensures x == \"hello world\";\n" +
 				"	public A(int q) {\n" +
 				"		x = \"hello world\";\n" +
 				"	}\n" +
 				"	public static void x() {\n" +
 				"		A a = new A(1);\n" +
-				"		assert a.x != \"abc\";" +
+				"		assert a.x != \"abc\";\n" +
 				"	}\n" +
 				"}\n" 
 				,
 				// expected boogie
 				"var tests.esc.A.x: [$Ref] $Ref;\n" +
 //				"axiom ∀n: int • $dtype(tests.esc.A.x[n]) == tests.esc.A;\n" +
-				"procedure tests.esc.A.A(this: $Ref, a: int) requires $dtype(this) == tests.esc.A; modifies tests.esc.A.x; {\n" +
+				"const unique $string_lit_0: $Ref;\n" +
+				"const unique $string_lit_1: $Ref;\n" +
+				"axiom $dtype($string_lit_0) == java.lang.String;\n" +
+				"axiom $dtype($string_lit_1) == java.lang.String;\n" +
+				"procedure tests.esc.A.A(this: $Ref, a: int) modifies tests.esc.A.x; requires $dtype(this) == tests.esc.A; ensures (tests.esc.A.x[this] == $string_lit_0); {\n" +
 				"	tests.esc.A.x[this] := $string_lit_0;\n" +
 				"}\n" +
-				"procedure tests.esc.A.x() {\n" +
-				"	var a : $Ref;\n" +
+				"procedure tests.esc.A.x() modifies tests.esc.A.x; {\n" +
+				"	var a: $Ref;\n" +
 				"	assume $dtype(a) == tests.esc.A;\n" +
 				"	call tests.esc.A.A(a, 1);\n" +
 				"	assert (tests.esc.A.x[a] != $string_lit_1);\n" +
@@ -2998,13 +3012,13 @@ public class TranslationTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.A(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
 				"}\n" +
-				"procedure tests.esc.A.n(this: $Ref) returns ($r : int) requires $dtype(this) == tests.esc.A; ensures ($r == 2); {\n" +
+				"procedure tests.esc.A.n(this: $Ref) returns ($r: int) requires $dtype(this) == tests.esc.A; ensures ($r == 2); {\n" +
 				"	$r := 2;\n" +
 				"	return;\n" +
 				"}\n" +
 				"procedure tests.esc.B.B(this: $Ref) requires $dtype(this) == tests.esc.B; {\n" +
-				"	var a : $Ref;\n" +
-				"	var b : int;\n" +
+				"	var a: $Ref;\n" +
+				"	var b: int;\n" +
 				"	assume $dtype(a) == tests.esc.A;\n" +
 				"	call tests.esc.A.A(a);\n" +
 				"	call b := tests.esc.A.n(a);\n" +
@@ -3035,13 +3049,13 @@ public class TranslationTests extends AbstractRegressionTest {
 				// expected boogie
 				"procedure tests.esc.A.A(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
 				"}\n" +
-				"procedure tests.esc.A.fib(this: $Ref, a: int) returns ($r : int) requires $dtype(this) == tests.esc.A; {\n" +
+				"procedure tests.esc.A.fib(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; {\n" +
 				"	$r := 2;\n" +
 				"	return;\n" +
 				"}\n" +
 				"procedure tests.esc.A.main(a: [int] $Ref) {\n" +
-				"	var b : $Ref;\n" +
-				"	var c : int;\n" +
+				"	var b: $Ref;\n" +
+				"	var c: int;\n" +
 				"	assume $dtype(b) == tests.esc.A;\n" +
 				"	call tests.esc.A.A(b);\n" +
 				"	call c := tests.esc.A.fib(b, 1);\n" +
@@ -3074,7 +3088,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"var tests.esc.A.counter: [$Ref] int;\n" +
-				"procedure tests.esc.A.increaseCounter(this: $Ref) requires $dtype(this) == tests.esc.A; modifies tests.esc.A.counter; ensures (tests.esc.A.counter[this] == (old(tests.esc.A.counter[this]) + 1)); {\n" +
+				"procedure tests.esc.A.increaseCounter(this: $Ref) modifies tests.esc.A.counter; requires $dtype(this) == tests.esc.A; ensures (tests.esc.A.counter[this] == (old(tests.esc.A.counter[this]) + 1)); {\n" +
 				"	tests.esc.A.counter[this] := (tests.esc.A.counter[this] + 2);\n" +
 				"}\n"
 				,
@@ -3113,11 +3127,11 @@ public class TranslationTests extends AbstractRegressionTest {
 				"var tests.esc.A.counter: [$Ref] int;\n" +
 				"procedure tests.esc.A.A(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
 				"}\n" +
-				"procedure tests.esc.A.increaseCounter(this: $Ref) requires $dtype(this) == tests.esc.A; modifies tests.esc.A.counter; ensures (tests.esc.A.counter[this] == (old(tests.esc.A.counter[this]) + 1)); {\n" +
+				"procedure tests.esc.A.increaseCounter(this: $Ref) modifies tests.esc.A.counter; requires $dtype(this) == tests.esc.A; ensures (tests.esc.A.counter[this] == (old(tests.esc.A.counter[this]) + 1)); {\n" +
 				"	tests.esc.A.counter[this] := (tests.esc.A.counter[this] + 2);\n" +
 				"}\n" +
-				"procedure tests.esc.A.x(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : $Ref;\n" +
+				"procedure tests.esc.A.x(this: $Ref) modifies tests.esc.A.counter; requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: $Ref;\n" +
 				"	assume $dtype(a) == tests.esc.A;\n" +
 				"	call tests.esc.A.A(a);\n" +
 				"	call tests.esc.A.increaseCounter(a);\n" +
@@ -3125,10 +3139,15 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// adapter output
 				"----------\n" +
-				"1. ERROR in A.java (at line 10)\n" +
-				"	public void x() { A a = new A(); a.increaseCounter(); }\n" +
-				"	                                 ^^^^^^^^^^^^^^^^^^^\n" +
-				"Missing JML modifies clause for this attribute assignment.\n" +
+				"1. ERROR in A.java (at line 6)\n" +
+				"	//@ ensures counter == \\old(counter) + 1;\n" +
+				"	            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+				"This postcondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 7)\n" +
+				"	public void increaseCounter() {\n" +
+				"	            ^^^^^^^^^^^^^^^^^\n" +
+				"This postcondition might not hold.\n" +
 				"----------\n"
 				);
 	}
@@ -3152,11 +3171,11 @@ public class TranslationTests extends AbstractRegressionTest {
 				,
 				// expected boogie
 				"var tests.esc.A.counter: [$Ref] int;\n" +
-				"procedure tests.esc.A.A(this: $Ref) requires $dtype(this) == tests.esc.A; modifies tests.esc.A.counter; {\n" +
+				"procedure tests.esc.A.A(this: $Ref) modifies tests.esc.A.counter; requires $dtype(this) == tests.esc.A; {\n" +
 				"	tests.esc.A.counter[this] := 2;\n" +
 				"}\n" +
-				"procedure tests.esc.A.x(this: $Ref) requires $dtype(this) == tests.esc.A; modifies tests.esc.A.counter; {\n" +
-				"	var a : $Ref;\n" +
+				"procedure tests.esc.A.x(this: $Ref) modifies tests.esc.A.counter; requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: $Ref;\n" +
 				"	assume $dtype(a) == tests.esc.A;\n" +
 				"	call tests.esc.A.A(a);\n" +
 				"	tests.esc.A.counter[a] := 10;\n" +
@@ -3187,6 +3206,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				"}\n"
 				,
 				// expected boogie
+				"const unique $string_lit_0: $Ref;\n" +
+				"axiom $dtype($string_lit_0) == java.lang.String;\n" +
 				"procedure tests.esc.A.a(this: $Ref, a: $Ref) requires $dtype(this) == tests.esc.A; requires $dtype(a) == java.lang.String; {\n" +
 				"}\n" +
 				"procedure tests.esc.A.b(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
@@ -3241,8 +3262,8 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	call tests.esc.C.x(a);\n" +
 				"}\n" +
 				"procedure tests.esc.A.b(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
-				"	var a : $Ref;\n" +
-				"	var b : $Ref;\n" +
+				"	var a: $Ref;\n" +
+				"	var b: $Ref;\n" +
 				"	assume $dtype(a) == tests.esc.C;\n" +
 				"	assume $dtype(b) == tests.esc.B;\n" +
 				"	call tests.esc.C.C(a);\n" +

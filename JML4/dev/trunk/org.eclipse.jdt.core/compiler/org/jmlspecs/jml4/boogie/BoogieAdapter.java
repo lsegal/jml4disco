@@ -72,7 +72,7 @@ public class BoogieAdapter {
 	 */
 	public void prove(CompilationUnitDeclaration unit) {
 		// fill boogie visitor
-		BoogieVisitor.visit(unit, output);
+		BoogieVisitor.visit(unit).toBuffer(output);
 		if (DEBUG) {
 			System.out.println(output.getResults());
 		}

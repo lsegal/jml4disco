@@ -17,14 +17,13 @@ public class BoogieSource {
 	private boolean newLine = true;
 	private StringBuffer implBody = new StringBuffer();
 	private Hashtable/* <BoogieSourcePoint, ASTNode> */pointTable = new Hashtable();
-	public static int headersOffset;
+	public static int headersOffset = 7;
 	private int prependsOffset;
 	private static StringBuffer headers;
 	private StringBuffer prepends;
 
 	public BoogieSource() {
 		prepends = new StringBuffer();
-		implBody.append(getHeaders());
 		sourcePoint.row += headersOffset;
 	}
 	
@@ -46,6 +45,17 @@ public class BoogieSource {
 	public String getResults() {
 		if (prepends.length() != 0)
 			prependAll();
+		return getHeaders() + implBody.toString();
+	}
+	
+	/**
+	 * Alias of {@link #getResults()}
+	 */
+	public String toString() {
+		return getResults();
+	}
+	
+	public String getBody() {
 		return implBody.toString();
 	}
 
@@ -136,7 +146,6 @@ public class BoogieSource {
 //		headers.append("function $ftype([$Ref]ɑ) returns ($TName);\n"); //$NON-NLS-1$
 		headers.append("axiom (∀ x : int, y: int • {x % y} {x /y} x%y == x - x/y *y);\n"); //$NON-NLS-1$
 		headers.append("axiom (∀x:int,y:int•{x%y}(0<y⇒0<=x%y∧x%y<y)∧(y<0⇒y<x%y∧x%y<=0));\n"); //$NON-NLS-1$
-		headersOffset = 7;
 	}
 
 	/**

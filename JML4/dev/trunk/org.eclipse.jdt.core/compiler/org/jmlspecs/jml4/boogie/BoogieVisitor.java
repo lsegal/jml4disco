@@ -1,168 +1,60 @@
 package org.jmlspecs.jml4.boogie;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Stack;
 
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
-import org.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;
-import org.eclipse.jdt.internal.compiler.ast.ASTNode;
-import org.eclipse.jdt.internal.compiler.ast.AbstractVariableDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.jdt.internal.compiler.ast.AnnotationMethodDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.Argument;
-import org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
-import org.eclipse.jdt.internal.compiler.ast.ArrayInitializer;
-import org.eclipse.jdt.internal.compiler.ast.ArrayQualifiedTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.ArrayReference;
-import org.eclipse.jdt.internal.compiler.ast.ArrayTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.AssertStatement;
-import org.eclipse.jdt.internal.compiler.ast.Assignment;
-import org.eclipse.jdt.internal.compiler.ast.BinaryExpression;
-import org.eclipse.jdt.internal.compiler.ast.Block;
-import org.eclipse.jdt.internal.compiler.ast.BreakStatement;
-import org.eclipse.jdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.jdt.internal.compiler.ast.CastExpression;
-import org.eclipse.jdt.internal.compiler.ast.CharLiteral;
-import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
-import org.eclipse.jdt.internal.compiler.ast.Clinit;
-import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.CompoundAssignment;
-import org.eclipse.jdt.internal.compiler.ast.ConditionalExpression;
-import org.eclipse.jdt.internal.compiler.ast.ContinueStatement;
-import org.eclipse.jdt.internal.compiler.ast.DoStatement;
-import org.eclipse.jdt.internal.compiler.ast.DoubleLiteral;
-import org.eclipse.jdt.internal.compiler.ast.EmptyStatement;
-import org.eclipse.jdt.internal.compiler.ast.EqualExpression;
-import org.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;
-import org.eclipse.jdt.internal.compiler.ast.Expression;
-import org.eclipse.jdt.internal.compiler.ast.ExtendedStringLiteral;
-import org.eclipse.jdt.internal.compiler.ast.FalseLiteral;
-import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.FieldReference;
-import org.eclipse.jdt.internal.compiler.ast.FloatLiteral;
-import org.eclipse.jdt.internal.compiler.ast.ForStatement;
-import org.eclipse.jdt.internal.compiler.ast.ForeachStatement;
-import org.eclipse.jdt.internal.compiler.ast.IfStatement;
-import org.eclipse.jdt.internal.compiler.ast.ImportReference;
-import org.eclipse.jdt.internal.compiler.ast.Initializer;
-import org.eclipse.jdt.internal.compiler.ast.InstanceOfExpression;
-import org.eclipse.jdt.internal.compiler.ast.IntLiteral;
-import org.eclipse.jdt.internal.compiler.ast.LabeledStatement;
-import org.eclipse.jdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.LongLiteral;
-import org.eclipse.jdt.internal.compiler.ast.MarkerAnnotation;
-import org.eclipse.jdt.internal.compiler.ast.MemberValuePair;
-import org.eclipse.jdt.internal.compiler.ast.MessageSend;
-import org.eclipse.jdt.internal.compiler.ast.NormalAnnotation;
-import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
-import org.eclipse.jdt.internal.compiler.ast.OR_OR_Expression;
-import org.eclipse.jdt.internal.compiler.ast.OperatorIds;
-import org.eclipse.jdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.ParameterizedSingleTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.PostfixExpression;
-import org.eclipse.jdt.internal.compiler.ast.PrefixExpression;
-import org.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;
-import org.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.jdt.internal.compiler.ast.QualifiedSuperReference;
-import org.eclipse.jdt.internal.compiler.ast.QualifiedThisReference;
-import org.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
-import org.eclipse.jdt.internal.compiler.ast.SingleMemberAnnotation;
-import org.eclipse.jdt.internal.compiler.ast.SingleNameReference;
-import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.jdt.internal.compiler.ast.*;
 import org.eclipse.jdt.internal.compiler.ast.Statement;
-import org.eclipse.jdt.internal.compiler.ast.StringLiteral;
-import org.eclipse.jdt.internal.compiler.ast.StringLiteralConcatenation;
-import org.eclipse.jdt.internal.compiler.ast.SuperReference;
-import org.eclipse.jdt.internal.compiler.ast.SwitchStatement;
-import org.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;
-import org.eclipse.jdt.internal.compiler.ast.ThisReference;
-import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
-import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
-import org.eclipse.jdt.internal.compiler.ast.TryStatement;
-import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.TypeParameter;
-import org.eclipse.jdt.internal.compiler.ast.UnaryExpression;
-import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
-import org.eclipse.jdt.internal.compiler.ast.Wildcard;
-import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
-import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
-import org.eclipse.jdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
-import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
-import org.jmlspecs.jml4.ast.JmlAssertStatement;
-import org.jmlspecs.jml4.ast.JmlAssignableClause;
-import org.jmlspecs.jml4.ast.JmlAssumeStatement;
-import org.jmlspecs.jml4.ast.JmlCastExpressionWithoutType;
-import org.jmlspecs.jml4.ast.JmlConstructorDeclaration;
-import org.jmlspecs.jml4.ast.JmlDoStatement;
-import org.jmlspecs.jml4.ast.JmlEnsuresClause;
-import org.jmlspecs.jml4.ast.JmlForStatement;
-import org.jmlspecs.jml4.ast.JmlKeywordExpression;
-import org.jmlspecs.jml4.ast.JmlLoopAnnotations;
-import org.jmlspecs.jml4.ast.JmlLoopInvariant;
-import org.jmlspecs.jml4.ast.JmlLoopVariant;
-import org.jmlspecs.jml4.ast.JmlMethodDeclaration;
-import org.jmlspecs.jml4.ast.JmlMethodSpecification;
-import org.jmlspecs.jml4.ast.JmlOldExpression;
-import org.jmlspecs.jml4.ast.JmlRequiresClause;
-import org.jmlspecs.jml4.ast.JmlResultReference;
-import org.jmlspecs.jml4.ast.JmlSingleNameReference;
-import org.jmlspecs.jml4.ast.JmlSpecCase;
-import org.jmlspecs.jml4.ast.JmlSpecCaseRestAsClauseSeq;
-import org.jmlspecs.jml4.ast.JmlStoreRefListExpression;
-import org.jmlspecs.jml4.ast.JmlWhileStatement;
+import org.eclipse.jdt.internal.compiler.lookup.*;
+import org.jmlspecs.jml4.ast.*;
+import org.jmlspecs.jml4.boogie.ast.*;
+import org.jmlspecs.jml4.boogie.ast.AssertStatement;
+import org.jmlspecs.jml4.boogie.ast.Assignment;
+import org.jmlspecs.jml4.boogie.ast.BinaryExpression;
+import org.jmlspecs.jml4.boogie.ast.BreakStatement;
+import org.jmlspecs.jml4.boogie.ast.EmptyStatement;
+import org.jmlspecs.jml4.boogie.ast.Expression;
+import org.jmlspecs.jml4.boogie.ast.IfStatement;
+import org.jmlspecs.jml4.boogie.ast.ReturnStatement;
+import org.jmlspecs.jml4.boogie.ast.Scope;
+import org.jmlspecs.jml4.boogie.ast.TypeDeclaration;
+import org.jmlspecs.jml4.boogie.ast.TypeReference;
+import org.jmlspecs.jml4.boogie.ast.IntLiteral;
+import org.jmlspecs.jml4.boogie.ast.UnaryExpression;
+import org.jmlspecs.jml4.boogie.ast.WhileStatement;
 
 public class BoogieVisitor extends ASTVisitor {
 	private static final boolean DEBUG = true;
+	
+	private Scope boogieScope = null;
+	private BoogieNode result = null;
+	private Stack statementLists = new Stack();
+	private ArrayList postStatements = new ArrayList();
+
 	private BlockScope methodScope;
-	private BoogieSource output;
-	private Hashtable typeList = new Hashtable();
+	private VariableReference methodCallAssignmentVar = null;
 
 	private int stringPoolValue = 0;
 	private Hashtable stringPool = new Hashtable();
 
-	//private int objectPoolValue = 0;
-	
-	private static final String BLOCK_OPEN = "{"; //$NON-NLS-1$
-	private static final String BLOCK_CLOSE = "}"; //$NON-NLS-1$
-	private static final String PAREN_OPEN = "("; //$NON-NLS-1$
-	private static final String PAREN_CLOSE = ")"; //$NON-NLS-1$
-	private static final String STMT_END = ";"; //$NON-NLS-1$
-	private static final String SPACE = " "; //$NON-NLS-1$
-	private static final String RESULT = "$r"; //$NON-NLS-1$
-	private static final String REF = "$Ref"; //$NON-NLS-1$
-	
-	private BoogieSymbolTable symbolTable;
-	
-	public BoogieVisitor(BoogieSource output) {
-		this.output = output;
+	public Program visit(CompilationUnitDeclaration unit, Program program) {
+		boogieScope = program;
+		unit.traverse(this, unit.scope);
+		return program;
 	}
 	
-	public static BoogieSource visit(CompilationUnitDeclaration unit) {
-		return visit(unit, new BoogieSource());
+	public static Program visit(CompilationUnitDeclaration unit) {
+		Program program = new Program();
+		return new BoogieVisitor().visit(unit, program);
 	}
 
-	public static BoogieSource visit(CompilationUnitDeclaration unit, BoogieSource output) {
-		BoogieVisitor visitor = new BoogieVisitor(output);
-		unit.traverse(visitor, unit.scope);
-		return output;
-	}
-
-	public void appendLine(Object o) { output.appendLine(o); }
-	
-	public void append(Object o) { output.append(o); }
-	public void append(char data[]) { output.append(new String(data)); }
-	
-	public void prepend(String o) {	output.prepend(o);	}
-
-	public void append(Object o, ASTNode linePointTerm) {
-		output.append(o, linePointTerm);
+	public static BoogieSource visitBuffer(CompilationUnitDeclaration unit) {
+		BoogieSource out = new BoogieSource();
+		visit(unit).toBuffer(out);
+		return out;
 	}
 
 	private void debug(ASTNode term, Object scope) {
@@ -175,6 +67,37 @@ public class BoogieVisitor extends ASTVisitor {
 						: " from class scope")); //$NON-NLS-1$
 	}
 
+	private BoogieNode result() {
+		return result;
+	}
+	
+	private Expression resultExpr() {
+		return (Expression)result;
+	}
+	
+	private ArrayList getStatementList() {
+		return (ArrayList)statementLists.peek();
+	}
+	
+	private void pushStatementList(ArrayList list) {
+		statementLists.push(list);
+	}
+	
+	private void popStatementList() {
+		statementLists.pop();
+	}
+	
+	private void traverseStatements(ArrayList stmtList, ASTNode[] statements, BlockScope scope) {
+		if (statements == null) return;
+		if (stmtList != null) pushStatementList(stmtList);
+		for (int i = 0; i < statements.length; i++) {
+			statements[i].traverse(this, scope);
+			getStatementList().addAll(postStatements);
+			postStatements.clear();
+		}
+		if (stmtList != null) popStatementList();
+	}
+	
 	/**
 	 * Converts a statement to a block to traverse it with braces
 	 * @param term the statement to convert into a block
@@ -192,35 +115,54 @@ public class BoogieVisitor extends ASTVisitor {
 		return blk;
 	}
 	
-	/**
-	 * Traverses a block created by {@link #toBlock(Statement, BlockScope)}.
-	 * You must use this method if you want the block to have indentation and
-	 * surrounding braces (because Boogie does not allow anonymous blocks, 
-	 * automatically handling this in the Block visit will not work).
-	 * 
-	 * @param blk the block to traverse
-	 * @param scope the scope that would otherwise be passed to the traverse method.
-	 */
-	private void traverseBlock(Block blk, BlockScope scope) {
-		appendLine(BLOCK_OPEN);
-		output.increaseIndent();
-		blk.traverse(this, scope);
-		output.decreaseIndent();
-		appendLine(BLOCK_CLOSE);
+	private String getTypeName(TypeBinding typeBinding) {
+		if (typeBinding == TypeBinding.BOOLEAN) {
+			return "bool"; //$NON-NLS-1$
+		}
+		if (typeBinding.isArrayType()) {
+			ArrayBinding arrayBinding = (ArrayBinding)typeBinding;
+			return getTypeName(arrayBinding.leafComponentType());
+		}
+		
+		return new String(typeBinding.readableName());
+	}
+	
+	private TypeReference declareType(String type) {
+		return declareType(type, null);
+	}
+	
+	private TypeReference declareType(String type, String superType) {
+		Program program = boogieScope.getProgramScope();
+		TypeReference typeRef = new TypeReference(type, null, program);
+		TypeReference superTypeRef = superType == null ? null : new TypeReference(superType, null, program);
+		program.addType(new TypeDeclaration(typeRef, superTypeRef, program));
+		return typeRef;
 	}
 
-	private void variableInitialization(AbstractVariableDeclaration term, BlockScope scope) {
-		Expression init = term.initialization;
+	private VariableReference declareString(String key) {
+		Program program = boogieScope.getProgramScope();
+		TypeReference typeRef = declareType("java.lang.String"); //$NON-NLS-1$
+		VariableReference ref = (VariableReference)stringPool.get(key);
+		if (ref == null) {
+			String name = "$string_lit_" + stringPoolValue++; //$NON-NLS-1$
+			ref = new VariableReference(name, null, program);
+			VariableDeclaration decl = new VariableDeclaration(ref, typeRef, true, program);
+			decl.setUnique(true);
+			stringPool.put(key, ref);
+			program.addVariable(decl);
+		}
+		return ref;
+	}
+	
+	private void variableInitialization(LocalDeclaration term, BlockScope scope) {
+		TypeBinding tb = term.type.resolvedType;
+		org.eclipse.jdt.internal.compiler.ast.Expression init = term.initialization;
 		if (init == null) {
-			if (term.type.resolvedType == TypeBinding.INT) {
-					init = new IntLiteral(new char[]{'0'}, 
-							term.sourceStart, term.sourceEnd);
+			if (tb == TypeBinding.INT || tb == TypeBinding.LONG) {
+					init = new org.eclipse.jdt.internal.compiler.ast.IntLiteral(new char[]{'0'}, 
+							term.sourceStart, term.sourceEnd, 0);
 			}
-			else if (term.type.resolvedType == TypeBinding.LONG) {
-				init = new LongLiteral(new char[]{'0'}, 
-						term.sourceStart, term.sourceEnd);
-			}
-			else if (term.type.resolvedType == TypeBinding.BOOLEAN) {
+			else if (tb == TypeBinding.BOOLEAN) {
 				init = new FalseLiteral(term.sourceStart, term.sourceEnd);
 			}
 			else {
@@ -228,56 +170,35 @@ public class BoogieVisitor extends ASTVisitor {
 			}
 		}
 		
-		Assignment a = 
-			new Assignment(new SingleNameReference(term.name, term.sourceStart), 
-					init, term.sourceEnd);
+		SingleNameReference sn = new SingleNameReference(term.name, term.sourceStart);
+		org.eclipse.jdt.internal.compiler.ast.Assignment a = 
+			new org.eclipse.jdt.internal.compiler.ast.Assignment(sn, init, term.sourceEnd);
+		sn.binding = term.binding;
+		sn.actualReceiverType = term.type.resolvedType;
+		sn.resolvedType = tb;
+		a.resolvedType = tb;
+		a.statementEnd = 0;
 		a.traverse(this, scope);
 	}
-	
-	private void declareType(String type, String superType) {
-		if (type.equals("int")) return; //$NON-NLS-1$
-		typeList.put(type, superType);
-	}
-	
-	private void declareType(String type) {
-		declareType(type, "java.lang.Object"); //$NON-NLS-1$
-	}
-	
 
-	private String declareString(String key) {
-		declareType("java.lang.String"); //$NON-NLS-1$
-		String value = (String)stringPool.get(key);
-		if (value == null) {
-			value = "$string_lit_" + stringPoolValue++; //$NON-NLS-1$
-			prepend("axiom $dtype(" + value + ") == java.lang.String;\n"); //$NON-NLS-1$ //$NON-NLS-2$
-			prepend("const " + value + " : $Ref;\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		return value;
-	}
-	
-	/*
-	private String declareObject() {
-		String objName = "$obj_" + objectPoolValue++; //$NON-NLS-1$
-		prepend("const unique " + objName + ": $Ref;");  //$NON-NLS-1$//$NON-NLS-2$
-		return objName;
-	}
-	*/
-	
-	private void emitTypes() {
-		StringBuffer outBuf = new StringBuffer();
-		Enumeration e = typeList.keys();
-		while (e.hasMoreElements()) {
-			String key = (String)e.nextElement();
-			outBuf.append("const " + key + ": $TName;\n"); //$NON-NLS-1$ //$NON-NLS-2$
-			outBuf.append("axiom " + key + " <: " + typeList.get(key) + ";\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
-		prepend(outBuf.toString());
-	}
-	
 	// priority=2 group=expr
 	public boolean visit(AllocationExpression term, BlockScope scope) {
 		debug(term, scope);
-		// implemented in Assignment
+		
+		String name = new String(term.binding.declaringClass.readableName()) + 
+			"." + new String(term.type.getLastToken()); //$NON-NLS-1$ 
+		CallStatement call = new CallStatement(name, new Expression[] { 
+				methodCallAssignmentVar }, null, term, boogieScope);
+		if (term.arguments != null) {
+			for (int i = 0; i < term.arguments.length; i++) {
+				term.arguments[i].traverse(this, scope);
+				call.getArguments().add(resultExpr());
+			}
+		}
+		
+		result = call;
+		getStatementList().add(result());
+		
 		return false;
 	}
 
@@ -285,46 +206,65 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(AND_AND_Expression term, BlockScope scope) {
 		debug(term, scope);
 		term.left.traverse(this, scope);
-		append(" && "); //$NON-NLS-1$
+		Expression left = resultExpr();
 		term.right.traverse(this, scope);
+		Expression right = resultExpr();
+		result = new BinaryExpression(left, "&&", right, false, term, boogieScope); //$NON-NLS-1$
 		return false;
-	}
-
-	// priority=0 group=decl
-	public boolean visit(AnnotationMethodDeclaration term, ClassScope classScope) {
-		debug(term, classScope);
-		return true;
 	}
 
 	// priority=3 group=expr
 	public boolean visit(Argument term, BlockScope scope) {
 		debug(term, scope);
-
-		String sym = symbolTable.addSymbol(new String(term.name));
-		append(sym + ": "); //$NON-NLS-1$
-		return true;
+		String name = new String(term.name);
+		VariableReference var = new VariableReference(name, term, boogieScope);
+		term.type.traverse(this, scope);
+		result = new VariableDeclaration(var, (TypeReference)result, boogieScope);
+		return false;
 	}
 
 	// priority=3 group=expr
 	public boolean visit(Argument term, ClassScope scope) {
 		debug(term, scope);
-
-		String sym = symbolTable.addSymbol(new String(term.name));
-		append(sym + ": "); //$NON-NLS-1$
-		return true;
+		String name = new String(term.name);
+		VariableReference var = new VariableReference(name, term, boogieScope);
+		term.type.traverse(this, scope);
+		result = new VariableDeclaration(var, (TypeReference)result, boogieScope);
+		return false;
+	}
+	
+	private void defineArrayLength(org.eclipse.jdt.internal.compiler.ast.Expression lhs, BlockScope scope, int size) {
+		if (lhs instanceof JmlSingleNameReference && ((JmlSingleNameReference)lhs).binding instanceof FieldBinding) return; //FIXME
+		lhs.traverse(this, scope);
+		VariableReference ref = (VariableReference)result();
+		ref = new VariableLengthReference(ref.getName(), ref.getJavaNode(), ref.getScope()); 
+		result = new Assignment(ref, new IntLiteral(size, null, boogieScope), null, boogieScope.getProcedureScope());
+		getStatementList().add(result);
+	}
+	
+	private void initializeArray(org.eclipse.jdt.internal.compiler.ast.Expression lhs, org.eclipse.jdt.internal.compiler.ast.Expression[] expressions, BlockScope scope) {
+		for (int i = 0; i < expressions.length; i++) {
+			org.eclipse.jdt.internal.compiler.ast.Assignment asn = 
+				new org.eclipse.jdt.internal.compiler.ast.Assignment(
+					new ArrayReference(lhs, 
+						new org.eclipse.jdt.internal.compiler.ast.IntLiteral(
+								new Integer(i).toString().toCharArray(), 0, 0, i)),
+					expressions[i],
+					lhs.sourceEnd);
+			asn.traverse(this, scope);
+		}
+		defineArrayLength(lhs, scope, expressions.length);		
 	}
 
 	// priority=1 group=expr
 	public boolean visit(ArrayAllocationExpression term, BlockScope scope) {
 		debug(term, scope);
-		// implemented in Assignment
 		return true;
 	}
 
 	// priority=1 group=expr
 	public boolean visit(ArrayInitializer term, BlockScope scope) {
 		debug(term, scope);
-		// implemented in Assignment
 		return true;
 	}
 
@@ -344,117 +284,64 @@ public class BoogieVisitor extends ASTVisitor {
 	public boolean visit(ArrayReference term, BlockScope scope) {
 		debug(term, scope);
 		term.receiver.traverse(this, scope);
-		append("["); //$NON-NLS-1$
+		VariableReference receiver = (VariableReference)result();
 		term.position.traverse(this, scope);
-		append("]"); //$NON-NLS-1$
+		Expression pos = resultExpr();
+		if (receiver instanceof MapVariableReference) {
+			((MapVariableReference)receiver).getMapKeys().add(pos);
+			result = receiver;
+		}
+		else {
+			result = new MapVariableReference(receiver.getName(), new Expression[] { pos }, term, boogieScope);
+		}
+		
 		return false;
 	}
 
+	private MapTypeReference getArrayReference(ArrayTypeReference term) {
+		MapTypeReference ref = new MapTypeReference(getTypeName(term.resolvedType), null, term, boogieScope); 
+		for (int i = 0; i < term.dimensions; i++) {
+			ref.getMapTypes().add(new TypeReference("int", term, boogieScope)); //$NON-NLS-1$
+		}
+
+		return ref;
+	}
+	
 	// priority=2 group=array
 	public boolean visit(ArrayTypeReference term, BlockScope scope) {
 		debug(term, scope);
-		append("[int] "); //$NON-NLS-1$
-		
-		if (term.resolvedType == TypeBinding.BOOLEAN || term.token.equals(TypeConstants.BOOLEAN)) {
-			append("bool"); //$NON-NLS-1$
-			return true;
-		}
-		
-		if (term.resolvedType != null && !term.resolvedType.leafComponentType().isBaseType()) {
-			String name = new String(term.resolvedType.leafComponentType().readableName());
-			declareType(name);
-			append(REF);
-		}
-		else if (term.resolvedType != null) {
-			append(term.resolvedType.leafComponentType().readableName());
-		}
-		else {
-			String name = new String(term.token);
-			if (!name.equals("int")) { //$NON-NLS-1$
-				declareType(name);
-				append(REF);
-			}
-			else {
-				append(name);
-			}
-		}
-		
-		return true;
+		result = getArrayReference(term);
+		return false;
 	}
 
 	// priority=2 group=array
 	public boolean visit(ArrayTypeReference term, ClassScope scope) {
 		debug(term, scope);
-		append("[int] "); //$NON-NLS-1$
-		if (term.resolvedType == TypeBinding.BOOLEAN || term.token.equals(TypeConstants.BOOLEAN)) {
-			append("bool"); //$NON-NLS-1$
-			return true;
-		}
-		
-		if (term.resolvedType != null && !term.resolvedType.leafComponentType().isBaseType()) {
-			String name = new String(term.resolvedType.leafComponentType().readableName());
-			declareType(name);
-			append(REF);
-		}
-		else if (term.resolvedType != null) {
-			append(term.resolvedType.leafComponentType().readableName());
-		}
-		else {
-			String name = new String(term.token);
-			declareType(name);
-			append(REF);
-		}
-		return true;
+		result = getArrayReference(term);
+		return false;
 	}
 
 	// priority=3 group=misc
-	public boolean visit(AssertStatement term, BlockScope scope) {
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.AssertStatement term, BlockScope scope) {
 		debug(term, scope);
 		JmlAssertStatement stmt = new JmlAssertStatement("assert", term.assertExpression, term.sourceStart); //$NON-NLS-1$
 		stmt.traverse(this, scope);
 		return false;
 	}
-	
-	private void defineArrayLength(Expression lhs, BlockScope scope, int size) {
-		if (lhs instanceof JmlSingleNameReference && ((JmlSingleNameReference)lhs).binding instanceof FieldBinding) return; //FIXME
-		lhs.traverse(this, scope);
-		appendLine(".length := " + size + STMT_END); //$NON-NLS-1$
-	}
-	
-	private void initializeArray(Expression lhs, Expression[] expressions, BlockScope scope) {
-		for (int i = 0; i < expressions.length; i++) {
-			Assignment asn = new Assignment(
-					new ArrayReference(lhs, 
-						new IntLiteral(new Integer(i).toString().toCharArray(), 0, 0, i)),
-					expressions[i],
-					lhs.sourceEnd);
-			asn.traverse(this, scope);
-		}
-		defineArrayLength(lhs, scope, expressions.length);		
-	}
 
 	// priority=3 group=expr
-	public boolean visit(Assignment term, BlockScope scope) {
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.Assignment term, BlockScope scope) {
 		debug(term, scope);
-		if (term.expression instanceof AllocationExpression) {
-			AllocationExpression expr = (AllocationExpression)term.expression;
-			//term.lhs.traverse(this, scope);
-			//appendLine(" := " + declareObject() + STMT_END); //$NON-NLS-1$
-			append("call ", expr); //$NON-NLS-1$
-			append(expr.binding.declaringClass.readableName());
-			append("." + new String(expr.type.getLastToken())); //$NON-NLS-1$
-			append(PAREN_OPEN);
+		
+		if (term.expression instanceof MessageSend || 
+				term.expression instanceof AllocationExpression) {
+			// method calling has its own assignment mechanism
+			// so just use that
+			VariableReference oldAssign = methodCallAssignmentVar;
 			term.lhs.traverse(this, scope);
-			
-			if (expr.arguments != null) {
-				append(", "); //$NON-NLS-1$
-				for (int i = 0; i < expr.arguments.length; i++) {
-					expr.arguments[i].traverse(this, scope);
-					if (i < expr.arguments.length - 1) append(", "); //$NON-NLS-1$
-				}
-			}
-			append(PAREN_CLOSE);
-			appendLine(STMT_END);
+			methodCallAssignmentVar = (VariableReference)result();
+			term.expression.traverse(this, scope);
+			methodCallAssignmentVar = oldAssign;
 			return false;
 		}
 		
@@ -468,12 +355,13 @@ public class BoogieVisitor extends ASTVisitor {
 			if (alloc.initializer != null) {
 				initializeArray(term.lhs, alloc.initializer.expressions, scope);
 			}
-			else if (alloc.dimensions[0] instanceof IntLiteral) {
-				int size = ((IntLiteral)alloc.dimensions[0]).value;
-				Expression[] exprs = new Expression[size];
+			else if (alloc.dimensions[0] instanceof org.eclipse.jdt.internal.compiler.ast.IntLiteral) {
+				int size = ((org.eclipse.jdt.internal.compiler.ast.IntLiteral)alloc.dimensions[0]).value;
+				org.eclipse.jdt.internal.compiler.ast.Expression[] exprs = 
+					new org.eclipse.jdt.internal.compiler.ast.Expression[size];
 				if (alloc.type.resolvedType == TypeBinding.INT || alloc.type.resolvedType == TypeBinding.LONG) {
 					for (int i = 0; i < size; i++) {
-						exprs[i] = new IntLiteral(new char[]{'0'}, 0, 0, 0);
+						exprs[i] = new org.eclipse.jdt.internal.compiler.ast.IntLiteral(new char[]{'0'}, 0, 0, 0);
 					}
 				}
 				else if (alloc.type.resolvedType == TypeBinding.BOOLEAN) {
@@ -490,53 +378,36 @@ public class BoogieVisitor extends ASTVisitor {
 			}
 			return false;
 		}
-		
-		if (term.expression instanceof MessageSend) {
-			append("call ", term.expression); //$NON-NLS-1$
+
+		term.lhs.traverse(this, scope);
+		VariableReference ref = (VariableReference)result();
+		term.expression.traverse(this, scope);
+		Expression expr = resultExpr();
+	
+		Assignment assign = new Assignment(ref, expr, term, boogieScope.getProcedureScope());
+		if (term.statementEnd != -1) { // assignment is statement
+			result = assign;
+			getStatementList().add(result);
 		}
-		
-		if (term.expression instanceof PostfixExpression) {
-			term.lhs.traverse(this, scope);
-			append(" := ", term); //$NON-NLS-1$
-			((Assignment)term.expression).lhs.traverse(this, scope);
-		}
-		else if (term.expression instanceof Assignment) {
-			term.expression.traverse(this, scope);
-			term.lhs.traverse(this, scope);
-			append(" := ", term); //$NON-NLS-1$
-			((Assignment)term.expression).lhs.traverse(this, scope);
-		}
-		else {
-			term.lhs.traverse(this, scope);
-			append(" := ", term); //$NON-NLS-1$
-			term.expression.traverse(this, scope);
+		else { // assignment is expression, add assignment statement and return variable
+			getStatementList().add(assign);
+			result = ref;
 		}
 		
 		return false;
 	}
-	
-	public void endVisit(Assignment term, BlockScope scope) {
-		if (term.expression instanceof AllocationExpression) {
-			return;
-		}
-		if (term.expression instanceof ArrayInitializer || term.expression instanceof ArrayAllocationExpression) {
-			return;	// don't need stmt_end here
-		}
-		
-		appendLine(STMT_END);		
-
-		if (term.expression instanceof PostfixExpression) {
-			term.expression.traverse(this, scope);
-		}
-	}
 
 	// priority=2 group=expr
-	public boolean visit(BinaryExpression term, BlockScope scope) {
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.BinaryExpression term, BlockScope scope) {
 		debug(term, scope);
-		append("(");  //$NON-NLS-1$
-		term.left.traverse(this, scope);
-
 		String out = ""; //$NON-NLS-1$
+		Expression left, right;
+		
+		term.left.traverse(this, scope);
+		left = resultExpr();
+		term.right.traverse(this, scope);
+		right = resultExpr();
+
 		switch ((term.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) {
 			case OperatorIds.PLUS :
 				out = "+"; //$NON-NLS-1$
@@ -586,34 +457,40 @@ public class BoogieVisitor extends ASTVisitor {
 				out = "=<"; //$NON-NLS-1$
 				break;
 		}
-		append(SPACE + out + SPACE);
-		term.right.traverse(this, scope);
-		append(")");  //$NON-NLS-1$
+		
+		result = new BinaryExpression(left, out, right, term, boogieScope);
 		return false;
+	}
+	
+	/**
+	 * Adds a RemoveLocal statement (which should be factored out in the future)
+	 * to remove the local when the block ends during buffer output phase. This
+	 * allows multiple block local variables to be used in one Boogie procedure,
+	 * which does not allow for block locals.
+	 */
+	private void removeLocals(BlockScope scope) {
+		for (int i = 0; i < scope.locals.length; i++) {
+			String name = new String(scope.locals[i].name);
+			VariableReference ref = new VariableReference(name, null, boogieScope);
+			getStatementList().add(new RemoveLocal(ref, boogieScope.getProcedureScope()));
+		}
 	}
 
 	// priority=3 group=stmt
 	public boolean visit(Block term, BlockScope scope) {
 		debug(term, scope);
-		if (symbolTable != null) 
-			symbolTable.enterScope(term);
-		return true;
-	}
-
-	public void endVisit(Block term, BlockScope scope) {
-		if (symbolTable != null) 
-			symbolTable.exitScope();
+		traverseStatements(null, term.statements, scope);
+		removeLocals(term.scope); // FIXME this should be factored out!
+		result = null;
+		return false;
 	}
 
 	// priority=3 group=stmt
-	public boolean visit(BreakStatement term, BlockScope scope) {
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.BreakStatement term, BlockScope scope) {
 		debug(term, scope);
-		if (term.label == null)  
-			appendLine("break" + STMT_END); //$NON-NLS-1$
-		else
-			appendLine("break " + new String(term.label) + STMT_END);  //$NON-NLS-1$
-			
-		return true;
+		result = new BreakStatement(term.label != null ? new String(term.label) : null, term, boogieScope); 
+		getStatementList().add(result);
+		return false;
 	}
 
 	// TODO priority=0 group=stmt
@@ -625,38 +502,21 @@ public class BoogieVisitor extends ASTVisitor {
 	// TODO priority=1 group=expr
 	public boolean visit(CastExpression term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		term.expression.traverse(this, scope);
+		return false;
 	}
 
 	// priority=2 group=lit
 	public boolean visit(CharLiteral term, BlockScope scope) {
 		debug(term, scope);
-		append(new Integer(term.source()[1]));
-		return true;
-	}
-
-	// TODO priority=3 group=lit
-	public boolean visit(ClassLiteralAccess term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=expr
-	public boolean visit(Clinit term, ClassScope scope) {
-		debug(term, scope);
-		return true;
+		result = new IntLiteral(term.constant.intValue(), term, boogieScope);
+		return false;
 	}
 
 	// priority=3 group=decl
 	public boolean visit(CompilationUnitDeclaration term, CompilationUnitScope scope) {
 		debug(term, scope);
-		// implemented
-		appendLine("/*!BOOGIESTART!*/"); //$NON-NLS-1$
 		return true;
-	}
-	
-	public void endVisit(CompilationUnitDeclaration term, CompilationUnitScope scope) {
-		emitTypes();
 	}
 
 	// TODO priority=2 group=expr
@@ -664,19 +524,287 @@ public class BoogieVisitor extends ASTVisitor {
 		debug(term, scope);
 		return true;
 	}
+	
+	private VariableReference extractConditionalExpression(ConditionalExpression term) {
+		// add variable declaration to scope
+		String varName = "$call_" + boogieScope.getProcedureScope().getLocals().size(); //$NON-NLS-1$
+		TypeReference type = new TypeReference(getTypeName(term.resolvedType), term, boogieScope);
+		VariableReference ref = new VariableReference(varName, term, boogieScope);
+		VariableDeclaration decl = new VariableDeclaration(ref, type, boogieScope);
+		boogieScope.addVariable(decl);
+		return ref;
+	}
 
 	// TODO priority=3 group=expr
 	public boolean visit(ConditionalExpression term, BlockScope scope) {
 		debug(term, scope);
+		// TODO implement for program scope
+		if (!(boogieScope instanceof Procedure)) return false;
+		Procedure proc = boogieScope.getProcedureScope();
+		VariableReference ref = extractConditionalExpression(term);
+		Expression condition, trueExpr, falseExpr;
+		term.condition.traverse(this, scope);
+		condition = resultExpr();
+		term.valueIfTrue.traverse(this, scope);
+		trueExpr = resultExpr();
+		term.valueIfFalse.traverse(this, scope);
+		falseExpr = resultExpr();
+
+		IfStatement ifs = new IfStatement(condition, term, boogieScope);
+		Assignment trueAssign = new Assignment(ref, trueExpr, term, proc);
+		Assignment falseAssign = new Assignment(ref, falseExpr, term, proc);
+		ifs.getThenStatements().add(trueAssign);
+		ifs.getElseStatements().add(falseAssign);
+
+		getStatementList().add(ifs);
+		result = ref;
+		
+		
+		return false;
+	}
+
+	// TODO priority=3 group=stmt
+	public boolean visit(ContinueStatement term, BlockScope scope) {
+		debug(term, scope);
 		return true;
+	}
+
+	// priority=3 group=stmt
+	public boolean visit(DoStatement term, BlockScope scope) {
+		debug(term, scope);
+		if (term.action != null) {
+			Block block = toBlock(term.action, scope);	
+			traverseStatements(null, block.statements, scope);
+		}
+		
+		if (term instanceof JmlDoStatement){
+			JmlDoStatement jmlDo = (JmlDoStatement)term;
+			JmlWhileStatement jmlwhl = new JmlWhileStatement(jmlDo.annotations, term.condition, term.action, term.sourceStart, term.sourceEnd);
+			jmlwhl.traverse(this, scope);
+		} else {
+			org.eclipse.jdt.internal.compiler.ast.WhileStatement whl = 
+				new org.eclipse.jdt.internal.compiler.ast.WhileStatement(
+						term.condition, term.action, term.sourceStart, term.sourceEnd);  
+			whl.traverse(this, scope); 
+		}
+		
+		return false;
+	}
+
+	// TODO priority=3 group=lit
+	public boolean visit(DoubleLiteral term, BlockScope scope) {
+		debug(term, scope);
+		result = new IntLiteral(0, term, boogieScope); // FIXME
+		return false;
+	}
+
+	// priority=3 group=stmt
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.EmptyStatement term, BlockScope scope) {
+		debug(term, scope);
+		result = new EmptyStatement();
+		return false;
+	}
+
+	// priority=3 group=expr
+	public boolean visit(EqualExpression term, BlockScope scope) {
+		debug(term, scope);
+		Expression left, right;
+		term.left.traverse(this, scope);
+		left = resultExpr();
+		term.right.traverse(this, scope);
+		right = resultExpr();
+
+		String op = ""; //$NON-NLS-1$
+		switch ((term.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) {
+			case OperatorIds.EQUAL_EQUAL:
+				op = "=="; //$NON-NLS-1$
+				break;
+			case OperatorIds.NOT_EQUAL:
+				op = "!="; //$NON-NLS-1$
+				break;
+			case OperatorIds.JML_EQUIV:
+				op = "<=>"; //$NON-NLS-1$
+				break;
+		}
+		
+		result = new BinaryExpression(left, op, right, term, boogieScope);
+		return false;
+	}
+
+	// TODO priority=1 group=expr
+	public boolean visit(ExplicitConstructorCall term, BlockScope scope) {
+		debug(term, scope);
+		return true;
+	}
+
+	// TODO priority=1 group=lit
+	public boolean visit(ExtendedStringLiteral term, BlockScope scope) {
+		debug(term, scope);
+		return true;
+	}
+
+	// priority=3 group=lit
+	public boolean visit(FalseLiteral term, BlockScope scope) {
+		debug(term, scope);
+		result = new BooleanLiteral(false, term, boogieScope);
+		return false;
+	}
+
+	// priority=3 group=field
+	public boolean visit(FieldDeclaration term, MethodScope scope) {
+		debug(term, scope);
+		
+		String clsName = new String(term.binding.declaringClass.readableName());
+		String name = clsName + "." + new String(term.name);  //$NON-NLS-1$
+		term.type.traverse(this, scope);
+		TypeReference type = (TypeReference)result();
+		if (!term.isStatic()) {
+			TypeReference clsRef = new TypeReference(clsName, term, boogieScope);
+			if (type instanceof MapTypeReference) {
+				((MapTypeReference)type).getMapTypes().add(0, clsRef);
+			}
+			else {
+				type = new MapTypeReference(type.getTypeName(), 
+						new TypeReference[] { clsRef }, term, boogieScope);
+			}
+		}
+
+		result = new VariableDeclaration(new VariableReference(name, term, boogieScope), type, boogieScope);
+		boogieScope.getProgramScope().addVariable((VariableDeclaration)result);
+		return false;
+	}
+
+	// TODO priority=3 group=field
+	public boolean visit(FieldReference term, BlockScope scope) {
+		debug(term, scope);
+		return true;
+	}
+
+	// TODO priority=3 group=field
+	public boolean visit(FieldReference term, ClassScope scope) {
+		debug(term, scope);
+		return true;
+	}
+
+	// TODO priority=3 group=lit
+	public boolean visit(FloatLiteral term, BlockScope scope) {
+		debug(term, scope);
+		result = new IntLiteral(0, term, boogieScope); // FIXME
+		return false;
+	}
+
+	// TODO priority=3 group=stmt
+	public boolean visit(ForeachStatement term, BlockScope scope) {
+		debug(term, scope);
+		return true;
+	}
+	
+	private Block makeBlockForLoop(ForStatement term) {
+		Block blk = new Block(0);
+		int len = 0;
+		if (term.action != null ) {
+			if (term.action instanceof Block) {
+				Block b = ((Block)term.action); 
+				if (!b.isEmptyBlock()) {
+					len = b.statements.length;
+				}
+			}
+			else { 
+				len = 1;
+			}
+		}
+		
+		blk.statements = new Statement[len + term.increments.length];
+		for (int i = 0; i < len; i++) {
+			if (term.action instanceof Block && ((Block)term.action).statements != null ) {
+				blk.statements[i] = ((Block)term.action).statements[i];
+			}
+			else {
+				blk.statements[i] = term.action;
+			}
+		}
+		for (int i = 0; i < term.increments.length; i++) {
+			blk.statements[i+len] = term.increments[i];
+		}
+		blk.scope = term.scope;
+		return blk;
+	}
+
+	// priority=3 group=stmt
+	public boolean visit(ForStatement term, BlockScope scope) {
+		debug(term, scope);
+		for (int i = 0; i < term.initializations.length ; i++) {
+			term.initializations[i].traverse(this, scope);
+		}
+		
+		Block blk = makeBlockForLoop(term);
+		org.eclipse.jdt.internal.compiler.ast.WhileStatement w = 
+			new org.eclipse.jdt.internal.compiler.ast.WhileStatement(term.condition, 
+				blk, term.sourceStart, term.sourceEnd);
+		w.traverse(this, scope);
+		
+		return false;
+	}
+
+	// priority=3 group=stmt
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.IfStatement term, BlockScope scope) {
+		debug(term, scope);
+		term.condition.traverse(this, scope);
+		Expression condition = resultExpr();
+		IfStatement ifs = new IfStatement(condition, term, boogieScope);
+		if (term.thenStatement != null) {
+			Block thenBlock = toBlock(term.thenStatement, scope);
+			traverseStatements(ifs.getThenStatements(), thenBlock.statements, scope);
+		}
+		if (term.elseStatement != null) {
+			Block elseBlock = toBlock(term.elseStatement, scope);
+			traverseStatements(ifs.getElseStatements(), elseBlock.statements, scope);
+		}
+		result = ifs;
+		getStatementList().add(result);
+		return false;
+	}
+
+	// priority=1 group=expr
+	public boolean visit(InstanceOfExpression term, BlockScope scope) {
+		debug(term, scope);
+		term.expression.traverse(this, scope);
+		FunctionCall fn = new FunctionCall("$dtype", new Expression[]{ resultExpr() }, term.expression, boogieScope); //$NON-NLS-1$
+		TypeReference ref = new TypeReference(getTypeName(term.type.resolvedType), term, boogieScope);
+		result = new BinaryExpression(fn, "<:", new TokenLiteral(ref.getTypeName()), false, term, boogieScope); //$NON-NLS-1$
+		return false;
+	}
+
+	// priority=3 group=lit
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.IntLiteral term, BlockScope scope) {
+		debug(term, scope);
+		result = new IntLiteral(term.value, term, boogieScope);
+		return false;
+	}
+
+	// priority=3 group=jml
+	public boolean visit(JmlAssertStatement term, BlockScope scope) {
+		debug(term, scope);
+		term.assertExpression.traverse(this, scope);
+		result = new AssertStatement(resultExpr(), term.assertExpression, boogieScope.getProcedureScope());
+		getStatementList().add(result);
+		return false;
+	}
+
+	// priority=3 group=jml
+	public boolean visit(JmlAssumeStatement term, BlockScope scope) {
+		debug(term, scope);
+		term.assertExpression.traverse(this, scope);
+		result = new AssumeStatement(resultExpr(), term.assertExpression, boogieScope.getProcedureScope());
+		getStatementList().add(result);
+		return false;
 	}
 
 	// priority=2 group=decl
 	public boolean visit(JmlConstructorDeclaration term, ClassScope scope) {
 		debug(term, scope);
 		
-		if (term.isDefaultConstructor() && 
-				(term.statements == null || term.statements.length == 0)) {
+		if (term.isDefaultConstructor() && (term.statements == null || term.statements.length == 0)) {
 			return false;
 		}
 
@@ -697,390 +825,13 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 
-	// TODO priority=3 group=stmt
-	public boolean visit(ContinueStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=3 group=stmt
-	public boolean visit(DoStatement term, BlockScope scope) {
-		debug(term, scope);		
-		if (term.action instanceof Block) {
-			Block block = (Block) term.action;
-			if (block.statements != null) {
-				for (int i = 0; i < block.statements.length; i++) {
-					block.statements[i].traverse(this, scope);
-				}
-			}				
-		} else {
-			appendLine(term.action);
-		}
-		
-		if (term instanceof JmlDoStatement){
-			JmlDoStatement jmlDo = (JmlDoStatement)term;
-			JmlWhileStatement jmlwhl = new JmlWhileStatement(jmlDo.annotations, term.condition, term.action, term.sourceStart, term.sourceEnd);
-			jmlwhl.traverse(this, scope);
-		} else {
-			WhileStatement whl = new WhileStatement(term.condition, term.action, term.sourceStart, term.sourceEnd);  
-			whl.traverse(this, scope); 
-		}
-		
-		return false;
-	}
-
 	// priority=3 group=stmt
 	public boolean visit(JmlDoStatement term, BlockScope scope) {
 		debug(term, scope);	
-		visit ((DoStatement)term, scope);
+		visit((DoStatement)term, scope);
 		return false;
 	}
 	
-	// TODO priority=3 group=lit
-	public boolean visit(DoubleLiteral term, BlockScope scope) {
-		debug(term, scope);
-		append("0"); //FIXME! //$NON-NLS-1$
-		return true;
-	}
-
-	// priority=3 group=stmt
-	public boolean visit(EmptyStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=3 group=expr
-	public boolean visit(EqualExpression term, BlockScope scope) {
-		debug(term, scope);
-
-		append("("); //$NON-NLS-1$
-		term.left.traverse(this, scope);
-		
-		String out = ""; //$NON-NLS-1$
-		switch ((term.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) {
-			case OperatorIds.EQUAL_EQUAL:
-				out = "=="; //$NON-NLS-1$
-				break;
-			case OperatorIds.NOT_EQUAL:
-				out = "!="; //$NON-NLS-1$
-				break;
-			case OperatorIds.JML_EQUIV:
-				out = "<=>"; //$NON-NLS-1$
-				break;
-		}
-		append(SPACE + out + SPACE);
-		term.right.traverse(this, scope);
-		append(")"); //$NON-NLS-1$
-
-		return false;
-	}
-
-	// TODO priority=1 group=expr
-	public boolean visit(ExplicitConstructorCall term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=1 group=lit
-	public boolean visit(ExtendedStringLiteral term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=3 group=lit
-	public boolean visit(FalseLiteral term, BlockScope scope) {
-		debug(term, scope);
-		append("false"); //$NON-NLS-1$
-		return true;
-	}
-
-	// priority=3 group=field
-	public boolean visit(FieldDeclaration term, MethodScope scope) {
-		debug(term, scope);
-		
-		String name = new String(term.binding.declaringClass.readableName()) + "." + new String(term.name);  //$NON-NLS-1$
-		append("var " + name + ": "); //$NON-NLS-1$ //$NON-NLS-2$
-		if (!term.isStatic())
-			append("[" + REF + "] "); //$NON-NLS-1$ //$NON-NLS-2$
-		term.type.traverse(this, scope);
-		appendLine(STMT_END);
-		
-		if (term.type.resolvedType == null) {
-			return false;
-		}
-		if (term.type.resolvedType.isArrayType()) {
-			// TODO implement dynamic type support for arrays
-			return false;
-		}
-		if (term.type.resolvedType.canBeInstantiated()) {
-			//append("axiom ∀n: int • $dtype(" + name + "[n]) == " + new String(term.binding.declaringClass.readableName())); //$NON-NLS-1$ //$NON-NLS-2$
-			//appendLine(STMT_END);
-		}
-		// FIXME this will not work, Boogie requires that all assignments are done in a procedure
-		//if (term.isStatic())
-		//	variableInitialization(term, scope);
-		return false;
-	}
-
-	// TODO priority=3 group=field
-	public boolean visit(FieldReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=3 group=field
-	public boolean visit(FieldReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=3 group=lit
-	public boolean visit(FloatLiteral term, BlockScope scope) {
-		debug(term, scope);
-		append("0"); //FIXME! //$NON-NLS-1$
-		return true;
-	}
-
-	// TODO priority=3 group=stmt
-	public boolean visit(ForeachStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	private Block makeBlockForLoop(ForStatement term) {
-		Block blk = new Block(0);
-		int len = 0;
-		if (term.action != null ) {
-			if (term.action instanceof Block) {
-				Block b = ((Block)term.action); 
-				if (!b.isEmptyBlock())
-					len = b.statements.length;
-			}else 
-				len = 1;
-			}
-			
-		
-		blk.statements = new Statement[len + term.increments.length];
-		for (int i = 0; i < len; i++) {
-			if (term.action instanceof Block && ((Block)term.action).statements != null ) {
-				blk.statements[i] = ((Block)term.action).statements[i];
-			}
-			else {
-				blk.statements[i] = term.action;
-			}
-		}
-		for (int i = 0; i < term.increments.length; i++) {
-			blk.statements[i+len] = term.increments[i];
-		}
-		blk.scope = term.scope;
-		return blk;
-	}
-
-	// priority=3 group=stmt
-	public boolean visit(IfStatement term, BlockScope scope) {
-		debug(term, scope);
-
-		append("if ("); //$NON-NLS-1$
-		term.condition.traverse(this, scope);
-		append(") "); //$NON-NLS-1$
-		
-		if (term.thenStatement != null) {
-			traverseBlock(toBlock(term.thenStatement, scope), scope);
-		}
-		if (term.elseStatement != null) {
-			append("else ");  //$NON-NLS-1$
-			traverseBlock(toBlock(term.elseStatement, scope), scope);
-		}
-
-		return false;
-	}
-
-	// priority=0 group=misc
-	public boolean visit(ImportReference term, CompilationUnitScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=1 group=misc 
-	public boolean visit(Initializer term, MethodScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=1 group=expr
-	public boolean visit(InstanceOfExpression term, BlockScope scope) {
-		debug(term, scope);
-		append("$dtype("); //$NON-NLS-1$
-		term.expression.traverse(this, scope);
-		append(") <: " + new String(term.type.resolvedType.readableName())); //$NON-NLS-1$
-		return false;
-	}
-
-	// priority=3 group=lit
-	public boolean visit(IntLiteral term, BlockScope scope) {
-		debug(term, scope);
-		append(new String(term.source()));
-		return true;
-	}
-
-	// priority=3 group=jml
-	public boolean visit(JmlAssertStatement term, BlockScope scope) {
-		debug(term, scope);
-		append("assert ", term.assertExpression); //$NON-NLS-1$
-		term.assertExpression.traverse(this, scope);
-		appendLine(STMT_END);
-		return false;
-	}
-
-	// priority=3 group=jml
-	public boolean visit(JmlAssumeStatement term, BlockScope scope) {
-		debug(term, scope);
-		append("assume ", term.assertExpression); //$NON-NLS-1$
-		term.assertExpression.traverse(this, scope);
-		appendLine(STMT_END);
-		return false;
-	}
-	
-	// TODO priority=0 group=jml
-	public boolean visit(JmlCastExpressionWithoutType term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=3 group=jml
-	public boolean visit(JmlEnsuresClause term, BlockScope scope) {
-		debug(term, scope);
-		// implemented in JmlMethodSpecification
-		return true;
-	}
-
-	// priority=0 group=jml
-	public boolean visit(JmlLoopAnnotations term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-	
-	// priority=3 group=jml
-	public boolean visit(JmlLoopInvariant term, BlockScope scope) {
-		debug(term, scope);
-		append("invariant ", term.expr); //$NON-NLS-1$
-		return true;
-	}
-
-	// TODO priority=3 group=jml
-	public boolean visit(JmlLoopVariant term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=3 group=jml
-	public boolean visit(JmlMethodSpecification term, ClassScope scope) {
-		debug(term, scope);
-
-		for (int i = 0; i < term.getSpecCases().length; i++) {
-			JmlSpecCase specCase = term.getSpecCases()[i];
-			
-			if (specCase.body.rest != null) {
-				JmlSpecCaseRestAsClauseSeq rest = (JmlSpecCaseRestAsClauseSeq)specCase.body.rest;
-				for (int j = 0; j < rest.clauses.length; j++) {
-					if (rest.clauses[j] instanceof JmlAssignableClause) {
-						JmlAssignableClause modifies = (JmlAssignableClause)rest.clauses[j];
-						append(SPACE);
-						append("modifies ", term); //$NON-NLS-1$
-						if (modifies.expr instanceof JmlStoreRefListExpression) {
-							JmlStoreRefListExpression stores = (JmlStoreRefListExpression)modifies.expr;
-							for (int x = 0; x < stores.exprList.length; x++) {
-								//stores.exprList[x].traverse(this, methodScope);
-								if (stores.exprList[x] instanceof SingleNameReference) {
-									append(scope.classScope().referenceContext.binding.readableName());
-									append("."); //$NON-NLS-1$
-									append(((SingleNameReference)stores.exprList[x]).binding.readableName());
-								}
-								if (x < stores.exprList.length - 1) { append(", "); } //$NON-NLS-1$
-							}
-						}
-						else if (modifies.expr instanceof JmlKeywordExpression) {
-							// TODO support JmlKeywordExpression
-							JmlKeywordExpression expr = (JmlKeywordExpression)modifies.expr;
-							append(expr.toString());
-						}
-						append(STMT_END);
-					}
-				}
-			}
-			if (specCase.getRequiresExpressions().size() > 0) {
-				List exprs = specCase.getRequiresExpressions();
-				for (int j = 0; j < exprs.size(); j++) {
-					append(SPACE);
-					append("requires ", (Expression)exprs.get(j)); //$NON-NLS-1$
-					Expression expr = (Expression)exprs.get(j);
-					expr.traverse(this, methodScope);
-					append(STMT_END); 
-				}
-			}
-			if (specCase.getEnsuresExpressions().size() > 0) {
-				List exprs = specCase.getEnsuresExpressions();
-				for (int j = 0; j < exprs.size(); j++) {
-					append(SPACE);
-					append("ensures ", (Expression)exprs.get(j)); //$NON-NLS-1$
-					Expression expr = (Expression)exprs.get(j);
-					expr.traverse(this, methodScope);
-					append(STMT_END);
-				}
-			}
-		}
-
-		return true;
-	}
-
-	// priority=2 group=jml
-	public boolean visit(JmlOldExpression term, BlockScope scope) {
-		debug(term, scope);
-		append("old("); //$NON-NLS-1$
-		term.expression.traverse(this, scope);
-		append(")"); //$NON-NLS-1$
-		return false;
-	}
-
-	// priority=3 group=jml
-	public boolean visit(JmlRequiresClause term, BlockScope scope) {
-		debug(term, scope);
-		// implemented in JmlMethodSpecification
-		return true;
-	}
-
-	// priority=1 group=jml
-	public boolean visit(JmlResultReference term, BlockScope scope) {
-		debug(term, scope);
-		append(RESULT);
-		return true;
-	}
-	
-	// priority=3 group=jml
-	public boolean visit (JmlWhileStatement term, BlockScope scope) {
-		debug(term, scope);
-		visit((WhileStatement)term, scope);
-		return false;
-		
-	}	
-	// priority=3 group=stmt
-	public boolean visit(WhileStatement term, BlockScope scope) {
-		debug(term, scope);
-		append("while ("); //$NON-NLS-1$
-		term.condition.traverse(this, scope);
-		append(") "); //$NON-NLS-1$
-		
-		if (term instanceof JmlWhileStatement ) {
-			JmlWhileStatement jmlWhile = (JmlWhileStatement) term;
-			jmlWhile.annotations.traverse(this, scope);
-			append(STMT_END + SPACE);
-		}
-		
-		traverseBlock(toBlock(term.action, scope), scope);
-		return false;
-	}
-	
-	// priority=3 group=jml
 	public boolean visit (JmlForStatement term, BlockScope scope) {
 		debug(term, scope);
 		for (int i = 0; i< term.initializations.length ; i++) {
@@ -1094,167 +845,58 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;		
 
 	}
-	
-	// priority=3 group=stmt
-	public boolean visit(ForStatement term, BlockScope scope) {
+
+	// priority=0 group=jml
+	public boolean visit(JmlLoopAnnotations term, BlockScope scope) {
 		debug(term, scope);
-		for (int i = 0; i< term.initializations.length ; i++) {
-			term.initializations[i].traverse(this, scope);
-		}
-		
-		Block blk = makeBlockForLoop(term);
-		WhileStatement w = new WhileStatement(term.condition, 
-				blk, term.sourceStart, term.sourceEnd);
-		w.traverse(this, scope);
-		
+		return true;
+	}
+
+	// priority=3 group=jml
+	public boolean visit(JmlLoopInvariant term, BlockScope scope) {
+		debug(term, scope);
+		term.expr.traverse(this, scope);
 		return false;
 	}
-	
-	// priority=1 group=stmt
-	public boolean visit(LabeledStatement term, BlockScope scope) {
-		debug(term, scope);
-		appendLine(new String (term.label) + ":"); //$NON-NLS-1$
-		return true;
-	}
 
-	// priority=3 group=decl
-	public boolean visit(LocalDeclaration term, BlockScope scope) {
-		debug(term, scope);
-		variableInitialization(term, scope);
-		return false;
-	}
-	
-	// priority=3 group=lit
-	public boolean visit(LongLiteral term, BlockScope scope) {
-		debug(term, scope);
-		append(new String(term.source()));
-		return true;
-	}
-
-	// priority=0 group=decl
-	public boolean visit(MarkerAnnotation term, BlockScope scope) {
+	// TODO priority=3 group=jml
+	public boolean visit(JmlLoopVariant term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=1 group=expr
-	public boolean visit(MemberValuePair term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=2 group=expr
-	public boolean visit(MessageSend term, BlockScope scope) {
-		debug(term, scope);
-		
-		SingleNameReference name = null;
-		TypeBinding binding = null;
-		if (term.receiver instanceof SingleNameReference) {
-			name = (SingleNameReference)term.receiver;
-			binding = scope.getType(name.token);
-		}
-
-		if (term.statementEnd != -1) {
-			append("call ", term); //$NON-NLS-1$
-		}
-		
-		append(term.binding.declaringClass.readableName());
-		append("." + new String(term.selector)); //$NON-NLS-1$
-		append(PAREN_OPEN);
-		
-		if (term.receiver instanceof ThisReference) {
-			append("this");  //$NON-NLS-1$
-		}
-		else if (term.receiver instanceof SingleNameReference) {
-			if (binding instanceof SourceTypeBinding) {
-				SourceTypeBinding sBinding = (SourceTypeBinding)binding;
-				if (!sBinding.isStatic()) {
-					term.receiver.traverse(this, scope);
-				}
-			}
-			else {
-				term.receiver.traverse(this, scope);
-			}
-		}
-		else if (term.receiver instanceof CastExpression) {
-			CastExpression expr = (CastExpression)term.receiver;
-			expr.expression.traverse(this, scope);
-		}
-
-		if (term.arguments != null) {
-			append(", "); //$NON-NLS-1$
-			for (int i = 0; i < term.arguments.length; i++) {
-				term.arguments[i].traverse(this, scope);
-				if (i < term.arguments.length - 1) append(", "); //$NON-NLS-1$
-			}
-		}
-		append(PAREN_CLOSE);
-		return false;
-	}
-	
-	public void endVisit(MessageSend term, BlockScope scope) {
-		if (term.statementEnd != -1) appendLine(STMT_END);
-	}
-
-	/**
-	 * Appends the proper boogie source and also finds all declarations using the {@link BoogieVariableDeclFinderVisitor}
-	 * to generate a list of local declarations to then visit using the {@link #addLocalDeclaration(LocalDeclaration, BlockScope, Block)}
-	 * method.
-	 */
 	// priority=3 group=decl
 	public boolean visit(JmlMethodDeclaration term, ClassScope scope) {
-		methodScope = term.scope; // used by #visit(JmlMethodSpecification, ClassScope)
-		
 		debug(term, scope);
-		
-		symbolTable = new BoogieSymbolTable();
 
+		methodScope = term.scope;
 		String cls = new String(term.binding.declaringClass.readableName());
-		append("procedure "); //$NON-NLS-1$
-		append(cls + "."); //$NON-NLS-1$
-		append(new String(term.selector));
-		append(PAREN_OPEN);
-		if (!term.isStatic()) {
-			append("this: " + REF); //$NON-NLS-1$
-		}
-		if (term.arguments != null) {
-			if (!term.isStatic()) append(", ");  //$NON-NLS-1$
-			for (int i = 0; i < term.arguments.length; i++) {
-				term.arguments[i].traverse(this, scope);
-				if (i < term.arguments.length - 1) {
-					append(", "); //$NON-NLS-1$
-				}
-			}
-		}
-		append(PAREN_CLOSE);
+		String procName = cls + "." + new String(term.selector); //$NON-NLS-1$
+		
+		TypeReference ref = null;
 		if (term.binding.methodDeclaration instanceof JmlConstructorDeclaration) {
 			// do nothing
 		}
-		else if (term.returnType.resolveType(scope) != TypeBinding.VOID) {
-			append(" returns (" + RESULT + " : "); //$NON-NLS-1$ //$NON-NLS-2$
+		else if (term.returnType.resolvedType != TypeBinding.VOID) {
 			term.returnType.traverse(this, scope);
-			append(PAREN_CLOSE);
+			ref = (TypeReference)result();
 		}
 		
-		// requires for types
+		Procedure proc = new Procedure(procName, ref, term, (Program)boogieScope);
+		boogieScope.getProgramScope().getProcedures().add(proc);
+		boogieScope = proc;
+		
 		if (!term.isStatic()) {
-			append(SPACE);
-			append("requires $dtype(this) == " + cls + STMT_END, term); //$NON-NLS-1$
+			VariableReference varRef = new VariableReference("this", term, boogieScope); //$NON-NLS-1$
+			TypeReference typeRef = new TypeReference(cls, term, boogieScope);
+			VariableDeclaration decl = new VariableDeclaration(varRef, typeRef, boogieScope);
+			proc.getArguments().add(decl);
 		}
 		if (term.arguments != null) {
-			boolean first = false;
 			for (int i = 0; i < term.arguments.length; i++) {
-				Argument arg = term.arguments[i];
-				if (!arg.type.resolvedType.canBeInstantiated()) continue;
-				if (arg.type.resolvedType.isArrayType()) continue;
-				if (!first) append(SPACE);
-				first = true;
-				append("requires $dtype(" + symbolTable.lookup(new String(arg.name)) + ") == ", arg);  //$NON-NLS-1$//$NON-NLS-2$
-				append(arg.type.resolvedType.readableName());
-				append(STMT_END);
-				if (i < term.arguments.length - 1) {
-					append(SPACE);
-				}
+				term.arguments[i].traverse(this, scope);
+				proc.getArguments().add(result());
+				proc.registerVariable((VariableDeclaration)result());
 			}
 		}
 		
@@ -1262,187 +904,280 @@ public class BoogieVisitor extends ASTVisitor {
 		if (term.getSpecification() != null) {
 			visit(term.getSpecification(), scope);
 		}
-		
-		appendLine(SPACE + BLOCK_OPEN);
-		output.increaseIndent();
 
-		BoogieVariableDeclFinderVisitor varDeclFinder = new BoogieVariableDeclFinderVisitor(symbolTable);
-		varDeclFinder.visit(term, scope);
-		ArrayList locals = varDeclFinder.getDecls(); 
-		if (locals != null) {
-			for (int i = 0; i < locals.size(); i++) {
-				Object[] data = (Object[])locals.get(i);
-				LocalDeclaration loc = (LocalDeclaration)data[0];
-				Block blk = (Block)data[1];
-				addLocalDeclaration(loc, term.scope, blk);				
-			}
+		traverseStatements(proc.getStatements(), term.statements, term.scope);
 
-			// types for all locals
-			for (int i = 0; i < locals.size(); i++) {
-				Object[] data = (Object[])locals.get(i);
-				LocalDeclaration loc = (LocalDeclaration)data[0];
-				Block blk = (Block)data[1];
-				String name = symbolTable.lookup(new String(loc.name), blk);
-				if (!loc.type.resolvedType.canBeInstantiated()) continue;
-				if (loc.type.resolvedType.isArrayType()) continue;
-				append("assume $dtype(" + name + ") == ", loc); //$NON-NLS-1$ //$NON-NLS-2$
-				append(loc.type.resolvedType.readableName());
-				appendLine(STMT_END);
-			}
-		}
+		boogieScope = proc.getProgramScope();
 		
-		if (term.statements != null) {
-			for (int i = 0; i < term.statements.length; i++) {
-				term.statements[i].traverse(this, term.scope);
+		return false;
+	}
+
+	private void getMethodModifies(JmlSpecCase specCase, ClassScope scope) {
+		if (specCase.body.rest != null) {
+			JmlSpecCaseRestAsClauseSeq rest = (JmlSpecCaseRestAsClauseSeq)specCase.body.rest;
+			for (int j = 0; j < rest.clauses.length; j++) {
+				if (rest.clauses[j] instanceof JmlAssignableClause) {
+					JmlAssignableClause modifies = (JmlAssignableClause)rest.clauses[j];
+					if (modifies.expr instanceof JmlStoreRefListExpression) {
+						JmlStoreRefListExpression stores = (JmlStoreRefListExpression)modifies.expr;
+						for (int x = 0; x < stores.exprList.length; x++) {
+							stores.exprList[x].traverse(this, scope);
+							boogieScope.getProcedureScope().getModifies().add(result());
+						}
+					}
+					else if (modifies.expr instanceof JmlKeywordExpression) {
+						// TODO support JmlKeywordExpression
+						// JmlKeywordExpression expr = (JmlKeywordExpression)modifies.expr;
+					}
+				}
 			}
 		}
+	}
 
-		output.decreaseIndent();
-		append(BLOCK_CLOSE, term);
-		appendLine(""); //$NON-NLS-1$
-		
-		symbolTable = null;
+	private void getMethodContracts(List exprs, List contracts) {
+		for (int j = 0; j < exprs.size(); j++) {
+			org.eclipse.jdt.internal.compiler.ast.Expression expr = 
+				(org.eclipse.jdt.internal.compiler.ast.Expression)exprs.get(j);
+			expr.traverse(this, methodScope);
+			contracts.add(result()); 
+		}
+	}
+
+	// priority=3 group=jml
+	public boolean visit(JmlMethodSpecification term, ClassScope scope) {
+		debug(term, scope);
+		Procedure proc = boogieScope.getProcedureScope();
+
+		for (int i = 0; i < term.getSpecCases().length; i++) {
+			JmlSpecCase specCase = term.getSpecCases()[i];
+			getMethodModifies(specCase, scope);
+			getMethodContracts(specCase.getRequiresExpressions(), proc.getRequires());
+			getMethodContracts(specCase.getEnsuresExpressions(), proc.getEnsures());
+		}
 
 		return false;
 	}
 
-	/**
-	 * Used by the {@link #visit(JmlMethodDeclaration, ClassScope)} to add
-	 * variable declarations to the top of the procedure 
-	 */
-	private void addLocalDeclaration(LocalDeclaration term, BlockScope scope, Block block) {
-		String name = symbolTable.lookup(new String(term.name), block);
-		append("var " + name + " : "); //$NON-NLS-1$//$NON-NLS-2$
-		term.type.traverse(this, scope);
-		appendLine(STMT_END);
-		if (term.type instanceof ArrayTypeReference) {
-			appendLine("var " + name + ".length : int;"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+	// priority=2 group=jml
+	public boolean visit(JmlOldExpression term, BlockScope scope) {
+		debug(term, scope);
+		term.expression.traverse(this, scope);
+		result = new FunctionCall("old", new Expression[] { resultExpr() }, term, boogieScope); //$NON-NLS-1$
+		return false;
 	}
 
-	// priority=0 group=decl
-	public boolean visit(NormalAnnotation term, BlockScope scope) {
+	// priority=1 group=jml
+	public boolean visit(JmlResultReference term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		result = new ResultReference(boogieScope.getProcedureScope());
+		return false;
+	}
+
+	public boolean visit(JmlWhileStatement term, BlockScope scope) {
+		debug(term, scope);
+		visit((org.eclipse.jdt.internal.compiler.ast.WhileStatement)term, scope);
+		WhileStatement whl = (WhileStatement)result();
+		if (term.annotations != null) {
+			// invariants
+			for (int i = 0; i < term.annotations.invariants.length; i++) {
+				term.annotations.invariants[i].traverse(this, scope);
+				whl.getInvariants().add(resultExpr());
+			}
+			
+			// TODO variants
+		}
+		result = whl;
+		return false;
+	}
+
+	// priority=1 group=stmt
+	public boolean visit(LabeledStatement term, BlockScope scope) {
+		debug(term, scope);
+		result = new LabelStatement(new String(term.label), term, boogieScope);
+		getStatementList().add(result());
+		
+		term.statement.traverse(this, scope);
+		
+		return false;
+	}
+
+	// priority=3 group=decl
+	public boolean visit(LocalDeclaration term, BlockScope scope) {
+		debug(term, scope);
+		
+		// add variable declaration to scope
+		term.type.traverse(this, scope);
+		TypeReference type = (TypeReference)result();
+		VariableReference ref = new VariableReference(new String(term.name), term, boogieScope);
+		VariableDeclaration decl = new VariableDeclaration(ref, type, boogieScope);
+		boogieScope.addVariable(decl);
+		
+		if (term.type instanceof ArrayTypeReference) {
+			TypeReference intType = new TypeReference("int", term.type, boogieScope); //$NON-NLS-1$
+			VariableReference lenRef = new VariableLengthReference(ref.getName(), term, boogieScope); 
+			VariableDeclaration lenDecl = new VariableDeclaration(lenRef, intType, boogieScope);
+			boogieScope.addVariable(lenDecl);
+			lenDecl.setShortName(null);
+		}
+
+		// initialization assignment
+		variableInitialization(term, scope);
+		result = result();
+		
+		return false;
+	}
+
+	// priority=3 group=lit
+	public boolean visit(LongLiteral term, BlockScope scope) {
+		debug(term, scope);
+		result = new IntLiteral(Integer.parseInt(term.toString()), term, boogieScope);
+		return false;
+	}
+	
+	private VariableReference extractMethodExpression(MessageSend term, String procName, Expression[] args) {
+		// add variable declaration to scope
+		String varName = "$call_" + boogieScope.getProcedureScope().getLocals().size(); //$NON-NLS-1$
+		TypeReference type = new TypeReference(getTypeName(term.expectedType), term, boogieScope);
+		VariableReference ref = new VariableReference(varName, term, boogieScope);
+		VariableDeclaration decl = new VariableDeclaration(ref, type, boogieScope);
+		boogieScope.addVariable(decl);
+		
+		// add the statement
+		CallStatement stmt = new CallStatement(procName, args, ref, term, boogieScope);
+		getStatementList().add(stmt);
+		
+		return ref;
+		
+	}
+
+	// priority=2 group=expr
+	public boolean visit(MessageSend term, BlockScope scope) {
+		debug(term, scope);
+		
+		Expression[] args = null;
+		String procName = new String(term.binding.declaringClass.readableName()) + "." + new String(term.selector); //$NON-NLS-1$
+		int staticOffset = term.binding.isStatic() ? 0 : 1;
+		if (term.arguments != null) {
+			args = new Expression[term.arguments.length + staticOffset];
+			term.receiver.traverse(this, scope);
+			args[0] = resultExpr();
+			for (int i = 0; i < term.arguments.length; i++) {
+				term.arguments[i].traverse(this, scope);
+				args[i + staticOffset] = resultExpr();
+			}
+		}
+		else if (staticOffset == 1) {
+			term.receiver.traverse(this, scope);
+			args = new Expression[] { resultExpr() };
+		}
+		
+		
+		if (term.statementEnd != -1 || methodCallAssignmentVar != null) {
+			result = new CallStatement(procName, args, methodCallAssignmentVar, term, boogieScope); 
+			getStatementList().add(result);
+		}
+		else { 
+			// method is an expression, pull it out to a statement
+			// and return the variable name as the expression
+			result = extractMethodExpression(term, procName, args);
+		}
+
+		return false;
 	}
 
 	// priority=3 group=lit
 	public boolean visit(NullLiteral term, BlockScope scope) {
 		debug(term, scope);
-		append("null"); //$NON-NLS-1$
-		return true;
+		result = new TokenLiteral("null"); //$NON-NLS-1$
+		return false;
 	}
 
 	// priority=1 group=expr
 	public boolean visit(OR_OR_Expression term, BlockScope scope) {
 		debug(term, scope);
-		append("("); //$NON-NLS-1$
 		term.left.traverse(this, scope);
-		append(" || "); //$NON-NLS-1$
+		Expression left = resultExpr();
 		term.right.traverse(this, scope);
-		append(")"); //$NON-NLS-1$
+		Expression right = resultExpr();
+		result = new BinaryExpression(left, "||", right, term, boogieScope); //$NON-NLS-1$
 		return false;
 	}
 
-	// TODO priority=0 group=expr
-	public boolean visit(ParameterizedQualifiedTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=expr
-	public boolean visit(ParameterizedQualifiedTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=expr
-	public boolean visit(ParameterizedSingleTypeReference term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=expr
-	public boolean visit(ParameterizedSingleTypeReference term, ClassScope scope) {
-		debug(term, scope);
-		return true;
+	private void extractCompoundAssignment(CompoundAssignment term, BlockScope scope) {
+		org.eclipse.jdt.internal.compiler.ast.BinaryExpression expr = 
+			new org.eclipse.jdt.internal.compiler.ast.BinaryExpression(term.lhs, term.expression, term.operator);
+		org.eclipse.jdt.internal.compiler.ast.Assignment a = new 
+			org.eclipse.jdt.internal.compiler.ast.Assignment(term.lhs, expr, term.sourceStart);
+		a.traverse(this, scope);
 	}
 
 	// priority=2 group=expr
 	public boolean visit(PostfixExpression term, BlockScope scope) {
-		debug(term, scope);	
+		debug(term, scope);
+		term.lhs.traverse(this, scope);
+		VariableReference lhs = (VariableReference)result();
+		term.expression.traverse(this, scope);
+		org.eclipse.jdt.internal.compiler.ast.BinaryExpression expr = 
+			new org.eclipse.jdt.internal.compiler.ast.BinaryExpression(term.lhs, term.expression, term.operator);
+		expr.traverse(this, scope);
+		postStatements.add(new Assignment(lhs, resultExpr(), term, boogieScope.getProcedureScope()));
+		result = lhs;
 		return false;
 	}
-	
-	// priority=2 group=expr
-	public void endVisit(PostfixExpression term, BlockScope scope) {
-		endVistiPrePostFixExpression(term, scope);
-	}
-	
-	// priority=2 group=expr
-	public void endVistiPrePostFixExpression(CompoundAssignment term, BlockScope scope) {
-		debug(term, scope);
-		IntLiteral i = new IntLiteral(new char[] { '1' }, term.sourceStart, term.sourceEnd, 1);
-		BinaryExpression expr = new BinaryExpression(term.lhs, i, term.operator);
-		Assignment a = new Assignment(term.lhs, expr, term.sourceStart);
-		a.traverse(this, scope);
-	}
-	
+
 	// priority=2 group=expr
 	public boolean visit(PrefixExpression term, BlockScope scope) {
 		debug(term, scope);
-		endVistiPrePostFixExpression(term, scope);
+		extractCompoundAssignment(term, scope);
 		return false;
 	}
-	
+
 	// TODO priority=0 group=expr
 	public boolean visit(QualifiedAllocationExpression term, BlockScope scope) {
 		debug(term, scope);
 		return true;
 	}
-
-	// priority=1 group=expr
-	public boolean visit(QualifiedNameReference term, BlockScope scope) {
-		debug(term, scope);
-		String termName = new String(term.tokens[0]);
-		
+	
+	private VariableReference getQualifiedVariableReference(QualifiedNameReference term, ClassScope scope) {
 		// Look for field or resolve type fully
-		TypeBinding classBinding = scope.classScope().referenceType().binding;
-		FieldBinding fieldBind = scope.classScope().findField(classBinding, term.tokens[1], null, true);
+		TypeBinding classBinding = scope.referenceType().binding;
+		FieldBinding fieldBind = scope.findField(classBinding, term.tokens[1], null, true);
+		String termName = new String(term.tokens[1]);
 
 		if (fieldBind != null) {
-			append(new String(classBinding.readableName()) + "." + new String(term.tokens[1])); //$NON-NLS-1$ 
-			if (!fieldBind.isStatic()) { 
-				if (symbolTable != null) {
-					String symName = symbolTable.lookup(termName);
-					if (symName != null) {
-						append("[" + symName + "]"); //$NON-NLS-1$ //$NON-NLS-2$
-					}
-				}
-				else {
-					// TODO implement non local qualified references
-				}
+			String name = new String(classBinding.readableName()) + "." + termName; //$NON-NLS-1$
+			if (!fieldBind.isStatic()) {
+				return new MapVariableReference(name, new Expression[] { 
+						new VariableReference(new String(term.tokens[0]), term, boogieScope) }, term, boogieScope);
+			}
+			else {
+				return new VariableReference(name, term, boogieScope);
+				
 			}
 		}
 		else {
-			if (symbolTable != null) {
-				String symName = symbolTable.lookup(termName);
-				if (symName != null) {
-					append(symName);
-				}
+			String name = new String(term.binding.readableName());
+			VariableDeclaration decl = boogieScope.lookupVariable(name);
+			if (decl != null) {
+				name = decl.getShortName() != null ? decl.getShortName() : decl.getName().getName();
 			}
-			else {
-				append(term.binding.readableName());
-			}
-			append("." + new String(scope.getType(term.tokens[1]).readableName())); //$NON-NLS-1$
+			name += "." + new String(scope.getType(term.tokens[1]).readableName()); //$NON-NLS-1$
+			return new VariableReference(name, term, boogieScope);
 		}
-		return true;
+	}
+
+	// TODO priority=1 group=expr
+	public boolean visit(QualifiedNameReference term, BlockScope scope) {
+		debug(term, scope);
+		result = getQualifiedVariableReference(term, scope.classScope());
+		return false;
 	}
 
 	// TODO priority=1 group=expr
 	public boolean visit(QualifiedNameReference term, ClassScope scope) {
 		debug(term, scope);
-		return true;
+		result = getQualifiedVariableReference(term, scope.classScope());
+		return false;
 	}
 
 	// TODO priority=0 group=expr
@@ -1482,113 +1217,72 @@ public class BoogieVisitor extends ASTVisitor {
 	}
 
 	// priority=3 group=expr
-	public boolean visit(ReturnStatement term, BlockScope scope) {
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.ReturnStatement term, BlockScope scope) {
 		debug(term, scope);
-		if (term.expression != null) {
-			char result[] = RESULT.toCharArray(); 
-			Assignment m = new Assignment(
-					new SingleTypeReference(result,  term.sourceStart),
-						term.expression, term.sourceEnd);
-			m.traverse(this, scope);
-		}
-		append("return", term.expression); //$NON-NLS-1$
-		appendLine(STMT_END); 
+		Procedure proc = boogieScope.getProcedureScope();
+		term.expression.traverse(this, scope);
+		getStatementList().add(new Assignment(new ResultReference(proc), resultExpr(), term.expression, proc));
+		result = new ReturnStatement(term.expression, boogieScope);
+		postStatements.add(result);
 		return false;
 	}
+	
+	private VariableReference getVariableReference(SingleNameReference term, ClassScope scope) {
+		// Look for field or resolve type fully
+		TypeBinding classBinding = scope.referenceType().binding;
+		FieldBinding fieldBind = scope.findField(classBinding, term.token, null, true);
+		String termName = new String(term.token);
 
-	// priority=0 group=expr
-	public boolean visit(SingleMemberAnnotation term, BlockScope scope) {
-		debug(term, scope);
-		return true;
+		if (fieldBind != null) {
+			String name = new String(classBinding.readableName()) + "." + termName; //$NON-NLS-1$
+			if (!fieldBind.isStatic()) {
+				return new MapVariableReference(name, new Expression[] { 
+						new VariableReference("this", term, boogieScope) }, term, boogieScope); //$NON-NLS-1$
+			}
+			else {
+				return new VariableReference(name, term, boogieScope);
+				
+			}
+		}
+		else {
+			return new VariableReference(new String(term.binding.readableName()), term, boogieScope);
+		}
+		
 	}
 
 	// priority=3 group=expr
 	public boolean visit(SingleNameReference term, BlockScope scope) {
 		debug(term, scope);
-		String termName = new String(term.token);
-		
-		// First look in symbol table if there is one (local vars)
-		if (symbolTable != null) {
-			String symName = symbolTable.lookup(termName);
-			if (symName != null) {
-				append(symName);
-				return true;
-			} 
-		}
-
-		// Look for field or resolve type fully
-		TypeBinding classBinding = scope.classScope().referenceType().binding;
-		FieldBinding fieldBind = scope.classScope().findField(classBinding, term.token, null, true);
-
-		if (fieldBind != null) {
-			append(new String(classBinding.readableName()) + "." + termName); //$NON-NLS-1$ 
-			if (!fieldBind.isStatic()) append("[this]"); //$NON-NLS-1$ 
-		}
-		else {
-			append(new String(scope.getType(term.token).readableName()));
-		}
-		return true;
+		result = getVariableReference(term, scope.classScope());
+		return false;
 	}
 
 	// priority=3 group=expr
 	public boolean visit(SingleNameReference term, ClassScope scope) {
 		debug(term, scope);
-		append(symbolTable.lookup(new String(term.token)));
-		return true;
+		result = getVariableReference(term, scope);
+		return false;
 	}
 
 	// priority=3 group=expr
 	public boolean visit(SingleTypeReference term, BlockScope scope) {
 		debug(term, scope);
-		
-		if (term.resolvedType == TypeBinding.BOOLEAN || term.token.equals(TypeConstants.BOOLEAN)) {
-			append("bool"); //$NON-NLS-1$
-			return true;
-		}
-		
-		if (term.resolvedType != null && !term.resolvedType.isBaseType()) {
-			declareType(new String(term.resolvedType.readableName()));
-			append(REF);
-		}
-		else {
-			append(new String(term.token));
-		}
-		
-		return true;
+		result = new TypeReference(getTypeName(term.resolvedType), term, boogieScope);
+		return false;
 	}
 
 	// priority=3 group=expr
 	public boolean visit(SingleTypeReference term, ClassScope scope) {
 		debug(term, scope);
-		
-		TypeBinding binding = term.resolveType(scope);
-		if (binding == TypeBinding.BOOLEAN) {
-			append("bool"); //$NON-NLS-1$
-		}
-		else {
-			if (term.resolvedType != null && !term.resolvedType.isBaseType()) {
-				declareType(new String(term.resolvedType.readableName()));
-				append(REF);
-			}
-			else {
-				append(new String(term.token));
-			}
-		}
-		
-		return true;
+		result = new TypeReference(getTypeName(term.resolvedType), term, boogieScope);
+		return false;
 	}
 
 	// priority=2 group=lit
 	public boolean visit(StringLiteral term, BlockScope scope) {
 		debug(term, scope);
-		append(declareString(term.toString()));
-		return true;
-	}
-
-	// TODO priority=1 group=lit
-	public boolean visit(StringLiteralConcatenation term, BlockScope scope) {
-		debug(term, scope);
-		return true;
+		result = declareString(term.toString());
+		return false;
 	}
 
 	// TODO priority=2 group=expr
@@ -1597,150 +1291,93 @@ public class BoogieVisitor extends ASTVisitor {
 		return true;
 	}
 
-	// TODO priority=0 group=stmt
-	public boolean visit(SwitchStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// TODO priority=0 group=stmt
-	public boolean visit(SynchronizedStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
 	// TODO priority=3 group=expr
 	public boolean visit(ThisReference term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		result = new VariableReference("this", term, boogieScope); //$NON-NLS-1$
+		return false;
 	}
 
 	// TODO priority=3 group=expr
 	public boolean visit(ThisReference term, ClassScope scope) {
 		debug(term, scope);
-		return true;
-	}
-
-	// priority=0 group=stmt
-	public boolean visit(ThrowStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
+		result = new VariableReference("this", term, boogieScope); //$NON-NLS-1$
+		return false;
 	}
 
 	// priority=3 group=lit
 	public boolean visit(TrueLiteral term, BlockScope scope) {
 		debug(term, scope);
-		append("true"); //$NON-NLS-1$
-		return true;
-	}
-
-	// priority=0 group=stmt
-	public boolean visit(TryStatement term, BlockScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=2 group=decl
-	public boolean visit(TypeDeclaration term, BlockScope scope) {
-		if (term.superclass != null) {
-			String superclass = new String(term.superclass.resolvedType.readableName());
-			declareType(superclass);
-			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
-		}
-		else {
-			declareType(new String(term.binding.readableName()));
-		}
-		debug(term, scope);
-		return true;
-	}
-
-	// priority=2 group=decl
-	public boolean visit(TypeDeclaration term, ClassScope scope) {
-		debug(term, scope);
-		if (term.superclass != null) {
-			String superclass = new String(term.superclass.resolvedType.readableName());
-			declareType(superclass);
-			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
-		}
-		else {
-			declareType(new String(term.binding.readableName()));
-		}
+		result = new BooleanLiteral(true, term, boogieScope);
 		return false;
 	}
 
 	// priority=2 group=decl
-	public boolean visit(TypeDeclaration term, CompilationUnitScope scope) {
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term, BlockScope scope) {
 		debug(term, scope);
 		if (term.superclass != null) {
-			String superclass = new String(term.superclass.resolvedType.readableName());
-			declareType(superclass);
 			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
 		}
 		else {
 			declareType(new String(term.binding.readableName()));
 		}
-
-		if (term.memberTypes != null) {
-			int length = term.memberTypes.length;
-			for (int i = 0; i < length; i++)
-				term.memberTypes[i].traverse(this, term.scope);
-		}
-		if (term.fields != null) {
-			int length = term.fields.length;
-			for (int i = 0; i < length; i++) {
-				FieldDeclaration field;
-				if ((field = term.fields[i]).isStatic()) {
-					field.traverse(this, term.staticInitializerScope);
-				} else {
-					field.traverse(this, term.initializerScope);
-				}
-			}
-		}
-		if (term.methods != null) {
-			int length = term.methods.length;
-			for (int i = 0; i < length; i++)
-				term.methods[i].traverse(this, term.scope);
-		}
-
-		return false;
-	}
-
-	// TODO priority=2 group=expr
-	public boolean visit(TypeParameter term, BlockScope scope) {
-		debug(term, scope);
 		return true;
 	}
 
-	// TODO priority=2 group=expr
-	public boolean visit(TypeParameter term, ClassScope scope) {
+	// priority=2 group=decl
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term, ClassScope scope) {
 		debug(term, scope);
+		if (term.superclass != null) {
+			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
+		}
+		else {
+			declareType(new String(term.binding.readableName()));
+		}
+		return true;
+	}
+
+	// priority=2 group=decl
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term, CompilationUnitScope scope) {
+		debug(term, scope);
+		if (term.superclass != null) {
+			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
+		}
+		else {
+			declareType(new String(term.binding.readableName()));
+		}
 		return true;
 	}
 
 	// TODO priority=3 group=expr
-	public boolean visit(UnaryExpression term, BlockScope scope) {
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.UnaryExpression term, BlockScope scope) {
 		debug(term, scope);
-		
+		String operator = null;
 		switch ((term.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) {
-			case OperatorIds.PLUS:
-				break;
-			default:
-				append (term.operatorToString());
-				break;
+		case OperatorIds.PLUS:
+			break;
+		default:
+			operator = term.operatorToString();
+			break;
 		}
-		return true;
+
+		term.expression.traverse(this, scope);
+		if (operator != null) {
+			result = new UnaryExpression(resultExpr(), operator, term, boogieScope);
+		}
+		return false;
 	}
 
-	// priority=0 group=misc
-	public boolean visit(Wildcard term, BlockScope scope) {
+	// priority=3 group=stmt
+	public boolean visit(org.eclipse.jdt.internal.compiler.ast.WhileStatement term, BlockScope scope) {
 		debug(term, scope);
-		return true;
+		term.condition.traverse(this, scope);
+		WhileStatement whl = new WhileStatement(resultExpr(), term, boogieScope);
+		if (term.action != null) {
+			Block stmts = toBlock(term.action, scope);
+			traverseStatements(whl.getStatements(), stmts.statements, scope);
+		}
+		result = whl;
+		getStatementList().add(result);
+		return false;
 	}
-
-	// priority=0 group=misc
-	public boolean visit(Wildcard term, ClassScope scope) {
-		debug(term, scope);
-		return true;
-	}
-
 }

@@ -97,6 +97,8 @@ public class AdapterTests extends TranslationTests {
 				"----------\n");
 	}
 	
+	/* This test is no longer valid due to support for auto-modifies
+	 
 	public void test_0402_MissingModifies() {
 		this.runNegativeTest(new String[] {
 				testsPath + "A.java",
@@ -115,6 +117,7 @@ public class AdapterTests extends TranslationTests {
 				"Missing JML modifies clause for this attribute assignment.\n" +
 				"----------\n");
 	}
+	*/
 	
 	public void test_Stack() {
 		this.runNegativeTest(new String[] {

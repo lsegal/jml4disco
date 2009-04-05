@@ -55,7 +55,12 @@ public class VariableDeclaration extends BoogieNode {
 	}
 
 	public void toBuffer(BoogieSource out) {
-		getName().toBuffer(out);
+		if (getShortName() != null) {
+			out.append(getShortName(), getJavaNode());
+		}
+		else {
+			getName().toBuffer(out);
+		}
 		out.append(TOKEN_COLON + TOKEN_SPACE);
 		getType().toBuffer(out);
 	}

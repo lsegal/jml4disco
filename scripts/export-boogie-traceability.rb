@@ -72,19 +72,20 @@ class Priority
 end
 
 class TestTraceability
-    attr_accessor :file, :line, :pass, :name
+    attr_accessor :file, :line, :pass, :name, :adapter
 
-    def initialize(file, line, name, pass = false) 
+    def initialize(file, line, name, pass = false, adapter = nil) 
         self.file = file
         self.line = line
         self.name = name
         self.pass = pass 
+        self.adapter = adapter
     end
 
     def html
         <<-eof
             <a href="/trac/browser/JML4/dev/trunk/#{$tests_path}#{file}#L#{line}"
-                style="color:#{color}" title="#{file}: #{name}">#{value}</a>
+                style="color:#{color}" title="#{file}: #{name}#{adapter}">#{value}</a>
         eof
     end
 
@@ -94,6 +95,10 @@ class TestTraceability
 
     def value
         pass ? 'P' : 'F'
+    end
+
+    def adapter
+        @adapter ? " (Adapter)" : ""
     end
 end
 
@@ -219,13 +224,12 @@ def parse_tests(file, adapter_test = false)
                 pass = !(prevline =~ /\bTODO\b/)
                 terms = prevline[/term=(\S+)/, 1] 
                 adapter = prevline[/\badapter=(\S+)/, 1]
-                next if adapter == "none" || !adapter
-                adapter = adapter == "pass"
+                adapter = adapter == "pass" if adapter
                 next unless terms
                 terms.split(',').each do |term|
                     out[term] ||= []
                     out[term] << TestTraceability.new(file, index+1, name, pass)
-                    out[term] << TestTraceability.new(file, index+1, name, adapter) if adapter != nil
+                    out[term] << TestTraceability.new(file, index+1, name, adapter, true) if adapter
                 end
             end
         end
@@ -239,6 +243,7 @@ def parse_boogie(str)
     lines.each_with_index do |line, index|
 	    if line =~ /public boolean visit\((\S+) term, (\S+) .+?\)/  
 		    method, scope, done, priority, group = $1, $2, true, nil, nil
+            method = method.split('.').last
             scope = scope == "BlockScope" ? "method" : "class"
 		    if lines[index - 1] =~ /^\s*\/\//
                 prevline = lines[index - 1]

@@ -24,7 +24,7 @@ public class TypeDeclaration extends BoogieNode {
 	}
 
 	public void toBuffer(BoogieSource out) {
-		// nothing here
+		out.append(getType().getTypeName() + TOKEN_COLON + TOKEN_SPACE + TOKEN_TNAME);
 	}
 
 	public void traverse(Visitor visitor) {

@@ -1,6 +1,7 @@
 package org.jmlspecs.jml4.boogie.ast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.jmlspecs.jml4.boogie.BoogieSource;
@@ -94,8 +95,14 @@ public class Procedure extends BoogieNode implements Scope {
 	
 	private void printModifies(BoogieSource out) {
 		if (getModifies().size() == 0) return;
+		HashMap map = new HashMap();
 		for (int i = 0; i < getModifies().size(); i++) {
 			VariableReference ref = (VariableReference)getModifies().get(i);
+			
+			// modifies must be unique otherwise Boogie crashes!
+			if (map.get(ref.getName()) != null) continue; 
+			map.put(ref.getName(), new Boolean(true));
+			
 			out.append("modifies" + TOKEN_SPACE, ref.getJavaNode()); //$NON-NLS-1$
 			out.append(ref.getName() + TOKEN_SEMICOLON + TOKEN_SPACE);
 		}

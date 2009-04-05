@@ -1,6 +1,5 @@
 package org.jmlspecs.jml4.boogie;
 
-import java.util.Arrays;
 import java.util.Hashtable;
 
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
@@ -17,24 +16,21 @@ public class BoogieSource {
 	private boolean newLine = true;
 	private StringBuffer implBody = new StringBuffer();
 	private Hashtable/* <BoogieSourcePoint, ASTNode> */pointTable = new Hashtable();
-	public static int headersOffset = 7;
-	private int prependsOffset;
+	private static int headersOffset;
 	private static StringBuffer headers;
-	private StringBuffer prepends;
 
+	// populate headers immediately
+	static { populateHeaders(); }
+	
 	public BoogieSource() {
-		prepends = new StringBuffer();
-		sourcePoint.row += headersOffset;
+		sourcePoint.row += getHeadersOffset();
 	}
 	
 	/**
-	 * Returns data which will be prepended to Boogie source upon call to 
-	 * {@link #getResults()}.
-	 * 
-	 * @return the text to be prepended to a resulting Boogie source string
+	 * Returns the row number after the last header.
 	 */
-	public String getPrepends() {
-		return prepends.toString();
+	public int getHeadersOffset() {
+		return headersOffset;
 	}
 
 	/**
@@ -43,9 +39,7 @@ public class BoogieSource {
 	 * @return the resulting Boogie source code.
 	 */
 	public String getResults() {
-		if (prepends.length() != 0)
-			prependAll();
-		return getHeaders() + implBody.toString();
+		return getHeaders() + getBody();
 	}
 	
 	/**
@@ -57,28 +51,6 @@ public class BoogieSource {
 	
 	public String getBody() {
 		return implBody.toString();
-	}
-
-	/**
-	 * This method is to ensure that the boogie source points point to the
-	 * corresponding ASTNodes after any prepends have been added.
-	 */
-	private void adjustSourcePoints() {
-		Object[] keys = pointTable.keySet().toArray();
-		Arrays.sort(keys);
-		for (int i = keys.length - 1; i >= 0; i--) {
-			ASTNode n = (ASTNode) pointTable.remove(keys[i]);
-			((BoogieSourcePoint) keys[i]).row += prependsOffset;
-			pointTable.put(keys[i], n);
-		}
-		sourcePoint.row += prependsOffset;
-		prependsOffset = 0;
-	}
-
-	private void prependAll() {
-		implBody.insert(getHeaders().length(), prepends.toString());
-		prepends = new StringBuffer();
-		adjustSourcePoints();
 	}
 
 	/**
@@ -115,20 +87,7 @@ public class BoogieSource {
 		append(o, null);
 	}
 
-	public void prepend(String string) {
-		// Ensures that everything that is prepended is on it's own line
-		// And counts the number of lines that have been prepended.
-		if (string.length() == 0) return;
-		if (string.charAt(string.length() - 1) != '\n')
-			string += "\n"; //$NON-NLS-1$
-		String[] num = string.split("\\n"); //$NON-NLS-1$
-		prepends.insert(0, string);
-		prependsOffset += num.length;
-	}
-
 	public static String getHeaders() {
-		if (headers == null)
-			populateHeaders();
 		return headers.toString();
 	}
 
@@ -143,9 +102,9 @@ public class BoogieSource {
 		headers.append("const java.lang.Object : $TName;\n"); //$NON-NLS-1$
 		headers.append("const null : $Ref;\n"); //$NON-NLS-1$
 		headers.append("function $dtype($Ref) returns ($TName);\n"); //$NON-NLS-1$
-//		headers.append("function $ftype([$Ref]ɑ) returns ($TName);\n"); //$NON-NLS-1$
 		headers.append("axiom (∀ x : int, y: int • {x % y} {x /y} x%y == x - x/y *y);\n"); //$NON-NLS-1$
 		headers.append("axiom (∀x:int,y:int•{x%y}(0<y⇒0<=x%y∧x%y<y)∧(y<0⇒y<x%y∧x%y<=0));\n"); //$NON-NLS-1$
+		headersOffset = headers.toString().split("\n").length; //$NON-NLS-1$
 	}
 
 	/**

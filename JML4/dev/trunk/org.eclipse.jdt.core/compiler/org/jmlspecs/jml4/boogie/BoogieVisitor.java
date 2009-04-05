@@ -209,7 +209,7 @@ public class BoogieVisitor extends ASTVisitor {
 		Expression left = resultExpr();
 		term.right.traverse(this, scope);
 		Expression right = resultExpr();
-		result = new BinaryExpression(left, "&&", right, false, term, boogieScope); //$NON-NLS-1$
+		result = new BinaryExpression(left, "&&", right, term, boogieScope); //$NON-NLS-1$
 		return false;
 	}
 
@@ -1035,10 +1035,10 @@ public class BoogieVisitor extends ASTVisitor {
 		return false;
 	}
 	
-	private VariableReference extractMethodExpression(MessageSend term, String procName, Expression[] args) {
+	private VariableReference extractMethodExpression(MessageSend term, String procName, Expression[] args, BlockScope scope) {
 		// add variable declaration to scope
 		String varName = "$call_" + boogieScope.getProcedureScope().getLocals().size(); //$NON-NLS-1$
-		TypeReference type = new TypeReference(getTypeName(term.expectedType), term, boogieScope);
+		TypeReference type = new TypeReference(getTypeName(term.binding.returnType), term, boogieScope);
 		VariableReference ref = new VariableReference(varName, term, boogieScope);
 		VariableDeclaration decl = new VariableDeclaration(ref, type, boogieScope);
 		boogieScope.addVariable(decl);
@@ -1080,7 +1080,7 @@ public class BoogieVisitor extends ASTVisitor {
 		else { 
 			// method is an expression, pull it out to a statement
 			// and return the variable name as the expression
-			result = extractMethodExpression(term, procName, args);
+			result = extractMethodExpression(term, procName, args, scope);
 		}
 
 		return false;

@@ -88,8 +88,10 @@ public class Program extends BoogieNode implements Scope {
 	
 	public Program resolve() {
 		if (expanded) return this;
-		DecoratorVisitor visitor = new DecoratorVisitor();
-		traverse(visitor);
+		Visitor[] visitors = { new TypeDeclaratorVisitor(), new DecoratorVisitor() };
+		for (int i = 0; i < visitors.length; i++) {
+			traverse(visitors[i]);
+		}
 		expanded = true;
 		return this;
 	}

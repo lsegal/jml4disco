@@ -4,20 +4,21 @@ import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.jmlspecs.jml4.boogie.BoogieSource;
 
 public class ConstStatement extends Statement {
-	private TypeDeclaration declaration;
+	private BoogieNode declaration;
 
-	public ConstStatement(TypeDeclaration declaration, ASTNode javaNode, Scope scope) {
+	public ConstStatement(BoogieNode declaration, ASTNode javaNode, Scope scope) {
 		super(javaNode, scope);
 		this.declaration = declaration;
 	}
 	
-	public TypeDeclaration getDeclaration() {
+	public BoogieNode getDeclaration() {
 		return declaration;
 	}
 
 	public void toBuffer(BoogieSource out) {
-		out.append("const" + TOKEN_SPACE + getDeclaration().getType().getTypeName()); //$NON-NLS-1$
-		out.appendLine(TOKEN_COLON + TOKEN_SPACE + TOKEN_TNAME + TOKEN_SEMICOLON);
+		out.append("const" + TOKEN_SPACE); //$NON-NLS-1$
+		getDeclaration().toBuffer(out);
+		out.appendLine(TOKEN_SEMICOLON);
 	}
 
 	public void traverse(Visitor visitor) {

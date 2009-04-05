@@ -95,7 +95,7 @@ public class Procedure extends BoogieNode implements Scope {
 	private void printModifies(BoogieSource out) {
 		if (getModifies().size() == 0) return;
 		for (int i = 0; i < getModifies().size(); i++) {
-			MapVariableReference ref = (MapVariableReference)getModifies().get(i);
+			VariableReference ref = (VariableReference)getModifies().get(i);
 			out.append("modifies" + TOKEN_SPACE, ref.getJavaNode()); //$NON-NLS-1$
 			out.append(ref.getName() + TOKEN_SEMICOLON + TOKEN_SPACE);
 		}
@@ -117,6 +117,7 @@ public class Procedure extends BoogieNode implements Scope {
 			((Statement)statements.get(i)).toBuffer(out);
 		}
 		out.decreaseIndent();
+		out.append(TOKEN_EMPTY, getJavaNode());
 		out.appendLine(TOKEN_RBRACE);
 	}
 
@@ -125,6 +126,13 @@ public class Procedure extends BoogieNode implements Scope {
 	}
 
 	public VariableDeclaration lookupVariable(String variableName) {
+		for (int i = 0; i < getArguments().size(); i++) {
+			VariableDeclaration var = (VariableDeclaration)getArguments().get(i);
+			if (var.getName().getName().equals(variableName)) {
+				return var; 
+			}
+		}
+
 		for (int i = 0; i < getLocals().size(); i++) {
 			VariableDeclaration var = (VariableDeclaration)getLocals().get(i);
 			if (var.getName().getName().equals(variableName)) {
@@ -144,7 +152,22 @@ public class Procedure extends BoogieNode implements Scope {
 	}
 
 	public void addVariable(VariableDeclaration decl) {
+		if (!(decl.getName() instanceof VariableLengthReference)) {
+			for (int i = 0; i < getLocals().size(); i++) {
+				if (((VariableDeclaration)getLocals().get(i)).getName().getName().
+						equals(decl.getName().getName())) {
+					return; // duplicate symbol definition, ignore
+				}
+			}
+		}
 		getLocals().add(decl);
+		
+		if (!(decl.getName() instanceof VariableLengthReference)) {
+			registerVariable(decl);
+		}
+	}
+	
+	public void registerVariable(VariableDeclaration decl) {
 		if (!decl.getName().getName().equals("this")) { //$NON-NLS-1$
 			decl.setShortName(generateSymbol());
 		}

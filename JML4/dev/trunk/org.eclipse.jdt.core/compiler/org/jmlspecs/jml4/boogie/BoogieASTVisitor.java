@@ -117,7 +117,10 @@ public class BoogieASTVisitor extends ASTVisitor {
 			ArrayBinding arrayBinding = (ArrayBinding)typeBinding;
 			return getTypeName(arrayBinding.leafComponentType());
 		}
-		return new String(typeBinding.readableName());
+		
+		String typeName = new String(typeBinding.readableName());
+		declareType(typeName);
+		return typeName;
 	}
 	
 	private TypeReference declareType(String type) {
@@ -440,10 +443,25 @@ public class BoogieASTVisitor extends ASTVisitor {
 		result = new BinaryExpression(left, out, right, term, boogieScope);
 		return false;
 	}
+	
+	/**
+	 * Adds a RemoveLocal statement (which should be factored out in the future)
+	 * to remove the local when the block ends during buffer output phase. This
+	 * allows multiple block local variables to be used in one Boogie procedure,
+	 * which does not allow for block locals.
+	 */
+	private void removeLocals(BlockScope scope) {
+		for (int i = 0; i < scope.locals.length; i++) {
+			String name = new String(scope.locals[i].name);
+			VariableReference ref = new VariableReference(name, null, boogieScope);
+			getStatementList().add(new RemoveLocal(ref, boogieScope.getProcedureScope()));
+		}
+	}
 
 	public boolean visit(Block term, BlockScope scope) {
 		debug(term, scope);
 		traverseStatements(null, term.statements, scope);
+		removeLocals(term.scope); // FIXME this should be factored out!
 		result = null;
 		return false;
 	}

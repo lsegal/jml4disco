@@ -114,7 +114,15 @@ public class Procedure extends BoogieNode implements Scope {
 		out.appendLine(TOKEN_LBRACE);
 		out.increaseIndent();
 		for (int i = 0; i < statements.size(); i++) {
-			((Statement)statements.get(i)).toBuffer(out);
+			Statement stmt = (Statement)statements.get(i);
+			if (stmt instanceof RemoveLocal) {
+				// FIXME this is not a good idea! See RemoveLocal.java
+				// for more information. Doing this in toBuffer destroys
+				// the locals map during traversal and makes it so this
+				// node will not be traversed in the same way twice.
+				((RemoveLocal)stmt).removeLocal();
+			}
+			stmt.toBuffer(out);
 		}
 		out.decreaseIndent();
 		out.append(TOKEN_EMPTY, getJavaNode());
@@ -152,14 +160,6 @@ public class Procedure extends BoogieNode implements Scope {
 	}
 
 	public void addVariable(VariableDeclaration decl) {
-		if (!(decl.getName() instanceof VariableLengthReference)) {
-			for (int i = 0; i < getLocals().size(); i++) {
-				if (((VariableDeclaration)getLocals().get(i)).getName().getName().
-						equals(decl.getName().getName())) {
-					return; // duplicate symbol definition, ignore
-				}
-			}
-		}
 		getLocals().add(decl);
 		
 		if (!(decl.getName() instanceof VariableLengthReference)) {

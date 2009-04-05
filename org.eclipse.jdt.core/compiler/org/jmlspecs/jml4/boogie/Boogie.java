@@ -48,7 +48,7 @@ public class Boogie extends DefaultCompilerExtension {
 	private void process(Compiler compiler, CompilationUnitDeclaration unit) {
 		if (compiler.options.jmlBoogieOutputOnly) {
 			// debugging / testing
-			BoogieSource source = BoogieVisitor.visit(unit);
+			BoogieSource source = BoogieVisitor.visitBuffer(unit);
 			String results = source.getResults();
 			String[] resultsArray = results.split("/\\*!BOOGIESTART!\\*/"); //$NON-NLS-1$
 			if (resultsArray.length >= 2) {

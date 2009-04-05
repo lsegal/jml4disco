@@ -32,12 +32,12 @@ public class IfStatement extends Statement {
 	public void toBuffer(BoogieSource out) {
 		out.append("if" + TOKEN_SPACE); //$NON-NLS-1$
 		if (getCondition() instanceof BinaryExpression) {
+			getCondition().toBuffer(out);
+		}
+		else {
 			out.append(TOKEN_LPAREN);
 			getCondition().toBuffer(out);
 			out.append(TOKEN_RPAREN);
-		}
-		else {
-			getCondition().toBuffer(out);
 		}
 
 		out.appendLine(TOKEN_SPACE + TOKEN_LBRACE);

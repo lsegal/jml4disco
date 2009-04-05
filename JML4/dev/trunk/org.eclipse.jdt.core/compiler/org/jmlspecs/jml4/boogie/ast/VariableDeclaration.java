@@ -6,14 +6,34 @@ public class VariableDeclaration extends BoogieNode {
 	private VariableReference name;
 	private TypeReference type;
 	private String shortName;
+	private boolean constant;
+	private boolean unique;
 	
 	public VariableDeclaration(VariableReference name, TypeReference type, Scope scope) {
+		this(name, type, false, scope);
+	}
+	
+	public VariableDeclaration(VariableReference name, TypeReference type, boolean constant, Scope scope) {
 		super(null, scope);
 		this.type = type;
 		this.name = name;
 		this.shortName = null;
+		this.constant = constant;
+		this.unique = false;
 	}
 	
+	public boolean isConstant() {
+		return constant;
+	}
+	
+	public boolean isUnique() {
+		return unique;
+	}
+	
+	public void setUnique(boolean unique) {
+		this.unique = unique;
+	}
+
 	public VariableReference getName() {
 		return name;
 	}

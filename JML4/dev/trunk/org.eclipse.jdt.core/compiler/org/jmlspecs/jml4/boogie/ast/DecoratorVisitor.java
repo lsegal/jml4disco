@@ -80,27 +80,6 @@ public class DecoratorVisitor extends Visitor {
 		return true;
 	}
 	
-	/**
-	 * Make sure all reference types have been declared
-	 */
-	public boolean visit(MapTypeReference term) {
-		if (term.getScope().lookupType(term.getTypeName()) == null) {
-			declareType(term);
-		}
-		return true;
-	}
-
-	public boolean visit(TypeReference term) {
-		if (term.getScope().lookupType(term.getTypeName()) == null) {
-			declareType(term);
-		}
-		return true;
-	}
-	
-	private void declareType(TypeReference type) {
-		type.getScope().addType(new TypeDeclaration(type, null, type.getScope()));
-	}
-
 	private void resolveTypes(TypeDeclaration term) {
 		ArrayList stmts = term.getScope().getProgramScope().getStatements();
 		stmts.add(new ConstStatement(term, null, term.getScope()));
@@ -143,6 +122,7 @@ public class DecoratorVisitor extends Visitor {
 	}
 
 	private BinaryExpression typeCheckExpression(VariableDeclaration var) {
+		if (!var.isLocal() && !var.isConstant()) return null; // TODO make this work for globals non-const vars?
 		// type requirements
 		// TODO add support for array types
 		if (!(var.getType() instanceof MapTypeReference) && !var.getType().isNative()) {

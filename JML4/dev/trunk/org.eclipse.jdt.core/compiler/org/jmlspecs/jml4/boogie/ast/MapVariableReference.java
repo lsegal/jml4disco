@@ -23,11 +23,11 @@ public class MapVariableReference extends VariableReference {
 	}
 
 	public void toBuffer(BoogieSource out) {
+		super.toBuffer(out);
 		for (int i = 0; i < getMapKeys().size(); i++) {
 			out.append(TOKEN_LBRACK);
-			((TypeReference)getMapKeys().get(i)).toBuffer(out);
-			out.append(TOKEN_RBRACK + TOKEN_SPACE);
+			((Expression)getMapKeys().get(i)).toBuffer(out);
+			out.append(TOKEN_RBRACK);
 		}
-		super.toBuffer(out);
 	}
 }

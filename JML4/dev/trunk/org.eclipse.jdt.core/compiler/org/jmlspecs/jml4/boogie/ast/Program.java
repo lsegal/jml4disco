@@ -1,6 +1,7 @@
 package org.jmlspecs.jml4.boogie.ast;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import org.jmlspecs.jml4.boogie.BoogieSource;
 
@@ -11,6 +12,9 @@ public class Program extends BoogieNode implements Scope {
 	private ArrayList/*<Statement>*/ statements;
 	private ArrayList/*<Procedure>*/ procedures;
 	
+	private Hashtable/*<String,Boolean>*/ typesMap;
+	private Hashtable/*<String,Boolean>*/ globalsMap;
+	
 	public Program() {
 		super(null, null);
 		this.expanded = false;
@@ -18,6 +22,8 @@ public class Program extends BoogieNode implements Scope {
 		this.statements = new ArrayList();
 		this.procedures = new ArrayList();
 		this.globals = new ArrayList();
+		this.typesMap = new Hashtable();
+		this.globalsMap = new Hashtable();
 	}
 	
 	public boolean isExpanded() {
@@ -75,7 +81,6 @@ public class Program extends BoogieNode implements Scope {
 		for (int i = 0; i < getStatements().size(); i++) {
 			((Statement)getStatements().get(i)).toBuffer(out);
 		}
-		out.appendLine("/*!BOOGIESTART!*/"); //$NON-NLS-1$
 		for (int i = 0; i < getProcedures().size(); i++) {
 			((Procedure)getProcedures().get(i)).toBuffer(out);
 		}
@@ -90,11 +95,17 @@ public class Program extends BoogieNode implements Scope {
 	}
 
 	public void addType(TypeDeclaration type) {
-		getTypes().add(type);
+		if (typesMap.get(type.getType().getTypeName()) == null) {
+			getTypes().add(type);
+			typesMap.put(type.getType().getTypeName(), new Boolean(true));
+		}
 	}
 
 	public void addVariable(VariableDeclaration decl) {
-		getGlobals().add(decl);
+		if (globalsMap.get(decl.getName().getName()) == null) {
+			getGlobals().add(decl);
+			globalsMap.put(decl.getName().getName(), new Boolean(true));
+		}
 	}
 
 	public void traverse(Visitor visitor) {

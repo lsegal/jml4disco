@@ -49,7 +49,7 @@ public class DecoratorVisitor extends Visitor {
 			}
 			proc.getModifies().add(decl.getName());
 		}
-		return false;
+		return true;
 	}
 	
 	public boolean visit(CallStatement term) {
@@ -77,9 +77,30 @@ public class DecoratorVisitor extends Visitor {
 				//proc.getRequires().addAll(calledProcedure.getRequires());
 			}
 		}
-		return false;
+		return true;
 	}
 	
+	/**
+	 * Make sure all reference types have been declared
+	 */
+	public boolean visit(MapTypeReference term) {
+		if (term.getScope().lookupType(term.getTypeName()) == null) {
+			declareType(term);
+		}
+		return true;
+	}
+
+	public boolean visit(TypeReference term) {
+		if (term.getScope().lookupType(term.getTypeName()) == null) {
+			declareType(term);
+		}
+		return true;
+	}
+	
+	private void declareType(TypeReference type) {
+		type.getScope().addType(new TypeDeclaration(type, null, type.getScope()));
+	}
+
 	private void resolveTypes(TypeDeclaration term) {
 		ArrayList stmts = term.getScope().getProgramScope().getStatements();
 		stmts.add(new ConstStatement(term, null, term.getScope()));

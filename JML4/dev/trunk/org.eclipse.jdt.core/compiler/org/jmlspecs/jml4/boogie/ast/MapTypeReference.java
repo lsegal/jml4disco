@@ -30,4 +30,13 @@ public class MapTypeReference extends TypeReference {
 		}
 		super.toBuffer(out);
 	}
+	
+	public void traverse(Visitor visitor) {
+		if (visitor.visit(this)) {
+			for (int i = 0; i < getMapTypes().size(); i++) {
+				((TypeReference)getMapTypes().get(i)).traverse(visitor);
+			}
+		}
+		visitor.endVisit(this);
+	}
 }

@@ -3418,4 +3418,64 @@ public class TranslationTests extends AbstractRegressionTest {
 				""
 				);
 	}
+	
+	// term=MessageSend adapter=fail
+	public void test_3008_FullFibonacci() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				"	//@ requires n >= 0;\n" +
+				"	//@ ensures n < 2 ==> \\result == n;\n" +
+				"	//@ ensures n >= 2 ==> \\result == fib(n-1) + fib(n-2);\n" +
+				"	public int fib(int n) {\n" +
+				"		if (n < 2) return n;\n" +
+				"		return fib(n-1) + fib(n-2);\n" +
+				"	}\n" +
+				"	public void useFib() {\n" +
+				"		//@ assert fib(0) == 0;\n" +
+				"		//@ assert fib(1) == 1;\n" +
+				"		//@ assert fib(23) == 28657;\n" +
+				"		//@ assert fib(2) == 100;\n" +
+				"	}\n" +
+				"}" 
+				,
+				// expected boogie
+				"function $fn.tests.esc.A.fib(this: $Ref, a: int) returns (int);\n" +
+				"procedure tests.esc.A.fib(this: $Ref, a: int) returns ($r: int) requires $dtype(this) == tests.esc.A; requires (a >= 0); ensures ((a < 2) ⇒ ($r == a)); ensures ((a >= 2) ⇒ ($r == ($fn.tests.esc.A.fib(this, (a - 1)) + $fn.tests.esc.A.fib(this, (a - 2))))); {\n" +
+				"	var b: int;\n" +
+				"	var c: int;\n" +
+				"	if (a < 2) {\n" +
+				"		$r := a;\n" +
+				"		return;\n" +
+				"	}\n" +
+				"	call b := tests.esc.A.fib(this, (a - 1));\n" +
+				"	call c := tests.esc.A.fib(this, (a - 2));\n" +
+				"	$r := (b + c);\n" +
+				"	return;\n" +
+				"}\n" +
+				"procedure tests.esc.A.useFib(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	var a: int;\n" +
+				"	var b: int;\n" +
+				"	var c: int;\n" +
+				"	var d: int;\n" +
+				"	call a := tests.esc.A.fib(this, 0);\n" +
+				"	assert (a == 0);\n" +
+				"	call b := tests.esc.A.fib(this, 1);\n" +
+				"	assert (b == 1);\n" +
+				"	call c := tests.esc.A.fib(this, 23);\n" +
+				"	assert (c == 28657);\n" +
+				"	call d := tests.esc.A.fib(this, 2);\n" +
+				"	assert (d == 100);\n" +
+				"}\n"
+				,
+				// adapter output
+				"----------\n" +
+				"1. ERROR in A.java (at line 14)\n" +
+				"	//@ assert fib(2) == 100;\n" +
+				"	           ^^^^^^^^^^^^^\n" +
+				"This assertion might not hold.\n" +
+				"----------\n"
+				);
+	}
 }

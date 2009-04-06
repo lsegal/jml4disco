@@ -16,7 +16,7 @@ public class Procedure extends BoogieNode implements Scope {
 	private String name;
 	private TypeReference returnType;
 
-	// for varaible generation
+	// for variable generation
 	private final static String charmap = "abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
 	private String generatedSymbol = ""; //$NON-NLS-1$
 	

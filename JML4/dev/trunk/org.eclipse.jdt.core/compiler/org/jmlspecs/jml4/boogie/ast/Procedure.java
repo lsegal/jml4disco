@@ -161,6 +161,10 @@ public class Procedure extends BoogieNode implements Scope {
 	public Procedure lookupProcedure(String procName) {
 		return getProgramScope().lookupProcedure(procName);
 	}
+	
+	public FunctionDeclaration lookupFunction(String functionName) {
+		return getScope().lookupFunction(functionName);
+	}
 
 	public void addType(TypeDeclaration type) {
 		getScope().addType(type);
@@ -172,6 +176,10 @@ public class Procedure extends BoogieNode implements Scope {
 		if (!(decl.getName() instanceof VariableLengthReference)) {
 			registerVariable(decl);
 		}
+	}
+	
+	public void addFunction(FunctionDeclaration function) {
+		getScope().addFunction(function);
 	}
 	
 	public void registerVariable(VariableDeclaration decl) {

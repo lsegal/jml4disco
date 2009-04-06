@@ -7,7 +7,9 @@ public interface Scope {
 	public VariableDeclaration lookupVariable(String name);
 	public TypeDeclaration lookupType(String name);
 	public Procedure lookupProcedure(String name);
+	public FunctionDeclaration lookupFunction(String name);
 	
 	public void addVariable(VariableDeclaration decl);
 	public void addType(TypeDeclaration type);
+	public void addFunction(FunctionDeclaration function);
 }

@@ -11,6 +11,7 @@ public abstract class Visitor {
 	public boolean visit(CallStatement term) { return true; }
 	public boolean visit(ConstStatement term) { return true; }
 	public boolean visit(FunctionCall term) { return true; }
+	public boolean visit(FunctionDeclaration term) { return true; }
 	public boolean visit(IfStatement term) { return true; }
 	public boolean visit(IntLiteral term) { return true; }
 	public boolean visit(LabelStatement term) { return true; }
@@ -38,6 +39,7 @@ public abstract class Visitor {
 	public void endVisit(CallStatement term) { /* nothing */ }
 	public void endVisit(ConstStatement term) { /* nothing */ }
 	public void endVisit(FunctionCall term) { /* nothing */ }
+	public void endVisit(FunctionDeclaration term) { /* nothing */ }
 	public void endVisit(IfStatement term) { /* nothing */ }
 	public void endVisit(IntLiteral term) { /* nothing */ }
 	public void endVisit(LabelStatement term) { /* nothing */ }

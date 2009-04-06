@@ -32,6 +32,9 @@ public class FunctionCall extends Expression {
 		out.append(getFunctionName() + TOKEN_LPAREN);
 		for (int i = 0; i < getArguments().size(); i++) {
 			((Expression)getArguments().get(i)).toBuffer(out);
+			if (i < getArguments().size() - 1) {
+				out.append(TOKEN_COMMA + TOKEN_SPACE);
+			}
 		}
 		out.append(TOKEN_RPAREN);
 	}

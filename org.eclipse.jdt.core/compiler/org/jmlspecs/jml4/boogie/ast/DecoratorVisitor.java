@@ -86,7 +86,7 @@ public class DecoratorVisitor extends Visitor {
 		stmts.add(new Axiom(new BinaryExpression(new TokenLiteral(
 				term.getType().getTypeName()), "<:", //$NON-NLS-1$
 				new TokenLiteral(term.getSuperType().getTypeName()), 
-				false, null, term.getScope()), null, term.getScope()));
+				false, null, term.getScope()), null, null, null, term.getScope()));
 	}
 
 	private void resolveLocals(ArrayList vars) {
@@ -116,7 +116,7 @@ public class DecoratorVisitor extends Visitor {
 			BinaryExpression expr = typeCheckExpression(var);
 			if (expr != null) {
 				Program prog = var.getScope().getProgramScope();
-				prog.getStatements().add(new Axiom(expr, var.getJavaNode(), prog));
+				prog.getStatements().add(new Axiom(expr, null, null, var.getJavaNode(), prog));
 			}
 		}
 	}

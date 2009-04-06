@@ -40,6 +40,9 @@ public class BoogieVisitor extends ASTVisitor {
 	private int stringPoolValue = 0;
 	private Hashtable stringPool = new Hashtable();
 
+	private boolean inSpecification; // used by MessageSend
+	private FunctionCall jmlResultFunctionCall; // used by MessageSend to change what \result is
+
 	public Program visit(CompilationUnitDeclaration unit, Program program) {
 		boogieScope = program;
 		unit.traverse(this, unit.scope);
@@ -424,11 +427,11 @@ public class BoogieVisitor extends ASTVisitor {
 			case OperatorIds.REMAINDER :
 				out = "%"; //$NON-NLS-1$
 				break;
-			case OperatorIds.AND :
-				out = "&"; //$NON-NLS-1$
+			case OperatorIds.AND : // No bitwise AND
+				out = "&&"; //$NON-NLS-1$
 				break;
-			case OperatorIds.OR :
-				out = "|"; //$NON-NLS-1$
+			case OperatorIds.OR : // No bitwise OR
+				out = "||"; //$NON-NLS-1$
 				break;
 			case OperatorIds.XOR :
 				break;
@@ -903,7 +906,9 @@ public class BoogieVisitor extends ASTVisitor {
 		
 		// ensures & requires clause
 		if (term.getSpecification() != null) {
+			inSpecification = true;
 			visit(term.getSpecification(), scope);
+			inSpecification = false;
 		}
 
 		traverseStatements(proc.getStatements(), term.statements, term.scope);
@@ -970,7 +975,12 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=1 group=jml
 	public boolean visit(JmlResultReference term, BlockScope scope) {
 		debug(term, scope);
-		result = new ResultReference(boogieScope.getProcedureScope());
+		if (jmlResultFunctionCall == null) {
+			result = new ResultReference(boogieScope.getProcedureScope());
+		}
+		else {
+			result = jmlResultFunctionCall;
+		}
 		return false;
 	}
 
@@ -1011,6 +1021,11 @@ public class BoogieVisitor extends ASTVisitor {
 		TypeReference type = (TypeReference)result();
 		VariableReference ref = new VariableReference(new String(term.name), term, boogieScope);
 		VariableDeclaration decl = new VariableDeclaration(ref, type, boogieScope);
+		if (inSpecification) { // from a messagesend
+			result = decl;
+			return false;
+		}
+		
 		boogieScope.addVariable(decl);
 		
 		if (term.type instanceof ArrayTypeReference) {
@@ -1050,6 +1065,63 @@ public class BoogieVisitor extends ASTVisitor {
 		return ref;
 		
 	}
+	
+	private VariableDeclaration[] buildArgumentList(MessageSend term, BlockScope scope) {
+		int staticOffset = term.binding.isStatic() ? 0 : 1;
+		Argument[] arguments = term.binding.methodDeclaration.arguments; 
+		VariableDeclaration[] outArgs = null;
+		VariableDeclaration tVar = null;
+		if (staticOffset == 1) {
+			TypeReference type = new TypeReference(new String(term.binding.declaringClass.readableName()), null, boogieScope);
+			VariableReference t = new VariableReference("this", null, boogieScope); //$NON-NLS-1$
+			tVar = new VariableDeclaration(t, type, boogieScope);
+
+			outArgs = new VariableDeclaration[] { tVar };
+		}
+		if (arguments != null) {
+			outArgs = new VariableDeclaration[arguments.length + staticOffset];
+			if (tVar != null) outArgs[0] = tVar;
+			for (int i = 0; i < arguments.length; i++) {
+				arguments[i].traverse(this, scope);
+				outArgs[i + staticOffset] = (VariableDeclaration)result();
+			}
+		}
+		return outArgs;
+	}
+	
+	private FunctionCall extractMethodAsFunctionCall(MessageSend term, String procName, Expression[] args, BlockScope scope) {
+		String fnName = "$fn." + procName; //$NON-NLS-1$
+		FunctionCall fnCall = new FunctionCall(fnName, args, term, boogieScope);
+
+		// declare the function if it has not yet been done
+		if (jmlResultFunctionCall == null && boogieScope.lookupFunction(fnName) == null) {
+			VariableDeclaration decls[] = buildArgumentList(term, scope);
+			VariableReference refs[] = null;
+			if (decls != null) {
+				refs = new VariableReference[decls.length];
+				for (int i = 0; i < decls.length; i++) refs[i] = decls[i].getName();
+			}
+
+			jmlResultFunctionCall = new FunctionCall(fnName, refs, term, boogieScope);
+			JmlMethodDeclaration method = (JmlMethodDeclaration)term.binding.methodDeclaration;
+			method.specification.getPostcondition().traverse(this, scope);
+			Expression ensuresExpr = resultExpr();
+
+			// build the axiom
+			String prefix = decls.length > 0 ? "forall" : null; //$NON-NLS-1$
+			Axiom axe = new Axiom(ensuresExpr, prefix, decls, term, boogieScope);
+			boogieScope.getProgramScope().getStatements().add(axe);
+			
+			// build the function declaration
+			((JmlMethodDeclaration)term.binding.methodDeclaration).returnType.traverse(this, scope);
+			FunctionDeclaration function = new FunctionDeclaration(fnName, null, 
+					(TypeReference)resultExpr(), decls, null, boogieScope.getProgramScope());
+			boogieScope.addFunction(function);
+
+			jmlResultFunctionCall = null;
+		}
+		return fnCall;
+	}
 
 	// priority=2 group=expr
 	public boolean visit(MessageSend term, BlockScope scope) {
@@ -1072,8 +1144,10 @@ public class BoogieVisitor extends ASTVisitor {
 			args = new Expression[] { resultExpr() };
 		}
 		
-		
-		if (term.statementEnd != -1 || methodCallAssignmentVar != null) {
+		if (inSpecification) { // inside method specification, must use function calls
+			result = extractMethodAsFunctionCall(term, procName, args, scope);
+		}
+		else if (term.statementEnd != -1 || methodCallAssignmentVar != null) {
 			result = new CallStatement(procName, args, methodCallAssignmentVar, term, boogieScope); 
 			getStatementList().add(result);
 		}

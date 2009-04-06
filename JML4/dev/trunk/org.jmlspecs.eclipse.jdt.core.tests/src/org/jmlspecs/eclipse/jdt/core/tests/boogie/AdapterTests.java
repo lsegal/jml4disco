@@ -659,4 +659,9 @@ public class AdapterTests extends TranslationTests {
 	public void test_3007_ThisReference() {
 		super.test_3007_ThisReference();
 	}
+	
+	@Override
+	public void test_3008_FullFibonacci() {
+		super.test_3008_FullFibonacci();
+	}
 }

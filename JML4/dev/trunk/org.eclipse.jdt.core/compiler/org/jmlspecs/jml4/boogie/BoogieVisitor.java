@@ -1504,7 +1504,7 @@ public class BoogieVisitor extends ASTVisitor {
 		endVisitTypeDeclaration(term);
 	}
 
-	// TODO priority=3 group=expr
+	// priority=3 group=expr
 	public boolean visit(org.eclipse.jdt.internal.compiler.ast.UnaryExpression term, BlockScope scope) {
 		debug(term, scope);
 		String operator = null;

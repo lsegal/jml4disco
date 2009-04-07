@@ -2359,7 +2359,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);			
 		}
 
-	// TODO term=IntLiteral,ConditionalExpression adapter=none
+	// term=IntLiteral,ConditionalExpression adapter=none
 	public void test_1002_arith_cond() {
 		this.compareJavaToBoogie(
 				"package tests.esc;\n" +

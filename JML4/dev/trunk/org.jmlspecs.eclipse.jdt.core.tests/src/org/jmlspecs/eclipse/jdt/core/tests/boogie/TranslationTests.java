@@ -1862,7 +1862,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 
-	//TODO term=FieldDeclaration,SingleNameReference,Assignment adapter=none
+	// term=FieldDeclaration,SingleNameReference,Assignment adapter=pass
 	public void test_801_Static_FieldDeclaration() {
 		this.compareJavaToBoogie(
 				//java
@@ -1874,16 +1874,15 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	public A() { }" +
 				"}\n" 
 				,
-				//TODO expected boogie
+				// expected boogie
 				"var tests.esc.A.i: [$Ref] int;\n" +				
 				"var tests.esc.A.x: [$Ref] int;\n" +
 				"var tests.esc.A.z: [$Ref] int;\n" +
-				"procedure tests.esc.A.$initFields(this: $Ref) modifies tests.esc.A.i; modifies.test.esc.A.x; modifies tests.esc.A.z; {\n" +
+				"procedure tests.esc.A.$initFields(this: $Ref) modifies tests.esc.A.i; modifies tests.esc.A.x; requires $dtype(this) == tests.esc.A; ensures (tests.esc.A.i[this] == 1); ensures (tests.esc.A.x[this] == tests.esc.A.i[this]); {\n" +
 				"	tests.esc.A.i[this] := 1;\n" +
-				"	tests.esc.A.x[this] := tests.esc.A.i;\n" +
-				"   tests.esc.A.z[this] := 0;\n" +
+				"	tests.esc.A.x[this] := tests.esc.A.i[this];\n" +
 				"}\n" +
-				"procedure tests.esc.A.A(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"procedure tests.esc.A.A(this: $Ref) modifies tests.esc.A.i; modifies tests.esc.A.x; requires $dtype(this) == tests.esc.A; ensures (tests.esc.A.i[this] == 1); ensures (tests.esc.A.x[this] == tests.esc.A.i[this]); {\n" +
 				"	call tests.esc.A.$initFields(this);\n" +
 				"}\n",
 				// adapter output
@@ -1891,6 +1890,39 @@ public class TranslationTests extends AbstractRegressionTest {
 				);
 	}
 	
+	// term=FieldDeclaration,JmlEnsuresClause,JmlMethodSpecification adapter=pass
+	public void test_802_Static_FieldDeclaration() {
+		this.compareJavaToBoogie(
+				//java
+				"package tests.esc;\n" +
+				"public class A {\n" +
+				" 	int i = 1;\n" +
+				"	public A() { }\n" +
+				"	public static void x() {\n" +
+				"		A a = new A();" +
+				"		//@ assert a.i == 1;\n" +
+				"	}\n" +
+				"}\n" 
+				,
+				// expected boogie
+				"var tests.esc.A.i: [$Ref] int;\n" +				
+				"procedure tests.esc.A.$initFields(this: $Ref) modifies tests.esc.A.i; requires $dtype(this) == tests.esc.A; ensures (tests.esc.A.i[this] == 1); {\n" +
+				"	tests.esc.A.i[this] := 1;\n" +
+				"}\n" +
+				"procedure tests.esc.A.A(this: $Ref) modifies tests.esc.A.i; requires $dtype(this) == tests.esc.A; ensures (tests.esc.A.i[this] == 1); {\n" +
+				"	call tests.esc.A.$initFields(this);\n" +
+				"}\n" +
+				"procedure tests.esc.A.x() modifies tests.esc.A.i; {\n" +
+				"	var a: $Ref;\n" +
+				"	assume $dtype(a) == tests.esc.A;\n" +
+				"	call tests.esc.A.A(a);\n" +
+				"	assert (tests.esc.A.i[a] == 1);\n" +
+				"}\n",
+				// adapter output
+				""
+				);
+	}
+
 	// term=JmlMethodSpecification,JmlEnsuresClause,JmlResultExpression adapter=pass adapter=pass
 	public void test_900_JmlResultExpression() {
 		this.compareJavaToBoogie(
@@ -2731,6 +2763,7 @@ public class TranslationTests extends AbstractRegressionTest {
 				"	}\n" +
 				"}\n" +
 				"class N {\n" +
+				"	public N() { }\n" +
 				"	public void n() { }\n" +
 				"}\n"
 				,
@@ -2738,31 +2771,58 @@ public class TranslationTests extends AbstractRegressionTest {
 				"var tests.esc.A.x: [$Ref] $Ref;\n" +
 				"var tests.esc.A.y: $Ref;\n" +
 				// FIXME "axiom $dtype(tests.esc.A.y) == tests.esc.N;\n" + (boogie says: cannot refer to global variable in this context)
+				"procedure tests.esc.A.$initFields(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
+				"	call tests.esc.N.N(tests.esc.A.x[this]);\n" +
+				"	call tests.esc.N.N(tests.esc.A.y);\n" +
+				"}\n" +
 				"procedure tests.esc.A.m(this: $Ref) requires $dtype(this) == tests.esc.A; {\n" +
 				"	call tests.esc.N.n(tests.esc.A.x[this]);\n" +
 				"	call tests.esc.N.n(tests.esc.A.y);\n" +
+				"}\n" +
+				"procedure tests.esc.N.N(this: $Ref) requires $dtype(this) == tests.esc.N; {\n" +
 				"}\n" +
 				"procedure tests.esc.N.n(this: $Ref) requires $dtype(this) == tests.esc.N; {\n" +
 				"}\n"
 				,
 				// adapter output
+				// TODO this output will change once global attribute typecheck axioms are implemented
 				"----------\n" +
-				"1. ERROR in A.java (at line 6)\n" +
+				"1. ERROR in A.java (at line 3)\n" +
+				"	public N x = new N();\n" +
+				"	             ^^^^^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n" +
+				"2. ERROR in A.java (at line 4)\n" +
+				"	public static N y = new N();\n" +
+				"	                    ^^^^^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n" +
+				"3. ERROR in A.java (at line 6)\n" +
 				"	x.n();\n" +
 				"	^^^^^\n" +
 				"This precondition might not hold.\n" +
 				"----------\n" +
-				"2. ERROR in A.java (at line 7)\n" +
+				"4. ERROR in A.java (at line 7)\n" +
 				"	y.n();\n" +
 				"	^^^^^\n" +
 				"This precondition might not hold.\n" +
 				"----------\n" +
-				"3. ERROR in A.java (at line 11)\n" +
+				"5. ERROR in A.java (at line 11)\n" +
+				"	public N() { }\n" +
+				"	       ^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n" +
+				"6. ERROR in A.java (at line 11)\n" +
+				"	public N() { }\n" +
+				"	       ^^^\n" +
+				"This precondition might not hold.\n" +
+				"----------\n" +
+				"7. ERROR in A.java (at line 12)\n" +
 				"	public void n() { }\n" +
 				"	            ^^^\n" +
 				"This precondition might not hold.\n" +
 				"----------\n" +
-				"4. ERROR in A.java (at line 11)\n" +
+				"8. ERROR in A.java (at line 12)\n" +
 				"	public void n() { }\n" +
 				"	            ^^^\n" +
 				"This precondition might not hold.\n" +

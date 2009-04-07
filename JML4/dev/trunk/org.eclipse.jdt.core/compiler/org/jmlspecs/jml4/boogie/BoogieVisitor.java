@@ -42,6 +42,9 @@ public class BoogieVisitor extends ASTVisitor {
 
 	private boolean inSpecification; // used by MessageSend
 	private FunctionCall jmlResultFunctionCall; // used by MessageSend to change what \result is
+	
+	private Procedure initFields; // used by all field declaration to initialize fields
+	private boolean inFieldDeclaration = false; // allocations should not be added to statement list during FieldDeclaration
 
 	public Program visit(CompilationUnitDeclaration unit, Program program) {
 		boogieScope = program;
@@ -118,13 +121,14 @@ public class BoogieVisitor extends ASTVisitor {
 		return blk;
 	}
 	
-	private String getTypeName(TypeBinding typeBinding) {
+	private String getTypeName(TypeBinding typeBinding, String fallback) {
+		if (typeBinding == null) return fallback;
 		if (typeBinding == TypeBinding.BOOLEAN) {
 			return "bool"; //$NON-NLS-1$
 		}
 		if (typeBinding.isArrayType()) {
 			ArrayBinding arrayBinding = (ArrayBinding)typeBinding;
-			return getTypeName(arrayBinding.leafComponentType());
+			return getTypeName(arrayBinding.leafComponentType(), null);
 		}
 		
 		return new String(typeBinding.readableName());
@@ -200,7 +204,9 @@ public class BoogieVisitor extends ASTVisitor {
 		}
 		
 		result = call;
-		getStatementList().add(result());
+		if (!inFieldDeclaration) {
+			getStatementList().add(result());
+		}
 		
 		return false;
 	}
@@ -262,12 +268,14 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=1 group=expr
 	public boolean visit(ArrayAllocationExpression term, BlockScope scope) {
 		debug(term, scope);
+		// implemented in Assignment
 		return true;
 	}
 
 	// priority=1 group=expr
 	public boolean visit(ArrayInitializer term, BlockScope scope) {
 		debug(term, scope);
+		// implemented in Assignment
 		return true;
 	}
 
@@ -302,7 +310,7 @@ public class BoogieVisitor extends ASTVisitor {
 	}
 
 	private MapTypeReference getArrayReference(ArrayTypeReference term) {
-		MapTypeReference ref = new MapTypeReference(getTypeName(term.resolvedType), null, term, boogieScope); 
+		MapTypeReference ref = new MapTypeReference(getTypeName(term.resolvedType, new String(term.token)), null, term, boogieScope); 
 		for (int i = 0; i < term.dimensions; i++) {
 			ref.getMapTypes().add(new TypeReference("int", term, boogieScope)); //$NON-NLS-1$
 		}
@@ -532,7 +540,7 @@ public class BoogieVisitor extends ASTVisitor {
 	private VariableReference extractConditionalExpression(ConditionalExpression term) {
 		// add variable declaration to scope
 		String varName = "$call_" + boogieScope.getProcedureScope().getLocals().size(); //$NON-NLS-1$
-		TypeReference type = new TypeReference(getTypeName(term.resolvedType), term, boogieScope);
+		TypeReference type = new TypeReference(getTypeName(term.resolvedType, null), term, boogieScope);
 		VariableReference ref = new VariableReference(varName, term, boogieScope);
 		VariableDeclaration decl = new VariableDeclaration(ref, type, boogieScope);
 		boogieScope.addVariable(decl);
@@ -660,10 +668,10 @@ public class BoogieVisitor extends ASTVisitor {
 		
 		String clsName = new String(term.binding.declaringClass.readableName());
 		String name = clsName + "." + new String(term.name);  //$NON-NLS-1$
+		TypeReference clsRef = new TypeReference(clsName, term, boogieScope);
 		term.type.traverse(this, scope);
 		TypeReference type = (TypeReference)result();
 		if (!term.isStatic()) {
-			TypeReference clsRef = new TypeReference(clsName, term, boogieScope);
 			if (type instanceof MapTypeReference) {
 				((MapTypeReference)type).getMapTypes().add(0, clsRef);
 			}
@@ -673,8 +681,56 @@ public class BoogieVisitor extends ASTVisitor {
 			}
 		}
 
-		result = new VariableDeclaration(new VariableReference(name, term, boogieScope), type, boogieScope);
+		VariableReference ref = new VariableReference(name, term, boogieScope);
+		
+		// put initializer into initializer method
+		if (term.initialization != null && 
+				!(term.initialization instanceof ArrayAllocationExpression)) {
+			VariableReference nRef = ref;
+			if (initFields == null) { // create method if it has not been
+				initFields = new Procedure(clsName + ".$initFields", null, term, boogieScope.getProgramScope()); //$NON-NLS-1$
+				if (!term.isStatic()) { 
+					VariableReference thisRef = new VariableReference("this", null, initFields);  //$NON-NLS-1$
+					initFields.getArguments().add(new VariableDeclaration(thisRef, clsRef, initFields));
+				}
+				boogieScope.getProgramScope().getProcedures().add(initFields);
+			}
+			
+			// reference should be a map reference
+			if (!term.isStatic()) {
+				VariableReference thisRef = ((VariableDeclaration)initFields.getArguments().get(0)).getName();
+				nRef = new MapVariableReference(nRef.getName(), new Expression[] { thisRef }, term, initFields);
+			}
+			
+			// put statements into method body
+			boogieScope = initFields;
+			inFieldDeclaration = true;
+			pushStatementList(initFields.getStatements()); 
+			methodCallAssignmentVar = nRef;
+			term.initialization.traverse(this, scope);
+			Expression expr;
+			if (result() instanceof CallStatement) {
+				initFields.getStatements().add(result());
+				expr = ((CallStatement)result()).getOutVar();
+			}
+			else {
+				expr = resultExpr();
+				Assignment assignment = new Assignment(nRef, expr, term, initFields);
+				initFields.getStatements().add(assignment);
+			}
+			popStatementList();
+			
+			if (expr != null) {
+				initFields.getEnsures().add(new BinaryExpression(nRef, "==", expr, term, initFields)); //$NON-NLS-1$
+			}
+			boogieScope = boogieScope.getProgramScope();
+			methodCallAssignmentVar = null;
+			inFieldDeclaration = false;
+		}
+		
+		result = new VariableDeclaration(ref, type, boogieScope);
 		boogieScope.getProgramScope().addVariable((VariableDeclaration)result);
+
 		return false;
 	}
 
@@ -774,7 +830,7 @@ public class BoogieVisitor extends ASTVisitor {
 		debug(term, scope);
 		term.expression.traverse(this, scope);
 		FunctionCall fn = new FunctionCall("$dtype", new Expression[]{ resultExpr() }, term.expression, boogieScope); //$NON-NLS-1$
-		TypeReference ref = new TypeReference(getTypeName(term.type.resolvedType), term, boogieScope);
+		TypeReference ref = new TypeReference(getTypeName(term.type.resolvedType, null), term, boogieScope);
 		result = new BinaryExpression(fn, "<:", new TokenLiteral(ref.getTypeName()), false, term, boogieScope); //$NON-NLS-1$
 		return false;
 	}
@@ -826,6 +882,18 @@ public class BoogieVisitor extends ASTVisitor {
 		decl.specification = term.specification;
 		decl.scope = term.scope;
 		decl.traverse(this, scope);
+		
+		// add field initialization to top of constructor
+		if (initFields != null) {
+			String cls = new String(term.binding.declaringClass.readableName());
+			Procedure cProc = (Procedure)result();
+			CallStatement call = new CallStatement(cls + ".$initFields", //$NON-NLS-1$
+					new Expression[] { new VariableReference("this", null, cProc) }, //$NON-NLS-1$ 
+					null, term, cProc); 
+			cProc.getStatements().add(0, call);
+			cProc.getEnsures().addAll(initFields.getEnsures());
+		}
+			
 		return false;
 	}
 
@@ -886,7 +954,7 @@ public class BoogieVisitor extends ASTVisitor {
 			ref = (TypeReference)result();
 		}
 		
-		Procedure proc = new Procedure(procName, ref, term, (Program)boogieScope);
+		Procedure proc = new Procedure(procName, ref, term, boogieScope.getProgramScope());
 		boogieScope.getProgramScope().getProcedures().add(proc);
 		boogieScope = proc;
 		
@@ -914,6 +982,7 @@ public class BoogieVisitor extends ASTVisitor {
 		traverseStatements(proc.getStatements(), term.statements, term.scope);
 
 		boogieScope = proc.getProgramScope();
+		result = proc;
 		
 		return false;
 	}
@@ -1053,7 +1122,7 @@ public class BoogieVisitor extends ASTVisitor {
 	private VariableReference extractMethodExpression(MessageSend term, String procName, Expression[] args, BlockScope scope) {
 		// add variable declaration to scope
 		String varName = "$call_" + boogieScope.getProcedureScope().getLocals().size(); //$NON-NLS-1$
-		TypeReference type = new TypeReference(getTypeName(term.binding.returnType), term, boogieScope);
+		TypeReference type = new TypeReference(getTypeName(term.binding.returnType, new String(term.binding.declaringClass.readableName())), term, boogieScope);
 		VariableReference ref = new VariableReference(varName, term, boogieScope);
 		VariableDeclaration decl = new VariableDeclaration(ref, type, boogieScope);
 		boogieScope.addVariable(decl);
@@ -1342,14 +1411,14 @@ public class BoogieVisitor extends ASTVisitor {
 	// priority=3 group=expr
 	public boolean visit(SingleTypeReference term, BlockScope scope) {
 		debug(term, scope);
-		result = new TypeReference(getTypeName(term.resolvedType), term, boogieScope);
+		result = new TypeReference(getTypeName(term.resolvedType, new String(term.token)), term, boogieScope);
 		return false;
 	}
 
 	// priority=3 group=expr
 	public boolean visit(SingleTypeReference term, ClassScope scope) {
 		debug(term, scope);
-		result = new TypeReference(getTypeName(term.resolvedType), term, boogieScope);
+		result = new TypeReference(getTypeName(term.resolvedType, new String(term.token)), term, boogieScope);
 		return false;
 	}
 
@@ -1386,41 +1455,53 @@ public class BoogieVisitor extends ASTVisitor {
 		result = new BooleanLiteral(true, term, boogieScope);
 		return false;
 	}
+	
+	private void visitTypeDeclaration(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term) {
+		String clsName = new String(term.binding.readableName());
+		
+		if (term.superclass != null) {
+			declareType(clsName, new String(term.superclass.resolvedType.readableName()));
+		}
+		else {
+			declareType(clsName);
+		}
+	}
+	
+	private void endVisitTypeDeclaration(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term) {
+		initFields = null;
+	}
 
 	// priority=2 group=decl
 	public boolean visit(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term, BlockScope scope) {
 		debug(term, scope);
-		if (term.superclass != null) {
-			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
-		}
-		else {
-			declareType(new String(term.binding.readableName()));
-		}
+		visitTypeDeclaration(term);
 		return true;
 	}
 
 	// priority=2 group=decl
 	public boolean visit(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term, ClassScope scope) {
 		debug(term, scope);
-		if (term.superclass != null) {
-			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
-		}
-		else {
-			declareType(new String(term.binding.readableName()));
-		}
+		visitTypeDeclaration(term);
 		return true;
 	}
 
 	// priority=2 group=decl
 	public boolean visit(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term, CompilationUnitScope scope) {
 		debug(term, scope);
-		if (term.superclass != null) {
-			declareType(new String(term.binding.readableName()), new String(term.superclass.resolvedType.readableName()));
-		}
-		else {
-			declareType(new String(term.binding.readableName()));
-		}
+		visitTypeDeclaration(term);
 		return true;
+	}
+
+	public void endVisit(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term, CompilationUnitScope scope) {
+		endVisitTypeDeclaration(term);
+	}
+
+	public void endVisit(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term, ClassScope scope) {
+		endVisitTypeDeclaration(term);
+	}
+
+	public void endVisit(org.eclipse.jdt.internal.compiler.ast.TypeDeclaration term, BlockScope scope) {
+		endVisitTypeDeclaration(term);
 	}
 
 	// TODO priority=3 group=expr

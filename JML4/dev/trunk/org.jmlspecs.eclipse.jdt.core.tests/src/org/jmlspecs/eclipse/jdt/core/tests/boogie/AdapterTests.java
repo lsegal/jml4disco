@@ -579,6 +579,11 @@ public class AdapterTests extends TranslationTests {
 	public void test_801_Static_FieldDeclaration() {
 		super.test_801_Static_FieldDeclaration();
 	}
+	
+	@Override
+	public void test_802_Static_FieldDeclaration() {
+		super.test_802_Static_FieldDeclaration();
+	}
 
 	@Override
 	public void test_900_JmlResultExpression() {

@@ -45,9 +45,6 @@ public class ProveVcDistributed implements IProverStrategy {
 
 	private Result[] proveRemotely(VcProgram vcProg) {
 		try {
-			// URL CONNECTION SETUP
-			//URL url = new URL("http://localhost:8080/EscWeb/EscWebServlet"); //$NON-NLS-1$
-			//URL url = new URL("http://localhost:8080/ProverCoordinator/ProverCoordinator"); //$NON-NLS-1$
 
 			URLConnection conn = getUrlConnection(getUrlString("whole"));
 			ObjectOutputStream out = new ObjectOutputStream(conn

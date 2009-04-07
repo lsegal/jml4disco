@@ -48,6 +48,7 @@ public class Esc extends DefaultCompilerExtension {
 	// processing a types means processing its methods (including constructors)
 	// the JDT AST stores static initialization blocks as a subsclass of fields,
 	// so these will need to be handled slightly differently.
+	// DISCO some vars became final to allow serialization	
 	private void process(final Compiler compiler, final CompilationUnitDeclaration unit) {
 		if (unit.compilationResult.hasSyntaxError
 				|| unit.compilationResult.hasErrors()
@@ -119,7 +120,7 @@ public class Esc extends DefaultCompilerExtension {
 		}
 		System.out.println("done waiting to finish!");		 //$NON-NLS-1$
 	}
-	// DISCO some vars became final to allow serialization
+
 	/*package*/ void process(JmlAbstractMethodDeclaration method, CachedVcs cachedVcs, Counter postProcessorCounter, JmlTypeDeclaration typeDecl, CompilationUnitScope scope, CompilerOptions options, ProblemReporter problemReporter) {
 		String debugName = getDebugNameForMethod((AbstractMethodDeclaration)method); 
 		final GcTranslator gcTranslator = new GcTranslator(options, problemReporter);

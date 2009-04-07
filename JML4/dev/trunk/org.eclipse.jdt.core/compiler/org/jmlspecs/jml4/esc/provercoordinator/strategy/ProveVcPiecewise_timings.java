@@ -24,7 +24,6 @@ public class ProveVcPiecewise_timings extends ProveVcPiecewise{
 	public Result[] proveVc(VC vc, Map map) {
 //		if (this.cachedVcs.contains(vc))
 //			return Result.VALID;
-
 		
 		String methodName = vc.getName();
 	
@@ -33,8 +32,6 @@ public class ProveVcPiecewise_timings extends ProveVcPiecewise{
 		boolean simplifyProved, cvc3Proved=false, negationProved=false, isabelleProved=false;
 		
 		startTime = System.currentTimeMillis();
-		//DISCO null parameters for serialization
-		//SimplifyAdapter simplify = new SimplifyAdapter(null, null);
 		// try to prove vc with Simplify, if successful, return valid result
 		SimplifyAdapter simplify = new SimplifyAdapter(this.options, this.problemReporter);
 		Result[] simplifyResults = simplify.prove(vc, map);
@@ -46,8 +43,6 @@ public class ProveVcPiecewise_timings extends ProveVcPiecewise{
 		try {
 
 			startTime = System.currentTimeMillis();
-			//DISCO null parameters for serialization
-			//Cvc3Adapter cvc = new Cvc3Adapter(null,null);
 			// try to prove vc with CVC, if successful, return valid result
 			Cvc3Adapter cvc = new Cvc3Adapter(this.options, this.problemReporter);			
 			results = cvc.prove(vc, map);
@@ -75,8 +70,7 @@ public class ProveVcPiecewise_timings extends ProveVcPiecewise{
 			startTime = System.currentTimeMillis();
 			// try to prove vc with Isabelle, if successful, return valid result
 			IsabelleAdapter isabelle = new IsabelleAdapter(this.options, this.problemReporter);
-			//DISCO null paremeters for serialization
-			//IsabelleAdapter isabelle = new IsabelleAdapter(null,null);
+
 			results = isabelle.prove(vc, map);
 			isabelleTime = System.currentTimeMillis() - startTime;
 			isabelleProved = Result.isValid(results);

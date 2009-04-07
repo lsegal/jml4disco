@@ -53,11 +53,10 @@ public class DecoratorVisitor extends Visitor {
 	}
 	
 	public boolean visit(CallStatement term) {
+		Procedure calledProcedure = term.getScope().lookupProcedure(term.getProcedureName());
+		Procedure proc = term.getScope().getProcedureScope();
 		if (term.getOutVar() == null) {
-			Procedure calledProcedure = term.getScope().lookupProcedure(term.getProcedureName());
 			if (calledProcedure != null) { // calledProcedure should not be null
-				Procedure proc = term.getScope().getProcedureScope();
-				
 				// check if procedure is called without outvar when spec defines one
 				// Boogie needs any method call to assign to as many out vars as in the procedure
 				// declaration
@@ -70,13 +69,13 @@ public class DecoratorVisitor extends Visitor {
 					proc.addVariable(decl);
 					term.setOutVar(decl.getName());
 				}
-				
-				// add all modifies, requires and ensures clauses to callee
-				proc.getModifies().addAll(calledProcedure.getModifies());
-				//proc.getEnsures().addAll(calledProcedure.getEnsures());
-				//proc.getRequires().addAll(calledProcedure.getRequires());
 			}
 		}
+		if (calledProcedure != null) {
+			// add all modifies clauses to caller
+			proc.getModifies().addAll(calledProcedure.getModifies());
+		}
+		
 		return true;
 	}
 	

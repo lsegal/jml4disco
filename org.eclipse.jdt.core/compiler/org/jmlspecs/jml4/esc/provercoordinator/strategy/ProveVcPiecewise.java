@@ -34,9 +34,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 		return "ProveVcPiecewise"; //$NON-NLS-1$
 	}
 	
-    // DISCO printing
 	public Result[] prove(VcProgram vcProg) {
-
 		   VC[] vcs = vcProg.getAsImplications();
 		   List/*<Result>*/ problems = new ArrayList(/*<Result>*/);
 		   for (int i = 0; i < vcs.length; i++) {
@@ -70,7 +68,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 
 		Result[] results = null;
 		try {
-			// DISCO null parameters for serialization
+			// DISCO 
 			// try to prove vc with CVC, if successful, return valid result
 			Cvc3Adapter cvc = new Cvc3Adapter(this.options, this.problemReporter);
 			
@@ -99,7 +97,7 @@ public class ProveVcPiecewise implements IProverStrategy {
 		}
 
 		try {
-			// DISCO null parameters for serialization
+			// DISCO n
 			// try to prove vc with Isabelle, if successful, return valid result
 			IsabelleAdapter isabelle = new IsabelleAdapter(this.options, this.problemReporter);
 			

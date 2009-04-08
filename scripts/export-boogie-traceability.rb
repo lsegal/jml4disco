@@ -177,7 +177,7 @@ class TableRowEmitter
         if o.priority.value == "0"
             <<-eof
                 <tr style='color:#999;font-style:italic'>
-                     <td align='left'>#{i}</td>
+                     <td align='left' id="JN#{i}"><strong>JN#{i}</strong></td>
                      <td align='left'><em>#{o.method}</em></td>
                      <td align='left'><em>#{o.scope}</em></td>
                      <td></td>
@@ -201,7 +201,7 @@ class TableRowEmitter
 
             <<-eof
                 <tr style='#{style}'>
-                    <td align='left'>#{i}</td>
+                    <td align='left' id="JN#{i}"><strong>JN#{i}</strong></td>
                     <th align='left'>#{o.method}</th>
                     <td align='left'>#{o.scope}</td>
                     <td align='center'><strong>#{o.done ? 'X':''}</strong></td>

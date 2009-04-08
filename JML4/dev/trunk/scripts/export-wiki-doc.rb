@@ -9,6 +9,7 @@ require 'fileutils'
 # wiki documents to process
 $wikidocs = { 
   'BiWeeklyStatusReport' => 'mgmt',
+  'FeatureSummary' => 'mgmt', 
   'Proposal' => 'mgmt',
   'ActivityPlan' => 'mgmt',
   #'MeetingMinutes' => 'mgmt',

@@ -3,7 +3,10 @@
 <head>
  <title>Disco - Vision Document</title>
  
-<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
 <body>
 
 
@@ -25,14 +28,10 @@
    
    <div class="wikipage">
     <div id="searchable"><h1 id="VisionDocument">Vision Document</h1>
-<h3 id="FinalRevisionHistory">Final Revision History</h3>
-<table class="wiki">
-<tr><td>c_sheu</td><td> 03/17/09
-</td></tr></table>
 <p>
 <div class="wiki-toc">
 <h4>Table of Contents</h4>
-<ol><li class="active"><ol><li class="active"><a href="#FinalRevisionHistory">Final Revision History</a></li></ol></li><li class="active"><a href="#a1.Introduction">1. Introduction</a><ol><li class="active"><a href="#a1.1Purpose">1.1 Purpose</a></li><li class="active">
+<ol><li class="active"><a href="#a1.Introduction">1. Introduction</a><ol><li class="active"><a href="#a1.1Purpose">1.1 Purpose</a></li><li class="active">
 <a href="#a1.2.JML4DiscoOverview">1.2. JML4 Disco Overview</a><ol><li class="active"><a href="#a1.2.1DistributedApplicationVerification">1.2.1 Distributed Application Verification</a></li><li class="active">
 <a href="#a1.2.2MoreCompleteJavaCoverage">1.2.2 More Complete Java Coverage</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a2.Positioning">2. Positioning</a><ol><li class="active"><a href="#a2.1ProductStatement">2.1 Product Statement</a></li><li class="active">
 <a href="#a2.2ProductPositionStatement">2.2 Product Position Statement</a></li></ol></li><li class="active"><a href="#a3.StakeholderDescriptions">3. Stakeholder Descriptions</a><ol><li class="active"><a href="#a3.1StakeholderSummary">3.1 Stakeholder Summary</a></li><li class="active">
@@ -54,7 +53,7 @@
 <p>
 Software development and maintenance are costly endeavors. The cost can be reduced if more software defects are detected early in the development cycle. [3] This can be achieved using a formal behavioral interface specification language for Design by Contract (DBC) as well as compile-time checks to assert that contracts are respected. The Java Modeling Language (JML) is one such language, and tools have been developed to perform static checking of JML-enhanced Java programs.
 The Dependable Software Research Group (DSRG) has developed the JML4 Integrated Verification Environment (IVE); an Eclipse-based JML tool which performs Extended Static Checking.
-One challenge facing JML4 is the reality that applying ESC to industrial-scale applications has been - and will be - difficult. [1] JML4 Disco will be an evolution of JML4 meant to alleviate this problem by means of improving ESC4's potential for distributed application verification, to better utilize non-local resources and reduce the time to assert the validity of software components, and to achieve more complete coverage of the Java language then would be possible using ESC4 alone.
+One challenge facing JML4 is the reality that applying ESC to industrial-scale applications has been - and will be - difficult due to the time it takes to perform static check, as well as the incomplete nature of tools which do so. [1] JML4 Disco will be an evolution of JML4 meant to alleviate these problems by improving ESC4's potential for distributed application verification, to better utilize non-local resources and reduce the time to assert the validity of software components, and to achieve more complete coverage of the Java language then would be possible using ESC4 alone.
 The purpose of this document is to define the user needs, the system features, and the project requirements for JML4 Disco.
 </p>
 <h3 id="a1.2.JML4DiscoOverview">1.2. JML4 Disco Overview</h3>
@@ -123,11 +122,19 @@ JML4 Disco will be an evolution of JML4, and as such will be easily added to an 
 <h3 id="a4.3NeedsandFeatures">4.3 Needs and Features</h3>
 <table class="wiki">
 <tr><td> <strong>Needs</strong> </td><td> <strong>Features</strong> </td><td> <strong>Effort</strong> </td><td> <strong>Risk</strong> </td><td> <strong>Priority</strong> </td><td> Planned Release 
-</td></tr><tr><td> Efficient, transparent and fast program verification.  </td><td> Utilizing resources on remote machines while verifying. </td><td> Very High </td><td> Very High </td><td> Very High </td><td> Milestone 2 
-</td></tr><tr><td> </td><td> Load balancing on utilization of remote resources. </td><td>High</td><td> High </td><td>High </td><td> Milestone 3 (Minimal Version) 
-</td></tr><tr><td> </td><td> Parallel analysis of verification units </td><td>High</td><td> High </td><td>High </td><td>Milestone 3 (Minimal Version) 
-</td></tr><tr><td> </td><td> Caching old verification results. </td><td>High </td><td> High </td><td>High </td><td> Milestone3 (Minimal Version)
-</td></tr><tr><td> More complete coverage of the Java language for verification </td><td> Interfacing with Boogie, Microsoft's state of the art program verifier. </td><td>High </td><td>High </td><td>High </td><td>Milestone 3 (Minimal Version)
+</td></tr><tr><td> Efficient, transparent and fast program verification.  </td><td> Parallel analysis of verification units </td><td> High </td><td> Med </td><td> High </td><td> M2 [<a href="/trac/wiki/SupplementarySpecification#a2.FunctionalRequirements" class="wiki">Details</a>] 
+</td></tr><tr><td> </td><td> Utilizing resources on remote machines while verifying. </td><td> High </td><td> High </td><td> High </td><td> M3 [<a href="/trac/wiki/SupplementarySpecification#a2.FunctionalRequirements" class="wiki">Details</a>] 
+</td></tr><tr><td> Utilize remote resources efficiently </td><td> Remote Resource Management Mechanism </td><td> High </td><td> High </td><td> High </td><td> M5 [<a href="/trac/wiki/SupplementarySpecification#a2.FunctionalRequirements" class="wiki">Details</a>] 
+</td></tr><tr><td> More complete coverage of the Java language for verification </td><td> Support Basic Assignments and Statements </td><td> Low </td><td> Low </td><td> High </td><td> M4 
+</td></tr><tr><td> </td><td> Support Java Native Types </td><td> Low </td><td> Low </td><td> High </td><td> M4 
+</td></tr><tr><td> </td><td> Support Loops </td><td> Med </td><td> Low </td><td> High </td><td> M5 
+</td></tr><tr><td> </td><td> Support Java Object Types </td><td> High </td><td> Med </td><td> High </td><td> M6 
+</td></tr><tr><td> </td><td> Support Arrays </td><td> High </td><td> Med </td><td> Med </td><td> M6 
+</td></tr><tr><td> </td><td> Support Fields </td><td> High </td><td> Med </td><td> High </td><td> M6 
+</td></tr><tr><td> </td><td> Support Classes and Inheritances </td><td> Med </td><td> Med </td><td> Med </td><td> M6 
+</td></tr><tr><td> </td><td> Support JML DbC common statements </td><td> Low </td><td> Low </td><td> High </td><td> M6 
+</td></tr><tr><td> </td><td> Support Method Calls </td><td> High </td><td> Med </td><td> High </td><td> M7 
+</td></tr><tr><td> Enabling/Disabling alternate proving strategies </td><td> UI Interface for toggling use of different strategies </td><td> Low </td><td> Low </td><td> High </td><td> M6 
 </td></tr></table>
 <h3 id="a4.4AlternativesandCompetition">4.4 Alternatives and Competition</h3>
 <h4 id="a4.4.1ContractsforJava">4.4.1 Contracts for Java</h4>
@@ -182,9 +189,9 @@ JML4 Disco must perform faster than JML4; timed results of verification attempts
 <ol><li>P. R. James, P. Chalin, L. Giannas, and G. Karabotsos, <span class="underline">Distributed, Multi-threaded Verification of Java Programs.</span> <i>Proceedings of the International Workshop on Specification and Verification of Component-Based Systems (SAVCBS)</i>, Atlanta, Georgia (USA), November, 2008.
 </li><li>Contract4J: Design by Contract for Java, <a href="http://www.contract4j.org/contract4j" class="ext-link"><span class="icon">http://www.contract4j.org/contract4j</span></a>
 </li><li>C. Flanagan, K. R. M. Leino, M. Lillibridge, G. Nelson, J. B. Saxe, and R. Stata. <span class="underline">Extended static checking for java.</span> In <i>PLDI '02: Proceedings of the ACM SIGPLAN 2002 Conference on Programming language design and implementation</i>, pages 234-245, New York, NY, 2002. ACM Press.
-</li><li>Wikipedia, <a href="http://en.wikipedia.org/wiki/ESC/Java" class="ext-link"><span class="icon">http://en.wikipedia.org/wiki/ESC/Java</span></a> (...)
-</li><li><a href="http://www.cs.ru.nl/~martijno/ooti/slides/escjava.pdf" class="ext-link"><span class="icon">http://www.cs.ru.nl/~martijno/ooti/slides/escjava.pdf</span></a> (...)
-</li><li>SourceForge, <a href="http://jmlspecs.wiki.sourceforge.net/JML2" class="ext-link"><span class="icon">http://jmlspecs.wiki.sourceforge.net/JML2</span></a> (...)
+</li><li>Wikipedia, <a href="http://en.wikipedia.org/wiki/ESC/Java" class="ext-link"><span class="icon">http://en.wikipedia.org/wiki/ESC/Java</span></a> 
+</li><li><a href="http://www.cs.ru.nl/~martijno/ooti/slides/escjava.pdf" class="ext-link"><span class="icon">http://www.cs.ru.nl/~martijno/ooti/slides/escjava.pdf</span></a>
+</li><li>SourceForge, <a href="http://jmlspecs.wiki.sourceforge.net/JML2" class="ext-link"><span class="icon">http://jmlspecs.wiki.sourceforge.net/JML2</span></a> 
 </li></ol></div>
    </div>
    

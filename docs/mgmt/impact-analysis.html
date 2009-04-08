@@ -3,7 +3,10 @@
 <head>
  <title>Disco - Impact Analysis</title>
  
-<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
 <body>
 
 
@@ -29,21 +32,26 @@
 <div class="wiki-toc">
 <h4>Table of Contents</h4>
 <ol><li class="active"><a href="#a1.Introduction">1. Introduction</a><ol><li class="active"><a href="#a1.1ImplicationsoftheProposedChange">1.1 Implications of the Proposed Change</a></li><li class="active">
-<a href="#a1.2SystemElementsAffectedbytheProposedChange">1.2 System Elements Affected by the Proposed Change</a></li></ol></li><li class="active"><a href="#a2.DistributedComponent">2. Distributed Component</a><ol><li class="active"><a href="#a2.1DistributedVCs">2.1 Distributed VCs</a><ol><li class="active"><a href="#a2.1.1ChangesElicition">2.1.1 Changes Elicition</a></li></ol></li><li class="active"><a href="#a2.2SecondPrototype">2.2 Second Prototype</a><ol><li class="active"><a href="#a2.2.1ChangesElicitation">2.2.1 Changes Elicitation</a></li></ol></li><li class="active"><a href="#a2.3VCObjectSerialization">2.3 VC Object Serialization</a><ol><li class="active"><a href="#a2.3.1ChangesElicitation">2.3.1 Changes Elicitation</a></li><li class="active">
-<a href="#a2.3.2ChangesImpactAnalysis">2.3.2 Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#a2.4IsabelleandSimplifyAdapter">2.4 Isabelle and Simplify Adapter</a><ol><li class="active"><a href="#a2.4.1ChangesElicitation">2.4.1 Changes Elicitation</a></li><li class="active">
-<a href="#a2.4.2ChangesImpactAnalysis">2.4.2 Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#a2.5IsabelleProcessInteractiveMode">2.5 Isabelle Process Interactive Mode</a><ol><li class="active"><a href="#a2.5.1ChangesElicitation">2.5.1 Changes Elicitation</a></li><li class="active">
-<a href="#a2.5.2ChangesImpactAnalysis">2.5.2 Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#a2.6ProverProcessPool">2.6 Prover Process Pool</a><ol><li class="active"><a href="#a2.6.1ChangesElicitation">2.6.1 Changes Elicitation</a></li><li class="active">
-<a href="#a2.6.2ChangesImpactAnalysis">2.6.2 Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#a2.7VcCache">2.7 VcCache</a><ol><li class="active"><a href="#a2.7.1ChangesElicitation">2.7.1 Changes Elicitation</a></li><li class="active">
-<a href="#a2.7.2ChangesImpactAnalysis">2.7.2 Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#a2.8BurdenTesting">2.8 Burden Testing</a><ol><li class="active"><a href="#a2.8.1ChangesElicitation">2.8.1 Changes Elicitation</a></li><li class="active">
-<a href="#a2.8.2ChangesImpactAnalysis">2.8.2 Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#a2.9ChangemadetoCoretoforClientSideGui">2.9 Change made to Core to for Client Side Gui</a><ol><li class="active"><a href="#a2.9.1ChangesElicitation">2.9.1 Changes Elicitation</a></li><li class="active">
-<a href="#a2.9.2ChangesImpactAnalysis">2.9.2 Changes Impact Analysis</a></li></ol></li><li class="active"><a href="#a2.10MergeWithNewerSourceForgeJMLJava4">2.10 Merge With Newer SourceForge JML Java 4</a><ol><li class="active"><a href="#a2.10.1ChangesElicitation">2.10.1 Changes Elicitation</a></li><li class="active">
-<a href="#a2.10.2ChangesImpactAnalysis">2.10.2 Changes Impact Analysis</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a3.BoogieComponent">3. Boogie Component</a><ol><li class="active"><a href="#a3.1Boogie">3.1 Boogie</a><ol><li class="active"><a href="#a3.1.1ChangesElicitation">3.1.1 Changes Elicitation</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#References">References</a></li></li></ol></div>
+<a href="#a1.2SystemElementsAffectedbytheProposedChange">1.2 System Elements Affected by the Proposed Change</a></li></ol></li><li class="active"><a href="#a2.DistributedComponent">2. Distributed Component</a><ol><li class="active"><a href="#a2.1DistributionofVCs">2.1 Distribution of VC's</a><ol><li class="active"><a href="#a2.1.1ImplicationsoftheProposedChange">2.1.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.1.2ChangesEnumeration">2.1.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a2.2NewStrategyIntegration">2.2 New Strategy Integration</a><ol><li class="active"><a href="#a2.2.1ImplicationsoftheProposedChange">2.2.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.2.2ChangesEnumeration">2.2.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a2.3VCObjectSerialization">2.3 VC Object Serialization</a><ol><li class="active"><a href="#a2.3.1ImplicationsoftheProposedChange">2.3.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.3.2ChangesEnumeration">2.3.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a2.4IsabelleandSimplifyAdapter">2.4 Isabelle and Simplify Adapter</a><ol><li class="active"><a href="#a2.4.1ImplicationsoftheProposedChange">2.4.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.4.2ChangesEnumeration">2.4.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a2.5ProverProcessPool">2.5 Prover Process Pool</a><ol><li class="active"><a href="#a2.5.1ImplicationsoftheProposedChange">2.5.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.5.2ChangesEnumeration">2.5.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a2.6IsabelleProcessInteractiveMode">2.6 Isabelle Process Interactive Mode</a><ol><li class="active"><a href="#a2.6.1ImplicationsoftheProposedChange">2.6.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.6.2ChangesEnumeration">2.6.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a2.7VcCache">2.7 VcCache</a><ol><li class="active"><a href="#a2.7.1ImplicationsoftheProposedChange">2.7.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.7.2ChangesEnumeration">2.7.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a2.8BurdenTesting">2.8 Burden Testing</a><ol><li class="active"><a href="#a2.8.1ImplicationsoftheProposedChange">2.8.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.8.2ChangesEnumeration">2.8.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a2.9ThrottlingMechanism">2.9 Throttling Mechanism</a><ol><li class="active"><a href="#a2.9.1ImplicationsoftheProposedChange">2.9.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.9.2ChangesEnumeration">2.9.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a2.10ChangemadetoCoretoforClientSideGui">2.10 Change made to Core to for Client Side Gui</a><ol><li class="active"><a href="#a2.10.1ImplicationsoftheProposedChange">2.10.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a2.10.2ChangesEnumeration">2.10.2 Changes Enumeration</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a3.BoogieComponent">3. Boogie Component</a><ol><li class="active"><a href="#a3.1BoogieStrategyIntegration">3.1 Boogie Strategy Integration</a><ol><li class="active"><a href="#a3.1.1ImplicationsoftheProposedChange">3.1.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a3.1.2ChangesEnumeration">3.1.2 Changes Enumeration</a></li></ol></li><li class="active"><a href="#a3.2BoogieImplementationofthestrategy">3.2 Boogie Implementation of the strategy</a><ol><li class="active"><a href="#a3.1.1ImplicationsoftheProposedChange1">3.1.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a3.2.2ChangesEnumeration">3.2.2 Changes Enumeration</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a4.Multi-Threading">4. Multi-Threading</a><ol><li class="active"><a href="#a4.1Multi-ThreadingSetupForESC">4.1 Multi-Threading Setup For ESC</a><ol><li class="active"><a href="#a4.1.1ImplicationsoftheProposedChange">4.1.1 Implications of the Proposed Change</a></li><li class="active">
+<a href="#a4.1.2ChangesEnumeration">4.1.2 Changes Enumeration</a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#References">References</a></li></li></ol></div>
  
 </p>
 <h2 id="a1.Introduction">1. Introduction</h2>
 <p>
-This document will cover the changes the JML4 Disco project may bring to the overall JML4 Project. We will consider the risks involved, changes in the overall quality, performance and requirements as well as the consequence to any change proposed
-. the  The following is a check-list of things to consider when performing our impact analysis. 
+The purpose of this document is to list, and (if possible) justify all differences between the two code bases and consider the changes the JML4 Disco project may bring to the overall JML4 Project. We will consider the risks involved, changes in the overall quality, performance and requirements as well as the consequence to any change proposed.<br />
+This document is meant to be used in conjunction with the <a href="/trac/wiki/ChangeManagement" class="wiki">Change Management</a> document. This document lists the high level purpose and justification for all changes, while that document lists changes in a more granular, low-level way.
 </p>
 <h3 id="a1.1ImplicationsoftheProposedChange">1.1 Implications of the Proposed Change</h3>
 <ul><li>Identify any existing requirements in the baseline that conflict with the proposed change. 
@@ -76,70 +84,110 @@ This document will cover the changes the JML4 Disco project may bring to the ove
 </li><li>Quantify any effects the proposed change will have on budgets of scarce resources, such as memory, processing power, network bandwidth, real-time schedule. 
 </li><li>Identify any impact the proposed change will have on fielded systems.
 </li></ul><h2 id="a2.DistributedComponent">2. Distributed Component</h2>
-<h3 id="a2.1DistributedVCs">2.1 Distributed VCs</h3>
-<p>
-In order to prove VC remotely, we have to change some classes in the eclipse core project.  
+<h3 id="a2.1DistributionofVCs">2.1 Distribution of VC's</h3>
+<ul><li><span class="underline">Proposal:</span> In order to support the high level requirement of making JML4 better, a distribution of proving effort among many servers was proposed. In JML4, program verification is done by translating an Eclipse AST into VC objects, which are them proven using theorem provers. In order to both achieve and benefit from distributed program verification, VC objects had to be serialized and transmitted over a network. As such, several changes are necessary in order to allow VC's to be proved remotely: 
+</li></ul><p>
+ 
+The types of necessary changes include: 
 </p>
-<h4 id="a2.1.1ChangesElicition">2.1.1 Changes Elicition</h4>
-<ul><li>Class <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcDistributed</tt> was created. 
-</li><li>Class <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcPiecewise_timings</tt> was added only for benchmarking and outputting of results. 
-</li><li>The <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProverStrategyFactory</tt> was modified to include the new distributed prover strategy. 
-</li><li>Several classes in the Distributed Prototype have had to be altered so they implement <tt>java.io.Serializable</tt>: 
-</li><li><tt>org.jmlspecs.jml4.esc.gc.lang.KindOfAssertion</tt> 
-</li><li><tt>org.jmlspecs.jml4.esc.result.lang.Result</tt> 
-</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VC</tt> 
-</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VcOperator</tt> 
-</li><li>Several classes had the 'final' keyword removed from the declaration of instance variables to allow for serialization: 
-</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VcLogicalExpression</tt> 
-</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VcArithExpression</tt> 
-</li><li>In class <tt>org.jmlspecs.jml4.esc.Esc</tt> some variables were changed to be 'final' for serialization purposes. 
-</li><li>Class <tt>org.jmlspecs.jml4.esc.vc.lang.VcArithExpression</tt>, <tt>org.jmlspecs.jml4.esc.vc.lang.VcLogicalExpression</tt> and <tt>org.jmlspecs.jml4.esc.vc.lang.VcRelativeExpression</tt> also had changes made for custom serialization overriding. 
-</li><li>The instance variable <tt>operator</tt> in class <tt>org.jmlspecs.jml4.esc.vc.lang.VcRelativeExpression</tt> was made public for the purpose of serialization. 
-</li><li>Outputs and logging were added to class <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcPiecewise</tt> and several method calls are made with null parameters to make serialization possible. 
-</li><li>In class <tt>org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter</tt> instance variables <tt>CompierlerOptions</tt> and <tt>ProblemReporter</tt> are set to null to allow serialization. 
-</li><li>Several classes derived from <tt>org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter</tt> have <tt>problemReporter</tt> set to null to allow serialization. 
-</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter</tt> 
-</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapter</tt> 
-</li><li>In class <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveEntireVC::prove(VcProgram)</tt>, variable <tt>problemReporter</tt> is null to allow serialization. 
-</li><li>In class <tt>org.jmlspecs.jml4.esc.Esc</tt> several changes were made pertinent to timing and printout.
-</li><li>Eclipse-class <tt>org.eclipse.jdt.internal.compiler.lookup.LookupEnvironment</tt> was given an empty constructor to facilitate the creation of serializable classes which inherit from it. 
-</li><li>Eclipse-class <tt>org.eclipse.jdt.internal.compiler.lookup.LookupEnvironmentEmptyForSerialization</tt> is an "empty class to allow easy serialization."
-</li></ul><h3 id="a2.2SecondPrototype">2.2 Second Prototype</h3>
-<h4 id="a2.2.1ChangesElicitation">2.2.1 Changes Elicitation</h4>
-<ul><li><tt>org.jmlspecs.jml4.compiler.JmlCompilerExtension</tt> was changed. (see svn changelog 102) 
-</li><li><tt>org.jmlspecs.jml4.compiler.JmlCompilerOptions</tt> had distributed options added to it. (see svn changelog 102) 
-</li><li><tt>org.jmlspecs.jml4.esc.Esc</tt> was changed for threading. (see svn changelog 102) 
-</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.ProverAdapter</tt> instance variables CompierlerOptions and ProblemReporter are now transient. 
-</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.cvc3.Cvc3Adapter</tt> a problem is reported every time a failed attempt to invoke cvc3 is made.  
-</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter</tt> a problem is reported every time isabelle fails to launch.  
-</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.SimplifyAdapter</tt> a problem is reported every time simplify fails to launch. 
-</li><li>In <tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcDistributed</tt> the name of the properties configuration file in which URLs are found was changed. 
-</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcPiecewise</tt> underwent several changes. 
-</li><li><tt>org.jmlspecs.jml4.esc.provercoordinator.strategy.ProverStrategyFactory</tt> was modified again. 
-</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VC</tt> underwent several changes for custom serialization. 
-</li><li>Class <tt>org.jmlspecs.jml4.esc.vc.lang.VcOperator</tt>, <tt>org.jmlspecs.jml4.esc.vc.lang.VcQuantifier</tt> and <tt>org.jmlspecs.jml4.esc.vc.lang.VcRelativeExpression</tt> was changes made for custom serialization overriding. 
-</li><li><tt>org.jmlspecs.jml4.esc.vc.lang.VcTypeBinding</tt> is a new type to allow serialization. 
-</li><li>The existing tests in package <tt>org.jmlspecs.eclipse.jdt.core.tests.esc</tt> were copied to <tt>org.jmlspecs.eclipse.jdt.core.tests.esc.distributed</tt> and modified for applicability to distribution. 
-</li><li><tt>org.eclipse.jdt.core.compiler.org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcPiecewise.java</tt> commented out 5 lines in the proveVC(...) method in order to prevent adding to and checking the cache. 
-</li><li><tt>org.eclipse.jdt.core.compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter.java</tt> Added a check in matchingTheoryFileExists(...) method to ensure that the file is readable before attempting the read. 
-</li></ul><h3 id="a2.3VCObjectSerialization">2.3 VC Object Serialization</h3>
-<h4 id="a2.3.1ChangesElicitation">2.3.1 Changes Elicitation</h4>
-<p>
-<strong>The following are the details of the changes needed to improve serialization process:</strong> 
+<ul><li>Some classes had to be altered so they implement <tt>java.io.Serializable</tt>. 
+</li><li>Some classes had the 'final' keyword removed from the declaration of some instance variables to allow for serialization.
+</li><li>Some classes had the 'final' keyword added to the declaration of some instance variables to allow for serialization.
+</li><li>Some classes had the 'transient' keyword added to the declaration of some instance variables to prevent some aspects of serialization. For example:
+</li><li>Class VC.java's attribute of type TypeBinding was set to transient as it was large and not completely necessary to include in the serialized object for proving.
+</li><li>Some classes had changes made for custom serialization overriding. (A new type was added).
+</li><li>Outputs and logging were added to classes and several method calls are made with null parameters to make serialization possible.
+</li><li>Several changes were made pertinent to timing and printout.
+</li><li>A class LookupEnvironmentEmptyForSerialization was created to be an empty framework class to allow for faster VC serialization by serializing the empty object and not the parent.
+</li><li>Do condition checking for the protected ProblemReporter attribute inherited from org.jmlspecs.jml.esc.provercoordinator.prover.ProverAdapter to check if it is null before using it.
+</li></ul><h4 id="a2.1.1ImplicationsoftheProposedChange">2.1.1 Implications of the Proposed Change</h4>
+<ul><li>There are no existing requirements that conflict with this proposed change.
+</li><li>There are no pending requirements that conflict with the proposed change. 
+</li><li>The consequences of not making the change is that another marshalling technique would have to be used in order to transfer VC's across the network. These changes would then not have to be made, but marshalling would most likely take longer than simply using native Java serialization.
+</li><li>There are many possible adverse side effects from making these changes, such as:
+<ul><li>Added "security" issues due to serialization (for example, the control of singleton classes over the number of instances that exist in memory could be circumnavigated due to the access to private aspects of the class granted to java runtime environment by the Serializable keyword)
+</li><li>The use of the final keyword may hinder future attempts at subclassing certain classes. 
+</li><li>Also, the removal of the final keyword may inappropriately alter future subclasses (meaning they have have control over elements that they originally were not supposed to). 
+</li><li>Making class attributes public may have undesirable consequences with relation to Information Hiding.
+</li><li>Mistakenly using some of the empty constructors or the empty framework class would cause null pointer exceptions.
+</li><li>The use of the transient keyword could cause unexpected loss of data when an object becomes serialized.
+</li></ul></li><li>Quality attributes such as performance will not be affected, but others such as cohesiveness may be reduced by the reduction of information hiding.
+</li><li>This change must be performed before the Distributed team can begin work on creating and refining a distributed proving system. 
+</li><li>There is no loss of previous effort in implementing this proposal.
+</li></ul><p>
+<strong>Conclusion :</strong> Change Was Accepted
 </p>
+<h4 id="a2.1.2ChangesEnumeration">2.1.2 Changes Enumeration</h4>
 <p>
-One of the possible ways of speeding up current VC serialization process is using <strong>Externalizable</strong> interface.   
-Externalizable is a subclass of Serializable.  It provides more control to the programmer over what and how the objects are being serialized and it produces smaller serialized object in terms of size. 
+To implement this change, the following classes were altered.
 </p>
+<table class="wiki">
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc </td><td> Esc </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.11" class="wiki">Esc I.A.2.1</a> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.gc.lang </td><td> KindOfAssertion </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.13" class="wiki">KindOfAssertion I.A.2.1</a> 
+</td></tr><tr><td> </td><td> Result </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.14" class="wiki">Result I.A.2.1</a> 
+</td></tr><tr><td> </td><td> VC </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.16" class="wiki">Vc I.A.2.1</a> 
+</td></tr><tr><td> </td><td> VcArithExpression </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.17" class="wiki">VcArithExpression I.A.2.1</a> 
+</td></tr><tr><td> </td><td> VcLogicalExpression </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.18" class="wiki">VcLogicalExpression I.A.2.1</a> 
+</td></tr><tr><td> </td><td> VcOperator </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.19" class="wiki">VcOperator I.A.2.1</a> 
+</td></tr><tr><td> </td><td> VcProgram </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.110" class="wiki">VcProgram I.A.2.1</a> 
+</td></tr><tr><td> </td><td> VcQuantifier </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.111" class="wiki">VcQuantifier I.A.2.1</a> 
+</td></tr><tr><td> </td><td> VcRelativeExpression </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.112" class="wiki">VcRelativeExpression I.A.2.1</a> 
+</td></tr><tr><td> </td><td> VcTypeBinding </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.114" class="wiki">VcTypeBinding I.A.2.1</a> 
+</td></tr><tr><td> core.compiler.org.eclipse.jdt.internal.compiler.lookup </td><td> LookupEnvironmentEmptyForSerialization </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.113" class="wiki">LookupEnvironmentEmptyForSerialization I.A.2.1</a> 
+</td></tr><tr><td> compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.cvc3 </td><td> Cvc3Adapter </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.1" class="wiki">Cvc3Adapter I.A.2.1</a> 
+</td></tr><tr><td> compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle </td><td> IsabelleAdapter </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.12" class="wiki">IsabelleAdapter I.A.2.1</a> 
+</td></tr><tr><td> compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.simplify </td><td> ChangeManagement </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.15" class="wiki">SimplifyAdapter I.A.2.1</a> 
+</td></tr></table>
 <p>
-The Externalizable interface defines 2 methods: readExternal(ObjectInput in) and writeExternal(ObjectOutput out).  Unlike default serialization, programmers have the full control over what and how to serialize the object instance's variables.  Nevertheless, this also implies the needs of extra codes of dealing with serialization process. 
+ 
 </p>
-<p>
-Our concern in JML4Disco is serializing Vc and all its sub-types objects, therefore the changes required to use externalizable interface are: 
+<h3 id="a2.2NewStrategyIntegration">2.2 New Strategy Integration</h3>
+<ul><li><span class="underline">Proposal:</span> Building upon the VC serialization (see 2.1), a new prover strategy can be made for distribution. In order to integrate said new distributed proving strategy, some alterations had to be made.
+</li></ul><p>
+ 
+The types of necessary changes include: 
 </p>
-<ol><li>VC class implements Externalizable interface. 
-</li><li>VC class and all its subclasses must add 2 new methods: readExternal() and writeExternal().  Note that all subclasses must override the VC's readExternal() and writeExternal methods. 
-</li><li>All Vc's subclass must explicitly call super.readExternal() and super.writeExternal() in order to serialize parent's attributes. 
+<ul><li>A new class representing a proving strategy was created. VC's sent out to the servlet specified in this class.
+</li><li>Some classes were created for benchmarking and outputting of results. 
+</li><li>The strategy factory needed to be altered in order to accommodate the new distributed strategy.
+</li><li>New compiler options had to be added.
+</li><li>The properties file containing the URLs was more appropriately named.
+</li><li>New test cases were added to evaluate the effectiveness of the distributing strategy.
+</li><li>The current local caching had to be disabled.
+</li><li>A file IO check had to be included.
+</li></ul><h4 id="a2.2.1ImplicationsoftheProposedChange">2.2.1 Implications of the Proposed Change</h4>
+<ul><li>There are no existing requirements that conflict with this proposed change.
+</li><li>There are no pending requirements that conflict with the proposed change. 
+</li><li>There are no major adverse side effects to implementing said changes. The changes all supplement the existing code with extra behavior. 
+</li><li>The change will not negatively effect any quality attributes.
+</li><li>While the changes do affect critical components such as compiler options, they again only supplement said components and do not alter any pre-existing behavior. 
+</li><li>Class CompilerOptions consists of information pertinent to the configuration the Eclipse IDE. Given that JML4 Disco has added features to the system, CompilerOptions was modified to support configuration of those features.
+</li></ul><p>
+ 
+</p>
+<h4 id="a2.2.2ChangesEnumeration">2.2.2 Changes Enumeration</h4>
+<table class="wiki">
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.strategy </td><td> ProverStrategyFactory </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.24" class="wiki">ProverStrategyFactory I.A.2.2</a> 
+</td></tr><tr><td> </td><td> ProveVcDistributed </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.26" class="wiki">ProveVcDistributed I.A.2.2</a> 
+</td></tr><tr><td> </td><td> ProveVcPiecewise </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.25" class="wiki">ProveVcPiecewise I.A.2.2</a> 
+</td></tr><tr><td> </td><td> ProveVcPiecewise_timings </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.27" class="wiki">ProveVcPiecewise_timings I.A.2.2</a> 
+</td></tr><tr><td> compiler.org.eclipse.jdt.internal.compiler.impl </td><td> CompilerOptions </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.2" class="wiki">CompilerOptions I.A.2.2</a> 
+</td></tr><tr><td> org.jmlspecs.jml4.compiler </td><td> JmlCompilerExtension </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.22" class="wiki">JmlCompilerExtension I.A.2.2</a> 
+</td></tr><tr><td> </td><td> JmlCompilerOptions </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.23" class="wiki">JmlCompilerOptions I.A.2.2</a> 
+</td></tr><tr><td> org.jmlspecs.eclipse.jdt.core.tests </td><td> proverCoordinatorUrls.properties </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.29" class="wiki">proverCoordinatorUrls.properties I.A.2.2</a> 
+</td></tr><tr><td> org.jmlspecs.eclipse.jdt.core.tests.esc.distributed </td><td> * </td><td> - 
+</td></tr><tr><td> org.eclipse.jdt.core.compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle </td><td> IsabelleAdapter </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.21" class="wiki">IsabelleAdapter I.A.2.2</a> 
+</td></tr></table>
+<h3 id="a2.3VCObjectSerialization">2.3 VC Object Serialization</h3>
+<ul><li><span class="underline">Proposal:</span>  Serialization may be significantly contributing to the total proving time. As such, perhaps using an alternative marshalling method may be preferable. One such method is using the <strong>Externalizable</strong> interface. Externalizable is a subclass of Serializable and it provides more control to the programmer over what and how the objects are being serialized. It also produces smaller serialized objects (in terms of storage size). The Externalizable interface defines 2 methods: readExternal(ObjectInput in) and writeExternal(ObjectOutput out).  Unlike default serialization, programmers have full control over what and how to serialize the object instance's variables.  Nevertheless, this also implies the need of extra code for dealing with the serialization process. 
+</li></ul><p>
+The types of necessary changes include: 
+</p>
+<ul><li>VC class implements Externalizable interface. 
+</li><li>VC class and all of its subclasses must add (or override) 2 new methods: readExternal() and writeExternal(). 
+</li><li>All of Vc's subclasses must explicitly call super.readExternal() and super.writeExternal() in order to serialize parent's attributes. 
 </li><li>The order of serialization and de-serialization must match properly.  For instance: 
 <pre class="wiki"> public void readExternal(ObjectInput in) throws IOException, 
  ClassNotFoundException { 
@@ -155,10 +203,10 @@ Our concern in JML4Disco is serializing Vc and all its sub-types objects, theref
 </pre></li><li>The VC and its subclass must have a default constructor that takes no argument. 
 </li><li>All attributes that will be serialized must not be final. 
 </li><li>Must replace the default ObjectOutput.write() and ObjectInput.read() calls in ProveVcProgram.java, ProveVcDistributed.java with appropriate readExternal(), and writeExternal() methods. 
-</li><li>The inheritance makes externalization process more complex.  As we expect to receive any type of vc at the server, to deserialize the vc into appropriate type requires serializing that information during the serialization process and uses reflection get the appropriate type and then de-serialize the object. 
-</li></ol><blockquote>
+</li><li>The inheritance makes externalization process more complex.  As we expect to receive any type of vc at the server, to de-serialize the vc into appropriate type requires serializing that information during the serialization process and uses reflection get the appropriate type and then de-serialize the object. 
+</li></ul><blockquote>
 <p>
-Prior serialize the VC object, store the actual type of VC: 
+Prior to serializing the VC object, pre-pend the actual run-time type (as a String) of the VC in question : 
 </p>
 <pre class="wiki">  out.writeUTF(vc.getClass().getName()); 
   vc.writeExternal(out); 
@@ -174,163 +222,199 @@ On receiving a serialized object:
   vc = (VC) o; 
   vc.readExternal(in); 
 </pre></blockquote>
-<ol start="9"><li>Some original VC objects comparison are done through "==" rather than "equals" method.  However, with externalization, we cannot have instance variable with final modifier hence this will no longer hold.  Therefore, we have to override the "equals" method and use that method for comparison. 
-</li></ol><table class="wiki">
-<tr><td> <strong>Details list of classes to be changed</strong> 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.gc.lang.KindOfAssertion 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.cvc3.Cvc3Visitor 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleVisitor 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyVisitor 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.strategy.ProveVcDistributed 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.result.lang.Result 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.vc.WlpVisitor 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.vc.lang.* 
-</td></tr><tr><td> Esc4Web.src.ProveVcProgram 
-</td></tr><tr><td> Esc4Web.src.ProveVc 
+<ul><li>Some original VC object comparisons are done using "==" rather than "equals" method.  However, with externalization, we cannot have instance variables with the "final" modifier, hence this will no longer hold.  Therefore, the "equals" method must be overridden and used for comparison. 
+</li></ul><h4 id="a2.3.1ImplicationsoftheProposedChange">2.3.1 Implications of the Proposed Change</h4>
+<p>
+The objective of these changes is to improve the program proving time in distributed environment.  Current java default serialization process heavily uses reflection mechanisms to accomplish object serialization.  This could lead to performance issue as in this project where one of the major requirements is to improve the speed of process.  The externalizable interface gives developers the full control of how to serialize object explicitly bypassing reflection.  
+This interface dramatically improves the speed of serialization by ~ 50% to ~60%. 
+Overall, most of the required changes did not affect the existing API except changing "==" comparison to "equals" comparison and changing default serialization calls to custom serialization calls.  Nevertheless, improvement in speed comes with extra cost of implementing and maintaining custom serialization methods. 
+Current serialization process of all VC's based on WhileTests is about 1500 ms (using System.currentTimeInMilliseconds()) and with improved externalization process, it is about 500 ms. Conclusion, externalization did improve the speed of serialization process. However, it did not improve the overall proving process. Hence, current serialization process is not the principal performance bottleneck. 
+</p>
+<p>
+<strong>Conclusion :</strong> Change Was Rejected. As such they are not reflected in the change management document and are instead located in a patch.
+</p>
+<h4 id="a2.3.2ChangesEnumeration">2.3.2 Changes Enumeration</h4>
+<table class="wiki">
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.gc.lang </td><td> KindOfAssertion 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.cvc3 </td><td> Cvc3Visitor 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.strategy </td><td> ProveVcDistributed 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.result.lang </td><td> Result 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.vc </td><td> WlpVisitor 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.vc.lang </td><td> * 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.distribution.http.dispatcher </td><td> ProveVcProgram 
+</td></tr><tr><td> </td><td> ProveVc 
 </td></tr></table>
-<h4 id="a2.3.2ChangesImpactAnalysis">2.3.2 Changes Impact Analysis</h4>
-<p>
-The objective of these changes is to improve the program proving time in distributed environment.  Current java default serialization process uses heavily reflection machanism to accomplish object serialization.  This could lead to performance issue as in this project where one of the major requirements is to improve the speed of process.  The externalizable interface gives developers the full control of how to serialize object explicitly bypassing reflection.  
-This interface improves dramatically the speed of serialization by ~ 50% to ~60%. 
-Overall, most of the required changes did not affect the existing API except changing "==" comparison to "equals" comparison and changing default serialization calls to custom serialization calls.  Nevertheless, improve speed comes with extra cost of implementing and maintaining custom serialization methods. 
-Current serialization process of all Vcs based on WhileTests is about 1500 ms (using System.currentTimeInMilliseconds()) and with improved externalization process, it is about 500 ms. Conclusion, externalization did improve the speed of serialization process. However, it did not improve the overall proving process. Hence, current serialization process is not the principal performance bottleneck. 
-</p>
-<p>
-<strong> The patch for the above changes can be found in the attachment section. </strong>
-</p>
 <h3 id="a2.4IsabelleandSimplifyAdapter">2.4 Isabelle and Simplify Adapter</h3>
-<h4 id="a2.4.1ChangesElicitation">2.4.1 Changes Elicitation</h4>
-<p>
-The changes are made specifically in SimplifyAdapter and IsabelleAdapter classes.  The major changes is to avoid spwaning a new prover process for each VC to be proved.  The classes to be changed are: 
-</p>
-<ul><li>org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapater 
-</li><li>org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter 
+<ul><li><span class="underline">Proposal:</span> Spawning a new prover process for each VC to be proved increases the overall proving time as well as the demand on resources. 
 </li></ul><p>
-The API of these two classes remains intact.  Only the internal behavior of getting external prover process is changed.  The changes are shown below: 
-<strong> SimplifyAdapter.java </strong> 
+The types of necessary changes include: 
 </p>
+<ul><li>Create a private static "process" attribute in each adapter that can then be re-used by each request instead of starting a new one.
+</li><li>Do condition checking whenever a request is made and use the static process if it exits and create a new one and use it if it does not exist.
+</li></ul><p>
+ 
+</p>
+<h4 id="a2.4.1ImplicationsoftheProposedChange">2.4.1 Implications of the Proposed Change</h4>
 <p>
-<a href="https://group0j.stu01.encs.concordia.ca:9443/trac/changeset/225/JML4/dev/trunk/org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/esc/provercoordinator/prover/simplify/SimplifyAdapter.java?old=30&amp;old_path=JML4%2Fsourceforge%2Fcurrent%2Forg.eclipse.jdt.core%2Fcompiler%2Forg%2Fjmlspecs%2Fjml4%2Fesc%2Fprovercoordinator%2Fprover%2Fsimplify%2FSimplifyAdapter.java">See the changes</a> 
+One of the principal performance bottlenecks is spawning new provers process for each VC to be proved. Current design spawns too many prover processes 
+(a.k.a: based on the current tests set, the simplify prover is being called ~4000 times and Isabelle prover ~ 1000 times).  For every call, a new process is created at the beginning and deleted at the end.  In addition, the processes are not being created and used sequentially.  At a given point in proving time, there are more than 10 Isabelle processes and simplify processes simultaneously.  This continuous create/delete of process is time consuming and affect heavily overall performance of the system.  Therefore, the changes proposed eliminate unnecessary creation and deletion of provers' process.  It suggests the reuse of the same process for all VC's to be proved. 
+Some benefits: 
 </p>
-<p>
-<strong> IsabelleAdapter.java </strong> 
-</p>
-<p>
-<a href="https://group0j.stu01.encs.concordia.ca:9443/trac/changeset?old_path=%2FJML4%2Fsourceforge%2Fcurrent%2Forg.eclipse.jdt.core%2Fcompiler%2Forg%2Fjmlspecs%2Fjml4%2Fesc%2Fprovercoordinator%2Fprover%2Fisabelle%2FIsabelleAdapter.java&amp;old=30&amp;new_path=JML4%2Fdev%2Ftrunk%2Forg.eclipse.jdt.core%2Fcompiler%2Forg%2Fjmlspecs%2Fjml4%2Fesc%2Fprovercoordinator%2Fprover%2Fisabelle%2FIsabelleAdapter.java&amp;new=225">see the changes</a> 
-</p>
-<h4 id="a2.4.2ChangesImpactAnalysis">2.4.2 Changes Impact Analysis</h4>
-<p>
-One of the principal performance bottlenecks is spawning new provers process for each VC to be proved.  Current design spawns too many prover processes 
-(a.k.a: based on the current tests set, the simplify prover is being called ~4000 times and isabelle prover ~ 1000 times.  For every call, a new process is created at the beginning and deleted at the end.  In addition, the processes are not being created and used sequentially.  At a given point in time, there are &gt; 10 isabelle processes and simplify processes simultaneously.  This continuous create/delete of process is time consuming and affect heavily overall performance of the system.  Therefore, the changes proposed eliminate unnecessary creation and deletion of provers' process.  It suggests the reuse of the same process for all VCs to be proved. 
-</p>
-<p>
-<strong> Pros &amp; Cons </strong> 
-</p>
-<p>
-Pros: 
-</p>
-<ol><li>Avoid unnecessary creation/deletion of process 
+<ul><li>Avoid unnecessary creation/deletion of process 
 </li><li>Improve performance significantly 
 </li><li>The process will be maintain in a more controlled way (rather to have unexpected # of processes running at the same time, we are guarantee to have fix amount of process running at any moment). 
 </li><li>No changes in API, this changes will not propagate to other classes that depend on these classes (SimplifyAdapter and IsabelleAdapater). 
-</li></ol><p>
-Cons: 
+</li></ul><p>
+Some drawbacks: 
 </p>
-<ol><li>Strong coupling on the Isabelle and Simplify API. 
+<ul><li>Strong coupling on the Isabelle and Simplify API. 
 </li><li>No recovery mechanism exists in proposed change. 
-</li></ol><p>
-The changes are very promising.  Based on the BigWhileTest, with the original provers' adapter, the test runs ~28 secs over 4 servers whereas with the new adapters, the same test runs 7 to 9 secs. <a href="/trac/wiki/ProversBenchmark" class="wiki">see section Proving Performance</a> 
+</li></ul><p>
+The changes are very promising.  Based on the BigWhileTest, with the original provers' adapter, the test runs ~28 seconds over 4 servers whereas with the new adapters, the same test runs 7 to 9 seconds. <a href="/trac/wiki/ProversBenchmark" class="wiki">See Proving Performance</a> 
 </p>
-<h3 id="a2.5IsabelleProcessInteractiveMode">2.5 Isabelle Process Interactive Mode</h3>
 <p>
-From previous milestone, we were be able to improve the performance of proving VCs by limiting x number of provers' processes and reusing those processes.  Nevertheless, there still have room for improvement.  The current approach of using Isabelle process is not efficient.  For each VC that we want to prove with Isabelle, we have to create a file, open the file, write the lemma into that file, close the file;  then, we fetch the file name into Isabelle process which internally open the file and read the theory.  If the theory is valid, we delete the file, otherwise we keep the file.  As we can notice that there are too many file CRUD operations.  These operations are expensive and should be minimized.  So the proposed changes is to eliminate the need of creating theory file.  Instead, we should fetch the theory string directly into isabelle and if the theory is not valid, then we write to the file.
+<strong>Conclusion :</strong> Change Was Accepted
 </p>
-<h4 id="a2.5.1ChangesElicitation">2.5.1 Changes Elicitation</h4>
-<blockquote>
-<p>
-In order to accommodate the proposed changes, following classes will be modified:
-</p>
-</blockquote>
-<blockquote>
+<h4 id="a2.4.2ChangesEnumeration">2.4.2 Changes Enumeration</h4>
 <table class="wiki">
-<tr><td> <strong> Class </strong> 
-</td></tr><tr><td> org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/esc/provercoordinator/prover/isabelle/IsabelleAdapter.java 
-</td></tr><tr><td> org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/esc/provercoordinator/prover/isabelle/IsabelleProcessPool.java 
-</td></tr><tr><td> org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/esc/provercoordinator/prover/isabelle/IsabelleVisitor.java 
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.simplify </td><td> SimplifyAdapater </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.41" class="wiki">SimplifyAdapter I.A.2.4</a> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle </td><td> IsabelleAdapter </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.4" class="wiki">IsabelleAdapter I.A.2.4</a> 
 </td></tr></table>
-</blockquote>
-<blockquote>
+<h3 id="a2.5ProverProcessPool">2.5 Prover Process Pool</h3>
 <p>
-<a href="/trac/changeset/438" title="Ticket #190 Avoid unnecessary write to file and fetch theory file into  ..." class="changeset">see code level changes</a>
+ 
 </p>
-</blockquote>
-<h4 id="a2.5.2ChangesImpactAnalysis">2.5.2 Changes Impact Analysis</h4>
+<ul><li><span class="underline">Proposal:</span> In order to maximize the power of multiple cores, we plan to implement the process pool concept for each prover.   
+</li></ul><p>
+The types of necessary changes include: 
+</p>
+<ul><li>Adding an extra layer of abstraction to the adapters' interaction with processes (the process pool classes). 
+</li><li>Removing some methods in the existing adapters.
+</li><li>Altering some of the existing tests.
+</li></ul><h4 id="a2.5.1ImplicationsoftheProposedChange">2.5.1 Implications of the Proposed Change</h4>
+<ul><li>These changes will slightly affect Isabelle and Simplify adapters. 
+</li><li>We add another layer of abstraction on generating/maintaining process using process pool concept. 
+</li><li>The existing getProverProcess() method in adapter will be removed.  This change affects two tests as they have a dependency on getProverProcess() method.  Other than that, there will have minimum impact on the existing core.
+</li></ul><p>
+<strong>Conclusion :</strong> Change Was Accepted
+</p>
+<h4 id="a2.5.2ChangesEnumeration">2.5.2 Changes Enumeration</h4>
+<table class="wiki">
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover </td><td> ProcessPool </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.54" class="wiki">ProcessPool I.A.2.5</a> 
+</td></tr><tr><td>  </td><td> ProverAdapter </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.51" class="wiki">ProverAdapter I.A.2.5</a> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle </td><td> IsabelleProcessPool </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.53" class="wiki">IsabelleProcessPool I.A.2.5</a> 
+</td></tr><tr><td> </td><td> IsabelleAdapter </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.5" class="wiki">IsabelleAdapter I.A.2.5</a> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.simplify </td><td> SimplifyProcessPool </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.55" class="wiki">SimplifyProcessPool I.A.2.5</a> 
+</td></tr><tr><td> </td><td> SimplifyAdapater </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.52" class="wiki">SimplifyAdapater I.A.2.5</a> 
+</td></tr><tr><td> org.jmlspecs.eclipse.jdt.core.tests.esc</td><td> SanityTests </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.56" class="wiki">SanityTests I.A.2.5</a> 
+</td></tr><tr><td> </td><td> SimplifyTests </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.57" class="wiki">SimplifyTests I.A.2.5</a> 
+</td></tr></table>
+<h3 id="a2.6IsabelleProcessInteractiveMode">2.6 Isabelle Process Interactive Mode</h3>
+<ul><li><span class="underline">Proposal:</span> In the previous milestone, we were be able to improve the performance of proving VC's by limiting X number of prover processes and reusing those processes.  Nevertheless, there is still room for improvement. The current approach of using Isabelle process is not efficient.  For each VC that we want to prove with Isabelle, we have to create a file, open the file, write the lemma into that file, and close the file; we then provide the file name to the Isabelle process which internally open the file and read the theory.  If the theory is valid, we delete the file, otherwise we keep the file. Obviously there are too many file CRUD operations, which are expensive (performance-costly)  and should be minimized. So the proposed change is to eliminate the need of creating theory file. Instead, the theory string should be fed directly into Isabelle and if the theory is not valid, then we write to the file.
+</li></ul><p>
+The types of necessary changes include: 
+</p>
+<ul><li>Removed the code that wrote to file
+</li><li>Added an "interactive" command line parameter to the Isabelle process pool
+</li><li>added a check condition block for restoring (undo) the condition of a bad state of the Isabelle prover to a correct one.
+</li></ul><h4 id="a2.6.1ImplicationsoftheProposedChange">2.6.1 Implications of the Proposed Change</h4>
 <p>
-The change has low impact on the system. We did not change any behavior of the system.  Instead, we modified the way of using Isabelle process more efficiently.  This change has following advantage over original approach: 
+The change has low impact on the system as we did not change any behavior of the system. Instead, we modified the way of using Isabelle process more efficiently.  This change has following advantage over original approach: 
 </p>
-<ul><li>Eliminate unnecessary file  CRUD operation.
+<ul><li>Eliminate unnecessary file CRUD operation.
 </li><li>Eliminate potential of getting "Too many files open" error: 
-</li></ul><blockquote>
-<blockquote>
-<p>
-In Linux environment, every user including root have the limitation on the number of file that can remain open during a session.  When we fetch theory file into Isabelle and reuse that process for other theories, all theory files will not be close until the process is closed.  With the change mentioned above, this issue is solved.
+</li></ul><p>
+In the Linux environment, every user, including root, has a limitation on the number of files that can remain open during a session.  When we feed the theory file into Isabelle and reuse that process for other theories, all the theory files will remain open until the process is closed.  This problem is resolved by our proposed change.
 </p>
-</blockquote>
-</blockquote>
-<h3 id="a2.6ProverProcessPool">2.6 Prover Process Pool</h3>
 <p>
-In order to maximize the power of multiple cores, we plan to implement the process pool concept for each prover.   
+<strong>Conclusion :</strong> Change Was Accepted
 </p>
-<h4 id="a2.6.1ChangesElicitation">2.6.1 Changes Elicitation</h4>
-<p>
-Few new classes will be created 
-</p>
+<h4 id="a2.6.2ChangesEnumeration">2.6.2 Changes Enumeration</h4>
 <table class="wiki">
-<tr><td> <strong>Details list of classes changed/created</strong> 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.ProcessPool 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleProcessPool 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyProcessPool 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.simplify.SimplifyAdapater 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle.IsabelleAdapter 
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle </td><td> IsabelleAdapter </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.6" class="wiki">IsabelleAdapter I.A.2.6</a> 
+</td></tr><tr><td>  </td><td> IsabelleProcessPool </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.61" class="wiki">IsabelleProcessPool I.A.2.6</a> 
 </td></tr></table>
-<ul><li>ProcessPool models the each prover process pool.  The ProcessPool holds a queue of a given prover's process that is free to be used.  This is an abstract class. 
-</li></ul><h4 id="a2.6.2ChangesImpactAnalysis">2.6.2 Changes Impact Analysis</h4>
-<p>
-These changes will slightly affect Isabelle and Simplify adapters.  We add another layer of abstraction on generating/maintaining process using process pool concept.  The existing getProverProcess() method in adapter will be removed.  This change affects 2 tests as they have a dependency on getProverProcess() method.  Other than that, there will have minimum impact on the existing core.
-</p>
 <h3 id="a2.7VcCache">2.7 VcCache</h3>
-<h4 id="a2.7.1ChangesElicitation">2.7.1 Changes Elicitation</h4>
-<p>
-In an effort to increase the speed at which VcPrograms are proved by the proving servers, caching of already proven Vc's has been proposed. This will 
-eliminate the proving time for Vc's that exist in the cache, thus reducing the proving servers load.  
+<ul><li><span class="underline">Proposal:</span> In an effort to increase the speed at which VcPrograms are proved by the proving servers, caching of already proven Vc's has been proposed. This will eliminate the proving time for Vc's that exist in the cache, thus reducing the proving servers load.
+</li></ul><p>
+The types of necessary changes include:
 </p>
-<h4 id="a2.7.2ChangesImpactAnalysis">2.7.2 Changes Impact Analysis</h4>
+<ul><li>Added the VcCache class
+</li><li>Overloaded a method
+</li></ul><h4 id="a2.7.1ImplicationsoftheProposedChange">2.7.1 Implications of the Proposed Change</h4>
 <p>
-The impact to the current distributed server is minimal. The VcCache is a stand alone component, and the current system will interface with that component. 
+The impact to the current distributed server is minimal. The VcCache is a stand-alone component, and the current system will interface with that component. 
 The VcCache will not have the ability to modify any component of the distribution server, thus the only impact it will have will be dictated by the server itself. The proving server will now be required to return the prover which proved the VC so as to accommodate the caching. 
-The JML4 core class ProveVcPiecewise has now had a method overloaded so as to be able to return to the proving server the prover that was able to prove the VC. The behaviour of this overloaded method is identical to the original, and so other server technologies which used the previous core will be able to use this core without any impact. 
+The JML4 core class ProveVcPiecewise has now had a method overloaded so as to be able to return to the proving server the prover that was able to prove the VC. The behavior of this overloaded method is identical to the original, and so other server technologies which used the previous core will be able to use this core without any impact. 
 </p>
-<h3 id="a2.8BurdenTesting">2.8 Burden Testing</h3>
 <p>
-In order to allow any test extending AbstractRegressionTest to be rerun several times consecutively in a loop (providing the main means of heavily burdening the system), a call to a method in the PerformanceMeterFactory class must be suppressed. The method is only called once, and from within the same class. The method, AssertUniqueScenario(String scenario) seems to only add any created scenarios to a private HashSet to which there are no accessors or mutators. However, the method throws an IllegalArgumentException if the scenario is not unique, which may be caught by any tests/classes using the PerformanceMeterFactory (and there are many). This means, that if those classes use the exception for control flow, there may be repercussions. 
-A throttling mechanism was added to the VcProgramDispatching class to pause dispatching for small amounts of time if the best server available has too many pending VCs. The delay time as well as the pending vc threshold should be configurable from the Configuration pages being created in milestone 5  
+<strong>Conclusion :</strong> Change Was Accepted
 </p>
-<h4 id="a2.8.1ChangesElicitation">2.8.1 Changes Elicitation</h4>
-<p>
-Few new classes will be created 
-</p>
+<h4 id="a2.7.2ChangesEnumeration">2.7.2 Changes Enumeration</h4>
 <table class="wiki">
-<tr><td> <strong>Details list of classes changed/created</strong> 
-</td></tr><tr><td> <a href="/trac/browser/JML4/dev/trunk/org.eclipse.test.performance/src/org/eclipse/test/internal/performance/PerformanceMeterFactory.java" class="source">JML4/dev/trunk/org.eclipse.test.internal.performance/PerformanceMeterFactory</a> 
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.provercoordinator.strategy </td><td> ProveVcPiecewise </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.7" class="wiki">ProveVcPiecewise I.A.2.7</a> 
 </td></tr></table>
-<h4 id="a2.8.2ChangesImpactAnalysis">2.8.2 Changes Impact Analysis</h4>
-<p>
-Insignificant impact on the existing system.
+<h3 id="a2.8BurdenTesting">2.8 Burden Testing</h3>
+<ul><li><span class="underline">Proposal:</span> In order to allow any test extending AbstractRegressionTest to be rerun several times consecutively in a loop (providing the main means of heavily burdening the system), a call to a method in the PerformanceMeterFactory class must be suppressed. 
+</li></ul><p>
+The types of necessary changes include: 
 </p>
-<h3 id="a2.9ChangemadetoCoretoforClientSideGui">2.9 Change made to Core to for Client Side Gui</h3>
+<ul><li>Removing a method from PerformanceMeterFactory that checks for unique testing scenarios and throws an exception if a non-unique scenario is detected.
+</li></ul><h4 id="a2.8.1ImplicationsoftheProposedChange">2.8.1 Implications of the Proposed Change</h4>
 <p>
-In order to add client side Enabling and Disabling of Boogie and Distributed proving, a number of classes in org.eclipse.jdt.core will be added to in order to accomodate new compiler options. Most of these changes are low impact in that they will not harm or disable any pre-existing compiler option behavior (they are simply new attributes of type String). The one exception is the compiler option jmlEscProverStrategy which stores the prover strategy to use as a string, such as "proveVcPiecewise" or "distributed". Currently, the only use of this compiler option is to toggle on and off the Distributed strategy, but it should remain able to take other strings as well. <br /><br />
-Since enabling/disabling Distribution will be controlled by a checkbox, the existing architecture will automatically store the strings "ENABLED" or "DISABLED", depending on the status of the control. As such, we cannot use the jmlEscProverStrategy compiler option directly to store this status, as it will contain "ENABLED"/"DISABLED" and not the correct strings "distributed", etc. Therefore, it must me stored as a seperate option and a check must be done to set jmlEscProverStrategy to the correct string as appropriate. 
+The method is called once from within the same class. The method, AssertUniqueScenario(String scenario) adds any created scenarios to a private HashSet to which there are no accessors or mutators. However, the method throws an IllegalArgumentException if the scenario is not unique, which may be caught by any tests/classes using the PerformanceMeterFactory (and there are many). This means, that if those classes use the exception for control flow, there may be repercussions. 
+</p>
+<p>
+<strong>Conclusion :</strong> Change Was Rejected. The change had too large a chance of accidentally and unaccountably negatively influencing other subsystems and behavior. Instead, the line should only be commented out when running the burden test, and never committed to trunk. 
+</p>
+<h4 id="a2.8.2ChangesEnumeration">2.8.2 Changes Enumeration</h4>
+<table class="wiki">
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> 
+</td></tr><tr><td> org.eclipse.test.internal.performance </td><td> PerformanceMeterFactory 
+</td></tr></table>
+<h3 id="a2.9ThrottlingMechanism">2.9 Throttling Mechanism</h3>
+<ul><li><span class="underline">Proposal:</span> A throttling mechanism was added to the VcProgramDispatching class to pause dispatching for small amounts of time if the best server available has too many pending VC's. The delay time as well as the pending VC threshold should be configurable from the Configuration pages being created in milestone 5.
+</li></ul><p>
+The types of necessary changes include: 
+</p>
+<ul><li>Modifying the dispatcher with a timeout loop.
+</li></ul><h4 id="a2.9.1ImplicationsoftheProposedChange">2.9.1 Implications of the Proposed Change</h4>
+<p>
+The dispatcher now has a maximum pending VC's attribute. If the "best" server (the top of the queue) has more VC's than the maximum of the dispatcher, the dispatcher will wait for a preset amount of time (another new attribute of the dispatcher). 
+The benefits are:
+</p>
+<ul><li>We no longer overload potentially busy servers with too many pending VC's.
+</li></ul><p>
+The drawbacks are:
+</p>
+<ul><li>There is currently no mechanism to alter the preset dispatcher attributes other than directly altering the code. Ideally, such configuration should be available through the Dispatcher Web Configuration pages, but such a feature is currently out of scope for this project.
+</li><li>Could lead to confusing behavior if not configured appropriately
+</li></ul><p>
+<strong>Conclusion :</strong> Change Was Accepted
+</p>
+<h4 id="a2.9.2ChangesEnumeration">2.9.2 Changes Enumeration</h4>
+<table class="wiki">
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> org.jmlspecs.jml4.esc.distribution.http.dispatcher </td><td> ProveVcProgram </td><td> <a href="/trac/wiki/ChangeManagement#Projectorg.jmlspecs.jml4.esc.distribution.http.dispatcher" class="wiki">New project org.jmlspecs.jml4.esc.distribution.http.dispatcher</a> 
+</td></tr></table>
+<h3 id="a2.10ChangemadetoCoretoforClientSideGui">2.10 Change made to Core to for Client Side Gui</h3>
+<ul><li><span class="underline">Proposal:</span> Changes must be made to the Client Side Gui to support the configuration Use cases for both Distributed and Boogie. 
+</li></ul><p>
+The types of necessary changes include: 
+</p>
+<ul><li>Adding new String attributes to core GUI classes
+</li><li>Adding new GUI (textboxes, etc) components to core GUI classes
+</li><li>Adding compiler options
+</li><li>Altering the behavior of prover strategies.
+</li></ul><h4 id="a2.10.1ImplicationsoftheProposedChange">2.10.1 Implications of the Proposed Change</h4>
+<p>
+In order to add client side Enabling and Disabling of Boogie and Distributed proving, a number of classes in org.eclipse.jdt.core will be added to in order to accommodate new compiler options. Most of these changes are low impact in that they will not harm or disable any pre-existing compiler option behavior (they are simply new attributes of type String). The one exception is the compiler option jmlEscProverStrategy which stores the prover strategy to use as a string, such as "proveVcPiecewise" or "distributed". Currently, the only use of this compiler option is to toggle on and off the Distributed strategy, but it should remain able to take other strings as well. <br /><br />
+Since enabling/disabling Distribution will be controlled by a checkbox, the existing architecture will automatically store the strings "ENABLED" or "DISABLED", depending on the status of the control. As such, we cannot use the jmlEscProverStrategy compiler option directly to store this status, as it will contain "ENABLED"/"DISABLED" and not the correct strings "distributed", etc. Therefore, it must me stored as a separate option and a check must be done to set jmlEscProverStrategy to the correct string as appropriate. 
 </p>
 <p>
 <a href="/trac/attachment/wiki/ImpactAnalysis/ClientSideGui.jpeg" style="padding:0; border:none"><img title="Client Side Gui Changes" src="images/ClientSideGui.jpeg" alt="Client Side Gui Changes" /></a> 
@@ -338,78 +422,91 @@ Since enabling/disabling Distribution will be controlled by a checkbox, the exis
 <p>
 Diagram showing the relationship between the changes that were necessary for the Client Side UI changes 
 </p>
-<h4 id="a2.9.1ChangesElicitation">2.9.1 Changes Elicitation</h4>
-<p>
-In order to accommodate the proposed changes, following classes will be modified:
-</p>
-<table class="wiki">
-<tr><td> <strong> Class </strong> 
-</td></tr><tr><td> org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/CompilerOptions.java 
-</td></tr><tr><td> org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/compiler/JmlCompilerExtension.java 
-</td></tr><tr><td> org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/compiler/JmlCompilerOptions.java 
-</td></tr><tr><td> org.eclipse.jdt.core/model/org/eclipse/jdt/core/JavaCore.java 
-</td></tr><tr><td> org.jmlspecs.eclipse.jdt.ui/src/org/jmlspecs/eclipse/jdt/ui/preferences/JmlConfigurationBlock.java 
-</td></tr><tr><td> org.jmlspecs.eclipse.jdt.ui/src/org/jmlspecs/eclipse/jdt/ui/preferences/PreferencesMessages.java 
-</td></tr><tr><td> org.jmlspecs.eclipse.jdt.ui/src/org/jmlspecs/eclipse/jdt/ui/preferences/PreferencesMessages.properties 
-</td></tr></table>
-<p>
-<a href="/trac/changeset/457" title="--See ticket #188" class="changeset">see code level changes</a>
-</p>
-<h4 id="a2.9.2ChangesImpactAnalysis">2.9.2 Changes Impact Analysis</h4>
 <p>
 The changes have low impact on the system. 
 </p>
-<ul><li>Note though that is essential that when the other prover strategies are implemented later as copiler options, that they appropriately overwrite the jmlEscProverStrategy string.
-</li></ul><h3 id="a2.10MergeWithNewerSourceForgeJMLJava4">2.10 Merge With Newer SourceForge JML Java 4</h3>
-<p>
-The week of February 10th, the current version of JMLJava4 was initially taken from sourceforge and merged with Disco's current trunk in a branch. Both the distributed and boogie teams then evaluated the consistancy of that branch with respect to their respective features. 
+<ul><li>Note though that is essential that when the other prover strategies are implemented later as compiler options, that they appropriately overwrite the jmlEscProverStrategy string.
+</li></ul><p>
+<strong>Conclusion :</strong> Change Was Accepted
 </p>
-<h4 id="a2.10.1ChangesElicitation">2.10.1 Changes Elicitation</h4>
-<p>
-For the distributed team, there is fairly low impact. 
-</p>
+<h4 id="a2.10.2ChangesEnumeration">2.10.2 Changes Enumeration</h4>
 <table class="wiki">
-<tr><td> <strong>Details list of classes changed/created</strong> </td><td> <strong>Brief problem description</strong>
-</td></tr><tr><td> org.jmlspecs.jml4.esc.gc.lang/KindOfassertion </td><td> Needs serialization 
-</td></tr><tr><td> org.jmlspecs.jml4.esc.vc.lang/VcTypeBinding </td><td> Does not exist in sourceforge.... may have been <br /> created solely for the original distribution prototype
-</td></tr><tr><td> org.jmlspecs.jml4.esc.vc.lang/VC.java </td><td> Has an association with VcTypeBinding 
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> compiler.org.eclipse.jdt.internal.compiler.impl </td><td> CompilerOptions </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.10" class="wiki">CompilerOptions I.A.2.10</a> 
+</td></tr><tr><td> compiler.org.jmlspecs.jml4.compiler </td><td> JmlCompilerExtension </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.102" class="wiki">JmlCompilerExtension I.A.2.10</a> 
+</td></tr><tr><td>  </td><td> JmlCompilerOptions </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.103" class="wiki">JmlCompilerOptions I.A.2.10</a> 
+</td></tr><tr><td> model.org.eclipse.jdt.core </td><td> JavaCore </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.101" class="wiki">JavaCore I.A.2.10</a> 
+</td></tr><tr><td> src.org.jmlspecs.eclipse.jdt.ui.preferences </td><td> JmlConfigurationBlock </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.104" class="wiki">JmlConfigurationBlock I.A.2.10</a> 
+</td></tr><tr><td> </td><td> PreferencesMessages </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.105" class="wiki">PreferencesMessages I.A.2.10</a> 
+</td></tr><tr><td> </td><td> PreferencesMessages.properties </td><td> <a href="/trac/wiki/ChangeManagement#I.A.2.106" class="wiki">PreferencesMessages.properties I.A.2.10</a> 
 </td></tr></table>
-<p>
-The existence of VcTypeBinding must be investigated: it may be an unnecessary change leftover from the original round-robin distribution prototype.  
-</p>
-<h4 id="a2.10.2ChangesImpactAnalysis">2.10.2 Changes Impact Analysis</h4>
 <h2 id="a3.BoogieComponent">3. Boogie Component</h2>
-<h3 id="a3.1Boogie">3.1 Boogie</h3>
-<h4 id="a3.1.1ChangesElicitation">3.1.1 Changes Elicitation</h4>
-<blockquote>
-<table class="wiki">
-<tr><td> JmlCompilerExtension.java </td><td> Changes in this file are meant to allow a new proving strategy: "Boogie", along with compiler options to turn it on and off. 
-</td></tr><tr><td>JmlCompilerOptions.java </td><td> Changes in this file add a compiler option for EnableJmlBoogie 
-</td></tr></table>
-</blockquote>
-<p>
-<br />
+<h3 id="a3.1BoogieStrategyIntegration">3.1 Boogie Strategy Integration</h3>
+<ul><li><span class="underline">Proposal:</span> In order to integrate the new Boogie proving strategy, some alterations had to be made.
+</li></ul><p>
+ 
+The types of necessary changes include: 
 </p>
-<blockquote>
-<table class="wiki">
-<tr><td> <strong>New package</strong> 
-</td></tr><tr><td> org.jmlspecs.jml4.boogie 
-</td></tr><tr><td>This package contains all pertinent files for proving using boogie. These new elements are based on existing object used for verification through simplify, isabelle and cvc3
-</td></tr></table>
-</blockquote>
+<ul><li>A new class representing a proving strategy was created.
+</li><li>New compiler options had to be added.
+</li></ul><h4 id="a3.1.1ImplicationsoftheProposedChange">3.1.1 Implications of the Proposed Change</h4>
 <p>
-<br />
+This is very low risk. Simply adding extra String attributes to some core Java classes.
 </p>
-<blockquote>
+<h4 id="a3.1.2ChangesEnumeration">3.1.2 Changes Enumeration</h4>
 <table class="wiki">
-<tr><td> <strong>Details list of classes added</strong> </td><td>  
-</td></tr><tr><td> Boogie.java </td><td> A compiler extension that enables Java code to be passed through Microsoft Boogie in order to formally verify JML DbC annotations. 
-</td></tr><tr><td> BoogieAdapter.java </td><td> Wraps the Boogie runtime into a Java class that can be called from Eclipse's compilation stack. 
-</td></tr><tr><td> BoogieSource.java </td><td> Represents a buffer of Boogie source code that will be passed to a Boogie runtime object. 
-</td></tr><tr><td> BoogieSourcePoint.java </td><td>  Represents a point in a Boogie source code file. Used to map points in Boogie source back to a Java source file. 
-</td></tr><tr><td> BoogieVisitor.java  </td><td> Traverses each node in the AST producing equivalent boogie code.
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> compiler.org.jmlspecs.jml4.compiler </td><td> JmlCompilerExtension </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.12" class="wiki">JmlCompilerExtension I.A.3.1</a> 
+</td></tr><tr><td> compiler.org.eclipse.jdt.internal.compiler.impl </td><td> JmlCompilerOptions </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.13" class="wiki">JmlCompilerOptions I.A.3.1</a> 
 </td></tr></table>
-</blockquote>
+<h3 id="a3.2BoogieImplementationofthestrategy">3.2 Boogie Implementation of the strategy</h3>
+<ul><li><span class="underline">Proposal:</span> Support classes for Boogie have to be introduced.
+</li></ul><p>
+The types of necessary changes include: 
+</p>
+<ul><li>New added packages. These new elements are based on existing object used for verification through simplify, Isabelle and Cvc3.
+</li><li>A compiler extension that enables Java code to be passed through Microsoft Boogie in order to formally verify JML DbC annotations.
+</li><li>Creating a wrapper that wraps the Boogie runtime into a Java class that can be called from Eclipse's compilation stack.
+</li><li>Creating a buffer of Boogie source code that will be passed to a Boogie runtime object.
+</li><li>Creating a Boogie AST, translation from Java AST Nodes to Boogie AST Nodes and outputing boogie source.
+</li><li>Added tests for Boogie verification.
+</li></ul><h4 id="a3.1.1ImplicationsoftheProposedChange1">3.1.1 Implications of the Proposed Change</h4>
+<p>
+This is very low risk. Simply adding extra new classes and functionality.
+</p>
+<h4 id="a3.2.2ChangesEnumeration">3.2.2 Changes Enumeration</h4>
+<table class="wiki">
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> org.jmlspecs.eclipse.jdt.core.tests.boogie </td><td> * </td><td>  - 
+</td></tr><tr><td> org.jmlspecs.jml4.boogie </td><td> Boogie.java </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.25" class="wiki">New package org.jmlspecs.eclipse.jdt.core.tests.boogie</a> 
+</td></tr><tr><td>  </td><td> BoogieAdapter.java </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.25" class="wiki">New package org.jmlspecs.eclipse.jdt.core.tests.boogie</a> 
+</td></tr><tr><td>  </td><td> BoogieSource.java </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.25" class="wiki">New package org.jmlspecs.eclipse.jdt.core.tests.boogie</a> 
+</td></tr><tr><td>  </td><td> BoogieSourcePoint.java </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.25" class="wiki">New package org.jmlspecs.eclipse.jdt.core.tests.boogie</a> 
+</td></tr><tr><td>  </td><td> BoogieVisitor.java  </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.25" class="wiki">New package org.jmlspecs.eclipse.jdt.core.tests.boogie</a> 
+</td></tr><tr><td> org.jmlspecs.jml4.boogie.ast </td><td> * </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.24" class="wiki">package org.jmlspecs.jml4.boogie.ast</a> 
+</td></tr><tr><td> org.eclipse.jdt.internal.compiler </td><td> AstVisitor.java </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.2" class="wiki">AstVisitor</a> 
+</td></tr><tr><td> org.jmlspecs.jml4.ast </td><td> JmlDoStatement </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.21" class="wiki">JmlDoStatement I.A.3.2</a> 
+</td></tr><tr><td> org.jmlspecs.jml4.ast </td><td> JmlForStatement </td><td> <a href="/trac/wiki/ChangeManagement#I.A.3.22" class="wiki">JmlForStatement I.A.3.2</a> 
+</td></tr></table>
+<h2 id="a4.Multi-Threading">4. Multi-Threading</h2>
+<h3 id="a4.1Multi-ThreadingSetupForESC">4.1 Multi-Threading Setup For ESC</h3>
+<ul><li><span class="underline">Proposal:</span> Adding Multi-thread support to the ESC process to prove each VCProgram concurrently because method proving is modular. 
+</li></ul><p>
+ 
+The types of necessary changes include: 
+</p>
+<ul><li>Added a new number of threads attribute
+</li><li>Made use of the final keyword
+</li><li>Introduced Executor in order to launch and manage several concurrent threads. Each thread will be responsible for proving a particular VC independent from other threads.
+</li></ul><h4 id="a4.1.1ImplicationsoftheProposedChange">4.1.1 Implications of the Proposed Change</h4>
+<p>
+Class Esc acts as a facade to the underlying logic of Extended Static Checking, hiding the intricacies of VC objects and theorem provers etc from the upper layers of the Integrated Verification Environment. As such, this change is low risk and should not propagate further than class Esc.
+</p>
+<h4 id="a4.1.2ChangesEnumeration">4.1.2 Changes Enumeration</h4>
+<table class="wiki">
+<tr><td> <strong>Package</strong> </td><td> <strong>Class</strong> </td><td> <strong>Corresponding Impact Analysis Section</strong> 
+</td></tr><tr><td> org.jmlspecs.jml4 </td><td> Esc.java </td><td> <a href="/trac/wiki/ChangeManagement#I.A.4.1" class="wiki">Esc I.A.4.1</a> 
+</td></tr></table>
 <h2 id="References">References</h2>
 <p>
 1. Process Impact -- Process Goodies to Support Software Development <a href="http://www.processimpact.com/goodies.sh" class="ext-link"><span class="icon">http://www.processimpact.com/goodies.sh</span></a>

@@ -3,7 +3,10 @@
 <head>
  <title>Disco - Jml4Disco-Use Case View</title>
  
-<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
 <body>
 
 
@@ -30,11 +33,7 @@
 <h4>Table of Contents</h4>
 <ol><li class="active"><a href="#a1.Introduction">1. Introduction</a></li><li class="active">
 <a href="#a2.UseCaseView">2. Use Case View</a><ol><li class="active"><a href="#a2.1UseCaseDiagram">2.1 Use Case Diagram</a></li><li class="active">
-<a href="#a2.2DeveloperUseCases">2.2 Developer Use Cases</a><ol><li class="active"><a href="#a2.2.1UseCase1:EnableCaching">2.2.1 Use Case 1: Enable Caching</a></li><li class="active">
-<a href="#a2.2.2UseCase2:DisableCaching">2.2.2 Use Case 2: Disable Caching</a></li><li class="active">
-<a href="#a2.2.3UseCase3:EnableConsoleLogging">2.2.3 Use Case 3: Enable Console Logging</a></li><li class="active">
-<a href="#a2.2.4UseCase4:DisableConsoleLogging">2.2.4 Use Case 4: Disable Console Logging</a></li><li class="active">
-<a href="#a2.2.5UseCase5:VerifyCode">2.2.5 Use Case 5: Verify Code</a></li><li class="active">
+<a href="#a2.2DeveloperUseCases">2.2 Developer Use Cases</a><ol><li class="active"><a href="#a2.2.5UseCase5:VerifyCode">2.2.5 Use Case 5: Verify Code</a></li><li class="active">
 <a href="#a2.2.6UseCase6:EnableDistributedProgramVerification">2.2.6 Use Case 6: Enable Distributed Program Verification</a></li><li class="active">
 <a href="#a2.2.7UseCase7:DisableDistributedProgramVerification">2.2.7 Use Case 7: Disable Distributed  Program Verification</a></li><li class="active">
 <a href="#a2.2.8UseCase8:EnableBoogie">2.2.8 Use Case 8: Enable Boogie</a></li><li class="active">
@@ -42,7 +41,6 @@
 <a href="#a2.2.10UseCase10:ConfigureVerification">2.2.10 Use Case 10: Configure Verification</a></li></ol><li class="active"><a href="#a2.3AdminUseCases">2.3 Admin Use Cases</a><ol><li class="active"><a href="#a2.3.1UseCase11:InitialServerSetup-Dispatcher">2.3.1 Use Case 11: Initial Server Setup - Dispatcher</a></li><li class="active">
 <a href="#a2.3.2UseCase12:AddServer">2.3.2 Use Case 12: Add Server</a></li><li class="active">
 <a href="#a2.3.3UseCase13:RemoveServer">2.3.3 Use Case 13: Remove Server</a></li><li class="active">
-<a href="#a2.3.4UseCase14:InstallSetupBoogie">2.3.4 Use Case 14: Install/Setup Boogie</a></li><li class="active">
 <a href="#a2.3.5UseCase15:EnableCaching">2.3.5 Use Case 15: Enable Caching</a></li><li class="active">
 <a href="#a2.3.6UseCase16:DisableCaching">2.3.6 Use Case 16: Disable Caching</a></li><li class="active">
 <a href="#a2.3.7UseCase17:InitialServerSetup-ProverServer">2.3.7 Use Case 17: Initial Server Setup - Prover Server</a></li><li class="active">
@@ -56,86 +54,13 @@ This wiki page provides a view into the essential functionality of the system be
 <h2 id="a2.UseCaseView">2. Use Case View</h2>
 <h3 id="a2.1UseCaseDiagram">2.1 Use Case Diagram</h3>
 <p>
-<a href="/trac/attachment/wiki/Jml4Disco-UseCaseView/UseCaseDiag.gif" style="padding:0; border:none"><img src="images/UseCaseDiag.gif" /></a> <br />
+<a href="/trac/attachment/wiki/Jml4Disco-UseCaseView/UseCaseDiag.2.gif" style="padding:0; border:none"><img src="images/UseCaseDiag.2.gif" /></a> <br />
 Figure 2.1: JML4 Disco Use Case Diagram
 </p>
 <h3 id="a2.2DeveloperUseCases">2.2 Developer Use Cases</h3>
-<h4 id="a2.2.1UseCase1:EnableCaching">2.2.1 Use Case 1: Enable Caching</h4>
-<table class="wiki">
-<tr><td> <strong> Properties </strong> </td><td> 
-</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
-</td></tr><tr><td> Level: </td><td> User-goal 
-</td></tr><tr><td> Success Guarantee: </td><td> Caching is enabled 
-</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
-</td></tr><tr><td> Preconditions: </td><td> 1. System is accessible 
-</td></tr><tr><td> </td><td> 2. Caching is disabled  
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Main Success Scenario </strong> </td><td> 
-</td></tr><tr><td> </td><td> 1. The Primary Actor indicates to the System that they wish to activate caching 
-</td></tr><tr><td> </td><td> 2. The System provides a form for the Primary Actor to set the amount of disk space and/or memory to be dedicated to caching 
-</td></tr><tr><td> </td><td> 3. The Primary Actor enters the appropriate data and submits 
-</td></tr><tr><td> </td><td> 4. The System confirms that caching has been enabled 
-</td></tr><tr><td> </td><td> 5. Use Case ends successfully 
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
-</td></tr><tr><td> </td><td> 3.a. The data provided by the Primary Actor is wrong 
-</td></tr><tr><td> </td><td>   3.a.1. The system returns an error message to the Primary Actor specifying why the data is not acceptable (if applicable) 
-</td></tr><tr><td> </td><td>   3.a.2. Use case resumes at Step 3 
-</td></tr></table>
-<h4 id="a2.2.2UseCase2:DisableCaching">2.2.2 Use Case 2: Disable Caching</h4>
-<table class="wiki">
-<tr><td> <strong> Properties </strong> </td><td> 
-</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
-</td></tr><tr><td> Level: </td><td> User-goal 
-</td></tr><tr><td> Success Guarantee: </td><td> Caching is disabled 
-</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
-</td></tr><tr><td> Preconditions:</td><td> 
-</td></tr><tr><td> </td><td> 1. System is accessible 
-</td></tr><tr><td> </td><td> 2. Caching is enabled 
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Main Success Scenario </strong> </td><td> 
-</td></tr><tr><td> </td><td> 1. The Primary Actor indicates to the System that they wish to disable caching 
-</td></tr><tr><td> </td><td> 2. The System confirms that caching has been disabled 
-</td></tr><tr><td> </td><td> 3. Use Case ends successfully 
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
-</td></tr></table>
-<h4 id="a2.2.3UseCase3:EnableConsoleLogging">2.2.3 Use Case 3: Enable Console Logging</h4>
-<table class="wiki">
-<tr><td> <strong> Properties </strong> </td><td> 
-</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
-</td></tr><tr><td> Level: </td><td> User-goal 
-</td></tr><tr><td> Success Guarantee: </td><td> System Console Logging is Enabled 
-</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
-</td></tr><tr><td> Preconditions: </td><td> 
-</td></tr><tr><td> </td><td> 1. System is accessible 
-</td></tr><tr><td> </td><td> 2. Console Logging is disabled 
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Main Success Scenario </strong> </td><td> 
-</td></tr><tr><td> </td><td> 1. The Primary Actor specifies that they want to enable console logging 
-</td></tr><tr><td> </td><td> 2. The System confirms that console logging as been enabled 
-</td></tr><tr><td> </td><td> 3. Use Case ends successfully 
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
-</td></tr></table>
-<h4 id="a2.2.4UseCase4:DisableConsoleLogging">2.2.4 Use Case 4: Disable Console Logging</h4>
-<table class="wiki">
-<tr><td> <strong> Properties </strong> </td><td> 
-</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
-</td></tr><tr><td> Level: </td><td> User-goal 
-</td></tr><tr><td> Success Guarantee: </td><td> System Console Logging is Disabled 
-</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
-</td></tr><tr><td> Preconditions: </td><td> 
-</td></tr><tr><td> </td><td> 1. System is accessible 
-</td></tr><tr><td> </td><td> 2. Console Logging is enabled 
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Main Success Scenario </strong> </td><td> 
-</td></tr><tr><td> </td><td> 1. The Primary Actor specifies that they want to disable console logging. 
-</td></tr><tr><td> </td><td> 2. The System confirms that console logging as been disabled. 
-</td></tr><tr><td> </td><td> 3. Use Case ends successfully 
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
-</td></tr></table>
+<p>
+Use Cases 1 and 2 were dropped. Please see the appendix at the bottom of the SRS. Use Cases 3 and 4 were deemed out of scope.
+</p>
 <h4 id="a2.2.5UseCase5:VerifyCode">2.2.5 Use Case 5: Verify Code</h4>
 <table class="wiki">
 <tr><td> <strong> Properties </strong> </td><td> 
@@ -254,6 +179,9 @@ Figure 2.1: JML4 Disco Use Case Diagram
 </td></tr><tr><td> <strong> Extensions </strong> </td><td> 
 </td></tr></table>
 <h3 id="a2.3AdminUseCases">2.3 Admin Use Cases</h3>
+<p>
+Use Case 14 was dropped.
+</p>
 <h4 id="a2.3.1UseCase11:InitialServerSetup-Dispatcher">2.3.1 Use Case 11: Initial Server Setup - Dispatcher</h4>
 <table class="wiki">
 <tr><td> <strong> Properties </strong> </td><td> 
@@ -311,33 +239,6 @@ Figure 2.1: JML4 Disco Use Case Diagram
 </td></tr><tr><td> </td><td> 3. Use Case ends successfully 
 </td></tr><tr><td> </td><td> 
 </td></tr><tr><td> <strong> Extensions </strong> 
-</td></tr></table>
-<h4 id="a2.3.4UseCase14:InstallSetupBoogie">2.3.4 Use Case 14: Install/Setup Boogie</h4>
-<table class="wiki">
-<tr><td> <strong> Properties </strong> </td><td> 
-</td></tr><tr><td> Primary Actor: </td><td> Admin 
-</td></tr><tr><td> Level: </td><td> User-goal 
-</td></tr><tr><td> Success Guarantee: </td><td> The system will now be able to use Boogie for verification. 
-</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
-</td></tr><tr><td> <strong> Preconditions </strong> </td><td> 
-</td></tr><tr><td> </td><td> 1. System is accessible 
-</td></tr><tr><td> </td><td> 2. Boogie is installed on the system. 
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Main Success Scenario </strong> </td><td> 
-</td></tr><tr><td> </td><td> 1. The Primary Actor specifies that they want to configure settings for JML4 Disco. 
-</td></tr><tr><td> </td><td> 2. The Primary Actor specifies that they want to install/setup Boogie. 
-</td></tr><tr><td> </td><td> 3. The System prompts user for the path to Boogie. 
-</td></tr><tr><td> </td><td> 4. The Primary Actor specifies the path to Boogie. 
-</td></tr><tr><td> </td><td> 5. The System acknowledges the path and presents the system as being setup to use Boogie. 
-</td></tr><tr><td> </td><td> 6. Use Case ends successfully 
-</td></tr><tr><td> </td><td> 
-</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
-</td></tr><tr><td> </td><td> 5.a. Path Specified is invalid. 
-</td></tr><tr><td> </td><td>  5.a.1. The system returns a warning indicating that the path specified by the user is invalid. 
-</td></tr><tr><td> </td><td>    5.a.1.a The user corrects the specified path to Boogie. 
-</td></tr><tr><td> </td><td>      5.a.1.a.1 The system goes to step 5. 
-</td></tr><tr><td> </td><td>  5.a.1.b The user cancels the setup. 
-</td></tr><tr><td> </td><td>      5.a.1.b.1 System does not setup Boogie. 
 </td></tr></table>
 <h4 id="a2.3.5UseCase15:EnableCaching">2.3.5 Use Case 15: Enable Caching</h4>
 <table class="wiki">

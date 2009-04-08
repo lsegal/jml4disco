@@ -3,7 +3,10 @@
 <head>
  <title>Disco - Development View</title>
  
-<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
 <body>
 
 
@@ -37,15 +40,11 @@
 This wiki page provides an overview of the system in terms of layers and their components.  The organization of the application components reflects the logical structure of the system.  The following component and directory structure tree expresses the implementation view of the system.
 </p>
 <h2 id="a2.DevelopmentView">2. Development View</h2>
-<pre class="wiki">
-=================================================================================
-			JML4 Disco: Development View 
+<pre class="wiki">=================================================================================
+                        JML4 Disco: Development View 
 =================================================================================
 
 |-- JML4Eclipse
-
-|-- Servers
-|   `-- Tomcat v5.5 Server at localhost-config
 
 |-- jml4-utils
 
@@ -66,24 +65,61 @@ This wiki page provides an overview of the system in terms of layers and their c
 |   |           |-- eclipse
 |   |           |-- jml2
 |   |           `-- jml4
-|   |               |-- ...
+|   |               |-- ast
+|   |               |   |-- ...
 |   |               |-- boogie
 |   |               |   |-- Boogie.java
 |   |               |   |-- BoogieAdapter.java
 |   |               |   |-- BoogieSource.java
 |   |               |   |-- BoogieSourcePoint.java
-|   |               |   |-- BoogieSymbolTable.java
-|   |               |   |-- BoogieVariableDeclFinderVisitor.java
 |   |               |   |-- BoogieVisitor.java
 |   |               |   `-- ast
+|   |               |       |-- AssertStatement.java
+|   |               |       |-- Assignment.java
+|   |               |       |-- AssumeStatement.java
+|   |               |       |-- Axiom.java
+|   |               |       |-- BinaryExpression.java
 |   |               |       |-- BoogieNode.java
-|   |               |       `-- BoogieProcedure.java
+|   |               |       |-- BooleanLiteral.java
+|   |               |       |-- BreakStatement.java
+|   |               |       |-- CallStatement.java
+|   |               |       |-- Comment.java
+|   |               |       |-- ConstStatement.java
+|   |               |       |-- DecoratorVisitor.java
+|   |               |       |-- EmptyStatement.java
+|   |               |       |-- Expression.java
+|   |               |       |-- FunctionCall.java
+|   |               |       |-- FunctionDeclaration.java
+|   |               |       |-- IfStatement.java
+|   |               |       |-- IntLiteral.java
+|   |               |       |-- LabelStatement.java
+|   |               |       |-- MapTypeReference.java
+|   |               |       |-- MapVariableReference.java
+|   |               |       |-- Procedure.java
+|   |               |       |-- Program.java
+|   |               |       |-- RemoveLocal.java
+|   |               |       |-- ResultReference.java
+|   |               |       |-- ReturnStatement.java
+|   |               |       |-- Scope.java
+|   |               |       |-- Statement.java
+|   |               |       |-- TokenLiteral.java
+|   |               |       |-- TypeDeclaration.java
+|   |               |       |-- TypeDeclaratorVisitor.java
+|   |               |       |-- TypeReference.java
+|   |               |       |-- UnaryExpression.java
+|   |               |       |-- VariableDeclaration.java
+|   |               |       |-- VariableLengthReference.java
+|   |               |       |-- VariableReference.java
+|   |               |       |-- VariableStatement.java
+|   |               |       |-- Visitor.java
+|   |               |       `-- WhileStatement.java
 |   |               |-- esc
 |   |               |   |-- Esc.java
 |   |               |   |-- GcTranslator.java
 |   |               |   |-- PostProcessor.java
 |   |               |   |-- ProverCoordinator.java
 |   |               |   |-- VcGenerator.java
+|   |		    |   |-- ...
 |   |               |   |-- provercoordinator
 |   |               |   |   |-- prover
 |   |               |   |   |   |-- CachedVcs.java
@@ -93,7 +129,7 @@ This wiki page provides an overview of the system in terms of layers and their c
 |   |               |   |   |   |-- cvc3
 |   |               |   |   |   |   |-- Cvc3Adapter.java
 |   |               |   |   |   |   |-- Cvc3Visitor.java
-|   |               |   |   |   |   `-- header.cvc3
+|   |               |   |   |   |   `-- ...
 |   |               |   |   |   |-- isabelle
 |   |               |   |   |   |   |-- IsabelleAdapter.java
 |   |               |   |   |   |   |-- IsabelleProcessPool.java
@@ -104,10 +140,21 @@ This wiki page provides an overview of the system in terms of layers and their c
 |   |               |   |   |       |-- SimplifyBackgroundPredicate.java
 |   |               |   |   |       |-- SimplifyProcessPool.java
 |   |               |   |   |       `-- SimplifyVisitor.java
-|   |               |   |   `-- ...
+|   |               |   |   `-- strategy
+|   |               |   |       |-- IProverStrategy.java
+|   |               |   |       |-- ProveEntireVC.java
+|   |               |   |       |-- ProveVcDistributed.java
+|   |               |   |       |-- ProveVcPiecewise.java
+|   |               |   |       |-- ProveVcPiecewise_timings.java
+|   |               |   |       |-- ProverStategySeq.java
+|   |               |   |       `-- ProverStrategyFactory.java
 |   |               |   |-- result
 |   |               |   |   `-- lang
 |   |               |   |       `-- Result.java
+|   |               |   |-- util
+|   |               |   |   |-- Counter.java
+|   |               |   |   |-- Type.java
+|   |               |   |   `-- Utils.java
 |   |               |   `-- vc
 |   |               |       |-- WlpVisitor.java
 |   |               |       `-- lang
@@ -136,13 +183,18 @@ This wiki page provides an overview of the system in terms of layers and their c
 |   |               |           |-- VcTypeBinding.java
 |   |               |           |-- VcVarDecl.java
 |   |               |           `-- VcVariable.java
-|   |               |-- ...
-|   |           |-- ...
+|   |               |-- ...	
 |   |-- ...
 
+
+|-- org.eclipse.jdt.core.jar
+
 |-- org.eclipse.jdt.core.tests.compiler
+
 |-- org.eclipse.test.performance
+
 |-- org.jmlspecs.annotation
+
 |-- org.jmlspecs.eclipse.jdt.core.tests
 |   |-- META-INF
 |   |-- bin
@@ -161,8 +213,6 @@ This wiki page provides an overview of the system in terms of layers and their c
 |   |                           |-- boogie
 |   |                           |   |-- AdapterTests.java
 |   |                           |   |-- AllTests.java
-|   |                           |   |-- BoogieSourceTests.java
-|   |                           |   |-- BoogieSymbolTableTests.java
 |   |                           |   `-- TranslationTests.java
 |   |                           |-- ...
 |   |                           |-- esc
@@ -174,8 +224,10 @@ This wiki page provides an overview of the system in terms of layers and their c
 |   |                           |       |-- DistributedBurdenTest.java
 |   |                           |       `-- DistributedWhileTests.java
 |   |                           |-- ...
+|   `-- ...
 
 |-- org.jmlspecs.eclipse.jdt.ui
+
 
 |-- org.jmlspecs.jml4.esc.distribution
 |   |-- bin
@@ -213,12 +265,10 @@ This wiki page provides an overview of the system in terms of layers and their c
 |                                           `-- technicalservices
 |                                               `-- RemoteServersMapper.java
 
-
 |-- org.jmlspecs.jml4.esc.distribution.configuration
 |   |-- bin
 |   `-- src
 |       |-- META-INF
-|       |   `-- MANIFEST.MF
 |       |-- jml4-disco-config.properties
 |       `-- org
 |           `-- jmlspecs
@@ -280,10 +330,10 @@ This wiki page provides an overview of the system in terms of layers and their c
 |                                           |-- HttpRequestCommandInput.java
 |                                           `-- Presentation.java
 
+
 |-- org.jmlspecs.jml4.esc.distribution.http.prover
 |   |-- WebContent
 |   |   |-- META-INF
-|   |   |   `-- MANIFEST.MF
 |   |   `-- WEB-INF
 |   |       |-- config-workbench
 |   |       |   |-- Layout.jsp

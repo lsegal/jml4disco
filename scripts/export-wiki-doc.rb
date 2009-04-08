@@ -9,7 +9,6 @@ require 'fileutils'
 # wiki documents to process
 $wikidocs = { 
   'BiWeeklyStatusReport' => 'mgmt',
-  'FeatureSummary' => 'mgmt', 
   'Proposal' => 'mgmt',
   'ActivityPlan' => 'mgmt',
   #'MeetingMinutes' => 'mgmt',
@@ -22,10 +21,12 @@ $wikidocs = {
   'PlanForDistributedReq' => 'research',
   'ProversBenchmark' => 'research',
   'ProfilingResults' => 'research',
+  'RamDisk' => 'research',
   'VisionDocument' => 'reqs',
   'SupplementarySpecification' => 'reqs',
   'InstallationAndCommissioning' => 'reqs',
   'Glossary' => 'reqs',
+  'FeatureSummary' => 'design', 
   'Jml4-LogicalView' => 'design',
   'FirstPrototype' => 'design',
   'Jml4Disco-LogicalView' => 'design',

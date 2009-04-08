@@ -94,7 +94,10 @@ def process(document_name, category)
   
     # add link to css
     updir = "../" * category.split(/\//).size
-    css = %Q(<link rel="stylesheet" type="text/css" href="#{updir}style.css" />)
+    css = %Q(
+        <link rel="stylesheet" type="text/css" href="#{updir}style.css" />
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    )
     doc.search("html > head").append(css)
 
     # give toc's parent ol a class

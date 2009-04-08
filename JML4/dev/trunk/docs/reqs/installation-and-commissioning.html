@@ -3,7 +3,10 @@
 <head>
  <title>Disco - Installation And Commissioning</title>
  
-<link href="../style.css" rel="stylesheet" type="text/css" /></head>
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
 <body>
 
 
@@ -31,8 +34,7 @@
 <ol><li class="active"><a href="#a0.RevisionHistory">0. Revision History</a></li><li class="active">
 <a href="#a1.Introduction">1. Introduction</a><ol><li class="active"><a href="#a1.1Purpose">1.1 Purpose</a></li><li class="active">
 <a href="#a1.2IntendedAudience">1.2 Intended Audience</a></li></ol></li><li class="active"><a href="#a2.HardwareSoftwareRequirements">2. Hardware &amp; Software Requirements</a><ol><li class="active"><a href="#a2.1Hardware">2.1 Hardware</a></li><li class="active">
-<a href="#a2.2Software">2.2 Software</a></li><li class="active">
-<a href="#a2.3BaseEnvironmentRecommendations">2.3 Base Environment Recommendations</a></li></ol><li class="active"><a href="#a3.InstallationInstructions">3. Installation Instructions</a><ol><li class="active"><a href="#a3.1InstallationofSoftwareDependencies">3.1 Installation of Software Dependencies</a><ol><li class="active"><a href="#a3.1.1QuickInstallTarball">3.1.1 Quick Install (Tarball)</a></li><li class="active">
+<a href="#a2.2Software">2.2 Software</a><ol><li class="active"><a href="#Notes">Notes</a></li></ol><li class="active"><a href="#a2.3BaseEnvironmentRecommendations">2.3 Base Environment Recommendations</a></li></li></ol><li class="active"><a href="#a3.InstallationInstructions">3. Installation Instructions</a><ol><li class="active"><a href="#a3.1InstallationofSoftwareDependencies">3.1 Installation of Software Dependencies</a><ol><li class="active"><a href="#a3.1.1QuickInstallTarball">3.1.1 Quick Install (Tarball)</a></li><li class="active">
 <a href="#a3.1.2FullInstallRecompile">3.1.2 Full Install (Recompile)</a><ol><li class="active"><a href="#a3.1.2.1RecompileIsabelle">3.1.2.1 Recompile Isabelle</a></li><li class="active">
 <a href="#a3.1.2.2RecompileESC4">3.1.2.2 Recompile ESC4</a></li><li class="active">
 <a href="#a3.1.2.3RecompileSimplify">3.1.2.3 Recompile Simplify</a></li><li class="active">
@@ -42,7 +44,8 @@
 
 </p>
 <h2 id="a0.RevisionHistory">0. Revision History</h2>
-<ul><li><strong>February 19, 2008; l_sega</strong> Add information for Boogie install
+<ul><li><strong>March 26, 2009; l_sega</strong> Change instructions for Boogie install to use Mono.NET instead of .NET under Wine
+</li><li><strong>February 19, 2009; l_sega</strong> Add information for Boogie install
 </li><li><strong>October 29, 2008; l_sega</strong> Initial draft
 </li></ul><h2 id="a1.Introduction">1. Introduction</h2>
 <h3 id="a1.1Purpose">1.1 Purpose</h3>
@@ -65,19 +68,12 @@ Currently, this document is not yet aimed at users who wish to install JML4 as a
 </li><li><a href="http://subclipse.tigris.org/" class="ext-link"><span class="icon">Subclipse</span></a> plugin for Eclipse
 </li><li><a href="http://www.eclipse.org/tptp" class="ext-link"><span class="icon">TPTP</span></a> plugin for Eclipse ***
 </li><li><a href="http://winehq.org" class="ext-link"><span class="icon">Wine</span></a> Windows emulator for Linux (if testing Boogie under Windows)
-</li></ul><p>
-<i>** Note: Eclipse 3.4 is incompatible with the XULRunner 1.9 distributed with Fedora Core 9, please upgrade or uninstall it before proceeding (<tt>yum remove xulrunner</tt>)</i>
-</p>
-<p>
-<i>*** Note: To run the TPTP in Fedora Core 9, Eclipse 3.4, you  will need <tt>libstdc++-libc6.2-2.so.3</tt>.  (<tt>yum install libstdc++-libc6.2-2.so.3</tt>)</i>
-</p>
-<p>
-<i>Note: You may be run out of java heap with the project.  To increase the heap size, edit the <tt>eclipse.ini</tt> file and change <tt>Xmx</tt> parameter to <tt>Xmx512m</tt>, where <tt>512m</tt> is the size in mb of the heap.</i>
-</p>
-<p>
-To install Eclipse plugins it is best to use the "Software Updates" menu item from the "Help" menu in Eclipse. To install <i>Subclipse</i> make sure to add the correct site update URL (<tt>http://subclipse.tigris.org/update_1.4.x</tt>) to the list, as it is not provided by default.
-</p>
-<h3 id="a2.3BaseEnvironmentRecommendations">2.3 Base Environment Recommendations</h3>
+</li></ul><h4 id="Notes">Notes</h4>
+<ul><li>Eclipse 3.4 is incompatible with the XULRunner 1.9 distributed with Fedora Core 9, please upgrade or uninstall it before proceeding (<tt>yum remove xulrunner</tt>)
+</li><li>To run the TPTP in Fedora Core 9, Eclipse 3.4, you  will need <tt>libstdc++-libc6.2-2.so.3</tt>.  (<tt>yum install libstdc++-libc6.2-2.so.3</tt>)
+</li><li>You may be run out of Java heap space with the project.  To increase the heap size, edit the <tt>eclipse.ini</tt> file and change <tt>Xmx</tt> parameter to <tt>Xmx512m</tt>, where <tt>512m</tt> is the size in mb of the heap.
+</li><li>To install Eclipse plugins it is best to use the "Software Updates" menu item from the "Help" menu in Eclipse. To install <i>Subclipse</i> make sure to add the correct site update URL (<tt>http://subclipse.tigris.org/update_1.4.x</tt>) to the list, as it is not provided by default.
+</li></ul><h3 id="a2.3BaseEnvironmentRecommendations">2.3 Base Environment Recommendations</h3>
 <p>
 The installation instructions assume (and recommend) the following configuration for the <i>Quick Install</i>:
 </p>
@@ -155,19 +151,23 @@ Alternatively instead of doing a <tt>make install</tt> you can copy the cvc3 bin
 </p>
 <h5 id="a3.1.2.5InstallBoogieunderLinux">3.1.2.5 Install Boogie under Linux</h5>
 <p>
-If you wish to use the Boogie source under Linux, you must acquire the Boogie binaries from <a href="http://research.microsoft.com/boogie" class="ext-link"><span class="icon">Microsoft.com</span></a> (a copy of Boogie is also distributed as part of the quick install tarball). You must then install <a href="http://winehq.org" class="ext-link"><span class="icon">Wine</span></a> and <tt>cabextract</tt> (needed to install .NET). Under Fedora, type:
+If you wish to use the Boogie source under Linux, you must acquire the Boogie binaries from <a href="http://research.microsoft.com/boogie" class="ext-link"><span class="icon">Microsoft.com</span></a> (a copy of Boogie is also distributed as part of the quick install tarball). You must then install <a href="http://mono-project.com" class="ext-link"><span class="icon">Mono .NET</span></a>, <a href="http://winehq.org" class="ext-link"><span class="icon">Wine</span></a> (for Z3.exe). Under Fedora, type:
 </p>
-<pre class="wiki">    yum install wine cabextract
+<pre class="wiki">    yum install mono wine
 </pre><p>
-Under Ubuntu 8.x, type use the command <tt>apt get install wine cabextract</tt>.
+Under Ubuntu 8.x, type use the command <tt>apt get install wine mono-runtime</tt>.
 </p>
 <p>
-You must then install the .NET binaries from Microsoft using the <tt>winetricks</tt> tool. Type the following:
+You must then install the Microsoft Visual Studio 2008 Runtime (msvcr90.dll) from Microsoft using the <tt>winetricks</tt> tool. Type the following: 
 </p>
-<pre class="wiki">    wget http://www.kegel.com/wine/winetricks
-    sh winetricks dotnet20
+<pre class="wiki">    wget http://www.kegel.com/wine/winetricks 
+    sh winetricks vcrun2008
 </pre><p>
-Follow the installation procedure. You should then be able to test Boogie by typing <tt>boogie</tt> in a terminal, which should give the following output:
+<i>Use <tt>curl -O</tt> instead of <tt>wget</tt> if you do not have it</i>.
+</p>
+<p>
+         
+Follow the installation procedure. You should then be able to test Boogie by typing <tt>boogie</tt> in a terminal, which should give the following output: 
 </p>
 <pre class="wiki">    *** Error: No input files were specified.
 </pre><h3 id="a3.2CheckingoutJML4DiscoSourceCode">3.2 Checking out JML4 Disco Source Code</h3>
@@ -179,7 +179,7 @@ Use Subclipse to checkout the above URL into an empty workspace to create the pr
 </p>
 <h3 id="a3.3SettingupProverServers">3.3 Setting up Prover Servers</h3>
 <p>
-Two Dynamic Web Projects - <tt>org.jmlspecs.jml4.esc.distribution.http.dispatcher</tt> and <tt>org.jmlspecs.jml4.esc.distribution.http.prover</tt> - have to be deployed on <a href="/trac/wiki/TomCat" class="missing wiki" rel="nofollow">TomCat?</a> servers in order to be used.
+Two Dynamic Web Projects - <tt>org.jmlspecs.jml4.esc.distribution.http.dispatcher</tt> and <tt>org.jmlspecs.jml4.esc.distribution.http.prover</tt> - have to be deployed on TomCat servers in order to be used.
 </p>
 <h4 id="a3.3.1SettinguptheDispatcher">3.3.1 Setting up the Dispatcher</h4>
 <p>

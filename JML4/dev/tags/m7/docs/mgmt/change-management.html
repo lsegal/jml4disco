@@ -1,0 +1,498 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Change Management</title>
+ 
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="ChangeManagement">Change Management</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.Projectorg.eclipse.jdt.core">1.Project org.eclipse.jdt.core</a><ol><li class="active"><a href="#a1.1ModificationtoClasses">1.1 Modification to Classes</a><ol><li class="active"><a href="#ClassAstVisitor">Class AstVisitor</a><ol><li class="active"><a href="#I.A.3.2"><i>I.A. 3.2</i></a></li></ol></li><li class="active"><a href="#ClassCompilerOptions">Class CompilerOptions</a><ol><li class="active"><a href="#I.A.2.2"><i>I.A. 2.2</i></a></li><li class="active">
+<a href="#I.A.2.10"><i>I.A. 2.10</i></a></li><li class="active">
+<a href="#I.A.3.1"><i>I.A. 3.1</i></a></li></ol></li><li class="active"><a href="#ClassesCvc3Adapter">Classes Cvc3Adapter</a><ol><li class="active"><a href="#I.A.2.1"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassEsc">Class Esc</a><ol><li class="active"><a href="#I.A.2.11"><i>I.A. 2.1</i></a></li><li class="active">
+<a href="#I.A.4.1"><i>I.A. 4.1</i></a></li></ol></li><li class="active"><a href="#ClassIsabelleAdapter">Class IsabelleAdapter</a><ol><li class="active"><a href="#I.A.2.12"><i>I.A. 2.1</i></a></li><li class="active">
+<a href="#I.A.2.21"><i>I.A. 2.2</i></a></li><li class="active">
+<a href="#I.A.2.4"><i>I.A. 2.4</i></a></li><li class="active">
+<a href="#I.A.2.5"><i>I.A. 2.5</i></a></li><li class="active">
+<a href="#I.A.2.6"><i>I.A. 2.6</i></a></li></ol></li><li class="active"><a href="#ClassJavaCore">Class JavaCore</a><ol><li class="active"><a href="#I.A.2.101"><i>I.A. 2.10</i></a></li><li class="active">
+<a href="#I.A.3.11"><i>I.A. 3.1</i></a></li></ol></li><li class="active"><a href="#ClassJmlCompilerExtension">Class JmlCompilerExtension</a><ol><li class="active"><a href="#I.A.2.22"><i>I.A. 2.2</i></a></li><li class="active">
+<a href="#I.A.2.102"><i>I.A. 2.10</i></a></li><li class="active">
+<a href="#I.A.3.12"><i>I.A. 3.1</i></a></li></ol></li><li class="active"><a href="#ClassJmlCompilerOptions">Class JmlCompilerOptions</a><ol><li class="active"><a href="#I.A.2.23"><i>I.A. 2.2</i></a></li><li class="active">
+<a href="#I.A.2.103"><i>I.A. 2.10</i></a></li><li class="active">
+<a href="#I.A.3.13"><i>I.A. 3.1</i></a></li></ol></li><li class="active"><a href="#ClassJmlDoStatements">Class JmlDoStatements</a><ol><li class="active"><a href="#I.A.3.21"><i>I.A. 3.2</i></a></li></ol></li><li class="active"><a href="#ClassJmlForStatements">Class JmlForStatements</a><ol><li class="active"><a href="#I.A.3.22"><i>I.A. 3.2</i></a></li></ol></li><li class="active"><a href="#ClassKindOfAssertionJava">Class KindOfAssertionJava</a><ol><li class="active"><a href="#I.A.2.13"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassProverAdapter">Class ProverAdapter</a><ol><li class="active"><a href="#I.A.2.51"><i>I.A. 2.5</i></a></li></ol></li><li class="active"><a href="#ClassProverStrategyFactory">Class ProverStrategyFactory</a><ol><li class="active"><a href="#I.A.2.24"><i>I.A. 2.2</i></a></li></ol></li><li class="active"><a href="#ClassProveVcPieceWise">Class ProveVcPieceWise</a><ol><li class="active"><a href="#I.A.2.25"><i>I.A. 2.2</i></a></li><li class="active">
+<a href="#I.A.2.7"><i>I.A. 2.7</i></a></li></ol></li><li class="active"><a href="#ClassResult">Class Result</a><ol><li class="active"><a href="#I.A.2.14"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassSimplifyAdapter">Class SimplifyAdapter</a><ol><li class="active"><a href="#I.A.2.15"><i>I.A. 2.1</i></a></li><li class="active">
+<a href="#I.A.2.41"><i>I.A. 2.4</i></a></li><li class="active">
+<a href="#I.A.2.52"><i>I.A. 2.5</i></a></li></ol></li><li class="active"><a href="#ClassVC">Class VC</a><ol><li class="active"><a href="#I.A.2.16"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassVcArithExpression">Class VcArithExpression</a><ol><li class="active"><a href="#I.A.2.17"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassVcLogicalExpression">Class VcLogicalExpression</a><ol><li class="active"><a href="#I.A.2.18"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassVcOperator">Class VcOperator</a><ol><li class="active"><a href="#I.A.2.19"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassVcProgram">Class VcProgram</a><ol><li class="active"><a href="#I.A.2.110"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassVcQuantifier">Class VcQuantifier</a><ol><li class="active"><a href="#I.A.2.111"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassVcRelativeExpression">Class VcRelativeExpression</a><ol><li class="active"><a href="#I.A.2.112"><i>I.A. 2.1</i></a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a1.2AddedClasses">1.2 Added Classes</a><ol><li class="active"><a href="#ClassIsabelleProcessPool">Class IsabelleProcessPool</a><ol><li class="active"><a href="#I.A.2.53"><i>I.A. 2.5</i></a></li><li class="active">
+<a href="#I.A.2.61"><i>I.A. 2.6</i></a></li></ol></li><li class="active"><a href="#ClassLookupEnvironmentEmptyForSerialization">Class LookupEnvironmentEmptyForSerialization</a><ol><li class="active"><a href="#I.A.2.113"><i>I.A. 2.1</i></a></li></ol></li><li class="active"><a href="#ClassProcessPool">Class ProcessPool</a><ol><li class="active"><a href="#I.A.2.54"><i>I.A. 2.5</i></a></li></ol></li><li class="active"><a href="#ClassProveVcDistributed">Class ProveVcDistributed</a><ol><li class="active"><a href="#I.A.2.26"><i>I.A. 2.2</i></a></li></ol></li><li class="active"><a href="#ClassProveVcPiecewise_timings">Class ProveVcPiecewise_timings</a><ol><li class="active"><a href="#I.A.2.27"><i>I.A. 2.2</i></a></li></ol></li><li class="active"><a href="#ClassSimplifyProcessPool">Class SimplifyProcessPool</a><ol><li class="active"><a href="#I.A.2.55"><i>I.A. 2.5</i></a></li></ol></li><li class="active"><a href="#ClassVcTypeBinding">Class VcTypeBinding</a><ol><li class="active"><a href="#I.A.2.114"><i>I.A. 2.1</i></a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a1.3AddedPackagesClasses">1.3 Added Packages/Classes</a><ol><li class="active"><a href="#Packageorg.jmlspecs.jml4.boogie">Package org.jmlspecs.jml4.boogie</a><ol><li class="active"><a href="#I.A.3.23"><i>I.A. 3.2</i></a></li></ol></li><li class="active"><a href="#Packageorg.jmlspecs.jml4.boogie.ast">Package org.jmlspecs.jml4.boogie.ast</a><ol><li class="active"><a href="#I.A.3.24"><i>I.A. 3.2</i></a></li></ol><li class="active"></li></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a2.Projectorg.jmlspecs.eclipse.jdt.core.tests">2.Project org.jmlspecs.eclipse.jdt.core.tests</a><ol><li class="active"><a href="#a2.1.ModificationtoClasses">2.1.Modification to Classes</a><ol><li class="active"><a href="#ClassSanityTests">Class SanityTests</a><ol><li class="active"><a href="#I.A.2.56"><i>I.A. 2.5</i></a></li></ol></li><li class="active"><a href="#ClassSimplifyTests">Class SimplifyTests</a><ol><li class="active"><a href="#I.A.2.57"><i>I.A. 2.5</i></a></li></ol><li class="active"></li></li></ol><li class="active"><a href="#a2.2AddedClasses">2.2 Added Classes</a></li></li><li class="active">
+<a href="#a2.3AddedPackagesClasses">2.3 Added Packages/Classes</a><ol><li class="active"><a href="#Packageorg.jmlspecs.eclipse.jdt.core.tests.boogie">Package org.jmlspecs.eclipse.jdt.core.tests.boogie</a><ol><li class="active"><a href="#I.A.3.25"><i>I.A. 3.2</i></a></li></ol></li><li class="active"><a href="#Packageorg.jmlspecs.eclipse.jdt.core.tests.distributed">Package org.jmlspecs.eclipse.jdt.core.tests.distributed</a><ol><li class="active"><a href="#I.A.2.28"><i>I.A. 2.2</i></a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a2.4AddedFiles">2.4 Added Files</a><ol><li class="active"><a href="#Fileorg.jmlspecs.eclipse.jdt.core.tests.proverCoordinatorUrls.properties">File org.jmlspecs.eclipse.jdt.core.tests.proverCoordinatorUrls.properties</a><ol><li class="active"><a href="#I.A.2.29"><i>I.A. 2.2</i></a></li></ol><li class="active"></li></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a3.Projectorg.jmlspecs.eclipse.jdt.ui">3.Project org.jmlspecs.eclipse.jdt.ui</a><ol><li class="active"><a href="#a3.1.ModificationtoClasses">3.1.Modification to Classes</a><ol><li class="active"><a href="#ClassJmlConfigurationBlock">Class  JmlConfigurationBlock</a><ol><li class="active"><a href="#I.A.2.104"><i>I.A. 2.10</i></a></li></ol></li><li class="active"><a href="#ClassPreferencesMessages">Class  PreferencesMessages</a><ol><li class="active"><a href="#I.A.2.105"><i>I.A. 2.10</i></a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a3.2.ModificationtoFiles">3.2.Modification to Files</a><ol><li class="active"><a href="#FilePreferencesMessages.properties">File  PreferencesMessages.properties</a><ol><li class="active"><a href="#I.A.2.106"><i>I.A. 2.10</i></a></li></ol><li class="active"></li></li></ol><li class="active"></li></li></ol><li class="active"><a href="#a4.NewProjects">4.New Projects</a><ol><li class="active"><ol><li class="active"><a href="#Projectorg.jmlspecs.jml4.esc.distribution">Project org.jmlspecs.jml4.esc.distribution</a></li><li class="active">
+<a href="#Projectorg.jmlspecs.jml4.esc.distribution.configuration">Project org.jmlspecs.jml4.esc.distribution.configuration</a></li><li class="active">
+<a href="#Projectorg.jmlspecs.jml4.esc.distribution.http.dispatcher">Project org.jmlspecs.jml4.esc.distribution.http.dispatcher</a></li><li class="active">
+<a href="#Projectorg.jmlspecs.jml4.esc.distribution.http.prover">Project org.jmlspecs.jml4.esc.distribution.http.prover</a></li></ol></li></ol></li></li></ol></div>
+
+</p>
+<p>
+During Milestone 6, a complete diff was done between JML4 code (downloaded from sourceforge on the 6th of February) and the source code for the JML4 Disco project, revision 419, found in SVN on the 23rd of February 2009. The purpose of this document is to list the differences between the two code bases.
+This document is meant to be used in conjunction with the <a href="/trac/wiki/ImpactAnalysis" class="wiki">Impact Analysis</a> document. This document lists changes in a more granular, low-level way while the <a href="/trac/wiki/ImpactAnalysis" class="wiki">Impact Analysis</a> lists the high level purpose and justification for all changes.
+</p>
+<h2 id="a1.Projectorg.eclipse.jdt.core">1.Project org.eclipse.jdt.core</h2>
+<h3 id="a1.1ModificationtoClasses">1.1 Modification to Classes</h3>
+<h4 id="ClassAstVisitor">Class AstVisitor</h4>
+<p>
+<i>Package <tt>org.eclipse.jdt.internal.compiler</tt></i><br />
+</p>
+<h5 id="I.A.3.2"><i>I.A. 3.2</i></h5>
+<ul><li>Visit methods for following ast nodes added
+<ul><li>JmlDoStatement
+</li><li>JmlForStatement
+</li></ul></li></ul><h4 id="ClassCompilerOptions">Class CompilerOptions</h4>
+<p>
+<i>Package <tt>compiler.org.eclipse.jdt.internal.compiler.impl</tt></i><br />
+</p>
+<h5 id="I.A.2.2"><i>I.A. 2.2</i></h5>
+<ul><li>Added instance variable <span class="underline"><tt>jmlEscDistributedPropertiesFile</tt></span> of type string to optionally specify the name and location of a configuration file containing information pertaining to distributed verification.
+</li></ul><h5 id="I.A.2.10"><i>I.A. 2.10</i></h5>
+<ul><li><a href="/trac/changeset/457" title="--See ticket #188" class="changeset">see code level changes</a> 
+</li><li>Added instance variable <span class="underline"><tt>jmlEscDistibutedEnabled</tt></span> for distributed strategy enabling.
+</li><li>Added instance variable <span class="underline"><tt>jmlEscDistributedDispatcherPath</tt></span> to allow for configuration of URL of the remote dispatcher server.
+</li></ul><p>
+ 
+</p>
+<h5 id="I.A.3.1"><i>I.A. 3.1</i></h5>
+<ul><li>Added boolean instance variable <span class="underline"><tt>jmlBoogieOutputOnly</tt></span> to enable boogie console logging.
+</li><li>Added boolean instance variable <span class="underline"><tt>jmlBoogieEnabled</tt></span> for boogie prover enabling.
+</li></ul><h4 id="ClassesCvc3Adapter">Classes Cvc3Adapter</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.cvc3,</tt></i><br />
+</p>
+<h5 id="I.A.2.1"><i>I.A. 2.1</i></h5>
+<ul><li>All manipulation of instance variable <tt>problemreporter</tt> first checks if <tt>problemreporter</tt> is null.
+</li></ul><h4 id="ClassEsc">Class Esc</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc</tt></i><br />
+</p>
+<h5 id="I.A.2.11"><i>I.A. 2.1</i></h5>
+<ul><li>Method <tt>process</tt> parameters  <tt>Compiler compiler, CompilationUnitDeclaration unit</tt> made final for serialization {
+</li><li>Method <tt>getDebugNameForMethod</tt> implemented for timing and printing of benchmarks
+</li></ul><h5 id="I.A.4.1"><i>I.A. 4.1</i></h5>
+<ul><li>Instance variable holding the number of threads added: <tt>NUMBER_OF_THREADS</tt>
+</li><li>Instance variable of type Executor <tt>executor</tt> added 
+</li><li>Method <tt>process</tt> modified to launch multiple threads through the Executor instance variable.
+</li></ul><h4 id="ClassIsabelleAdapter">Class IsabelleAdapter</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle</tt></i><br />
+</p>
+<h5 id="I.A.2.12"><i>I.A. 2.1</i></h5>
+<ul><li>All manipulation of instance variable <tt>problemreporter</tt> first checks if <tt>problemreporter</tt> is null.
+</li></ul><h5 id="I.A.2.21"><i>I.A. 2.2</i></h5>
+<ul><li>Method <tt>matchingTheoryFileExists(String theoryFilePath, String isabelleTheoryAsString)</tt> added to check the existence of a file, the content of the theory file is returned iff there exists a file with the given name and it contains a lemma identical to that in isabelleTheoryAsString.
+</li><li>Method <tt>prove</tt> changed to use previously mentioned method <tt>matchingTheoryFileExists</tt>
+</li></ul><h5 id="I.A.2.4"><i>I.A. 2.4</i></h5>
+<ul><li>Method <tt>proveWithIsabelle</tt> given synchronized specification, no longer closes the Isabelle process when the method is done
+</li><li>Method <tt>getProverProcess</tt> looks for an existing Isabelle process instead of just creating a new one for each <tt>VC</tt>.
+</li><li><a href="https://group0j.stu01.encs.concordia.ca:9443/trac/changeset?old_path=%2FJML4%2Fsourceforge%2Fcurrent%2Forg.eclipse.jdt.core%2Fcompiler%2Forg%2Fjmlspecs%2Fjml4%2Fesc%2Fprovercoordinator%2Fprover%2Fisabelle%2FIsabelleAdapter.java&amp;old=30&amp;new_path=JML4%2Fdev%2Ftrunk%2Forg.eclipse.jdt.core%2Fcompiler%2Forg%2Fjmlspecs%2Fjml4%2Fesc%2Fprovercoordinator%2Fprover%2Fisabelle%2FIsabelleAdapter.java&amp;new=225">see the changes</a> 
+</li><li>Changes having to do with <i>I.A. 2.4</i> were later refined  in section <i>I.A. 2.5-2.6</i>
+</li></ul><h5 id="I.A.2.5"><i>I.A. 2.5</i></h5>
+<ul><li>Method <tt>getProverProcess()</tt> removed
+</li><li>Instead of spawning processes in the adapter itself, a process pool is now responsible for spawning (and killing) processes, see ProcessPool and IsabelleProcessPool
+</li></ul><h5 id="I.A.2.6"><i>I.A. 2.6</i></h5>
+<ul><li><a href="/trac/changeset/438" title="Ticket #190 Avoid unnecessary write to file and fetch theory file into  ..." class="changeset">see code level changes</a>
+</li><li>Method <tt>prove</tt> takes a theory instead of the path to the theoryfile as a parameter <tt>prove(String theoryFilePathWithoutExt,...</tt> to <tt>prove(String theoryString</tt> 
+</li><li>Method <tt>prove</tt> sends the theoryString parameter to Isabelle instead of reading theories from a file
+</li><li>Method <tt>prove</tt> because the same Isabelle process is used, in the case where Isabelle fails to prove a theorem the <tt>undo</tt> command must be invoked to restore the Isabelle state and allow proving of further VCs.
+</li></ul><h4 id="ClassJavaCore">Class JavaCore</h4>
+<p>
+<i>Package <tt>model.org.eclipse.jdt.core;</tt></i><br />
+</p>
+<h5 id="I.A.2.101"><i>I.A. 2.10</i></h5>
+<ul><li><a href="/trac/changeset/457" title="--See ticket #188" class="changeset">see code level changes</a> 
+</li><li>Added option COMPILER_ENABLE_DISTRIBUTED possible configurable option ID, enabling of disabling distributed proving strategy
+</li><li>Added option COMPILER_DISTRIBUTED_DISPATCHER_PATH possible configurable option ID, holding the path to the dispatcher
+</li></ul><h5 id="I.A.3.11"><i>I.A. 3.1</i></h5>
+<ul><li>Added option COMPILER_ENABLE_JML_BOOGIE possible configurable option ID, enabling of boogie proving
+</li></ul><h4 id="ClassJmlCompilerExtension">Class JmlCompilerExtension</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.compiler</tt></i><br />
+</p>
+<h5 id="I.A.2.22"><i>I.A. 2.2</i></h5>
+<ul><li>Method <tt>getOptionsMap(CompilerOptions, Map)</tt> now includes the following compiler options in the option map:
+<ul><li>A Jml 'EscProverStrategy' whose value corresponds to instance variable <tt>jmlEscProverStrategy</tt> added to class <tt>CompilerOptions</tt>
+</li><li>A Jml 'EscDistributedPropertiesFile' whose value corresponds to instance variable <tt>jmlEscDistributedPropertiesFile</tt>, added to class <tt>CompilerOptions</tt>
+</li></ul></li><li>Method <tt>optionsToBuffer</tt> included output for newly added compiler options
+</li><li>Method <tt>setOptionsMap</tt> sets newly added compiler options
+</li></ul><h5 id="I.A.2.102"><i>I.A. 2.10</i></h5>
+<ul><li><a href="/trac/changeset/457" title="--See ticket #188" class="changeset">see code level changes</a> 
+</li><li>A Jml 'EscDistributedDispatcherPath' whose value corresponds to instance variable <tt>jmlEscDistributedDispatcherPath</tt>, added to class <tt>CompilerOptions</tt>
+</li><li>A Jml 'EscDistributedEnabled' whose value corresponds to instance variable <tt>jmlEscDistibutedEnabled</tt>, which was added to class <tt>CompilerOptions</tt>
+</li></ul><h5 id="I.A.3.12"><i>I.A. 3.1</i></h5>
+<ul><li>Method <tt>getOptionsMap(CompilerOptions, Map)</tt> now includes the following compiler options in the option map:  
+<ul><li>A Jml 'EnableJmlBoogie' whose value corresponds to instance variable <tt>jmlBoogieEnabled</tt>, which was added to class <tt>CompilerOptions</tt>
+</li></ul></li><li>Method <tt>optionsToBuffer</tt> included output for newly added compiler options
+</li><li>Method <tt>setOptionsMap</tt> sets newly added compiler options 
+</li><li>Method <tt>addDependentExtensions()</tt> now adds Boogie to the <tt>CompilerExtensionManager</tt>.
+</li></ul><h4 id="ClassJmlCompilerOptions">Class JmlCompilerOptions</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.compiler</tt></i><br />
+</p>
+<h5 id="I.A.2.23"><i>I.A. 2.2</i></h5>
+<ul><li>Added option OPTION_EscProverStrategy option for the ESC prover strategy.
+</li><li>Added option OPTION_EscDistributedPropertiesFile option for distributed propertiesFile.
+</li></ul><h5 id="I.A.2.103"><i>I.A. 2.10</i></h5>
+<ul><li><a href="/trac/changeset/457" title="--See ticket #188" class="changeset">see code level changes</a> 
+</li><li>Added option OPTION_EscDistributedEnabled option for GUI to set user preferences. EscProverStrategy is set to "distributed" when this option is set to "enabled".
+</li><li>Added option OPTION_EscDistributedDispatcherPath  option set in GUI, represents the URL of the dispatcher
+</li></ul><h5 id="I.A.3.13"><i>I.A. 3.1</i></h5>
+<ul><li>Added option OPTION_EnableJmlBoogie option for boogie strategy.
+</li><li>Added option OPTION_JmlBoogieOutputOnly for testing (translation from java to boogie only without going through boogie verification) 
+</li></ul><h4 id="ClassJmlDoStatements">Class JmlDoStatements</h4>
+<h5 id="I.A.3.21"><i>I.A. 3.2</i></h5>
+<ul><li>Instance variable JmlLoopAnnotations <tt>annotations</tt> changed visibility from private to public. Annotations need to be accessible from visitor.
+</li><li>Method <tt>traverse</tt> added to aid in visiting the AST.
+</li></ul><h4 id="ClassJmlForStatements">Class JmlForStatements</h4>
+<h5 id="I.A.3.22"><i>I.A. 3.2</i></h5>
+<ul><li>Instance variable JmlLoopAnnotations <tt>annotations</tt> changed visibility from private to public. Annotations need to be accessible from visitor.
+</li><li>Method <tt>traverse</tt> added to aid in visiting the AST.
+</li></ul><h4 id="ClassKindOfAssertionJava">Class KindOfAssertionJava</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.gc.lang</tt></i><br />
+</p>
+<h5 id="I.A.2.13"><i>I.A. 2.1</i></h5>
+<ul><li>Implements java.io.Serializable to allow serialization
+</li></ul><h4 id="ClassProverAdapter">Class ProverAdapter</h4>
+<p>
+<i>Package <tt>core.compiler.org.jmlspecs.jml4.esc.provercoordinator.prover;</tt></i><br />
+</p>
+<h5 id="I.A.2.51"><i>I.A. 2.5</i></h5>
+<ul><li>Protected instance variable  added :<tt>ProcessPool processPool</tt>, inherited and used in SimplifyAdapter and IsabelleAdapter
+</li></ul><h4 id="ClassProverStrategyFactory">Class ProverStrategyFactory</h4>
+<p>
+<i>Package <tt>core.compiler.org.jmlspecs.jml4.esc.provercoordinator.strategy</tt></i><br />
+</p>
+<h5 id="I.A.2.24"><i>I.A. 2.2</i></h5>
+<ul><li>Reads new compiler option representing the new Distributed Strategy
+</li></ul><h4 id="ClassProveVcPieceWise">Class ProveVcPieceWise</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.provercoordinator.strategy</tt></i><br />
+</p>
+<h5 id="I.A.2.25"><i>I.A. 2.2</i></h5>
+<p>
+* nullity checking on chached vc (cachedVcs attribute) to avoid null pointer exceptions.
+</p>
+<h5 id="I.A.2.7"><i>I.A. 2.7</i></h5>
+<p>
+* Method <tt>proveVc</tt> overloaded (extra param string[]) to be able to return to the proving server the theorem prover that was able to prove the VC,for caching purposes
+</p>
+<h4 id="ClassResult">Class Result</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.result.lang</tt></i><br />
+</p>
+<h5 id="I.A.2.14"><i>I.A. 2.1</i></h5>
+<ul><li>Implements java.io.Serializable to allow serialization
+</li></ul><h4 id="ClassSimplifyAdapter">Class SimplifyAdapter</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.simplify</tt></i><br />
+</p>
+<h5 id="I.A.2.15"><i>I.A. 2.1</i></h5>
+<ul><li>All manipulation of instance variable <tt>problemreporter</tt> first checks if <tt>problemreporter</tt> is null.
+</li></ul><h5 id="I.A.2.41"><i>I.A. 2.4</i></h5>
+<ul><li>Method <tt>proveWithSimplify</tt> given synchronized specification, no longer closes the Isabelle process when the method is done
+</li><li>Method <tt>getProverProcess</tt> looks for an existing Isabelle process instead of just creating a new one for each <tt>VC</tt>.
+</li><li><a href="https://group0j.stu01.encs.concordia.ca:9443/trac/changeset/225/JML4/dev/trunk/org.eclipse.jdt.core/compiler/org/jmlspecs/jml4/esc/provercoordinator/prover/simplify/SimplifyAdapter.java?old=30&amp;old_path=JML4%2Fsourceforge%2Fcurrent%2Forg.eclipse.jdt.core%2Fcompiler%2Forg%2Fjmlspecs%2Fjml4%2Fesc%2Fprovercoordinator%2Fprover%2Fsimplify%2FSimplifyAdapter.java">See the changes</a>
+</li><li>Changes having to do with <i>I.A. 2.4</i> were later refined  in section <i>I.A. 2.5-2.6</i>
+</li></ul><h5 id="I.A.2.52"><i>I.A. 2.5</i></h5>
+<ul><li>Method <tt>getProverProcess()</tt> removed
+</li><li>Instead of spawning processes in the adapter itself, a process pool is now responsible for spawning (and killing) processes, see ProcessPool and IsabelleProcessPool
+</li></ul><h4 id="ClassVC">Class VC</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.vc.lang</tt></i><br />
+</p>
+<h5 id="I.A.2.16"><i>I.A. 2.1</i></h5>
+<ul><li>Implements java.io.Serializable to allow serialization
+</li><li>Instance variable of type TypeBinding is large and not completely necessary to include in a serialized VC object for proving.<br />
+Given transient specification. Custom serialization methods were written to handle the necessary components of this objects. 
+<ul><li>Custom Serialization: added private methods <tt>serializeTypeBinding(...)</tt> and <tt>deserializeTypeBinding(...)</tt>  used by custom serialization overridden methods<tt>writeObject(...)</tt> &amp; <tt>readObject(...)</tt>.
+<ul><li>Method <tt>serializeTypeBinding(...)</tt> accepts a parameter of type <tt>TypeBinding</tt> and returns an easily-serialized string which can be converted back to an instance of <tt>TypeBinding</tt>.
+</li><li>Method <tt>serializeTypeBinding(...)</tt> is the inverse of <tt>serializeTypeBinding(...)</tt>; it accepts a parameter of type string and returns an instance of <tt>TypeBinding</tt>.
+</li></ul></li></ul></li></ul><h4 id="ClassVcArithExpression">Class VcArithExpression</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.vc.lang</tt></i><br />
+</p>
+<h5 id="I.A.2.17"><i>I.A. 2.1</i></h5>
+<ul><li>Instance variable of type VcOperator no longer final to allow serialization 
+</li><li>Custom Serialization overriding of method readObject, uses Vcoperator method getcanonical
+</li></ul><h4 id="ClassVcLogicalExpression">Class VcLogicalExpression</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.vc.lang</tt></i><br />
+</p>
+<h5 id="I.A.2.18"><i>I.A. 2.1</i></h5>
+<ul><li>Instance variable of type VcOperator no longer final to allow serialization 
+</li><li>Custom Serialization overriding of method readObject, uses Vcoperator method getcanonical
+</li></ul><h4 id="ClassVcOperator">Class VcOperator</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.vc.lang</tt></i><br />
+</p>
+<h5 id="I.A.2.19"><i>I.A. 2.1</i></h5>
+<ul><li>Implements java.io.Serializable to allow serialization
+</li><li>Custom Serialization Aid: added getCanonical method, used by overridden readObject methods in VcArithmetic, VcLogicalExpression, VcRelativeExpression
+</li></ul><p>
+ 
+</p>
+<h4 id="ClassVcProgram">Class VcProgram</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.vc.lang</tt></i><br />
+</p>
+<h5 id="I.A.2.110"><i>I.A. 2.1</i></h5>
+<ul><li>Implements java.io.Serializable to allow serialization
+</li></ul><h4 id="ClassVcQuantifier">Class VcQuantifier</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.vc.lang</tt></i><br />
+</p>
+<h5 id="I.A.2.111"><i>I.A. 2.1</i></h5>
+<ul><li>Implements java.io.Serializable to allow serialization
+</li><li>Instance variable of type TypeBinding is large and not completely necessary to include in a serialized VcQuantifier object for proving.<br />
+Given transient specification. Custom serialization methods were written to handle the necessary components of this objects. 
+</li><li>Changed from == to .equals due to the inability to compare serialized object with ==  
+</li></ul><h4 id="ClassVcRelativeExpression">Class VcRelativeExpression</h4>
+<p>
+<strong> Package: <tt>compiler.org.jmlspecs.jml4.esc.vc.lang</tt><i><br />
+</i></strong></p>
+<h5 id="I.A.2.112"><i>I.A. 2.1</i></h5>
+<ul><li>Instance variable of type VcOperator no longer final to allow serialization 
+</li><li>Custom Serialization overriding of method <tt>readObject</tt>, uses Vcoperator method <tt>getcanonical</tt>
+</li></ul><h3 id="a1.2AddedClasses">1.2 Added Classes</h3>
+<h4 id="ClassIsabelleProcessPool">Class IsabelleProcessPool</h4>
+<blockquote>
+<p>
+<i>Package <tt> compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.isabelle</tt></i><br />
+</p>
+</blockquote>
+<h5 id="I.A.2.53"><i>I.A. 2.5</i></h5>
+<ul><li>Singleton class IsabelleProcessPool added, represents: Isabelle ESC4 Theorem Prover process pool implementation.
+</li><li>Extends ProcessPool
+</li><li>Used by IsabelleAdapter.
+</li></ul><h5 id="I.A.2.61"><i>I.A. 2.6</i></h5>
+<ul><li><a href="/trac/changeset/438" title="Ticket #190 Avoid unnecessary write to file and fetch theory file into  ..." class="changeset">see code level changes</a>
+</li><li>private static final String ISABELLE_CMD = "isabelle -I ESC4" to invoke Isabelle in interactive mode.
+</li></ul><h4 id="ClassLookupEnvironmentEmptyForSerialization">Class LookupEnvironmentEmptyForSerialization</h4>
+<ul><li><i>Package: core.compiler.org.eclipse.jdt.internal.compiler.lookup`</i><br />
+</li></ul><h5 id="I.A.2.113"><i>I.A. 2.1</i></h5>
+<ul><li>This empty class allows easy serialization, its parent class LookupEnvironment was too large and unnecessary to serialize
+</li></ul><h4 id="ClassProcessPool">Class ProcessPool</h4>
+<blockquote>
+<p>
+<i>Package <tt> compiler.org.jmlspecs.jml4.esc.provercoordinator.prover</tt></i><br />
+</p>
+</blockquote>
+<h5 id="I.A.2.54"><i>I.A. 2.5</i></h5>
+<ul><li>Abstract class added, used by the provers. The ProcessPool holds a queue of a given prover's process that is free to be used.
+</li></ul><h4 id="ClassProveVcDistributed">Class ProveVcDistributed</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.provercoordinator.strategy</tt></i><br />
+</p>
+<h5 id="I.A.2.26"><i>I.A. 2.2</i></h5>
+<ul><li>New distributed strategy 
+</li><li>VCs sent out to the servlet specified in this class 
+</li></ul><h4 id="ClassProveVcPiecewise_timings">Class ProveVcPiecewise_timings</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.provercoordinator.strategy</tt></i><br />
+</p>
+<h5 id="I.A.2.27"><i>I.A. 2.2</i></h5>
+<ul><li>Made only for benchmarking and printing results, used only in ProverStrategyFactory.make (not a permanent change)
+</li><li>Runs all the provers regardless of results (success/fail) for benchmarking
+</li></ul><h4 id="ClassSimplifyProcessPool">Class SimplifyProcessPool</h4>
+<p>
+<i>Package <tt> compiler.org.jmlspecs.jml4.esc.provercoordinator.prover.simplify</tt></i><br />
+</p>
+<h5 id="I.A.2.55"><i>I.A. 2.5</i></h5>
+<ul><li>Singleton class SimplifyProcessPool added, represents: Simplify Theorem Prover process pool implementation.
+</li><li>Extends ProcessPool
+</li><li>Used by SimplifyAdapter.
+</li></ul><h4 id="ClassVcTypeBinding">Class VcTypeBinding</h4>
+<p>
+<i>Package <tt>compiler.org.jmlspecs.jml4.esc.vc.lang</tt></i><br />
+</p>
+<h5 id="I.A.2.114"><i>I.A. 2.1</i></h5>
+<ul><li>Added  new type to allow custom serialization of TypeBinding attributes in VC
+</li></ul><h3 id="a1.3AddedPackagesClasses">1.3 Added Packages/Classes</h3>
+<h4 id="Packageorg.jmlspecs.jml4.boogie">Package org.jmlspecs.jml4.boogie</h4>
+<h5 id="I.A.3.23"><i>I.A. 3.2</i></h5>
+<ul><li>Boogie: A compiler extension that enables Java code to be passed through Microsoft Boogie in order to formally verify JML DbC annotations.
+</li><li>BoogieAdapter: Wraps the Boogie runtime into a Java class that can be called from Eclipse's compilation stack.
+</li><li>BoogieSource: Represents a buffer of Boogie source code that will be passed to a Boogie runtime object.
+</li><li>BoogieSourcePoint: Represents a point in a Boogie source code file. Used to map points in Boogie source back to a Java source file.
+</li><li>BoogieVisitor: Visitor for the boogie re-ordered AST
+</li></ul><h4 id="Packageorg.jmlspecs.jml4.boogie.ast">Package org.jmlspecs.jml4.boogie.ast</h4>
+<h5 id="I.A.3.24"><i>I.A. 3.2</i></h5>
+<ul><li>New package holding all Boogie specific AST Nodes.
+<ul><li>AssertStatement, Assignment, AssumeStatement, Axiom, BinaryExpression, BoogieNode, BooleanLiteral, BreakStatement, CallStatement, Comment, ConstStatement, DecoratorVisitor, EmptyStatement, Expression, FunctionCall, FunctionDeclaration, IfStatement, IntLiteral, LabelStatement, MapTypeReference, MapVariableReference, Procedure, Program, RemoveLocal, ResultReference, ReturnStatement, Scope, Statement, TokenLiteral, TypeDeclaration, TypeDeclaratorVisitor, TypeReference, UnaryExpression, VariableDeclaration, VariableLengthReference, VariableReference, VariableStatement, Visitor, WhileStatement
+</li></ul></li></ul><h2 id="a2.Projectorg.jmlspecs.eclipse.jdt.core.tests">2.Project org.jmlspecs.eclipse.jdt.core.tests</h2>
+<h3 id="a2.1.ModificationtoClasses">2.1.Modification to Classes</h3>
+<h4 id="ClassSanityTests">Class SanityTests</h4>
+<p>
+<i>Package <tt>org.jmlspecs.eclipse.jdt.core.tests.esc</tt></i><br />
+</p>
+<h5 id="I.A.2.56"><i>I.A. 2.5</i></h5>
+<ul><li>Method test_003_Isabelle modified to use IsabelleProcessPool: <tt>IsabelleAdapter.getProverProcess()</tt>  to <tt>IsabelleProcessPool.getInstance().getFreeProcess()</tt>
+</li></ul><h4 id="ClassSimplifyTests">Class SimplifyTests</h4>
+<p>
+<i>Package <tt>org.jmlspecs.eclipse.jdt.core.tests.esc</tt></i><br />
+</p>
+<h5 id="I.A.2.57"><i>I.A. 2.5</i></h5>
+<ul><li>Method test_000_simplify_sanity modified to use SimplifyProcessPool: <tt>SimplifyAdapter.getProverProcess()</tt> to  <tt>SimplifyProcessPool.getInstance().getFreeProcess()</tt> 
+</li></ul><h3 id="a2.2AddedClasses">2.2 Added Classes</h3>
+<h3 id="a2.3AddedPackagesClasses">2.3 Added Packages/Classes</h3>
+<h4 id="Packageorg.jmlspecs.eclipse.jdt.core.tests.boogie">Package org.jmlspecs.eclipse.jdt.core.tests.boogie</h4>
+<h5 id="I.A.3.25"><i>I.A. 3.2</i></h5>
+<blockquote>
+<p>
+New package that contains a set of that contains a set of boogie tests.
+</p>
+</blockquote>
+<ul><li>AdapterTests
+</li><li>BoogiesSymbolTablesTests
+</li><li>InitialTests
+</li></ul><h4 id="Packageorg.jmlspecs.eclipse.jdt.core.tests.distributed">Package org.jmlspecs.eclipse.jdt.core.tests.distributed</h4>
+<h5 id="I.A.2.28"><i>I.A. 2.2</i></h5>
+<blockquote>
+<p>
+New package that contains a set of tests for ensuring the correctness of JML4 Disco's distributed program verification.
+</p>
+</blockquote>
+<ul><li>BigEscTests: Large scale test with one class and many methods.
+</li><li>BigWhileTests: Medium scale test with one class and few methods.
+</li><li>DistributedArrayTests: extends ArrayTests to make the test be able to run in distributed mode.
+</li><li>DistributedBurdenTest: Large test which loops through different tests suite to verify the robustness of the system in distributed mode.
+</li><li>DistributedWhileTests: extends BigWhileTests to make the test be able to run in distributed mode.
+</li></ul><h3 id="a2.4AddedFiles">2.4 Added Files</h3>
+<h4 id="Fileorg.jmlspecs.eclipse.jdt.core.tests.proverCoordinatorUrls.properties">File org.jmlspecs.eclipse.jdt.core.tests.proverCoordinatorUrls.properties</h4>
+<h5 id="I.A.2.29"><i>I.A. 2.2</i></h5>
+<p>
+*   New Properties file that stores the URL of the VCs dispatcher. 
+</p>
+<h2 id="a3.Projectorg.jmlspecs.eclipse.jdt.ui">3.Project org.jmlspecs.eclipse.jdt.ui</h2>
+<h3 id="a3.1.ModificationtoClasses">3.1.Modification to Classes</h3>
+<h4 id="ClassJmlConfigurationBlock">Class  JmlConfigurationBlock</h4>
+<p>
+<i>Package <tt>org.jmlspecs.eclipse.jdt.ui.preferences;</tt></i><br />
+</p>
+<h5 id="I.A.2.104"><i>I.A. 2.10</i></h5>
+<ul><li><a href="/trac/changeset/457" title="--See ticket #188" class="changeset">see code level changes</a> 
+</li><li>Added Key PREF_ENABLE_DISTRIBUTED  associated to JavaCore.COMPILER_ENABLE_DISTRIBUTED
+</li><li>Added Key PREF_SPEC_DISTRIBUTED_DISPATCHER_PATH associated to JavaCore.COMPILER_DISTRIBUTED_DISPATCHER_PATH;
+</li><li>Added Key PREF_ENABLE_JML_BOOGIE associated to JavaCore.COMPILER_ENABLE_JML_BOOGIE;
+</li></ul><ul><li>New GUI components added
+<ul><li>Composite boogieComposite
+</li><li>Text distributedPathText
+</li><li>Label boogieLabel
+</li><li>ControlEnableState boogieCompositeState
+</li><li>ControlEnableState distributedEnableState
+</li><li>Button distributedEnableCheckBox
+</li><li>Button boogieEnableCheckBox        
+</li></ul></li></ul><ul><li>Method <tt>getKeys()</tt>  returns several new keys listed above 
+<ul><li>PREF_ENABLE_DISTRIBUTED
+</li><li>PREF_SPEC_DISTRIBUTED_DISPATCHER_PATH
+</li><li>PREF_ENABLE_JML_BOOGIE
+</li></ul></li><li>Method <tt>createStyleTabContent</tt> modified to display new controls
+</li><li>Method <tt>updateEnableDisableStatusOfControls</tt> modified to gray out newly added controls at appropriate times
+</li></ul><p>
+ 
+  
+</p>
+<h4 id="ClassPreferencesMessages">Class  PreferencesMessages</h4>
+<p>
+<i>Package <tt>org.jmlspecs.eclipse.jdt.ui.preferences;</tt></i><br />
+</p>
+<h5 id="I.A.2.105"><i>I.A. 2.10</i></h5>
+<ul><li><a href="/trac/changeset/457" title="--See ticket #188" class="changeset">see code level changes</a> 
+</li><li>Strings variables added to hold messages for newly added GUI components in JmlConfigurationBlock
+<ul><li>JmlDistributed_title;
+</li><li>JmlEnableDistributed_label;
+</li><li>JmlSpecPathDistributed_label;
+</li><li>JmlBoogie_title;
+</li><li>JmlEnableBoogie_label;
+</li></ul></li></ul><h3 id="a3.2.ModificationtoFiles">3.2.Modification to Files</h3>
+<h4 id="FilePreferencesMessages.properties">File  PreferencesMessages.properties</h4>
+<p>
+<i>Package <tt>org.jmlspecs.eclipse.jdt.ui.preferences;</tt></i><br />
+</p>
+<h5 id="I.A.2.106"><i>I.A. 2.10</i></h5>
+<ul><li><a href="/trac/changeset/457" title="--See ticket #188" class="changeset">see code level changes</a> 
+</li><li>Variables defined in PreferencesMessages class given actual messages
+<ul><li>JmlDistributed_title=Distributed Program Verification 
+</li><li>JmlEnableDistributed_label=Enable Distributed Program Verification 
+</li><li>JmlSpecPathDistributed_label=URL to Dispatcher:  
+</li><li>JmlBoogie_title=Using Boogie 
+</li><li>JmlEnableBoogie_label=Enable Boogie
+</li></ul></li></ul><h2 id="a4.NewProjects">4.New Projects</h2>
+<h4 id="Projectorg.jmlspecs.jml4.esc.distribution">Project org.jmlspecs.jml4.esc.distribution</h4>
+<blockquote>
+<p>
+New project added which contains all the logic pertinent to distributed program verification.
+</p>
+</blockquote>
+<h4 id="Projectorg.jmlspecs.jml4.esc.distribution.configuration">Project org.jmlspecs.jml4.esc.distribution.configuration</h4>
+<blockquote>
+<p>
+New project added which contains all the logic pertinent to configuration of servers used during distributed program verification.
+</p>
+</blockquote>
+<h4 id="Projectorg.jmlspecs.jml4.esc.distribution.http.dispatcher">Project org.jmlspecs.jml4.esc.distribution.http.dispatcher</h4>
+<blockquote>
+<p>
+New project added which contains application and presentation related code for distributed program verification over HTTP connections. Meant to deployed on a TomCat web server and used a Dispatcher machine.
+</p>
+</blockquote>
+<h4 id="Projectorg.jmlspecs.jml4.esc.distribution.http.prover">Project org.jmlspecs.jml4.esc.distribution.http.prover</h4>
+<blockquote>
+<p>
+New project added which contains application and presentation related code for distributed program verification over HTTP connections. Meant to deployed on a TomCat web server and used a Prover machine.
+</p>
+</blockquote>
+</div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

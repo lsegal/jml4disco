@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Jml4Disco-Use Case View</title>
+ 
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="UseCaseView">Use Case View</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.Introduction">1. Introduction</a></li><li class="active">
+<a href="#a2.UseCaseView">2. Use Case View</a><ol><li class="active"><a href="#a2.1UseCaseDiagram">2.1 Use Case Diagram</a></li><li class="active">
+<a href="#a2.2DeveloperUseCases">2.2 Developer Use Cases</a><ol><li class="active"><a href="#a2.2.5UseCase5:VerifyCode">2.2.5 Use Case 5: Verify Code</a></li><li class="active">
+<a href="#a2.2.6UseCase6:EnableDistributedProgramVerification">2.2.6 Use Case 6: Enable Distributed Program Verification</a></li><li class="active">
+<a href="#a2.2.7UseCase7:DisableDistributedProgramVerification">2.2.7 Use Case 7: Disable Distributed  Program Verification</a></li><li class="active">
+<a href="#a2.2.8UseCase8:EnableBoogie">2.2.8 Use Case 8: Enable Boogie</a></li><li class="active">
+<a href="#a2.2.9UseCase9:DisableBoogie">2.2.9 Use Case 9: Disable Boogie</a></li><li class="active">
+<a href="#a2.2.10UseCase10:ConfigureVerification">2.2.10 Use Case 10: Configure Verification</a></li></ol><li class="active"><a href="#a2.3AdminUseCases">2.3 Admin Use Cases</a><ol><li class="active"><a href="#a2.3.1UseCase11:InitialServerSetup-Dispatcher">2.3.1 Use Case 11: Initial Server Setup - Dispatcher</a></li><li class="active">
+<a href="#a2.3.2UseCase12:AddServer">2.3.2 Use Case 12: Add Server</a></li><li class="active">
+<a href="#a2.3.3UseCase13:RemoveServer">2.3.3 Use Case 13: Remove Server</a></li><li class="active">
+<a href="#a2.3.5UseCase15:EnableCaching">2.3.5 Use Case 15: Enable Caching</a></li><li class="active">
+<a href="#a2.3.6UseCase16:DisableCaching">2.3.6 Use Case 16: Disable Caching</a></li><li class="active">
+<a href="#a2.3.7UseCase17:InitialServerSetup-ProverServer">2.3.7 Use Case 17: Initial Server Setup - Prover Server</a></li><li class="active">
+<a href="#a2.3.8UseCase18:ConfigureServerSetup-ProverServer">2.3.8 Use Case 18: Configure Server Setup - Prover Server</a></li></ol></li></li></ol></li></ol></div>
+
+</p>
+<h2 id="a1.Introduction">1. Introduction</h2>
+<p>
+This wiki page provides a view into the essential functionality of the system being developed.  It also describes the scenarios and functionalities that will significantly impact the architecture and construction of the system as seen by the users.
+</p>
+<h2 id="a2.UseCaseView">2. Use Case View</h2>
+<h3 id="a2.1UseCaseDiagram">2.1 Use Case Diagram</h3>
+<p>
+<a href="/trac/attachment/wiki/Jml4Disco-UseCaseView/UseCaseDiag.2.gif" style="padding:0; border:none"><img src="images/UseCaseDiag.2.gif" /></a> <br />
+Figure 2.1: JML4 Disco Use Case Diagram
+</p>
+<h3 id="a2.2DeveloperUseCases">2.2 Developer Use Cases</h3>
+<p>
+Use Cases 1 and 2 were dropped. Please see the appendix at the bottom of the SRS. Use Cases 3 and 4 were deemed out of scope.
+</p>
+<h4 id="a2.2.5UseCase5:VerifyCode">2.2.5 Use Case 5: Verify Code</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> System verifies code and reports errors 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions:</td><td> 
+</td></tr><tr><td> </td><td> 1. System is accessible 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Main Success Scenario </strong> </td><td> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor specifies that they want to verify the code. 
+</td></tr><tr><td> </td><td> 2. The System performs verification. 
+</td></tr><tr><td> </td><td> 3. The System reports problems in console &amp; source code. 
+</td></tr><tr><td> </td><td> 4. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
+</td></tr><tr><td> </td><td> 3.a. The primary actor specifies that they  want to view an error report for a specific line of source code. 
+</td></tr><tr><td> </td><td>   3.a.1. The system returns an error report for the specific line in the source code. 
+</td></tr></table>
+<h4 id="a2.2.6UseCase6:EnableDistributedProgramVerification">2.2.6 Use Case 6: Enable Distributed Program Verification</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> System will be prepared to utilize remote resources during verification 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. Distributed verification is disabled. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Main Success Scenario </strong> </td><td> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor specifies that they want to configure settings for JML4 Disco. 
+</td></tr><tr><td> </td><td> 2. The Primary Actor toggles distributed verification to be enabled. 
+</td></tr><tr><td> </td><td> 3. The System confirms that verification has been enabled. 
+</td></tr><tr><td> </td><td> 4. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
+</td></tr><tr><td> </td><td> 2.a. The system reports that it has not been properly configured to perform distributed verification. 
+</td></tr><tr><td> </td><td>  2.a.1. The system returns an error message, and distributed verification remains disable. 
+</td></tr></table>
+<h4 id="a2.2.7UseCase7:DisableDistributedProgramVerification">2.2.7 Use Case 7: Disable Distributed  Program Verification</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> System will be prepared to utilize only local resources during verification 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. Distributed verification is enabled. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong>Main Success Scenario </strong> </td><td> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor specifies that they want to configure settings for JML4 Disco. 
+</td></tr><tr><td> </td><td> 2. The Primary Actor toggles distributed verification to be disabled. 
+</td></tr><tr><td> </td><td> 3. The System enables Boogie and presents it as disabled. 
+</td></tr><tr><td> </td><td> 4. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
+</td></tr></table>
+<h4 id="a2.2.8UseCase8:EnableBoogie">2.2.8 Use Case 8: Enable Boogie</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> Boogie will be used to verify the correctness of the code 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. Boogie is installed. 
+</td></tr><tr><td> </td><td> 2. Boogie is disabled. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Main Success Scenario </strong> </td><td> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor specifies that they want to configure settings for JML4 Disco. 
+</td></tr><tr><td> </td><td> 2. The Primary Actor specifies that they want to enable Boogie.
+</td></tr><tr><td> </td><td> 3. The Primary actor toggles Boogie to be enabled. 
+</td></tr><tr><td> </td><td> 4. The System enables Boogie and presents it as enabled.  
+</td></tr><tr><td> </td><td> 5. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
+</td></tr></table>
+<h4 id="a2.2.9UseCase9:DisableBoogie">2.2.9 Use Case 9: Disable Boogie</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> Boogie will not be used to verify the correctness of the code 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. Boogie is installed. 
+</td></tr><tr><td> </td><td> 2. Boogie is enabled. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong>Main Success Scenario:</strong> </td><td> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor specifies that they want to configure settings for JML4 Disco. 
+</td></tr><tr><td> </td><td> 2. The Primary Actor specifies that they want to disable Boogie. 
+</td></tr><tr><td> </td><td> 3. The Primary Actor toggles Boogie to be disabled. 
+</td></tr><tr><td> </td><td> 4. The System disables Boogie and presents it as disabled. 
+</td></tr><tr><td> </td><td> 5. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
+</td></tr></table>
+<h4 id="a2.2.10UseCase10:ConfigureVerification">2.2.10 Use Case 10: Configure Verification</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Software Developer 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> Verification of code is customized to the types of verifications chosen by primary actor. 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: 
+</td></tr><tr><td> </td><td> 1. System is accessible. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Main Success Scenario: </strong> </td><td> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor specifies that they want to configure settings for JML4 Disco. 
+</td></tr><tr><td> </td><td> 2. The Primary Actor specifies that they want to configure the verification. 
+</td></tr><tr><td> </td><td> 3. The Primary Actor toggles which elements they want to test for (ex. Statements, Expressions, Fields, Declarations.. etc) 
+</td></tr><tr><td> </td><td> 4. The System registers changes and presents them to primary actor. 
+</td></tr><tr><td> </td><td> 5. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
+</td></tr></table>
+<h3 id="a2.3AdminUseCases">2.3 Admin Use Cases</h3>
+<p>
+Use Case 14 was dropped.
+</p>
+<h4 id="a2.3.1UseCase11:InitialServerSetup-Dispatcher">2.3.1 Use Case 11: Initial Server Setup - Dispatcher</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Admin 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> A server machine will be prepared for its resources to be utilized remotely so as to prove VcPrograms. 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. System is accessible 
+</td></tr><tr><td> </td><td> 2. Primary actor currently has access to a user interface for system configuration. 
+</td></tr><tr><td> <strong> Main Success Scenario </strong> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor provides information for connecting to prover servers. 
+</td></tr><tr><td> </td><td> 2. Use Case end successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> 
+</td></tr><tr><td> </td><td> 1.a Server information is invalid. 
+</td></tr><tr><td> </td><td>    1.a.1 The system returns an error message. 
+</td></tr><tr><td> </td><td> 1.b. Some configuration information is invalid or inapplicable. 
+</td></tr><tr><td> </td><td>  1.b.1. The system returns an error message. 
+</td></tr></table>
+<h4 id="a2.3.2UseCase12:AddServer">2.3.2 Use Case 12: Add Server</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Admin 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> The system will be able to utilize resources on an additional remote machine. 
+</td></tr><tr><td> Minimal Guarantee: </td><td>--- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. System is accessible 
+</td></tr><tr><td> </td><td> 2. Primary actor currently has access to a user interface for system configuration. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Main Success Scenario </strong> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor specifies they wish to alter the list of remote machines from which the system can utilize resources. 
+</td></tr><tr><td> </td><td> 2. The Primary Actor provides information for connecting to an additional prover server. 
+</td></tr><tr><td> </td><td> 3. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> 
+</td></tr><tr><td> </td><td> 2.a. Server information is invalid.
+</td></tr><tr><td> </td><td>  2.a.1 The system returns an error message. 
+</td></tr></table>
+<h4 id="a2.3.3UseCase13:RemoveServer">2.3.3 Use Case 13: Remove Server</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Admin 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> The system will no longer be able to utilize resources on remote machines specified. 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. System is accessible 
+</td></tr><tr><td> </td><td> 2. Primary actor currently has access to a user interface for system configuration. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Main Success Scenario </strong> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor specifies they wish to alter the list of remote machines from which the system can utilize resources. 
+</td></tr><tr><td> </td><td> 2. The Primary Actor specifies which machines the system should no longer utilize during verification. 
+</td></tr><tr><td> </td><td> 3. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> 
+</td></tr></table>
+<h4 id="a2.3.5UseCase15:EnableCaching">2.3.5 Use Case 15: Enable Caching</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Admin 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> Caching is enabled 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: 
+</td></tr><tr><td> </td><td> 1. System is accessible 
+</td></tr><tr><td> </td><td> 2. Caching is disabled 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td><strong> Main Success Scenario </strong> </td><td> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor indicates to System that they wish to activate caching on a dispatcher machine. 
+</td></tr><tr><td> </td><td> 3. The System confirms that caching has been enabled for the server 
+</td></tr><tr><td> </td><td> 4. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> 
+</td></tr></table>
+<h4 id="a2.3.6UseCase16:DisableCaching">2.3.6 Use Case 16: Disable Caching</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Developer 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> Caching is disabled 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. System is accessible 
+</td></tr><tr><td> </td><td> 2. Caching is enabled on at least one server 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Main Success Scenario </strong> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor indicates to the system that they wish to disable caching on a dispatcher machine 
+</td></tr><tr><td> </td><td> 2. The System confirms that caching has been disabled for the servers 
+</td></tr><tr><td> </td><td> 3. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> 
+</td></tr></table>
+<h4 id="a2.3.7UseCase17:InitialServerSetup-ProverServer">2.3.7 Use Case 17: Initial Server Setup - Prover Server</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Admin 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> A server machine will be prepared for its resources to be utilized remotely so as to prove Vcs.<br />
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. System is accessible 
+</td></tr><tr><td> </td><td> 2. Primary actor currently has access to a user interface for system configuration. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Main Success Scenario </strong> 
+</td></tr><tr><td> </td><td> 1. The Primary actor provides configuration information for various prover programs installed on the machine. 
+</td></tr><tr><td> </td><td> 2. Use Case ends successfully 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
+</td></tr><tr><td> </td><td> 1.a. Some configuration information is invalid or inapplicable. 
+</td></tr><tr><td> </td><td>  1.a.1. The system returns an error message. 
+</td></tr><tr><td> </td><td> 1.b. A prover application is not installed properly. 
+</td></tr><tr><td> </td><td>  1.b.1. The system returns an error message. 
+</td></tr></table>
+<h4 id="a2.3.8UseCase18:ConfigureServerSetup-ProverServer">2.3.8 Use Case 18: Configure Server Setup - Prover Server</h4>
+<table class="wiki">
+<tr><td> <strong> Properties </strong> </td><td> 
+</td></tr><tr><td> Primary Actor: </td><td> Admin 
+</td></tr><tr><td> Level: </td><td> User-goal 
+</td></tr><tr><td> Success Guarantee: </td><td> A server machine will be prepared for its resources to be utilized remotely so as to prove Vcs, controlled by configuration settings. 
+</td></tr><tr><td> Minimal Guarantee: </td><td> --- 
+</td></tr><tr><td> Preconditions: </td><td> 
+</td></tr><tr><td> </td><td> 1. System is accessible 
+</td></tr><tr><td> </td><td> 2. Primary actor currently has access to a user interface for system configuration. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Main Success Scenario </strong> </td><td> 
+</td></tr><tr><td> </td><td> 1. The Primary Actor provides configuration information for various prover programs. installed on the machine, such as the number of parallel prover processes. 
+</td></tr><tr><td> </td><td> 2. Use Case end successfully. 
+</td></tr><tr><td> </td><td> 
+</td></tr><tr><td> <strong> Extensions </strong> </td><td> 
+</td></tr><tr><td> </td><td> 1.a. Some configuration information is invalid or inapplicable. 
+</td></tr><tr><td> </td><td>  1.a.1. The system returns an error message. 
+</td></tr></table>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

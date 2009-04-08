@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Ram Disk</title>
+ 
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="JML4Disco:EvaluationofRamdisksastheypertaintocaching">JML4Disco: Evaluation of Ramdisks as they pertain to caching</h1>
+<h2 id="a1.Evaluation">1. Evaluation</h2>
+<p>
+Using the instruction found here: <a href="http://www.vanemery.com/Linux/Ramdisk/ramdisk.html" class="ext-link"><span class="icon">http://www.vanemery.com/Linux/Ramdisk/ramdisk.html</span></a> A ramdisk can be created.
+Using the following perl script, the creation of ramdisk is automated:
+</p>
+<pre class="wiki">system("mke2fs -m 0 /dev/ram0");
+system("mkdir /mnt/rd");
+system("mount /dev/ram0 /mnt/rd");
+</pre><p>
+Using the following Java code, it is possible to test the speed of access to ramdrives:
+</p>
+<pre class="wiki">import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.ArrayList; import java.util.HashMap;
+
+public class Driver {
+
+    private static HashMap&lt;String, String&gt; test = new HashMap&lt;String, String&gt;();
+    private static ArrayList&lt;String&gt; list = new ArrayList&lt;String&gt;();
+
+    public static void main(String[] args) throws IOException{
+
+        String a = "";
+        String b = "aaaaaaaaaa";
+        RandomAccessFile harddisk = new RandomAccessFile("/home/group0j/speedtest.txt", "rw");
+        RandomAccessFile ramdisk = new RandomAccessFile("/mnt/rd/speedtest.txt", "rw");
+        for(int i = 0;i&lt;20000; i++){
+
+            int j = i%9;
+            a += Integer.toString(j); 
+            b = (b+Integer.toString(j+1)).substring(b.length()-10, b.length())+"\n";
+            test.put(a, b);
+            list.add(a);
+            harddisk.writeBytes(b);
+            ramdisk.writeBytes(b);
+
+        } 
+        harddisk.close();
+        ramdisk.close();
+        long t = System.currentTimeMillis();
+        for(String s:list){
+
+            String result = test.get(s);
+
+        } 
+        long memory = System.currentTimeMillis() - t;
+        ramdisk = new RandomAccessFile("/mnt/rd/speedtest.txt", "r");
+        t = System.currentTimeMillis();
+        for(String s:list){
+
+            String result = ramdisk.readLine();
+
+        } 
+        long ram = System.currentTimeMillis() - t;
+        ramdisk.close();
+        harddisk = new RandomAccessFile("/home/group0j/speedtest.txt", "r");
+        t = System.currentTimeMillis();
+        for(String s:list){
+
+            String result = harddisk.readLine();
+
+        } 
+        long hard = System.currentTimeMillis() - t;
+        harddisk.close();
+        System.out.println("MEMORY TIME: " + memory);
+        System.out.println("RAMDISK TIME: " + ram);
+        System.out.println("HARDDISK TIME: " + hard);
+
+    }
+
+} 
+</pre><p>
+The results are:
+</p>
+<p>
+<strong>MEMORY TIME: 7ms</strong><br />
+<strong>RAMDISK TIME: 46ms</strong><br />
+<strong>HARDDISK TIME: 44ms</strong><br />
+</p>
+<h2 id="a2.Conclusion">2. Conclusion</h2>
+<p>
+Ramdisks are almost on par with Hard disks in terms of access time, and as the volume of information stored is increased, the access time for both ramdisks and hard disks is increased, while the access time for memory is constant.
+</p>
+<p>
+The main reason for ram disk usage is that it is a volatile storage medium and thus information stored therein will be wiped on power down.
+</p>
+<p>
+The only possible advantage that can be found to caching on disk instead of in memory is that the volume of information that we can cache is increased, however the trade off is a substantial slowdown. Additionally, there would be no advantage to caching on ram disks as opposed to the hard drive, unless of course the information cached was sensitive and it would be desirable for it to be stored on a volatile storage medium.
+</p>
+</div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

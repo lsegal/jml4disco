@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Vision Document</title>
+ 
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="VisionDocument">Vision Document</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.Introduction">1. Introduction</a><ol><li class="active"><a href="#a1.1Purpose">1.1 Purpose</a></li><li class="active">
+<a href="#a1.2.JML4DiscoOverview">1.2. JML4 Disco Overview</a><ol><li class="active"><a href="#a1.2.1DistributedApplicationVerification">1.2.1 Distributed Application Verification</a></li><li class="active">
+<a href="#a1.2.2MoreCompleteJavaCoverage">1.2.2 More Complete Java Coverage</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a2.Positioning">2. Positioning</a><ol><li class="active"><a href="#a2.1ProductStatement">2.1 Product Statement</a></li><li class="active">
+<a href="#a2.2ProductPositionStatement">2.2 Product Position Statement</a></li></ol></li><li class="active"><a href="#a3.StakeholderDescriptions">3. Stakeholder Descriptions</a><ol><li class="active"><a href="#a3.1StakeholderSummary">3.1 Stakeholder Summary</a></li><li class="active">
+<a href="#a3.2UserEnvironment">3.2 User Environment</a></li></ol></li><li class="active"><a href="#a4.ProductOverview">4. Product Overview</a><ol><li class="active"><a href="#a4.1ProductPerspective">4.1 Product Perspective</a></li><li class="active">
+<a href="#a4.2AssumptionsandDependencies">4.2 Assumptions and Dependencies</a></li><li class="active">
+<a href="#a4.3NeedsandFeatures">4.3 Needs and Features</a></li><li class="active">
+<a href="#a4.4AlternativesandCompetition">4.4 Alternatives and Competition</a><ol><li class="active"><a href="#a4.4.1ContractsforJava">4.4.1 Contracts for Java</a></li><li class="active">
+<a href="#a4.4.2FirstGenerationJMLTools">4.4.2 First Generation JML Tools</a><ol><li class="active"><a href="#a4.4.4.1CommonJMLToolsuiteJML2">4.4.4.1 Common JML Tool suite (JML2)</a></li><li class="active">
+<a href="#a4.4.4.2ESCJava2">4.4.4.2 ESC/Java2</a></li><li class="active">
+<a href="#a4.4.4.3PVSTool">4.4.4.3 PVS Tool</a></li></ol><li class="active"></li></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a5.OtherProductRequirements">5. Other Product Requirements</a><ol><li class="active"><a href="#a5.1ApplicableStandards">5.1 Applicable Standards</a></li><li class="active">
+<a href="#a5.2SystemRequirements">5.2 System Requirements</a></li><li class="active">
+<a href="#a5.3LicensingSecurityandInstallation">5.3 Licensing, Security and Installation</a></li><li class="active">
+<a href="#a5.4PerformanceRequirements">5.4 Performance Requirements</a></li></ol><li class="active"><a href="#a6.InOutList">6. In/Out List</a></li><li class="active">
+<a href="#a7.References">7. References</a></li></li></ol></div>
+
+</p>
+<h2 id="a1.Introduction">1. Introduction</h2>
+<h3 id="a1.1Purpose">1.1 Purpose</h3>
+<p>
+Software development and maintenance are costly endeavors. The cost can be reduced if more software defects are detected early in the development cycle. [3] This can be achieved using a formal behavioral interface specification language for Design by Contract (DBC) as well as compile-time checks to assert that contracts are respected. The Java Modeling Language (JML) is one such language, and tools have been developed to perform static checking of JML-enhanced Java programs.
+The Dependable Software Research Group (DSRG) has developed the JML4 Integrated Verification Environment (IVE); an Eclipse-based JML tool which performs Extended Static Checking.
+One challenge facing JML4 is the reality that applying ESC to industrial-scale applications has been - and will be - difficult due to the time it takes to perform static check, as well as the incomplete nature of tools which do so. [1] JML4 Disco will be an evolution of JML4 meant to alleviate these problems by improving ESC4's potential for distributed application verification, to better utilize non-local resources and reduce the time to assert the validity of software components, and to achieve more complete coverage of the Java language then would be possible using ESC4 alone.
+The purpose of this document is to define the user needs, the system features, and the project requirements for JML4 Disco.
+</p>
+<h3 id="a1.2.JML4DiscoOverview">1.2. JML4 Disco Overview</h3>
+<p>
+JML4 Disco will be a system built on top of the existing JML4 system with relevant changes made to the system such that JML4 Disco will be able to perform distributed application verification as well as offer more complete Java coverage.
+</p>
+<h4 id="a1.2.1DistributedApplicationVerification">1.2.1 Distributed Application Verification</h4>
+<p>
+Applying Extended Static Checking to large-scale application has been difficult because existing tools require significant amounts of time to verify annotated code; while Extended Static Checking is generally quite an efficient technique, it is still orders of magnitude slower than simple compilation.[1] Given that the underlying nature of the verification techniques of extended static checking are inherently modular, distribution of the verification could improved performance considerably. [1] As such the first key feature of JML4 Disco will be improved distributed discharging of application information.
+</p>
+<h4 id="a1.2.2MoreCompleteJavaCoverage">1.2.2 More Complete Java Coverage</h4>
+<p>
+The other key feature of JML4 Disco will be to provide more complete coverage of the Java language then is currently possible using the underlying ESC4 back-end. This will be achieved by developing a means of interfacing JML4 Disco with another existing application verifier.
+</p>
+<h2 id="a2.Positioning">2. Positioning</h2>
+<h3 id="a2.1ProductStatement">2.1 Product Statement</h3>
+<table class="wiki">
+<tr><td> <strong>The Problem of:</strong> </td><td> There is a lack of efficient and reliable extended static checking tools for Java programs. 
+</td></tr><tr><td> <strong>Affects:</strong> </td><td> Java developers engaged in quality control via Design By Contract (DBC) using JML and ESC as well as do DC Extended Static Checking (ESC) 
+</td></tr><tr><td> <strong>The impact of which is:</strong> </td><td> Applying program verification - which could reduce the cost of development and maintenance - to industrial-scale Java applications has been difficult. 
+</td></tr><tr><td> <strong>A successful solution would be:</strong> </td><td> An evolution of JML4 to include more complete Java coverage while improving ESC4's potential for distributed application verification. 
+</td></tr></table>
+<h3 id="a2.2ProductPositionStatement">2.2 Product Position Statement</h3>
+<table class="wiki">
+<tr><td> <strong>For</strong> </td><td> Java Developers and the ESC4 team 
+</td></tr><tr><td> <strong>Who</strong> </td><td> Engage in quality control via DBC using JML and ESC, as well as the Eclipse IDE 
+</td></tr><tr><td> <strong>JML4Disco</strong> </td><td> Is an improved version of the JML4 project with faster, more complete Java-program verification capabilities 
+</td></tr><tr><td> <strong>That</strong> </td><td> Will allow for practical and cost-effective static checking of industrial-scale Java applications, discovering software errors earlier in the development cycle. 
+</td></tr><tr><td> <strong>Unlike</strong> </td><td> Discovering software faults or errors at a higher cost later in the development cycle. 
+</td></tr><tr><td> <strong>Our Product</strong> </td><td> Will verify applications quickly as well as have a more complete coverage of the Java language.
+</td></tr></table>
+<p>
+        
+</p>
+<h2 id="a3.StakeholderDescriptions">3. Stakeholder Descriptions</h2>
+<h3 id="a3.1StakeholderSummary">3.1 Stakeholder Summary</h3>
+<table class="wiki">
+<tr><td> <strong>People/Organization</strong> </td><td> <strong>Description</strong> </td><td> <strong>Responsibilities</strong> 
+</td></tr><tr><td> Perry James </td><td> PhD Student </td><td> Presenting JML4 as a dissertation 
+</td></tr><tr><td> Perry James </td><td> DSRG Developer </td><td> Developing solutions for dependable software 
+</td></tr><tr><td> Harley Cooper </td><td> Java Developer </td><td> Developing applications in java 
+</td></tr><tr><td> ENCS Desktop Technician </td><td> ENCS IT Staffs </td><td> Setup, configuration and maintenance of Concordia desktop machines, including development tools for Software Engineers 
+</td></tr><tr><td> Stuart Thiel </td><td> Software Engineering Tutor </td><td> Writing and presenting tutorials for students to learn software engineering related technologies 
+</td></tr><tr><td> Dr. Patrice Chalin </td><td> Head of the DSRG </td><td> Presenting solutions for dependable software to the software engineering community 
+</td></tr><tr><td> JML4 Community </td><td> developers of JML4 </td><td> Improve/maintain JML4 open-source project 
+</td></tr></table>
+<h3 id="a3.2UserEnvironment">3.2 User Environment</h3>
+<p>
+A Java developer wanting to do engage in Design by Contract using JML Disco to verify annotated code will typically do so through the Eclipse Ganymede Environment. Multiple servers can be setup to perform and contribute to remote code verification, as a single client may distribute the modular tasks involved in Extended Static Checking to multiple machines.
+</p>
+<h2 id="a4.ProductOverview">4. Product Overview</h2>
+<p>
+This section provides general information about the product that JML4 Disco team will deliver at the end of the planned software development life cycle.
+</p>
+<h3 id="a4.1ProductPerspective">4.1 Product Perspective</h3>
+<p>
+JML4 Disco will be an evolution of JML4, and as such will be easily added to an Eclipse Ganymede Development Environment as a plug in. The interface for JML4 Disco features will be accessed through the Eclipse Environment.
+</p>
+<h3 id="a4.2AssumptionsandDependencies">4.2 Assumptions and Dependencies</h3>
+<table class="wiki">
+<tr><td> <strong>Assumption</strong> 
+</td></tr><tr><td> All UI components are in English 
+</td></tr><tr><td> The System Environment has Internet connection 
+</td></tr><tr><td> The product is targeted for specific group of people: people that has good knowledge on Static Checking and DBC concept 
+</td></tr></table>
+<h3 id="a4.3NeedsandFeatures">4.3 Needs and Features</h3>
+<table class="wiki">
+<tr><td> <strong>Needs</strong> </td><td> <strong>Features</strong> </td><td> <strong>Effort</strong> </td><td> <strong>Risk</strong> </td><td> <strong>Priority</strong> </td><td> Planned Release 
+</td></tr><tr><td> Efficient, transparent and fast program verification.  </td><td> Parallel analysis of verification units </td><td> High </td><td> Med </td><td> High </td><td> M2 [<a href="/trac/wiki/SupplementarySpecification#a2.FunctionalRequirements" class="wiki">Details</a>] 
+</td></tr><tr><td> </td><td> Utilizing resources on remote machines while verifying. </td><td> High </td><td> High </td><td> High </td><td> M3 [<a href="/trac/wiki/SupplementarySpecification#a2.FunctionalRequirements" class="wiki">Details</a>] 
+</td></tr><tr><td> Utilize remote resources efficiently </td><td> Remote Resource Management Mechanism </td><td> High </td><td> High </td><td> High </td><td> M5 [<a href="/trac/wiki/SupplementarySpecification#a2.FunctionalRequirements" class="wiki">Details</a>] 
+</td></tr><tr><td> More complete coverage of the Java language for verification </td><td> Support Basic Assignments and Statements </td><td> Low </td><td> Low </td><td> High </td><td> M4 
+</td></tr><tr><td> </td><td> Support Java Native Types </td><td> Low </td><td> Low </td><td> High </td><td> M4 
+</td></tr><tr><td> </td><td> Support Loops </td><td> Med </td><td> Low </td><td> High </td><td> M5 
+</td></tr><tr><td> </td><td> Support Java Object Types </td><td> High </td><td> Med </td><td> High </td><td> M6 
+</td></tr><tr><td> </td><td> Support Arrays </td><td> High </td><td> Med </td><td> Med </td><td> M6 
+</td></tr><tr><td> </td><td> Support Fields </td><td> High </td><td> Med </td><td> High </td><td> M6 
+</td></tr><tr><td> </td><td> Support Classes and Inheritances </td><td> Med </td><td> Med </td><td> Med </td><td> M6 
+</td></tr><tr><td> </td><td> Support JML DbC common statements </td><td> Low </td><td> Low </td><td> High </td><td> M6 
+</td></tr><tr><td> </td><td> Support Method Calls </td><td> High </td><td> Med </td><td> High </td><td> M7 
+</td></tr><tr><td> Enabling/Disabling alternate proving strategies </td><td> UI Interface for toggling use of different strategies </td><td> Low </td><td> Low </td><td> High </td><td> M6 
+</td></tr></table>
+<h3 id="a4.4AlternativesandCompetition">4.4 Alternatives and Competition</h3>
+<h4 id="a4.4.1ContractsforJava">4.4.1 Contracts for Java</h4>
+<p>
+Contracts for Java (C4J) is a Design By Contract Java. The primary goal for C4J is ease of use. TSascha Zelzer is developing an Eclipse plugin for C4J, which is available on SourceForge.
+</p>
+<p>
+Contract4J provides a standard way to define DbC tests and to evaluate them at runtime. Using XDoclet tags and generating AspectJ test code. Contract4J uses Java 5 annotations to define the condition tests and it uses "prebuilt" AspectJ aspects to advise the execution points ("join points") where the tests should be evaluated. If the tests fail, both tools terminate program execution. [2]
+</p>
+<h4 id="a4.4.2FirstGenerationJMLTools">4.4.2 First Generation JML Tools</h4>
+<h5 id="a4.4.4.1CommonJMLToolsuiteJML2">4.4.4.1 Common JML Tool suite (JML2)</h5>
+<p>
+JML2 is the name of the current release of the JML Common Tools. It nearly completely supports Java 1.4.2, and includes limited support for Java 5+, and can perform runtime assertion checking as well as static checking of most of the features of the JML language. [6]
+</p>
+<h5 id="a4.4.4.2ESCJava2">4.4.4.2 ESC/Java2</h5>
+<p>
+ESC/Java (and more recently ESC/Java2), the "Extended Static Checker for Java," is a programming tool that attempts to find common run-time errors in Java programs by static analysis of the program text. Recent versions of ESC/Java are based around the Java Modeling Language (JML). Users can control the amount and kinds of checking by annotating their programs with specially formatted comments or pragmas. [4]<br />
+</p>
+<p>
+ESC/Java was originally developed at the Compaq Systems Research Center (SRC). SRC launched the project in 1997, after work on their original extended static checker, ESC/Modula-3, ended in 1996. In 2002, SRC released the source code for ESC/Java and related tools. [4]<br />
+</p>
+<p>
+The University of Nijmegen's Security of Systems group released alpha versions of ESC/Java2, an extended version of ESC/Java that processes the JML specification language through 2004. Since 2004, ESC/Java2 development has been managed by the KindSoftware Research Group at University College Dublin. Over the years, ESC/Java2 has gained many new features including the ability to reason with multiple theorem provers and integration with Eclipse. [4]<br />
+</p>
+<p>
+It apparently not sound and not quite complete, sometimes giving false positives and false negatives, though it finds lots of potential bugs quickly. Additionally, Using ESC/Java2 is only really feasible on small programs. [5]
+</p>
+<h5 id="a4.4.4.3PVSTool">4.4.4.3 PVS Tool</h5>
+<p>
+PVS is an environment for formal methods and specifications. PVS consists of a specification language, predefined theories, a type checker, and an interactive theorem prover, formalized libraries. It is a research prototype, and the most recent release is version 4.2. It is currently open source and can be run under most Linux based systems.
+1. Process Impact -- Process Goodies to Support Software Development <a href="http://www.processimpact.com/goodies.sh" class="ext-link"><span class="icon">http://www.processimpact.com/goodies.sh</span></a>
+</p>
+<h2 id="a5.OtherProductRequirements">5. Other Product Requirements</h2>
+<h3 id="a5.1ApplicableStandards">5.1 Applicable Standards</h3>
+<p>
+JML4 Disco is an evolution of JML4. Given that JML4 is an Eclipse-based Integrated development Verification Environment, built on top of the Eclipse Java Development Tooling, JML4 Disco should be roughly complaisant with the <a href="http://wiki.eclipse.org/index.php/Development_Conventions_and_Guidelines" class="ext-link"><span class="icon">Eclipse Development Conventions and Guidelines</span></a>.
+</p>
+<h3 id="a5.2SystemRequirements">5.2 System Requirements</h3>
+<p>
+For the client, a typical modern desktop or laptop is adequate to run the application.  For the servers, it will be better to have a reliable and more powerful resources to handle large amount of requests without diminishing the quality of services.
+</p>
+<h3 id="a5.3LicensingSecurityandInstallation">5.3 Licensing, Security and Installation</h3>
+<p>
+The Project is an Open Source Project. There are no security requirements in this project. 
+</p>
+<h3 id="a5.4PerformanceRequirements">5.4 Performance Requirements</h3>
+<p>
+JML4 Disco must perform faster than JML4; timed results of verification attempts should be faster than those of the prototype Distributed Multi-Threaded Verifier Prototype developed by the DSRG. [1]
+</p>
+<h2 id="a6.InOutList">6. In/Out List</h2>
+<h2 id="a7.References">7. References</h2>
+<ol><li>P. R. James, P. Chalin, L. Giannas, and G. Karabotsos, <span class="underline">Distributed, Multi-threaded Verification of Java Programs.</span> <i>Proceedings of the International Workshop on Specification and Verification of Component-Based Systems (SAVCBS)</i>, Atlanta, Georgia (USA), November, 2008.
+</li><li>Contract4J: Design by Contract for Java, <a href="http://www.contract4j.org/contract4j" class="ext-link"><span class="icon">http://www.contract4j.org/contract4j</span></a>
+</li><li>C. Flanagan, K. R. M. Leino, M. Lillibridge, G. Nelson, J. B. Saxe, and R. Stata. <span class="underline">Extended static checking for java.</span> In <i>PLDI '02: Proceedings of the ACM SIGPLAN 2002 Conference on Programming language design and implementation</i>, pages 234-245, New York, NY, 2002. ACM Press.
+</li><li>Wikipedia, <a href="http://en.wikipedia.org/wiki/ESC/Java" class="ext-link"><span class="icon">http://en.wikipedia.org/wiki/ESC/Java</span></a> 
+</li><li><a href="http://www.cs.ru.nl/~martijno/ooti/slides/escjava.pdf" class="ext-link"><span class="icon">http://www.cs.ru.nl/~martijno/ooti/slides/escjava.pdf</span></a>
+</li><li>SourceForge, <a href="http://jmlspecs.wiki.sourceforge.net/JML2" class="ext-link"><span class="icon">http://jmlspecs.wiki.sourceforge.net/JML2</span></a> 
+</li></ol></div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

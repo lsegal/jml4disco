@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Java Coverage Traceability</title>
+ 
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="JavaCoverageTraceability">Java Coverage Traceability</h1>
+<h2 id="a1.Introduction">1. Introduction</h2>
+<p>
+This document describes the coverage of the Boogie Disco component in terms of Java functionality. Each Java function point is traced to an implementation that translates the Java to Boogie. Each Java Node (named with the JN prefix followed by a unique number) can be found in the <a href="/trac/wiki/BoogieTraceability" class="wiki">BoogieTraceability</a> document, which maps the Java node implementations to their respective tests.
+</p>
+<p>
+<i>The legend for this matrix can be found below.</i>
+</p>
+<h2 id="a2.JavaJMLFeatures">2. Java/JML Features</h2>
+<h3 id="a2.1BasicAssignmentsandStatements">2.1 Basic Assignments and Statements</h3>
+<table class="wiki">
+<tr><td></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN1" class="wiki">JN1</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN2" class="wiki">JN2</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN3" class="wiki">JN3</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN4" class="wiki">JN4</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN6" class="wiki">JN6</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN9" class="wiki">JN9</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN11" class="wiki">JN11</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN19" class="wiki">JN19</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN55" class="wiki">JN55</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN40" class="wiki">JN40</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN82" class="wiki">JN82</a></strong></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Local variable declaration</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Local variable initialization</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Anonymous lock block</strong></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Local variable declared in local block</strong></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Empty statement</strong></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Assignment of real value to variable</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>If statement with no blocks</strong></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>If statement with no else block</strong></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>If statement with else block</strong></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Break statement</strong></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Break statement with label</strong></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Continue statement</strong></td><td></td><td></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Continue statement with label</strong></td><td></td><td></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Goto statement</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Label statement</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Switch and case statements</strong></td><td></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Return statement</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Native Assertion</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td>
+</td></tr></table>
+<h3 id="a2.2LoopStructureStatements">2.2 Loop Structure Statements</h3>
+<table class="wiki">
+<tr><td></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN5" class="wiki">JN5</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN7" class="wiki">JN7</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN8" class="wiki">JN8</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN10" class="wiki">JN10</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN12" class="wiki">JN12</a></strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>While loop</strong></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Do while loop</strong></td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>For loop</strong></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Foreach loop</strong></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr></table>
+<h3 id="a2.3ArithmeticandLogicalExpressions">2.3 Arithmetic and Logical Expressions</h3>
+<table class="wiki">
+<tr><td></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN14" class="wiki">JN14</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN20" class="wiki">JN20</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN21" class="wiki">JN21</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN22" class="wiki">JN22</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN23" class="wiki">JN23</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN24" class="wiki">JN24</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN26" class="wiki">JN26</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN28" class="wiki">JN28</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN29" class="wiki">JN29</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN30" class="wiki">JN30</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN48" class="wiki">JN48</a></strong></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Multiply, add, subtract, modulo</strong></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Equality and inequality logic expressions</strong></td><td>x</td><td>x</td><td></td><td></td><td></td><td>x</td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>JML implies expression (==&gt;)</strong></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Object instanceof expression</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Object cast expression</strong></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Prefix incr./decr. expression (++x/--x)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Postfix incr./decr. expression (x++/x--)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Compound assignment (+=, -=)</strong></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Unary expression (-x)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td>
+</td></tr><tr><td><strong>Conditional expressions (c ? t : f)</strong></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr></table>
+<h3 id="a2.4VariableandTypeReferences">2.4 Variable and Type References</h3>
+<table class="wiki">
+<tr><td></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN32" class="wiki">JN32</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN33" class="wiki">JN33</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN34" class="wiki">JN34</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN35" class="wiki">JN35</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN36" class="wiki">JN36</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN37" class="wiki">JN37</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN38" class="wiki">JN38</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN39" class="wiki">JN39</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN41" class="wiki">JN41</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN42" class="wiki">JN42</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN43" class="wiki">JN43</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN44" class="wiki">JN44</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN45" class="wiki">JN45</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN46" class="wiki">JN46</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN47" class="wiki">JN47</a></strong>
+</td></tr><tr><td><strong>Local variable reference</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Field reference</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Field reference on external object</strong></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>This reference</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x
+</td></tr><tr><td><strong>This reference on external object</strong></td><td></td><td></td><td></td><td></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Super reference</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>!</td><td>
+</td></tr><tr><td><strong>Super reference on external object</strong></td><td></td><td></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Type reference</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td>
+</td></tr><tr><td><strong>Type reference on external object</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr></table>
+<h3 id="a2.5MethodCallExpressions">2.5 Method Call Expressions</h3>
+<table class="wiki">
+<tr><td></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN19" class="wiki">JN19</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN27" class="wiki">JN27</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN13" class="wiki">JN13</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN25" class="wiki">JN25</a></strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Regular method call as statement</strong></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Method call result assigned to var/field</strong></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Method call as expression</strong></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Object allocation</strong></td><td>x</td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Constructor call</strong></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Explicit constructor call</strong></td><td></td><td></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr></table>
+<h3 id="a2.6PrimitiveTypeSystemandLiterals">2.6 Primitive Type System and Literals</h3>
+<table class="wiki">
+<tr><td></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN59" class="wiki">JN59</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN60" class="wiki">JN60</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN61" class="wiki">JN61</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN62" class="wiki">JN62</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN63" class="wiki">JN63</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN64" class="wiki">JN64</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN65" class="wiki">JN65</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN66" class="wiki">JN66</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN67" class="wiki">JN67</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN68" class="wiki">JN68</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN43" class="wiki">JN43</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN44" class="wiki">JN44</a></strong></td><td></td><td>
+</td></tr><tr><td><strong>Integer type (int)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td>
+</td></tr><tr><td><strong>Long type (long)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td>
+</td></tr><tr><td><strong>Character type (char)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td>
+</td></tr><tr><td><strong>Float type (float)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td>
+</td></tr><tr><td><strong>Double type (double)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td>
+</td></tr><tr><td><strong>Boolean type (boolean)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td>
+</td></tr><tr><td><strong>Character literal</strong></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>String literal</strong></td><td></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Integer/long literal</strong></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Float literal</strong></td><td></td><td></td><td></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Double literal</strong></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Boolean literal</strong></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Null literal</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr></table>
+<h3 id="a2.7ObjectInheritanceandTypeSystem">2.7 Object Inheritance and Type System</h3>
+<table class="wiki">
+<tr><td></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN52" class="wiki">JN52</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN53" class="wiki">JN53</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN54" class="wiki">JN54</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN56" class="wiki">JN56</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN57" class="wiki">JN57</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN58" class="wiki">JN58</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN49" class="wiki">JN49</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN15" class="wiki">JN15</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN16" class="wiki">JN16</a></strong></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Class declaration</strong></td><td>x</td><td></td><td></td><td>x</td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Inner class declaration</strong></td><td></td><td></td><td></td><td>!</td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Anonymous class declaration</strong></td><td></td><td></td><td></td><td>!</td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Static class initialization</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Constructor declaration</strong></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Multiple overridden constructors</strong></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Class with no explicitly declared ctor.</strong></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Method declaration</strong></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Method declaration with arguments</strong></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Multiple overridden method decls.</strong></td><td></td><td></td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Field attribute visibility</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Field declaration</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Field initialization (int x = 2)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr></table>
+<h3 id="a2.8ArraySupport">2.8 Array Support</h3>
+<table class="wiki">
+<tr><td></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN55" class="wiki">JN55</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN49" class="wiki">JN49</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN77" class="wiki">JN77</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN78" class="wiki">JN78</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN79" class="wiki">JN79</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN80" class="wiki">JN80</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN81" class="wiki">JN81</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN32" class="wiki">JN32</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN33" class="wiki">JN33</a></strong></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Local array declaration</strong></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Field array declaration</strong></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>1D array allocation with definite size</strong></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>1D array allocation with variable size</strong></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>1D Array initialization</strong></td><td>x</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Multi dimension array allocation</strong></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Multi dimension array initialization</strong></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Object array declaration</strong></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Object array initialization</strong></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Multi dimension array reference</strong></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>1D Array length reference (arr.length)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Multi dimension array length reference</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Array reference from external class</strong></td><td></td><td></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>1D Array type reference</strong></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Multi dimension array type reference</strong></td><td></td><td></td><td></td><td></td><td></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr></table>
+<h3 id="a2.9JMLSupport">2.9 JML Support</h3>
+<table class="wiki">
+<tr><td></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN69" class="wiki">JN69</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN70" class="wiki">JN70</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN71" class="wiki">JN71</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN72" class="wiki">JN72</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN73" class="wiki">JN73</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN74" class="wiki">JN74</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN75" class="wiki">JN75</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN76" class="wiki">JN76</a></strong></td><td><strong><a href="/trac/wiki/BoogieTraceability#JN27" class="wiki">JN27</a></strong></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Assertion statement (assert)</strong></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Assume statement (assume)</strong></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Loop invariant (loop_invariant)</strong></td><td></td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Loop variant (loop_variant)</strong></td><td></td><td></td><td>!</td><td>!</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Modifies clause (assignable, modifies)</strong></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Requires clause (require)</strong></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Ensures clause (ensure)</strong></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Result keyword (\result)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Old keyword (\old)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Forall keyword (\forall)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Exists keyword (\exist)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td><strong>Ensures/Requires clause calling method</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>x</td><td></td><td></td><td></td><td></td><td>
+</td></tr></table>
+<p>
+<strong>Legend</strong>
+</p>
+<table class="wiki">
+<tr><td><strong>Completed/mostly complete task</strong></td><td>x
+</td></tr><tr><td><strong>Incomplete or untargeted task</strong></td><td>!
+</td></tr></table>
+</div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

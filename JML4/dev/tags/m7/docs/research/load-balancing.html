@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Load Balancing</title>
+ 
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="LoadBalancingEvaluation"><strong>Load Balancing Evaluation</strong></h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.NatureoftheProblem:">1. Nature of the Problem:</a><ol><li class="active"><a href="#a1.1SimilarProblemsinComputerScience:">1.1 Similar Problems in Computer Science:</a></li></ol><li class="active"><a href="#a2.TheExistingPrototype:">2. The Existing Prototype:</a></li><li class="active">
+<a href="#a3.PUSHvs.PULLMigration:">3. PUSH vs. PULL Migration:</a></li><li class="active">
+<a href="#a4.BalancingCriteria:">4. Balancing Criteria:</a></li><li class="active">
+<a href="#a5.EarlyPlans">5. Early Plans</a></li><li class="active">
+<a href="#a6.TheBreakdown:">6. The Breakdown:</a></li><li class="active">
+<a href="#a7.PossibleFutureStrategies:">7. Possible Future Strategies:</a></li></li></ol></div>
+
+</p>
+<h2 id="a1.NatureoftheProblem:">1. Nature of the Problem:</h2>
+<p>
+In a distributed version of JML4 Disco, there would be multiple clients connecting to various dispatchers. These dispatchers would most likely be responsible for “breaking up” VC programs into their constituent VC’s. Since the number of VC’s may grow exponentially with relation to the amount of code being assessed (unlike VC programs) it would be likely that this “breaking” would be done server side. Regardless of where the “break” occurs, all the newly formed VC’s should be sent to separate server processes (or threads) that will run each VC through a series of provers. Load balancing refers to the decision process of assigning VC’s to available server processes (or threads) in such a way that desired behavior can be maximized. Commonly desired behaviors may range anywhere from trying to maximize throughput, CPU utilization, response time, and finally the turn-around time. (It is important to note that these improvements are not completely mutually exclusive)
+</p>
+<p>
+While load balancing can mean many things, for JML4 Disco the goal of load balancing will be the improvement of the average/maximum turn-around time: the time from the start of the proving process to the end. In JML4 Disco’s case however, there is an unfortunate complication: the VC’s have no discernable measures of complexity or difficulty-to-prove that can be used for decision making prior to the proving attempt. This essentially means that nothing can be known about a VC until a proof is attempted. For load balancing then, decisions cannot be made based on any kind of expected complexity or time for particular VC’s.
+</p>
+<h3 id="a1.1SimilarProblemsinComputerScience:">1.1 Similar Problems in Computer Science:</h3>
+<p>
+At first glance, this load balancing task seems quite similar to how processes are scheduled for CPU time. Unfortunately, common CPU scheduling algorithms such as Shortest-Job-First scheduling and Priority scheduling require some sort of foreknowledge of the processes in order to properly perform, and they really do not specifically address multiple CPU systems. Round Robin scheduling is also not going to be of any particular use because ideally each server thread would only be concerned with solving a single VC at a time and no actual timesharing will occur within each thread. The good new is that since the system will be a distributed system, these algorithms are really not applicable… its load balancing is to be done on a “higher” conceptual level. Therefore, while it is true that most likely the underlying Operating Systems use these algorithms for their CPU management, they will be automatically accounted for when it is determined which machines perform faster.  
+</p>
+<h2 id="a2.TheExistingPrototype:">2. The Existing Prototype:</h2>
+<p>
+Currently, the load balancing (or dispatching) algorithm is First-Come-First-Serve. That is to say that every time a VC needs to be dispatched, the dispatcher will simply send it to the next server on the “list”. This is an extremely simple method of dispatching and while not the most intelligent method available, it did provide considerable improvement.  
+</p>
+<h2 id="a3.PUSHvs.PULLMigration:">3. PUSH vs. PULL Migration:</h2>
+<p>
+In multiprocessor systems, an important concern is to keep all of the processors busy when there is work to be done. Suppose there are two processors: one processor which is free and one that is currently busy and has 3 more jobs waiting in its queue. Assuming that the processors are equally efficient, it would be obvious to take two of the remaining jobs off of the busy one’s queue and give them to the free processor. There are two popular approaches to this load balancing: push and pull migration. For push migration, the dispatcher (or some observer task) regularly polls the load on the processors and redistributes the load if imbalances are discovered. In pull migration, when a processor finishes with its queue (becomes idle) it will pull a task out of a busy processor’s queue. These two migration techniques are not mutually exclusive; often systems will employ the use of both.
+</p>
+<p>
+The reason this is being discussed is because JML4 Disco will use multiple server threads in much the same way multiprocessor systems use their processors. Each thread will have its own queue and will execute only one VC at a time. Therefore the system will balance its VC distribution among these multiple server thread queues in much the same way that tasks are balanced in multiprocessor systems. 
+</p>
+<h2 id="a4.BalancingCriteria:">4. Balancing Criteria:</h2>
+<p>
+There will be multiple server processes, each running multiple threads on multiple (most likely) multiprocessor machines. While this may sound particularly complicated, a general rule of thumb is that a process can contain multiple threads, and each processor can run one process at a time… processes that aren’t being executed by a CPU wait in its queue for their turn. In JML4 Disco, we will consider multiple sever machines, all of which may be running different operating systems.
+</p>
+<p>
+Each of these servers will be running some of the “server processes” that will be used for JML4 Disco. They will also most likely be starting, running and stopping other processes as well, such as operating system specific tasks (and these tasks will differ from OS to OS). This means that there is absolutely no guarantee that 100% of the CPU will be used for JML4; or any percentage for that matter. In other words, the amount of dedicated CPU time can vary not only from machine to machine, but from second to second as well. Unfortunately, this means that not only is the state of a VC before its proof impossible to know, there is also no knowledge of the machines that will be solving the VC’s at any specific time. So we are presented with a problem: how can a dispatcher appropriately chose the best place to send a VC?
+</p>
+<p>
+The chosen solution is to build an average performance profile of each machine in the system based on data gathered by regularly polling the machines. Ideally, the dispatcher would regularly request operation data from the various servers to aid itself in its decision making process. This can greatly improve the accuracy of the dispatcher by allowing it to send more VCs to faster machines, increasing both throughput and turn-around time as well as maintaining a high CPU-utilization. Possible data to gather for the dispatcher could be:
+</p>
+<ul><li>CPU speed
+</li><li>CPU usage
+</li><li>Memory usage
+</li><li>Queue
+</li><li>Historical proving time
+</li><li>Network transit time
+</li><li>Operating system
+</li><li>LAN network time (for other potentially distributed functionalities) 
+</li></ul><h2 id="a5.EarlyPlans">5. Early Plans</h2>
+<p>
+There will be a central dispatcher (for now we are considering one client but the design can be easily extended by having a dispatcher for each client). This dispatcher will accept a VC program and then break it into its constituent VCs. As it does the breakdown, it will initiate a poll to check the servers' statuses. A queue for each server thread will be stored with the dispatcher… meaning each server thread will "request" its next VC from the queue when it is done with its current one. Assuming that the poll takes longer than the breakdown (which is worst case), the dispatcher will initialise all of the queues with equal amount of jobs. When the results of the first poll return, the dispatcher then will performs Push Migration to re-balance the jobs in the queues according to the server threads' performance. After that, the dispatcher will continue poll the servers and balancing the queues at regular intervals until the results are all acquired. Finally it returns the results to the client.
+</p>
+<p>
+There are some possible speed-ups of this design. The first is to have the server threads reply include the request for the next VC; this way there will be no waiting for a request from the threads. Another improvement is to potentially not have the dispatcher poll as frequently and instead to supplement the polling by having the threads return their status with their replies as well. This method, however, may not prove useful in supplementing the dispatcher polls if the time to prove VC’s is to long, but it will then add greater accuracy to the dispatcher choices.
+</p>
+<p>
+It is important to note that if the server threads are to wait for the dispatcher to send them their new VC across the network then they will most likely be idling for relatively long durations of time. However, if the queues were to be only placed with the server threads instead of with the dispatcher, balancing time would increase dramatically and it would also generate unecessary bandwidth traffic. A solution then is to create a mini-queue with each server thread which would act as a buffer. For example, imagine that the buffer for each server thread was 3 VC's. At the beginning, when the proving starts, the server threads fill their buffers. then after they prove their first VC, they send the reply, along with a request for their next VC, to the dispatcher. Now, instead of waiting, the server thread goes to its buffer and start proving the next VC. Meanwhile, the dispatcher receives the request and sends the next VC on that server thread's queue. That VC then travels the network and is placed in the server threads buffer. In this scenario, the server thread is no longer idle between VC's. Providing that the threads' buffers remain relatively small, the dispatcher still has control to prioritize. For example, lets say in the previous scenario, the dispatcher noticed that the thread is running very slow. the dispatcher then removes some of the 100 VC's waiting in that thread's queue and places them into the queues of faster threads. Now fewer VC will be sent to the slow thread. 
+</p>
+<h2 id="a6.TheBreakdown:">6. The Breakdown:</h2>
+<p>
+Therefore, the dispatcher must have:
+</p>
+<ul><li>A way of breaking the VC program into VC’s.
+</li><li>A way of “discovering” available server threads and signaling them to begin.
+</li><li>A way to poll all available servers and to compile the results into server profiles.
+</li><li>An algorithm to use the profiles to make accurate Push migration decisions.
+</li><li>A way of collecting the results for each VC, and then sending the overall results back to the client. 
+</li></ul><p>
+The servers must have:
+</p>
+<ul><li>A way of listening for the dispatcher poll.
+</li><li>A way of collecting all of the necessary polling data.
+</li><li>A way of returning the polling data to the dispatcher.
+</li><li>A way of allowing the server to spawn new server processes (OPTIONAL) 
+</li></ul><p>
+The server threads must have:
+</p>
+<ul><li>A way of requesting and receiving the next VC in their queue.<sup>1</sup>
+</li><li>A way of returning the results to the dispatcher.<sup>1</sup>
+</li><li>A way of proving the VC (obviously)
+</li></ul><p>
+<i><sup>1</sup>Note: These may possibly be done in the same action.</i> 
+ 
+</p>
+<h2 id="a7.PossibleFutureStrategies:">7. Possible Future Strategies:</h2>
+<p>
+One possible strategy that may prove useful later is to separate the provers into different types of server threads; meaning that each thread would be dedicated to a specific prover. This would allow for “clouds” of prover threads. Since all of the VC’s are first attempted by Simplify (as it is the fastest prover) one possible strategy would be to have a “cloud” of simplify first analyze all of the VC’s in parallel. If simplify solves it, great. If not, the time taken by Simplify may then serve as foreknowledge for the VC. Meaning if simplify took very long and still failed, the fact that it took long may serve as an indicator to the complexity or difficulty of the VC. This, of course, assumes that there is a correlation between the times taken by the provers and the difficulty of the VC, as well as a correlation between the times of each individual prover. If, however, those correlations are observed, then the dispatcher could save time by sending particularly troublesome VC’s directly to Isabelle, which has the highest success rate but the slowest speed. The save time would then come from by-passing the intermediate provers such as CVC3.  
+</p>
+</div>
+   </div>
+   
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

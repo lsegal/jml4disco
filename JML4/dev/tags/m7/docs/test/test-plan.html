@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - Test Plan</title>
+ 
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="TestPlan">Test Plan</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.Introduction">1. Introduction</a></li><li class="active">
+<a href="#a2.TestItems">2. Test Items</a><ol><li class="active"><a href="#a2.1UnitTests">2.1 Unit Tests</a></li><li class="active">
+<a href="#a2.2SystemLevelTests">2.2 System Level Tests</a></li><li class="active">
+<a href="#a2.3TestingtheBoogieComponent">2.3 Testing the Boogie Component</a><ol><li class="active"><a href="#a2.3.1JavatoBoogieTranslation">2.3.1 Java to Boogie Translation</a></li><li class="active">
+<a href="#a2.3.2TestingThroughBoogieRuntime">2.3.2 Testing Through Boogie Runtime</a></li><li class="active">
+<a href="#a2.3.3TraceabilitytoFeatures">2.3.3 Traceability to Features</a></li></ol></li><li class="active"><a href="#a2.4TestingofDistributedDispatchingofVCs">2.4 Testing of Distributed Dispatching of VCs</a><ol><li class="active"><a href="#a2.4.1BasicSystem-LevelTests:TheDistributedWhileTests">2.4.1 Basic System-Level Tests: The Distributed While Tests</a></li><li class="active">
+<a href="#a2.4.2TestingLoadBalancingMechanisms">2.4.2 Testing Load Balancing Mechanisms</a></li></ol><li class="active"></li></li></ol></li><li class="active"><a href="#a3.TestingStrategies">3. Testing Strategies</a><ol><li class="active"><a href="#a3.1TestDrivenDesignTDD">3.1 Test Driven Design (TDD)</a></li></ol><li class="active"><a href="#a4.QualityAssurance">4. Quality Assurance</a><ol><li class="active"><a href="#a4.1TestEntryCriteria">4.1 Test Entry Criteria</a></li><li class="active">
+<a href="#a4.2TestSuiteExitCriteria">4.2 Test Suite Exit Criteria</a></li><li class="active">
+<a href="#a4.3SuspensionandResumptionCriteria">4.3 Suspension and Resumption Criteria</a></li></ol></li></li></ol></div>
+
+</p>
+<h2 id="a1.Introduction">1. Introduction</h2>
+<p>
+The purpose of the Test Plan Document is to identify all the components of the
+system that are to be tested and to describe in detail how they will be tested.
+The tests of JML4 Disco are done in every iteration concurrently with the development of the source code. The objective of the testing process is to uncover as many defects in the system as possible, as soon as possible. Tests will be written using Junit. 
+</p>
+<h2 id="a2.TestItems">2. Test Items</h2>
+<h3 id="a2.1UnitTests">2.1 Unit Tests</h3>
+<p>
+Developers will be responsible for writing JUnit test cases for classes and modules they write.
+</p>
+<h3 id="a2.2SystemLevelTests">2.2 System Level Tests</h3>
+<p>
+Testing of the Boogie component of the JML4 Disco project as a whole will be done using JUnit. The purpose and goal of these tests is to detect an failures in the implementation of the overall features of the system as a whole and to also evaluate the system's performance to ensure it meets requirements.
+</p>
+<p>
+The system tests are those provided at the start of the project by the client, Perry James, found in at the location <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc" class="source">source:JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc</a> in the repository.
+</p>
+<p>
+The two most relevant system-level tests being used are the <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/WhileTests.java" class="source">WhileTests</a> - which are used to determine if the system is functioning properly - and the <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/distributed/BigWhileTests.java" class="source">BigWhileTests</a> - which allow for more effective timing of the system's performance.
+</p>
+<h3 id="a2.3TestingtheBoogieComponent">2.3 Testing the Boogie Component</h3>
+<p>
+Testing of the Boogie component in the JML4 Disco project was divided into two major test suites: the translation of Java to Boogie and the running of translated Boogie code in the Boogie runtime (referred to as the Boogie adapter). This was done in order to allow for more fine-grained testing instead of large black box components. Using this strategy, failure scenarios can be interpreted as a failure to translate Java code into Boogie, or a failure to send or parse data to and from the Boogie adapter, the two major sub-components of the Boogie architecture.
+</p>
+<h4 id="a2.3.1JavatoBoogieTranslation">2.3.1 Java to Boogie Translation</h4>
+<p>
+In order to test the translation of Java code into Boogie code, test cases are handwritten and manually verified as valid syntax in a Boogie runtime. Once the expected result is syntactically valid, the test case is written and the translation is implemented to match the expected syntax. This guarantees correctness of syntax according to the Boogie runtime.
+</p>
+<h4 id="a2.3.2TestingThroughBoogieRuntime">2.3.2 Testing Through Boogie Runtime</h4>
+<p>
+If translation succeeds and syntax is valid, semantic testing must be done in order to ensure that the translated Boogie code performs the right task. This is done again by handwriting tests for each subcomponent which are manually verified for correctness in a Boogie runtime. Once this is done, the expected results are matched up against the results from the Boogie runtime and implementation is done to ensure everything works.
+</p>
+<h4 id="a2.3.3TraceabilitytoFeatures">2.3.3 Traceability to Features</h4>
+<p>
+The <a href="/trac/wiki/BoogieTraceability" class="wiki">BoogieTraceability</a> document shows progress of each subfeature in the Boogie component. Each subfeature traces to the specific tests in both translation and runtime testing and their latest pass or fail state. This traceability matrix is maintained by a Ruby script located at <a href="/trac/browser/JML4/dev/trunk/scripts/export-boogie-traceability.rb" class="source">source:/JML4/dev/trunk/scripts/export-boogie-traceability.rb</a> which parses metadata from the Java source files.
+</p>
+<h3 id="a2.4TestingofDistributedDispatchingofVCs">2.4 Testing of Distributed Dispatching of VCs</h3>
+<p>
+The setup for testing the Distributed Program Verification component of JML4 Disco is a client machine which runs one of the JUnit tests described below. These tests are hard coded to use Distributed Program Verification, discarding any other configurations.
+</p>
+<p>
+As of the end of Milestone 4 a configuration file, '<tt>distributedProverUrls.properties</tt>' must be present - still on the client-side - for the Distributed Program Verification to run properly. Its contents must include the URL to send a message to a dispatcher machine via HTTP:
+</p>
+<pre class="wiki">
+!-- distributed program verification config file
+whole = http://192.168.255.255:8080/org.jmlspecs.jml4.esc.distribution.http/ProveVcProgram
+
+</pre><h4 id="a2.4.1BasicSystem-LevelTests:TheDistributedWhileTests">2.4.1 Basic System-Level Tests: The Distributed While Tests</h4>
+<p>
+Early prototypes and implementations of a distributed solution were tested using minor tweaks to some standard Esc4 tests. The original 
+<a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/WhileTests.java" class="source">WhileTests.java</a> was the basis for the <a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/distributed/DistributedWhileTests.java" class="source">DistributedWhileTests</a> which run the WhileTests utilizing resources on a remote machine. Another test, the 
+<a href="/trac/browser/JML4/dev/trunk/org.jmlspecs.eclipse.jdt.core.tests/src/org/jmlspecs/eclipse/jdt/core/tests/esc/BigWhileTests.java" class="source">BigWhileTests</a> were given to the development team specifically to test distributed program verification.
+</p>
+<h4 id="a2.4.2TestingLoadBalancingMechanisms">2.4.2 Testing Load Balancing Mechanisms</h4>
+<p>
+It was also the hope in Milestone 4 that these tests could also effectively be used to test the usefulness of various load balancing mechanisms for the distribution of Vcs over multiple remote machines during program verification. However, as of the end of Milestone 4, the speed at which the distributed program verification takes place has quickly out-stepping the usefulness of the tests in that the tests are now being resolved much too quickly to be of any use in gauging the effectiveness of a load balancing mechanism.
+</p>
+<p>
+The new proposed test suite for Milestone 5 will consist of a number of valid tests taken from the ESCJava2 project and be combined with some of the pre-existing ESCJava4 tests in order to create "The Slow, Long Test" which will adequately burden the ProveVC servers and the dispatcher for extended periods of time, allowing for more effective  measurement of the usefulness and efficiency of the current load balancing algorithm. The "Slow, Long Test", or "Burden Test" will be a single .java file primarily generated by a small Perl script and then manually tweaked to accommodate any particularities of the current ESCjava4.
+</p>
+<p>
+The actual Burden Test, however, was altered as the ESCJava2 tests contained too may features that were not appropriate for ESCjava4 and the tests themselves offered no particularly increased proving difficulty. Instead the burden test was implemented by adding some existing tests to a suite and the repeatedly testing the suite in a loop. At first, this fuctionality was being blocked: since all the pre-existing test inherit from <a href="/trac/browser/JML4/dev/trunk/org.eclipse.jdt.core.tests.compiler/src/org/eclipse/jdt/core/tests/compiler/regression/AbstractRegressionTest.java" class="source">AbstractRegressionTest</a> , which in turn instanciates <a href="/trac/browser/JML4/dev/trunk/org.eclipse.test.performance/src/org/eclipse/test/internal/performance/PerformanceMeterFactory.java" class="source">PerformanceMeterFactory</a> which, when created will call its private assertUniqueScenario() method. This method throws an IllegalArgumentException when the same test, or suite of tests, is run multiple times in a test. A second problem that was encountered was that some tests (most notably some Quantifier Tests) will kill the Simplify process despite the fact that it should remain alive. When it does so, it will result in a Linux Exit Code 134.
+</p>
+<p>
+Looping over a suite composed of pre-existing tests in this manner gives extra control over how many VCs we are creating as well was how much time the burden test takes (by simply changing the duration of the loop). Unfortunately, this test will not help in testing the efficiency of any caching solutions since the same tests are used over and over again. Therefore a second burden test is necessary: the test will substitute all of the variables in the BigWhileTest's test string with parameters so that if the test were called in a loop, variable names could be altered which would create new VC's (even though they are  logically the same). Therefore every loop will produce new VCs to be cached, which will provide ample test data.
+</p>
+<h2 id="a3.TestingStrategies">3. Testing Strategies</h2>
+<h3 id="a3.1TestDrivenDesignTDD">3.1 Test Driven Design (TDD)</h3>
+<p>
+One of the requirements of the project is to translate the Java source into Boogie so that it can then be tested for correctness. To do so, Test Driven Design (TDD) will be used. JUnit tests will be created before implementation which will compare Java Source code against the Boogie code it should be translated into. After this is done, implementation to match the correct expected value will be performed until the test passes (see diagram below). 
+</p>
+<p>
+<a href="/trac/attachment/wiki/TestPlan/tdd.png" style="padding:0; border:none"><img title="tdd_boogie" src="images/tdd.png" alt="tdd_boogie" /></a>
+</p>
+<h2 id="a4.QualityAssurance">4. Quality Assurance</h2>
+<h3 id="a4.1TestEntryCriteria">4.1 Test Entry Criteria</h3>
+<p>
+For tests supporting the Boogie implementation, TDD is used. As such, test entry begins as soon as the requirements for the component have been acquired and understood. For implementation of other tests, entry begins after implementation of the components.
+</p>
+<h3 id="a4.2TestSuiteExitCriteria">4.2 Test Suite Exit Criteria</h3>
+<p>
+The test suite is considered to be complete once all tests have passed successfully.
+</p>
+<h3 id="a4.3SuspensionandResumptionCriteria">4.3 Suspension and Resumption Criteria</h3>
+<p>
+A test suite may be suspended if there are not enough resources to be devoted to it.
+</p>
+<p>
+     
+</p>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

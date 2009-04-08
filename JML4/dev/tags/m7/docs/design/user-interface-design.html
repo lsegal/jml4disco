@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Disco - User Interface Design</title>
+ 
+
+        <link href="../style.css" rel="stylesheet" type="text/css" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-type" />
+    </head>
+<body>
+
+
+
+
+
+<div id="main">
+
+
+
+
+
+
+<div class="wiki" id="content">
+
+ 
+  
+  
+   
+   <div class="wikipage">
+    <div id="searchable"><h1 id="UserInterfaceDesignDocument">User Interface Design Document</h1>
+<p>
+<div class="wiki-toc">
+<h4>Table of Contents</h4>
+<ol><li class="active"><a href="#a1.Introduction">1. Introduction</a><ol><li class="active"><a href="#a1.1Purpose">1.1 Purpose</a></li><li class="active">
+<a href="#a1.2UserInterfaces">1.2 User Interfaces</a></li></ol></li><li class="active"><a href="#a2.ClientSideUIConfiguration">2. Client Side UI Configuration</a><ol><li class="active"><a href="#a2.1U.C.6and7:EnablingDisablingDistributedProgramVerification">2.1 U.C. 6 and 7: Enabling/Disabling Distributed Program Verification</a></li><li class="active">
+<a href="#a2.2U.C.8and9:EnablingDisablingBoogie">2.2 U.C. 8 and 9: Enabling/Disabling Boogie</a></li></ol></li><li class="active"><a href="#a3.ServerSideUIConfiguration:Dispatcher">3. Server Side UI Configuration: Dispatcher</a><ol><li class="active"><a href="#a3.1U.C.12and13:AddRemoveServer">3.1 U.C. 12 and 13: Add/Remove Server</a></li><li class="active">
+<a href="#a3.2U.C.15and16:EnablingDisablingCaching">3.2 U.C. 15 and 16: Enabling/Disabling Caching</a></li></ol><li class="active"><a href="#a4.ServerSideUIConfiguration:ProverServer">4. Server Side UI Configuration: Prover Server</a><ol><li class="active"><a href="#a4.1U.C.18:ConfigureServerSetup-ProverServer">4.1 U.C. 18: Configure Server Setup - Prover Server</a></li></ol></li></li></ol></div>
+
+</p>
+<h2 id="a1.Introduction">1. Introduction</h2>
+<h3 id="a1.1Purpose">1.1 Purpose</h3>
+<p>
+The purpose of this document will cover the design and aesthetics of the user interfaces for the JML4Disco Distributed Program Verifier, especially how said changes and implementations relate back to the original Use Cases for the users and administrators.
+</p>
+<h3 id="a1.2UserInterfaces">1.2 User Interfaces</h3>
+<p>
+So far, there are three major ways that actors (developers or system administrators) can interact with the system. The first consists of the Client-Side User interface which is an extension of Eclipse UI, meant of developers to quickly configure the behavior of their IDE. The remaining two involve providing system administrators with a way to quickly and efficiently configure any JML4Disco Distributed behavior, such as which servers to use as proving servers(dispatcher) or how many parallel processes to use for each prover (prover server). For ease of access and familiarity, it was chosen that such a UI should behave similarly to Router Web Configuration Management pages.
+</p>
+<h2 id="a2.ClientSideUIConfiguration">2. Client Side UI Configuration</h2>
+<p>
+The client-side UI changes, as previously mentioned, are meant to mimic the look and feel of the Eclipse IDE, as well as remain constant with the other UI additions that were made for JML4. The changes will be made to the JML preferences dialog in the Eclipse UI (Window&gt;Preferences&gt;Java&gt;JML)
+</p>
+<h3 id="a2.1U.C.6and7:EnablingDisablingDistributedProgramVerification">2.1 U.C. 6 and 7: Enabling/Disabling Distributed Program Verification</h3>
+<p>
+<a href="/trac/wiki/Jml4Disco-UseCaseView#a2.2.6UseCase6:EnableDistributedProgramVerification" class="wiki">View Use Cases</a><br />
+The enabling and disabling of Distributed Program Verification will be accounted for by adding a checkbox within the pre-existing "Extended Static Checking(ESC)" dialog. A textbox will be provided in order to allow the developer to specify the URL of the dispatcher to be used. Additionally, the textbox will only become enabled when the checkbox is enabled in keeping with Eclipse conventions. The anticipated result is:
+</p>
+<p>
+<a href="/trac/attachment/wiki/UserInterfaceDesign/UseCase6and7.png" style="padding:0; border:none"><img title="Use Cases 6 and 7 estimate" src="images/UseCase6and7.png" alt="Use Cases 6 and 7 estimate" /></a><br />
+<span class="underline">Note:</span> The red box is purely for demonstrative purposes, it will not exist in the actual implementation. 
+</p>
+<h3 id="a2.2U.C.8and9:EnablingDisablingBoogie">2.2 U.C. 8 and 9: Enabling/Disabling Boogie</h3>
+<p>
+<a href="/trac/wiki/Jml4Disco-UseCaseView#a2.2.8UseCase8:EnableBoogie" class="wiki">View Use Cases</a><br />
+The enabling and disabling of Boogie will, similarly to Distributed Program Verification, be accounted for by adding a checkbox. For possible future extensions for Boogie, the checkbox will exist in a separate composite dialog which will become enabled only when the existing "Enable JML DBC" checkbox in "General" is checked and the "Enable ESC4" and "Enable ESC/Java2" checkboxes in "Extended Static Checking(ESC)" remain unchecked. The anticipated result is:
+</p>
+<p>
+<a href="/trac/attachment/wiki/UserInterfaceDesign/UseCase8and9.png" style="padding:0; border:none"><img title="Use Cases 8 and 9 estimate" src="images/UseCase8and9.png" alt="Use Cases 8 and 9 estimate" /></a><br />
+<span class="underline">Note:</span> The red box is purely for demonstrative purposes, it will not exist in the actual implementation. 
+</p>
+<h2 id="a3.ServerSideUIConfiguration:Dispatcher">3. Server Side UI Configuration: Dispatcher</h2>
+<p>
+The server-side configuration is intended for use by System Administrators in order to quickly and easily configure the dispatcher in the Distributed Program Verification prover strategy. In order to seem familiar, it has been chosen that this configuration work similarly to Router Web Configuration Management pages. For navigability, there will be an upper navigation bar which will contain links to the various pages.
+</p>
+<h3 id="a3.1U.C.12and13:AddRemoveServer">3.1 U.C. 12 and 13: Add/Remove Server</h3>
+<p>
+<a href="/trac/wiki/Jml4Disco-UseCaseView#a2.3.2UseCase12:AddServer" class="wiki">View Use Cases</a><br />
+Servers will be added by navigating to an Add Servers page via an upper toolbar link, specifying their URL in a textbox and then clicking submit. They will be removed by navigating to a Remove Servers page via second upper toolbar link and pressing the "Delete" button associated with the appropriate server.  
+</p>
+<p>
+GUI for Add new prover server<br />
+<a href="/trac/attachment/wiki/UserInterfaceDesign/Dispatcher-AddServers.png" style="padding:0; border:none"><img src="images/Dispatcher-AddServers.png" /></a><br />
+</p>
+<p>
+GUI for Remove existing prover server<br />
+<a href="/trac/attachment/wiki/UserInterfaceDesign/Dispatcher-RemoveServers.png" style="padding:0; border:none"><img src="images/Dispatcher-RemoveServers.png" /></a><br />
+</p>
+<h3 id="a3.2U.C.15and16:EnablingDisablingCaching">3.2 U.C. 15 and 16: Enabling/Disabling Caching</h3>
+<p>
+<a href="/trac/wiki/Jml4Disco-UseCaseView#a2.3.5UseCase15:EnableCaching" class="wiki">View Use Cases</a><br />
+As there is currently no data necessary to be specified for enabling or disabling caching, both use cases will be represented by a single link on the upper toolbar.
+When the link is clicked, the link text will change to reflect the state of caching and the page displayed will present a clear message to the user as to the status of the control.  
+</p>
+<p>
+Enabling Caching Mechanism<br />
+<a href="/trac/attachment/wiki/UserInterfaceDesign/Dispatcher-EnableCaching.png" style="padding:0; border:none"><img src="images/Dispatcher-EnableCaching.png" /></a><br />
+</p>
+<p>
+Disabling Caching Mechanism<br />
+<a href="/trac/attachment/wiki/UserInterfaceDesign/Dispatcher-DisableCaching.png" style="padding:0; border:none"><img src="images/Dispatcher-DisableCaching.png" /></a><br />
+</p>
+<h2 id="a4.ServerSideUIConfiguration:ProverServer">4. Server Side UI Configuration: Prover Server</h2>
+<p>
+This server-side configuration is intended for use by System Administrators in order to quickly and easily configure a single prover server in the Distributed Program Verification prover strategy. Again, in order to seem familiar, it has been chosen that this configuration work similarly to Router Web Configuration Management pages and it will mirror Section 3's UI exactly in look and control scheme (i.e. the upper toolbar).
+</p>
+<p>
+Prover Configuration GUI<br />
+<a href="/trac/attachment/wiki/UserInterfaceDesign/Prover-Workbench.png" style="padding:0; border:none"><img src="images/Prover-Workbench.png" /></a><br />
+</p>
+<p>
+GUI for configuring number of process for each prover<br />
+<a href="/trac/attachment/wiki/UserInterfaceDesign/Prover-SetNumberOfProverProcesses.png" style="padding:0; border:none"><img src="images/Prover-SetNumberOfProverProcesses.png" /></a><br />
+</p>
+<h3 id="a4.1U.C.18:ConfigureServerSetup-ProverServer">4.1 U.C. 18: Configure Server Setup - Prover Server</h3>
+<p>
+<a href="/trac/wiki/Jml4Disco-UseCaseView#a2.3.8UseCase18:ConfigureServerSetup-ProverServer" class="wiki">View Use Case</a><br />
+Currently, there is only one modification possible for the provers, and that is the ability to specify the number of concurrent prover processes to use during proving. Like before, this Configure Prover Processes page can be navigated to via the link on the upper toolbar and a textbox and submit button will be provided for each viable prover. 
+</p>
+</div>
+   </div>
+   
+    
+    
+  
+  
+   
+  
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+  </script>
+ 
+ 
+</div>
+
+<script type="text/javascript">searchHighlight()</script>
+
+
+</div>
+
+
+
+
+
+ </body>
+</html>
+

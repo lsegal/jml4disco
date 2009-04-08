@@ -32,7 +32,8 @@ $wikidocs = {
   'Jml4Disco-UseCaseView' => 'design',
   'DevelopmentView' => 'design',
   'TestPlan' => 'test',
-  'BoogieTraceability' => 'test',
+  'BoogieTraceability' => 'test', 
+  'JavaCoverageTraceability' => 'test',
   'PerformanceReport' => 'test'
 }
 $categories = [

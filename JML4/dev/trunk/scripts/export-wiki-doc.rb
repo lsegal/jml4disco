@@ -32,6 +32,7 @@ $wikidocs = {
   'Jml4Disco-LogicalView' => 'design',
   'Jml4Disco-PhysicalView' => 'design',
   'Jml4Disco-UseCaseView' => 'design',
+  'UserInterfaceDesign' => 'design',
   'DevelopmentView' => 'design',
   'TestPlan' => 'test',
   'BoogieTraceability' => 'test', 

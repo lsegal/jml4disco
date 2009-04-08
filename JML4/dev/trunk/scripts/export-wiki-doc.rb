@@ -15,6 +15,7 @@ $wikidocs = {
   'RiskManagement' => 'mgmt',
   'ProcessDocumentation' => 'mgmt',
   'ImpactAnalysis' => 'mgmt',
+  'ChangeManagement' => 'mgmt',
   'CachingStrategies' => 'research',
   'CachingEvaluation' => 'research',
   'LoadBalancing' => 'research',

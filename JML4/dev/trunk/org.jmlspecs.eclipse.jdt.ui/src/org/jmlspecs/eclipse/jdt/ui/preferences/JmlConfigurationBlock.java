@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.jmlspecs.eclipse.jdt.ui.preferences;
 
-import javax.swing.JLabel;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
@@ -89,7 +87,7 @@ public class JmlConfigurationBlock extends OptionsConfigurationBlock {
 	private /*@nullable*/ Composite boogieComposite;
 	
 	private /*@nullable*/ Text distributedPathText;
-	private /*@nullable*/ JLabel boogieLabel;
+	private /*@nullable*/ Label boogieLabel;
 
 	private /*@nullable*/ ControlEnableState genEnableState;
 	private /*@nullable*/ ControlEnableState progProbsEnableState;
